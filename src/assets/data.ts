@@ -1,27 +1,51 @@
+import { stressAchievements, eliminationsAchievements, eliminationsXenomorphAchievements,
+  eliminationsNeomorphAchievements,
+  eliminationsLocalFaunaAchievements, eliminationsMechanicalAchievements,
+  eliminationsInnocentsAchievements, explorationAchievements,
+  explorationStarSystemsAchievements,
+  explorationPlanetsAchievements, specialExplorationAchievements,
+  specialEliminationsAchievements,
+  xenomorphAttacksAchievements, specialAchievements } from './achievements';
 import tokenAndré from './tokens/TrishaMonroe.png';
 import tokenFernando from './tokens/HarperJammer.png';
 import tokenBruno from './tokens/SeanBean.png';
 
 export const data = [
   {
-    id: 'André',
+    playerId: 'André',
     characterName: 'Trisha Monroe',
     profission: 'Comtech Marine',
     codname: 'Grey Weasel',
     images: tokenAndré,
+    achievements: [
+      stressAchievements[0],
+      eliminationsAchievements[0],
+      explorationStarSystemsAchievements[0],
+      explorationPlanetsAchievements[0],
+    ],
   },
   {
-    id: 'Fernando (Gelatto)',
+    playerId: 'Fernando (Gelatto)',
     characterName: 'Harper "Offroad" Jammer',
     profission: 'Piloto',
     codname: 'Green Weasel',
     images: tokenFernando,
+    achievements: [
+      stressAchievements[0],
+      eliminationsAchievements[0],
+      explorationStarSystemsAchievements[0],
+      explorationPlanetsAchievements[0],
+    ],
   },
   {
-    id: 'Bruno',
+    playerId: 'Bruno',
     characterName: 'Sean "Night Rider" Bean',
     profission: 'Fuzileiro',
     codname: 'Black Weasel',
     images: tokenBruno,
+    achievements: [
+      explorationStarSystemsAchievements[0],
+      explorationPlanetsAchievements[0],
+    ],
   },
 ];
