@@ -1,5 +1,6 @@
 import { data } from '../assets/data';
-import { PlayerStile, AchievementsContainer, PlayerDetails } from '../styles/PlayerStyle';
+import { PlayerStile, AchievementsContainer,
+  PlayerDetails } from '../styles/PlayerStyle';
 
 function Player() {
   return (

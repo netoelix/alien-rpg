@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 
 export const PlayerStile = styled.div`
-    margin: 30px;
     padding: 20px;
+    margin: 25px;
     background-color: #051923;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* border: 25px solid #003554; */
     
         section {
             display: flex;
