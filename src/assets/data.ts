@@ -20,7 +20,6 @@ export const data = [
     achievements: [
       stressAchievements[0],
       eliminationsAchievements[0],
-      explorationStarSystemsAchievements[0],
       explorationPlanetsAchievements[0],
     ],
   },
@@ -33,7 +32,6 @@ export const data = [
     achievements: [
       stressAchievements[0],
       eliminationsAchievements[0],
-      explorationStarSystemsAchievements[0],
       explorationPlanetsAchievements[0],
     ],
   },
@@ -44,7 +42,6 @@ export const data = [
     codname: 'Black Weasel',
     images: tokenBruno,
     achievements: [
-      explorationStarSystemsAchievements[0],
       explorationPlanetsAchievements[0],
     ],
   },

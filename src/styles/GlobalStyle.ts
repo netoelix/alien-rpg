@@ -6,7 +6,7 @@ const GlobalStyle = createGlobalStyle`
       padding: 0;
       box-sizing: border-box;
       color: black;
-      font-family: sans-serif
+      font-family: sans-serif;
     }
   `;
 export default GlobalStyle;

@@ -1,11 +1,12 @@
+import { HomeStyle } from '../styles/HomeStyle';
 import Player from './Player';
 
 function Home() {
   return (
-    <div>
+    <HomeStyle>
       <h1>Alien RPG: Fragmentos de guerra</h1>
       <Player />
-    </div>
+    </HomeStyle>
   );
 }
 
