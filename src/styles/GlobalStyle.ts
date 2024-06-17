@@ -8,7 +8,7 @@ const GlobalStyle = createGlobalStyle`
       color: black;
       font-family: sans-serif;
       body {
-        background-color: #003554;
+        background-color: #343a40;
       }
     }
   `;
