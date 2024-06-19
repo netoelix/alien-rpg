@@ -24,6 +24,7 @@ export const PlayerStile = styled.div`
         height: 300px;
         border-radius: 50%;
         margin: 10px 0;
+        border: 5px solid #003554;
     }
 `;
 
@@ -47,15 +48,18 @@ export const AchievementsContainer = styled.div`
 
 export const PlayerGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 0fr;
   grid-template-rows: auto auto auto;
-  gap: 20px;
+  gap: 5px 0px;
   padding: 20px;
   place-items: center;
 
   h3 {
         font-size: 1.5rem;
         color: #274b5b;
+        p {
+            font-size: 0.8rem;
+        }
     }
     
     p {
@@ -66,6 +70,7 @@ export const PlayerGrid = styled.div`
     span {
     font-size: 0.8rem;
     color: #274b5b;
+    font-weight: bold;
     }
 
   .player, .character, .profession, .codename {
@@ -74,6 +79,7 @@ export const PlayerGrid = styled.div`
     width: 250px;
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     align-content: center;
     justify-content: center;
     align-items: center;
@@ -81,6 +87,7 @@ export const PlayerGrid = styled.div`
         20%, 100% 80%, 90% 100%, 10% 100%, 0% 80%, 0% 20%);
     text-align: center;
   }
+
   .player {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
@@ -94,10 +101,14 @@ export const PlayerGrid = styled.div`
 
   .character {
     grid-column: 1 / 2;
+    clip-path: polygon(10% 0%, 90% 0%, 100% 
+      0%, 100% 100%, 90% 100%, 10% 100%, 0% 80%, 0% 20%);
   }
 
   .profession {
     grid-column: 3 / 4;
+    clip-path: polygon(0% 0%, 90% 0%, 100% 
+      20%, 100% 80%, 90% 100%, 0% 100%, 0% 80%, 0% 20%);
   }
 
   .codename {

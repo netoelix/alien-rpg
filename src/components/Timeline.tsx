@@ -1,15 +1,49 @@
+import { useState } from 'react';
+import { EventContainer, EventDate, TimelineText,
+  TimelineContainer, TimelineLine } from '../styles/TimelineStyle';
+
+import { timelines } from '../assets/timeline';
+
 function Timeline() {
+  const [openEvents, setOpenEvents] = useState<string | null>(null);
+
+  const handleClick = (dateTime: string, location: string) => {
+    const eventKey = `${dateTime}-${location}`;
+    setOpenEvents((prevEventKey) => (prevEventKey === eventKey ? null : eventKey));
+  };
+
   return (
-    <div>
+    <TimelineText>
       <h1>Timeline</h1>
-      <div>
-        <p>04/04/2120 - Acheron Prime</p>
-        <p>04/04/2120 - ZKH-341</p>
-        <p>27/04/2120 - Sol</p>
-        <p>18/05/2120 - ZKH-341</p>
-        <p>02/06/2121 - NN3553</p>
-      </div>
-    </div>
+
+      <TimelineContainer>
+        <TimelineLine />
+        {
+        timelines.map(({ dateTime, location, descrition }) => {
+          const eventKey = `${dateTime}-${location}`;
+          const isOpen = openEvents === eventKey;
+
+          return (
+            <EventContainer
+              key={ eventKey }
+              className="event-container"
+              onClick={ () => handleClick(dateTime, location) }
+            >
+              <EventDate
+                style={ { backgroundColor: isOpen ? '#f5c518' : 'white' } }
+                className="event-date"
+              >
+                { `${dateTime} - ${location}` }
+                <div className={ `description-text ${isOpen ? 'open' : ''}` }>
+                  <p>{descrition}</p>
+                </div>
+              </EventDate>
+            </EventContainer>
+          );
+        })
+      }
+      </TimelineContainer>
+    </TimelineText>
   );
 }
 

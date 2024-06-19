@@ -20,12 +20,12 @@ function CharacterInformations({
     <section>
       <PlayerGrid>
         <h3 className="player">
-          Jogador:
+          <p>Jogador</p>
           {' '}
           {playerId}
         </h3>
         <p className="character">
-          Personagem:
+          <span>Personagem</span>
           {' '}
           {characterName}
         </p>
@@ -34,12 +34,12 @@ function CharacterInformations({
           characterName={ characterName }
         />
         <p className="profession">
-          Profissão:
+          <span>Profissão</span>
           {' '}
           {profession}
         </p>
         <p className="codename">
-          Codnome:
+          <span>Codnome</span>
           {' '}
           {codname}
         </p>

@@ -1,27 +1,45 @@
 import styled from 'styled-components';
 
 export const AboutStyle = styled.div`
+
     display: flex;
     flex-direction: column;
-    align-items: center;
-    align-content: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
-    background-color: #051923;
-    height: 100vh;
+    margin-bottom: 20px;
     
-    h1 , p {
+    h1 {
         font-size: 2rem;
         color: white;
         padding: 20px;
     }
-    span {
-        color: #f5c518;
+    h2 {
+        font-size: 1.5rem;
+        color: white;
+        padding: 20px;
     }
     h3 {
         font-size: 1.5rem;
         color: white;
         padding: 20px;
+    }
+    h4 {
+        font-size: 1.2rem;
+        color: white;
+        padding: 20px;
+    }
+    p {
+        font-size: 1rem;
+        color: white;
+        padding: 5px 20px;
+    }
+    span {
+        color: #f5c518;
+    }
+    a {
+        color: #f5c518;
+        text-decoration: none;
     }
 `;
 

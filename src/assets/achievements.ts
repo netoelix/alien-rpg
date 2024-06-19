@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 export const stressAchievements = [
   { id: 'stress_01',
     description: 'Atingir 1 pontos de stress',

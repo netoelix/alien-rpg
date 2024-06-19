@@ -11,10 +11,6 @@ function Player() {
         data.map(({ playerId, characterName, profession,
           codname, images, achievements, about }) => (
             <PlayerStile key={ playerId }>
-              {/* <CharacerImg
-                images={ images }
-                characterName={ characterName }
-              /> */}
               <CharacterInformations
                 playerId={ playerId }
                 characterName={ characterName }
