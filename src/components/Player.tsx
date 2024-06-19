@@ -1,6 +1,5 @@
 import { data } from '../assets/data';
 import { PlayerStile } from '../styles/PlayerStyle';
-import CharacterAbout from './Character/CharacterAbout';
 import CharacterAchievemants from './Character/CharacterAchievemants';
 import CharacterInformations from './Character/CharacterInformations';
 
@@ -17,8 +16,8 @@ function Player() {
                 profession={ profession }
                 codname={ codname }
                 images={ images }
+                about={ about }
               />
-              <CharacterAbout about={ about } />
               <CharacterAchievemants
                 achievements={ achievements }
               />

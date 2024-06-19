@@ -1,4 +1,5 @@
 import { PlayerGrid } from '../../styles/PlayerStyle';
+import CharacterAbout from './CharacterAbout';
 import CharacerImg from './CharacterImg';
 
 interface CharacterInformationProps {
@@ -15,6 +16,7 @@ function CharacterInformations({
   profession,
   codname,
   images,
+  about,
 }: CharacterInformationProps) {
   return (
     <section>
@@ -24,25 +26,28 @@ function CharacterInformations({
           {' '}
           {playerId}
         </h3>
-        <p className="character">
-          <span>Personagem</span>
-          {' '}
-          {characterName}
-        </p>
+        <div className="info-container">
+          <p className="character">
+            <span>Personagem</span>
+            {' '}
+            {characterName}
+          </p>
+          <p className="profession">
+            <span>Profissão</span>
+            {' '}
+            {profession}
+          </p>
+          <p className="codename">
+            <span>Codnome</span>
+            {' '}
+            {codname}
+          </p>
+        </div>
+        <CharacterAbout about={ about } />
         <CharacerImg
           images={ images }
           characterName={ characterName }
         />
-        <p className="profession">
-          <span>Profissão</span>
-          {' '}
-          {profession}
-        </p>
-        <p className="codename">
-          <span>Codnome</span>
-          {' '}
-          {codname}
-        </p>
       </PlayerGrid>
     </section>
   );

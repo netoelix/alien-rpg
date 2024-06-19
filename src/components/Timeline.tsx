@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { EventContainer, EventDate, TimelineText,
   TimelineContainer, TimelineLine } from '../styles/TimelineStyle';
+import galaxyMap from '../assets/galaxy-map.jpg';
 
 import { timelines } from '../assets/timeline';
 
@@ -14,11 +15,12 @@ function Timeline() {
 
   return (
     <TimelineText>
-      <h1>Timeline</h1>
-
-      <TimelineContainer>
-        <TimelineLine />
-        {
+      <img src={ galaxyMap } alt="" />
+      <div className="blur-background">
+        <h1>Timeline</h1>
+        <TimelineContainer>
+          <TimelineLine />
+          {
         timelines.map(({ dateTime, location, descrition }) => {
           const eventKey = `${dateTime}-${location}`;
           const isOpen = openEvents === eventKey;
@@ -42,7 +44,8 @@ function Timeline() {
           );
         })
       }
-      </TimelineContainer>
+        </TimelineContainer>
+      </div>
     </TimelineText>
   );
 }

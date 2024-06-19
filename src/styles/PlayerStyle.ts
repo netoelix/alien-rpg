@@ -49,7 +49,7 @@ export const AchievementsContainer = styled.div`
 export const PlayerGrid = styled.div`
   display: grid;
   grid-template-columns: 0fr;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto auto auto;
   gap: 5px 0px;
   padding: 20px;
   place-items: center;
@@ -94,27 +94,47 @@ export const PlayerGrid = styled.div`
     height: 100px;
   }
 
-  .character, .profession {
-    grid-row: 2 / 3;
-    height: 50px;
-  }
+  .info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
+  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
+}
+
+.character, .profession, .codename {
+  clip-path: polygon(10% 0%, 90% 0%, 100% 0%, 100% 100%, 90% 100%, 10% 100%, 0% 80%, 0% 20%);
+  margin-top: 15px;
+  height: 50px;
+}
 
   .character {
-    grid-column: 1 / 2;
-    clip-path: polygon(10% 0%, 90% 0%, 100% 
-      0%, 100% 100%, 90% 100%, 10% 100%, 0% 80%, 0% 20%);
-  }
+  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
+  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
+  height: 50px;
+  justify-self: center; /* Mantido para centralizar horizontalmente */
+}
 
-  .profession {
-    grid-column: 3 / 4;
-    clip-path: polygon(0% 0%, 90% 0%, 100% 
-      20%, 100% 80%, 90% 100%, 0% 100%, 0% 80%, 0% 20%);
-  }
+.profession {
+  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
+  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
+  height: 50px;
+  justify-self: center; /* Mantido para centralizar horizontalmente */
+}
 
-  .codename {
-    grid-column: 2 / 3;
-    grid-row: 3 / 4;
-    height: 50px;
+.codename {
+  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
+  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
+  height: 50px;
+  justify-self: center; /* Mantido para centralizar horizontalmente */
+}
+
+  .text-about {
+    grid-column: 3 / 3;
+    grid-row: 1 / 4;
+    height: 500px;
+    width: 500px;
+    overflow-y: auto;
   }
   .image {
   grid-column: 2 / 3;

@@ -7,11 +7,32 @@ export const TimelineText = styled.div`
     justify-content: center;
     padding: 20px;
     margin-bottom: 20px;
-    
+    height: 130vh;
+
+    img {
+        width: 100%;
+        height: 130vh;
+        object-fit: cover;
+        position: absolute;
+        z-index: -1;
+        opacity: 0.4;
+    }
+
+    .blur-background {
+      background: rgba(39, 75, 91, 0.5);
+      backdrop-filter: blur(1px);
+    }
+
+    div {
+      width: 100%;
+    }
+
     h1 {
         font-size: 2rem;
         color: white;
         padding: 20px;
+        width: 100%;  
+        text-align: center;
     }
     p {
         font-size: 1rem;
@@ -32,6 +53,7 @@ export const TimelineContainer = styled.div`
   position: relative;
   margin: 20px 0;
   width: 100%;
+  height: 300px;
 `;
 
 export const TimelineLine = styled.div`
@@ -70,7 +92,7 @@ export const EventContainer = styled.div`
 
   .description-text {
     position: absolute;
-    top: 100%;
+    top: 60%;
     left: 50%;
     transform: translateX(-50%);
     visibility: hidden;
@@ -88,7 +110,9 @@ export const EventContainer = styled.div`
   }
   .text-resume {
     overflow-y: auto;
-    max-height: 400px;
+    max-height: 350px;
+    border: 3px solid #274b5b;
+    border-radius: 5px;
   }
   `;
 

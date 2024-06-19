@@ -2,7 +2,7 @@ export const timelines = [
   {
     dateTime: '04/04/2120',
     location: 'Acheron Prime',
-    descrition: 'aaaaaaaa aaaaaaaaa aaaaaaaaaaa aaaaaaaaaa aaaaaaaaaaaa aaaaaaaaaa aaaaaaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaaa aaaaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa',
+    descrition: '',
   },
   {
     dateTime: '04/04/2120',

@@ -18,7 +18,7 @@ function CharacterAbout({ about }: CharacterAboutProps) {
   ));
 
   return (
-    <AboutCharacter>
+    <AboutCharacter className="text-about">
       {sentences}
     </AboutCharacter>
   );

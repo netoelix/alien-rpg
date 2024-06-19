@@ -49,11 +49,11 @@ function About() {
       <h3>Quem está embarcado?</h3>
       <ul>
         <li>
-          <h4>Comtech Marine</h4>
+          <h4>André</h4>
           <p>
             <span>Nome:</span>
             {' '}
-            André
+            Trisha Monroe
           </p>
           <p>
             <span>Função:</span>
@@ -62,11 +62,11 @@ function About() {
           </p>
         </li>
         <li>
-          <h4>Piloto</h4>
+          <h4>Fernando (Gelatto)</h4>
           <p>
             <span>Nome:</span>
             {' '}
-            Fernando (Gelatto)
+            Harper &quot;Offroad&quot; Jammer
           </p>
           <p>
             <span>Função:</span>
@@ -75,11 +75,11 @@ function About() {
           </p>
         </li>
         <li>
-          <h4>Fuzileiro</h4>
+          <h4>Bruno</h4>
           <p>
             <span>Nome:</span>
             {' '}
-            Bruno
+            Sean &quot;Night Rider&quot; Bean
           </p>
           <p>
             <span>Função:</span>
