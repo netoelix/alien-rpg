@@ -86,6 +86,10 @@ export const EventContainer = styled.div`
     visibility: visible;
     opacity: 1;
   }
+  .text-resume {
+    overflow-y: auto;
+    max-height: 400px;
+  }
   `;
 
 export const EventDate = styled.p`

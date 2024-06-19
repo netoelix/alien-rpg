@@ -35,7 +35,7 @@ function Timeline() {
               >
                 { `${dateTime} - ${location}` }
                 <div className={ `description-text ${isOpen ? 'open' : ''}` }>
-                  <p>{descrition}</p>
+                  <p className="text-resume">{descrition}</p>
                 </div>
               </EventDate>
             </EventContainer>
