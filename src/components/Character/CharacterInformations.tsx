@@ -1,35 +1,49 @@
-import { PlayerDetails } from '../../styles/PlayerStyle';
+import { PlayerGrid } from '../../styles/PlayerStyle';
+import CharacerImg from './CharacterImg';
+
+interface CharacterInformationProps {
+  playerId: string;
+  characterName: string;
+  profession: string;
+  codname: string;
+  images: string;
+}
 
 function CharacterInformations({
   playerId,
   characterName,
   profession,
   codname,
-}) {
+  images,
+}: CharacterInformationProps) {
   return (
     <section>
-      <PlayerDetails>
-        <h3>
+      <PlayerGrid>
+        <h3 className="player">
           Jogador:
           {' '}
           {playerId}
         </h3>
-        <p>
+        <p className="character">
           Personagem:
           {' '}
           {characterName}
         </p>
-        <p>
+        <CharacerImg
+          images={ images }
+          characterName={ characterName }
+        />
+        <p className="profession">
           Profissão:
           {' '}
           {profession}
         </p>
-        <p>
+        <p className="codename">
           Codnome:
           {' '}
           {codname}
         </p>
-      </PlayerDetails>
+      </PlayerGrid>
     </section>
   );
 }

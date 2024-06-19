@@ -24,3 +24,15 @@ export const AboutStyle = styled.div`
         padding: 20px;
     }
 `;
+
+export const AboutCharacter = styled.div`
+    padding: 20px;
+    background-color: #a4b8b6;
+    border-radius: 10px;
+    
+    p {
+        font-size: 14px;
+        color: #274b5b;
+        padding: 5px;
+    }
+`;

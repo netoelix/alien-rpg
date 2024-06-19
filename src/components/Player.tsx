@@ -1,7 +1,7 @@
 import { data } from '../assets/data';
 import { PlayerStile } from '../styles/PlayerStyle';
+import CharacterAbout from './Character/CharacterAbout';
 import CharacterAchievemants from './Character/CharacterAchievemants';
-import CharacerImg from './Character/CharacterImg';
 import CharacterInformations from './Character/CharacterInformations';
 
 function Player() {
@@ -9,22 +9,21 @@ function Player() {
     <div>
       {
         data.map(({ playerId, characterName, profession,
-          codname, images, achievements }) => (
+          codname, images, achievements, about }) => (
             <PlayerStile key={ playerId }>
+              {/* <CharacerImg
+                images={ images }
+                characterName={ characterName }
+              /> */}
               <CharacterInformations
-                key={ playerId }
                 playerId={ playerId }
                 characterName={ characterName }
                 profession={ profession }
                 codname={ codname }
-              />
-              <CharacerImg
-                key={ playerId }
                 images={ images }
-                characterName={ characterName }
               />
+              <CharacterAbout about={ about } />
               <CharacterAchievemants
-                key={ playerId }
                 achievements={ achievements }
               />
             </PlayerStile>
