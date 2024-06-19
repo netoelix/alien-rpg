@@ -14,7 +14,7 @@ export const data = [
   {
     playerId: 'André',
     characterName: 'Trisha Monroe',
-    profission: 'Comtech Marine',
+    profession: 'Comtech Marine',
     codname: 'Grey Weasel',
     images: tokenAndré,
     achievements: [
@@ -26,7 +26,7 @@ export const data = [
   {
     playerId: 'Fernando (Gelatto)',
     characterName: 'Harper "Offroad" Jammer',
-    profission: 'Piloto',
+    profession: 'Piloto',
     codname: 'Green Weasel',
     images: tokenFernando,
     achievements: [
@@ -38,7 +38,7 @@ export const data = [
   {
     playerId: 'Bruno',
     characterName: 'Sean "Night Rider" Bean',
-    profission: 'Fuzileiro',
+    profession: 'Fuzileiro',
     codname: 'Black Weasel',
     images: tokenBruno,
     achievements: [

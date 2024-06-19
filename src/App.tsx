@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import GlobalStyle from './styles/GlobalStyle';
 import Player from './components/Player';
 import About from './components/About';
+import Timeline from './components/Timeline';
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         <Route element={ <Layout /> }>
           <Route path="/about" element={ <About /> } />
           <Route path="/players" element={ <Player /> } />
-          <Route path="/timeline" element={ <Home /> } />
+          <Route path="/timeline" element={ <Timeline /> } />
         </Route>
       </Routes>
     </>
