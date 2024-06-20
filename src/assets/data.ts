@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
-import { stressAchievements, eliminationsAchievements, eliminationsXenomorphAchievements,
-  eliminationsNeomorphAchievements,
-  eliminationsLocalFaunaAchievements, eliminationsMechanicalAchievements,
-  eliminationsInnocentsAchievements, explorationAchievements,
-  explorationStarSystemsAchievements,
-  explorationPlanetsAchievements, specialExplorationAchievements,
-  specialEliminationsAchievements,
-  xenomorphAttacksAchievements, specialAchievements } from './achievements';
+import { stressAchievements, eliminationsAchievements,
+  explorationPlanetsAchievements } from './achievements';
 import tokenAndré from './tokens/TrishaMonroe.png';
 import tokenFernando from './tokens/HarperJammer.png';
 import tokenBruno from './tokens/SeanBean.png';
