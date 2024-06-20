@@ -5,12 +5,11 @@ export const PlayerStile = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 30px;
     margin: 25px;
     background-color: #051923;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    /* border: 25px solid #003554; */
     
     section {
         display: flex;
@@ -18,14 +17,10 @@ export const PlayerStile = styled.div`
         align-items: center;
         justify-content: space-around;
     }
-    
-    img {
-        width: 300px;
-        height: 300px;
-        border-radius: 50%;
-        margin: 10px 0;
-        border: 5px solid #003554;
-    }
+`;
+
+export const AchievementsTitle = styled.h3`
+    color: #274b5b;
 `;
 
 export const AchievementsContainer = styled.div`
@@ -34,15 +29,65 @@ export const AchievementsContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 25px;
-    padding: 15px;
-    background-color: #006494;
-    border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    width: 400px;
+
+    button {
+      font-size: 1.5rem;
+      color: white;
+      font-weight: bold;
+      background-color: #006494;
+      border-radius: 10px;
+      border: none;
+      padding: 10px;
+    }
+    
+    p {
+      background-color: #006494;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      margin: 25px;
+      padding: 15px;
+      font-weight: bold;
+    }
     span {
     font-size: 0.8rem;
     color: white;
+
+    }
+
+    .normal {
+      background-color: #006494;
+      span {
+          color: white;
+        }
+    }
+
+    .ouro {
+        background-color: #FFD700;
+        span {
+          color: #000000;
+        }
+    }
+
+    .prata {
+        background-color: #C0C0C0;
+        span {
+          color: #000000;
+        }
+    }
+
+    .bronze {
+        background-color: #CD7F32;
+        span {
+          color: #000000;
+        }
+    }
+
+    .diamante {
+        background-color: #E5E4E2;
+        span {
+          color: #000000;
+        }
     }
 `;
 
@@ -54,12 +99,13 @@ export const PlayerGrid = styled.div`
   padding: 20px;
   place-items: center;
 
-  h3 {
-        font-size: 1.5rem;
-        color: #274b5b;
-        p {
-            font-size: 0.8rem;
-        }
+  button {
+    font-size: 1.5rem;
+    color: #274b5b;
+    font-weight: bold;
+      p {
+        font-size: 0.8rem;
+      }
     }
     
     p {
@@ -83,8 +129,10 @@ export const PlayerGrid = styled.div`
     align-content: center;
     justify-content: center;
     align-items: center;
-    clip-path: polygon(10% 0%, 90% 0%, 100% 
-        20%, 100% 80%, 90% 100%, 10% 100%, 0% 80%, 0% 20%);
+    /* clip-path: polygon(10% 0%, 90% 0%, 100% 
+        20%, 100% 80%, 90% 100%, 10% 100%, 0% 80%, 0% 20%); */
+    clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100%
+      80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
     text-align: center;
   }
 
@@ -92,6 +140,7 @@ export const PlayerGrid = styled.div`
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     height: 100px;
+    cursor: pointer;
   }
 
   .info-container {
@@ -103,43 +152,47 @@ export const PlayerGrid = styled.div`
 }
 
 .character, .profession, .codename {
-  clip-path: polygon(10% 0%, 90% 0%, 100% 0%, 100% 100%, 90% 100%, 10% 100%, 0% 80%, 0% 20%);
-  margin-top: 15px;
-  height: 50px;
+  /* clip-path: polygon(10% 0%, 90% 0%, 100% 0%,
+     100% 100%, 90% 100%, 10% 100%, 0% 80%, 0% 20%); */
+  clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100%
+     80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+  margin: 20px 0px 20px 20px;
+  height: 60px;
 }
 
-  .character {
-  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
-  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
-  height: 50px;
-  justify-self: center; /* Mantido para centralizar horizontalmente */
+.character {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  justify-self: center;
 }
 
 .profession {
-  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
-  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
-  height: 50px;
-  justify-self: center; /* Mantido para centralizar horizontalmente */
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  justify-self: center;
 }
 
 .codename {
-  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
-  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
-  height: 50px;
-  justify-self: center; /* Mantido para centralizar horizontalmente */
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  justify-self: center;
 }
 
-  .text-about {
-    grid-column: 3 / 3;
-    grid-row: 1 / 4;
-    height: 500px;
-    width: 500px;
-    overflow-y: auto;
-  }
-  .image {
+.text-about {
+  grid-column: 3 / 3;
+  grid-row: 2 / 4;
+  height: 300px;
+  width: 300px;
+  overflow-y: auto;
+}
+.image {
   grid-column: 2 / 3;
   grid-row: 2 / 3;
   align-self: center;
   justify-self: center;
+  z-index: 1;
+  width: 300px;
+  height: 300px;
+  margin: 15px;
 }
 `;

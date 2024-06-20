@@ -93,15 +93,17 @@ export const EventContainer = styled.div`
   .description-text {
     position: absolute;
     top: 60%;
-    left: 50%;
-    transform: translateX(-50%);
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s, opacity 0.5s linear;
     background-color: #f5c518;
     border-radius: 5px;
     width: 300px;
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+    border: 3px solid #274b5b;
   }
 
   .description-text.open {
@@ -109,9 +111,7 @@ export const EventContainer = styled.div`
     opacity: 1;
   }
   .text-resume {
-    overflow-y: auto;
-    max-height: 350px;
-    border: 3px solid #274b5b;
+    min-height: 350px;
     border-radius: 5px;
   }
   `;
@@ -123,4 +123,8 @@ export const EventDate = styled.p`
   border: 1px solid black;
   border-radius: 5px;
   text-align: center;
+
+  p {
+    padding: 5px;
+  }
 `;

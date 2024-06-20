@@ -1,23 +1,38 @@
+import { useState } from 'react';
 import { AchievementsContainer } from '../../styles/PlayerStyle';
 
 function CharacterAchievemants({ achievements }: any) {
+  const [areAchievementsVisible, setAchievementsVisible] = useState(false);
+
+  const getAchievementClass = (name: string) => {
+    if (name.includes('Bronze')) {
+      return 'bronze';
+    } if (name.includes('Prata')) {
+      return 'prata';
+    } if (name.includes('Ouro')) {
+      return 'ouro';
+    } if (name.includes('Diamante')) {
+      return 'diamante';
+    }
+    return 'normal';
+  };
+
   return (
-    <div>
-      <p>
+    <AchievementsContainer>
+      <button onClick={ () => setAchievementsVisible(!areAchievementsVisible) }>
         Conquistas do jogador:
-        {' '}
-        {achievements.map(({ id, description, name }: any) => (
-          <AchievementsContainer key={ id }>
-            <span>
-              {'Conquista: '}
-              {name}
-              {' - Requisito: '}
-              {description}
-            </span>
-          </AchievementsContainer>
-        ))}
-      </p>
-    </div>
+      </button>
+      {areAchievementsVisible && achievements.map(({ id, description, name }: any) => (
+        <p key={ id } className={ getAchievementClass(name) }>
+          <span>
+            {'Conquista: '}
+            {name}
+            {' - Requisito: '}
+            {description}
+          </span>
+        </p>
+      ))}
+    </AchievementsContainer>
   );
 }
 
