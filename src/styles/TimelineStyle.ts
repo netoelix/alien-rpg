@@ -51,7 +51,6 @@ export const TimelineContainer = styled.div`
   align-content: center;
   justify-content: space-between;
   position: relative;
-  margin: 20px 0;
   width: 100%;
   height: 300px;
 `;
