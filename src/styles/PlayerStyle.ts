@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
-export const PlayerStile = styled.div`
+export const PlayerAllInformations = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    align-content: center;
     padding: 30px;
     margin: 25px;
     background-color: #051923;
@@ -38,6 +40,7 @@ export const AchievementsContainer = styled.div`
       border-radius: 10px;
       border: none;
       padding: 10px;
+      cursor: pointer;
     }
     
     p {
@@ -184,6 +187,7 @@ export const PlayerGrid = styled.div`
   height: 300px;
   width: 300px;
   overflow-y: auto;
+  margin: 15px;
 }
 .image {
   grid-column: 2 / 3;
@@ -195,4 +199,10 @@ export const PlayerGrid = styled.div`
   height: 300px;
   margin: 15px;
 }
+`;
+
+export const PlayerTitle = styled.h1`
+    color: white;
+    text-align: center;
+    padding-top: 20px;
 `;

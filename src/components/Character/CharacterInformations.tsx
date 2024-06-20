@@ -26,7 +26,7 @@ function CharacterInformations({
     <section>
       <PlayerGrid>
         <button className="player" onClick={ () => setContentVisible(!isContentVisible) }>
-          <p>Jogador</p>
+          <p>Jogador (Clique para expandir)</p>
           {' '}
           {playerId}
         </button>

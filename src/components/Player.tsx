@@ -1,15 +1,16 @@
 import { data } from '../assets/data';
-import { PlayerStile } from '../styles/PlayerStyle';
+import { PlayerAllInformations, PlayerTitle } from '../styles/PlayerStyle';
 import CharacterAchievemants from './Character/CharacterAchievemants';
 import CharacterInformations from './Character/CharacterInformations';
 
 function Player() {
   return (
     <div>
+      <PlayerTitle>Jogadores</PlayerTitle>
       {
         data.map(({ playerId, characterName, profession,
           codname, images, achievements, about }) => (
-            <PlayerStile key={ playerId }>
+            <PlayerAllInformations key={ playerId }>
               <CharacterInformations
                 playerId={ playerId }
                 characterName={ characterName }
@@ -21,7 +22,7 @@ function Player() {
               <CharacterAchievemants
                 achievements={ achievements }
               />
-            </PlayerStile>
+            </PlayerAllInformations>
         ))
       }
     </div>
