@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const PlayerAllInformations = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
@@ -28,19 +28,33 @@ export const AchievementsTitle = styled.h3`
 export const AchievementsContainer = styled.div`
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    align-content: center;
+    background-color: #a4b8b6;
+    border-radius: 10px;
+    
 
-    button {
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      align-content: center;
+      overflow-y: auto;
+      max-height: 200px;
+    }
+
+    h1 {
       font-size: 1.5rem;
-      color: white;
+      color: #274b5b;
       font-weight: bold;
-      background-color: #006494;
+      background-color: #a4b8b6;
       border-radius: 10px;
       border: none;
       padding: 10px;
-      cursor: pointer;
     }
     
     p {
@@ -48,7 +62,7 @@ export const AchievementsContainer = styled.div`
       border-radius: 10px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       width: 400px;
-      margin: 25px;
+      margin: 5px;
       padding: 15px;
       font-weight: bold;
     }
@@ -94,15 +108,16 @@ export const AchievementsContainer = styled.div`
     }
 `;
 
-export const PlayerGrid = styled.div`
-  display: grid;
-  grid-template-columns: 0fr;
-  grid-template-rows: auto auto auto auto;
-  gap: 5px 0px;
+export const PlayerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: center;
   padding: 20px;
-  place-items: center;
 
-  button {
+  h1 {
     font-size: 1.5rem;
     color: #274b5b;
     font-weight: bold;
@@ -132,73 +147,71 @@ export const PlayerGrid = styled.div`
     align-content: center;
     justify-content: center;
     align-items: center;
-    /* clip-path: polygon(10% 0%, 90% 0%, 100% 
-        20%, 100% 80%, 90% 100%, 10% 100%, 0% 80%, 0% 20%); */
     clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100%
       80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
     text-align: center;
   }
 
   .player {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
     height: 100px;
-    cursor: pointer;
   }
 
-  .info-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  grid-column: 1 / 2; /* Ajustado para a primeira coluna */
-  grid-row: 2 / 3; /* Ajustado para a mesma linha que a imagem */
-}
 
-.character, .profession, .codename {
-  /* clip-path: polygon(10% 0%, 90% 0%, 100% 0%,
-     100% 100%, 90% 100%, 10% 100%, 0% 80%, 0% 20%); */
-  clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100%
-     80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
-  margin: 20px 0px 20px 20px;
-  height: 60px;
-}
+`;
 
-.character {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  justify-self: center;
-}
+export const Container = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
 
-.profession {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  justify-self: center;
-}
+    .character, .profession, .codename {
+      margin: 15px;
+      padding: 15px;
+      position: absolute;
+      background: white;
+      padding: 10px;
+      z-index: 1;
+      background-color: #a4b8b6;
+      width: 300px;
+    }
 
-.codename {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  justify-self: center;
-}
+    .character {
+      right: 550px;
+      top: 50px;
+    }
 
-.text-about {
-  grid-column: 3 / 3;
-  grid-row: 2 / 4;
-  height: 300px;
-  width: 300px;
-  overflow-y: auto;
-  margin: 15px;
-}
-.image {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  align-self: center;
-  justify-self: center;
-  z-index: 1;
-  width: 300px;
-  height: 300px;
-  margin: 15px;
-}
+    .profession {
+      right: 550px;
+      top: 150px;
+    }
+
+    .codename {
+      right: 550px;
+      top: 250px;
+    }
+
+    .text-about {
+    height: 300px;
+    width: 300px;
+    overflow-y: auto;
+    margin: 15px 15px 15px 0px;
+    }
+    .image {
+      width: 300px;
+      height: 300px;
+      margin: 15px 0px 15px 15px;
+      position: relative;
+      z-index: 2;
+      background-color: #a4b8b6;
+      border-top-left-radius: 50%;
+      border-bottom-left-radius: 50%;
+    }
 `;
 
 export const PlayerTitle = styled.h1`

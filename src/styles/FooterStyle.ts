@@ -6,6 +6,7 @@ export const FooterContainer = styled.footer`
     bottom: 0;
     width: 100%;
     text-align: center;
+    z-index: 3;
     
     p {
         color: white;

@@ -11,14 +11,16 @@ function Player() {
         data.map(({ playerId, characterName, profession,
           codname, images, achievements, about }) => (
             <PlayerAllInformations key={ playerId }>
-              <CharacterInformations
-                playerId={ playerId }
-                characterName={ characterName }
-                profession={ profession }
-                codname={ codname }
-                images={ images }
-                about={ about }
-              />
+              <section>
+                <CharacterInformations
+                  playerId={ playerId }
+                  characterName={ characterName }
+                  profession={ profession }
+                  codname={ codname }
+                  images={ images }
+                  about={ about }
+                />
+              </section>
               <CharacterAchievemants
                 achievements={ achievements }
               />
