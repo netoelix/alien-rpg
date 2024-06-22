@@ -14,6 +14,22 @@ const GlobalStyle = createGlobalStyle`
     color: white;
     font-family: 'NicoMoji', sans-serif;
   }
+
+    ::-webkit-scrollbar {
+    width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+    background: #16B769;
+    }
+
+    ::-webkit-scrollbar-thumb {
+    background: #FFFFFF;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+    background: #11633F;
+    }
 `;
 
 export default GlobalStyle;
