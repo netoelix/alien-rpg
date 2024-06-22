@@ -5,43 +5,45 @@ import { data } from '../assets/data/data';
 
 function Player() {
   const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>(
-    data.reduce((acc, { playerId }) => ({ ...acc, [playerId]: true }), {}),
+    data.reduce((acc, { playerId }) => ({ ...acc, [playerId]: false }), {}),
   );
   const [cardHeight, setCardHeight] = useState<{ [key: string]: string }>(
-    data.reduce((acc, { playerId }) => ({ ...acc, [playerId]: 'auto' }), {}),
+    data.reduce((acc, { playerId }) => ({ ...acc, [playerId]: '80px' }), {}),
   );
   const toggleVisibility = (playerId: string) => {
     setIsVisible((prev) => ({ ...prev, [playerId]: !prev[playerId] }));
     setCardHeight((prev) => ({
       ...prev,
-      [playerId]: prev[playerId] === 'auto' ? '80px' : 'auto',
+      [playerId]: prev[playerId] === '80px' ? 'auto' : '80px',
     }));
   };
 
   return (
     data.map(({ playerId, characterName, profession, codname, images, about }) => (
       <PlayerStyle key={ playerId }>
-        <section className="player-card" style={ { height: cardHeight[playerId] } }>
+        <section className="player-container" style={ { height: cardHeight[playerId] } }>
           <div className="player-header">
             <h1>{playerId}</h1>
             <h3>Conquistas</h3>
           </div>
           {isVisible[playerId] && (
-            <div className="player-all-character">
-              <Character
-                characterName={ characterName }
-                profession={ profession }
-                codname={ codname }
-                images={ images }
-                about={ about }
-              />
+            <div className="player-card">
+              <div className="player-all-character">
+                <Character
+                  characterName={ characterName }
+                  profession={ profession }
+                  codname={ codname }
+                  images={ images }
+                  about={ about }
+                />
+              </div>
             </div>
           )}
           <button
             className="player-final-card"
             onClick={ () => toggleVisibility(playerId) }
           >
-            A
+            Expandir / Recolher
           </button>
         </section>
       </PlayerStyle>

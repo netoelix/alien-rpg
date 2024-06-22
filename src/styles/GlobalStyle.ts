@@ -13,6 +13,11 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     color: white;
     font-family: 'NicoMoji', sans-serif;
+    
+  }
+
+  body {
+    background-color: #152E1B;
   }
 
     ::-webkit-scrollbar {

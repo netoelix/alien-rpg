@@ -11,8 +11,7 @@ export const PlayerStyle = styled.main`
     width: 100%;
     padding: 50px 0px;
 
-    .player-card {
-        background-color: #051923;
+    .player-container {
         width: 95%;
         display: flex;
         flex-direction: column;
@@ -21,6 +20,19 @@ export const PlayerStyle = styled.main`
         align-content: center;
         height: 500px;
         border-radius: 20px;
+        box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.75);
+    }
+
+    .player-card {
+        background-color: #051923;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        align-content: center;
+        box-shadow: inset 0 0 10px #000000;
     }
 
     .player-header {
@@ -48,7 +60,6 @@ export const PlayerStyle = styled.main`
         justify-content: space-around;
         align-content: center;
         width: 100%;
-        overflow-y: auto;
     }
 
     .player-all-character::-webkit-scrollbar {

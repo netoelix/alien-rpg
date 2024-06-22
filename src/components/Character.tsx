@@ -1,6 +1,15 @@
 import { CharacterStyle } from '../styles/CharacterStyle';
 
-function Character({ characterName, profession, codname, images, about }) {
+interface CharacterProps {
+  characterName: string;
+  profession: string;
+  codname: string;
+  images: string;
+  about: string;
+}
+
+function Character({ characterName, profession,
+  codname, images, about }: CharacterProps) {
   return (
     <CharacterStyle className="player-character">
       <div className="info-character">

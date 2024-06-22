@@ -16,6 +16,7 @@ export const CharacterStyle = styled.div`
     border-top-left-radius: 150px;
     border-bottom-left-radius: 150px;
     margin: 70px 0px;
+    box-shadow: inset 0 0 10px #000000, 0px 0px 15px 5px rgba(0,0,0,0.75);
     
     .info-character {
         display: flex;
@@ -52,6 +53,7 @@ export const CharacterStyle = styled.div`
         width: 300px;
         height: 300px;
         border-radius: 50%;
+        box-shadow: 0px 0px 15px 17px rgba(0,0,0,0.75);
         img {
             width: 320px;
             height: 320px;
