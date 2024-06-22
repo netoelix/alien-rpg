@@ -5,14 +5,26 @@ export const HomeStyle = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    background-color: #051923;
-    width: 100%;
+    align-content: center;
+    background-color: #142E15;
     height: 100vh;
-    
-    h1 , a {
-        font-size: 2rem;
+    color: white;
+    h1 {
+        font-size: 2.5vw;
+        margin: 50px 0px;
+        color: #16B769;
+    }
+    a {
         color: white;
-        padding: 20px;
+        font-size: 1.5vw;
+        text-decoration: none;
+        border: 2px solid #16B769;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: 0.5s;
+        &:hover {
+            background-color: #16B769;
+            color: black;
+        }
     }
 `;

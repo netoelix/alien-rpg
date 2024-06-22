@@ -46,7 +46,6 @@ export const AboutStyle = styled.div`
 export const AboutCharacter = styled.div`
     padding: 20px;
     background-color: #a4b8b6;
-    /* border-radius: 10px; */
     
     p {
         font-size: 14px;

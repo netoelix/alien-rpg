@@ -2,8 +2,8 @@ import { FooterContainer } from '../styles/FooterStyle';
 
 function Footer() {
   return (
-    <FooterContainer className="footer">
-      <p>Desenvolvido por: Elix Merlino Neto 2024 &copy;</p>
+    <FooterContainer>
+      <p>Elix Merlino Neto &copy; 2024</p>
     </FooterContainer>
   );
 }

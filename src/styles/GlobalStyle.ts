@@ -1,24 +1,40 @@
-import { createGlobalStyle, keyframes } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 
-const Gradient = keyframes`
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
-`;
+import NicoMoji from '../assets/font/NicoMoji-Regular.ttf';
 
 const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'NicoMoji';
+    src: url(${NicoMoji}) format('truetype');
+  }
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    color: black;
-    font-family: sans-serif;
-    body {
-      background: linear-gradient(120deg, rgba(3,5,4,1) 25%, rgba(39,75,91,1) 100%);
-      background-size: 200% 200%;
-      animation: ${Gradient} 20s ease infinite;
-    }
+    color: white;
+    font-family: 'NicoMoji', sans-serif;
+    
   }
+
+  body {
+    background-color: #152E1B;
+  }
+
+    ::-webkit-scrollbar {
+    width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+    background: #16B769;
+    }
+
+    ::-webkit-scrollbar-thumb {
+    background: #FFFFFF;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+    background: #11633F;
+    }
 `;
 
 export default GlobalStyle;
