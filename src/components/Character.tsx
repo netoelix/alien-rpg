@@ -1,19 +1,28 @@
 import { CharacterStyle } from '../styles/CharacterStyle';
 
-function Character() {
+function Character({ characterName, profession, codname, images, about }) {
   return (
     <CharacterStyle className="player-character">
       <div className="info-character">
-        <h2>Nome</h2>
-        <p>Nome do jogador</p>
+        <div>
+          <p>Personagem</p>
+          <h3>{characterName}</h3>
+        </div>
+        <div>
+          <p>Codinome</p>
+          <h3>{codname}</h3>
+        </div>
+        <div>
+          <p>Profissão</p>
+          <h3>{profession}</h3>
+        </div>
       </div>
       <div className="image-character">
-        <h2>Imagem</h2>
-        <p>Imagem do personagem</p>
+        <img src={ images } alt={ characterName } srcSet="" />
       </div>
       <div className="bio-character">
-        <h2>Bio</h2>
-        <p>Bio do personagem</p>
+        <h3>Bio</h3>
+        <p>{ about }</p>
       </div>
     </CharacterStyle>
   );

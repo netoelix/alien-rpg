@@ -50,7 +50,7 @@ export const NavigationStyle = styled.nav`
     .unselected {
         background-color: transparent;
         width:20px;
-        height: 40px;
+        height: 20px;
         margin: 0px 10px;
     }
 

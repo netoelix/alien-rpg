@@ -1,8 +1,10 @@
+import { FooterContainer } from '../styles/FooterStyle';
+
 function Footer() {
   return (
-    <footer>
+    <FooterContainer>
       <p>Elix Merlino Neto &copy; 2024</p>
-    </footer>
+    </FooterContainer>
   );
 }
 

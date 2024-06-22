@@ -9,7 +9,7 @@ export const PlayerStyle = styled.main`
     align-items: center;
     background-color: #152E1B;
     width: 100%;
-    padding: 50px;
+    padding: 50px 0px;
 
     .player-card {
         background-color: #051923;
@@ -30,7 +30,7 @@ export const PlayerStyle = styled.main`
         justify-content: space-between;
         align-content: center;
         width: 100%;
-        height: 90px;
+        height: 50px;
         background-color: #16B769;
         border-top-right-radius: 20px;
         border-top-left-radius: 20px;
@@ -51,6 +51,22 @@ export const PlayerStyle = styled.main`
         overflow-y: auto;
     }
 
+    .player-all-character::-webkit-scrollbar {
+    width: 10px;
+    }
+
+    .player-all-character::-webkit-scrollbar-track {
+    background: #16B769;
+    }
+
+    .player-all-character::-webkit-scrollbar-thumb {
+    background: #FFFFFF;
+    }
+
+    .player-all-character::-webkit-scrollbar-thumb:hover {
+    background: #11633F;
+    }
+
     .player-final-card {
         display: flex;
         flex-direction: row;
@@ -58,7 +74,8 @@ export const PlayerStyle = styled.main`
         justify-content: center;
         align-content: center;
         width: 100%;
-        height: 50px;
+        height: 30px;
+        border: none;
         background-color: #16B769;
         border-bottom-right-radius: 20px;
         border-bottom-left-radius: 20px;
