@@ -1,0 +1,55 @@
+import styled from 'styled-components';
+
+export const AboutStyle = styled.div`
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    
+    h1 {
+        font-size: 2rem;
+        color: white;
+        padding: 20px;
+    }
+    h2 {
+        font-size: 1.5rem;
+        color: white;
+        padding: 20px;
+    }
+    h3 {
+        font-size: 1.5rem;
+        color: white;
+        padding: 20px;
+    }
+    h4 {
+        font-size: 1.2rem;
+        color: white;
+        padding: 20px;
+    }
+    p {
+        font-size: 1rem;
+        color: white;
+        padding: 5px 20px;
+    }
+    span {
+        color: #f5c518;
+    }
+    a {
+        color: #f5c518;
+        text-decoration: none;
+    }
+`;
+
+export const AboutCharacter = styled.div`
+    padding: 20px;
+    background-color: #a4b8b6;
+    
+    p {
+        font-size: 14px;
+        color: #274b5b;
+        padding: 5px;
+    }
+`;
