@@ -1,10 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
-import Layout from './components/Layout';
 import GlobalStyle from './styles/GlobalStyle';
-import Player from './components/Player';
-import About from './components/About';
-import Timeline from './components/Timeline';
+import Layout from './components/Layout';
+import About from './pages/About';
+import Player from './pages/Player';
+import Timeline from './pages/Timeline';
 
 function App() {
   return (

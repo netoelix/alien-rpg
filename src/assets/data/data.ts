@@ -2,9 +2,9 @@
 /* eslint-disable max-len */
 import { stressAchievements, eliminationsAchievements,
   explorationPlanetsAchievements } from './achievements';
-import tokenAndré from './tokens/TrishaMonroe.png';
-import tokenFernando from './tokens/HarperJammer.png';
-import tokenBruno from './tokens/SeanBean.png';
+import tokenAndré from '../pictures/TrishaMonroe.png';
+import tokenFernando from '../pictures/HarperJammer.png';
+import tokenBruno from '../pictures/SeanBean.png';
 
 export const data = [
   {
