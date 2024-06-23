@@ -82,6 +82,25 @@ export const eliminationsAchievements = [
     character: [''] },
 ];
 
+export const eliminationsInGroupAchievements = [
+  { id: 'eliminations_01',
+    description: 'Elimine 3 em um único ataque',
+    name: 'Bronze',
+    character: ['Fernando'] },
+  { id: 'eliminations_02',
+    description: 'Elimine 5 em um único ataque',
+    name: 'Prata',
+    character: ['Fernando'] },
+  { id: 'eliminations_03',
+    description: 'Elimine 10 em um único ataque',
+    name: 'Ouro',
+    character: [''] },
+  { id: 'eliminations_04',
+    description: 'Elimine 20 em um único ataque',
+    name: 'Diamante',
+    character: [''] },
+];
+
 export const eliminationsXenomorphAchievements = [
   { id: 'eliminations_xenomorph_01',
     description: 'Elimine 1 Xenomorfo',

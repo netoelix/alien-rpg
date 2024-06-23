@@ -8,6 +8,7 @@ export const AboutStyle = styled.div`
     justify-content: center;
     padding: 20px;
     margin-bottom: 20px;
+    width:90%;
     
     h1 {
         font-size: 2rem;
@@ -30,7 +31,7 @@ export const AboutStyle = styled.div`
         padding: 20px;
     }
     p {
-        font-size: 1rem;
+        font-size: 25px;
         color: white;
         padding: 5px 20px;
     }
@@ -41,6 +42,9 @@ export const AboutStyle = styled.div`
         color: #f5c518;
         text-decoration: none;
     }
+    ul, ol {
+    list-style-type: none;
+}
 `;
 
 export const AboutCharacter = styled.div`

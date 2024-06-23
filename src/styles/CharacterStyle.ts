@@ -21,26 +21,32 @@ export const CharacterStyle = styled.div`
     .info-character {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        align-content: center;
-        width: 300px;
+        align-items: flex-end;
+        justify-content: space-between;
+        height: 200px;
+        margin-left: 60px;
         h3 {
-        color: white;
-        white-space: nowrap;
-        font-size: 1.4vw;
+            color: white;
+            font-size: 1vw;
+            text-align: end;
         }
         div {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
-            align-content: center;
-            margin: 10px 0px 10px 50px;
         }
         p {
             color: white;
-            font-size: 1vw;
+            white-space: nowrap;
+            font-weight: 400;
+            font-size: 25px;
+            text-align: end;
+            font-family: 'Sevastopol', sans-serif;        
+        }
+
+        .character-codnome {
+            margin-right: 40px;
         }
     }
     
@@ -63,7 +69,7 @@ export const CharacterStyle = styled.div`
     .bio-character {
         display: flex;
         flex-direction: column;
-        width: 500px;
+        width: 600px;
         height: 200px;
         margin-right: 50px;
         padding: 10px;
@@ -77,6 +83,8 @@ export const CharacterStyle = styled.div`
             overflow-y: auto;
             padding-right: 10px;
             text-align: justify;
+            font-size: 25px;
+            font-family: 'Sevastopol', sans-serif;
         }
     }
 
