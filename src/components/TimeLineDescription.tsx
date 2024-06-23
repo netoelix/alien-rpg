@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface DescriptionProps {
   mission: string | undefined;
   descrition: string;
@@ -7,7 +5,7 @@ interface DescriptionProps {
 }
 
 function Description({ mission, descrition, esquad }: DescriptionProps) {
-  const hideTextBetweenSlashes = (text) => {
+  const hideTextBetweenSlashes = (text: string) => {
     const segments = text.split(/(\/.*?\/)/g);
 
     return segments.map((segment, index) => {
