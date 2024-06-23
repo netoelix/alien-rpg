@@ -6,7 +6,7 @@ import Achievements from '../components/Achievements';
 import MedalIconBasic from '../assets/svg/MedalIconBasic.svg';
 
 function Player() {
-  const [selectedButton, setSelectedButton] = useState('character');
+  const [selectedButton, setSelectedButton] = useState<{ [key: string]: string }>({});
   const [showComponentForPlayer, setShowComponentForPlayer] = useState<{
     [key: string]: string }>({});
   const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>(
@@ -15,7 +15,7 @@ function Player() {
   const [cardHeight, setCardHeight] = useState<{ [key: string]: string }>(
     data.reduce((acc, { playerId }) => ({ ...acc, [playerId]: '80px' }), {}),
   );
-  const toggleVisibility = (playerId: string) => {
+  const toggleVisibility = (playerId: string | any) => {
     setIsVisible((prev) => ({ ...prev, [playerId]: !prev[playerId] }));
     setCardHeight((prev) => ({
       ...prev,
@@ -27,6 +27,14 @@ function Player() {
       ...prevState,
       [playerId]: component,
     }));
+  };
+
+  const handleButtonClick = (playerId: string, buttonName: string) => {
+    setSelectedButton((prevState) => ({
+      ...prevState,
+      [playerId]: buttonName,
+    }));
+    handleShowComponent(playerId, buttonName);
   };
 
   return (
@@ -58,37 +66,31 @@ function Player() {
               <div className="player-card">
                 <div className="button-container">
                   <div
-                    className={ selectedButton === 'character'
+                    className={ selectedButton[playerId] === 'character'
                       ? 'selected' : 'unselected' }
                   />
                   <button
                     className="information-button"
-                    onClick={ () => {
-                      handleShowComponent(playerId, 'character');
-                      setSelectedButton('character');
-                    } }
+                    onClick={ () => handleButtonClick(playerId, 'character') }
                   >
                     Personagens
                   </button>
                   <div
-                    className={ selectedButton === 'character'
+                    className={ selectedButton[playerId] === 'character'
                       ? 'selected' : 'unselected' }
                   />
                   <div
-                    className={ selectedButton === 'achievements'
+                    className={ selectedButton[playerId] === 'achievements'
                       ? 'selected' : 'unselected' }
                   />
                   <button
                     className="information-button"
-                    onClick={ () => {
-                      handleShowComponent(playerId, 'achievements');
-                      setSelectedButton('achievements');
-                    } }
+                    onClick={ () => handleButtonClick(playerId, 'achievements') }
                   >
                     Conquistas
                   </button>
                   <div
-                    className={ selectedButton === 'achievements'
+                    className={ selectedButton[playerId] === 'achievements'
                       ? 'selected' : 'unselected' }
                   />
                 </div>
