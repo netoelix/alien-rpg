@@ -14,16 +14,16 @@ function Character({ characterName, profession,
     <CharacterStyle className="player-character">
       <div className="info-character">
         <div>
-          <p>Personagem</p>
-          <h3>{characterName}</h3>
+          <h3>Personagem</h3>
+          <p>{characterName}</p>
+        </div>
+        <div className="character-codnome">
+          <h3>Codinome</h3>
+          <p>{codname}</p>
         </div>
         <div>
-          <p>Codinome</p>
-          <h3>{codname}</h3>
-        </div>
-        <div>
-          <p>Profissão</p>
-          <h3>{profession}</h3>
+          <h3>Profissão</h3>
+          <p>{profession}</p>
         </div>
       </div>
       <div className="image-character">

@@ -21,6 +21,22 @@ export const PlayerStyle = styled.main`
         height: 500px;
         border-radius: 20px;
         box-shadow: 0px 0px 10px 2px rgba(0,0,0,0.75);
+
+        .achievements-player {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            padding-left: 20px;
+            padding-right: 20px;
+
+            img {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+        }
     }
 
     .player-card {
@@ -46,11 +62,50 @@ export const PlayerStyle = styled.main`
         background-color: #16B769;
         border-top-right-radius: 20px;
         border-top-left-radius: 20px;
-        h1, h3 {
-            padding-left: 20px;
+        h3 {
             padding-right: 20px;
             color: white;
         }
+        h1 {
+            padding-left: 20px;
+            color: white;
+            width: 340px;
+        }
+    }
+
+    .button-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        align-content: center;
+        width: 100%;
+        height: 40px;
+
+        .selected {
+        background-color: white;
+        width:20px;
+        height: 20px;
+        margin: 0px 10px;
+    }
+
+        .unselected {
+            background-color: transparent;
+            width:20px;
+            height: 20px;
+            margin: 0px 10px;
+        }
+    }
+    
+    .information-button {
+        background-color: transparent;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 10px;
     }
 
     .player-all-character {

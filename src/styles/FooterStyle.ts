@@ -10,5 +10,6 @@ export const FooterContainer = styled.footer`
     
     p {
         color: white;
+        font-size: 25px;
     }
 `;

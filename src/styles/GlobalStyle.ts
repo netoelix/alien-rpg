@@ -1,11 +1,16 @@
 import { createGlobalStyle } from 'styled-components';
 
 import NicoMoji from '../assets/font/NicoMoji-Regular.ttf';
+import Sevastopol from '../assets/font/Sevastopol-Interface.ttf';
 
 const GlobalStyle = createGlobalStyle`
-  @font-face {
+   @font-face {
     font-family: 'NicoMoji';
     src: url(${NicoMoji}) format('truetype');
+  }
+  @font-face {
+    font-family: 'Sevastopol';
+    src: url(${Sevastopol}) format('truetype');
   }
   * {
     margin: 0;
@@ -18,6 +23,10 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     background-color: #152E1B;
+  }
+
+  p {
+    font-family: 'Sevastopol', sans-serif; 
   }
 
     ::-webkit-scrollbar {

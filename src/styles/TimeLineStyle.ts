@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import pasta from '../assets/pictures/pasta.svg';
+import pasta from '../assets/svg/pasta.svg';
 
 export const TimeLineContainer = styled.main`
     display: flex;
@@ -87,6 +87,7 @@ export const TimeLineContainer = styled.main`
         p {
             padding: 10px;
             text-align: justify;
+            font-size: 25px;
         }
     }
 `;
