@@ -4,6 +4,7 @@ import { PlayerStyle } from '../styles/PlayerStyle';
 import { data } from '../assets/data/data';
 import Achievements from '../components/Achievements';
 import MedalIconBasic from '../assets/svg/MedalIconBasic.svg';
+import { achievements } from '../assets/data/achievements';
 
 function Player() {
   const [selectedButton, setSelectedButton] = useState<{ [key: string]: string }>({});
@@ -37,9 +38,27 @@ function Player() {
     handleShowComponent(playerId, buttonName);
   };
 
+  const findAchievementsForPlayer = (playerId: string) => {
+    return achievements.filter((achievement) => achievement.character
+      .some((char) => char.name === playerId));
+  };
+
+  const getPlayerIndex = (playerId: string) => {
+    switch (playerId) {
+      case 'André':
+        return 0;
+      case 'Fernando (Gelatto)':
+        return 1;
+      case 'Bruno':
+        return 2;
+      default:
+        return 0;
+    }
+  };
+
   return (
     data.map(({ playerId, characterName, profession,
-      codname, images, about, achievements }) => (
+      codname, images, about }) => (
         <PlayerStyle key={ playerId }>
           <section
             className="player-container"
@@ -51,15 +70,14 @@ function Player() {
               <h1>{playerId}</h1>
 
               <div className="achievements-player">
-                {
-                achievements.slice(0, 3).map((achievement, index) => (
-                  <div key={ index }>
-                    <div>
-                      <img src={ MedalIconBasic } alt={ achievement.description } />
+                {findAchievementsForPlayer(playerId).slice(0, 3)
+                  .map((achievement, index) => (
+                    <div key={ index }>
+                      <div>
+                        <img src={ MedalIconBasic } alt={ achievement.description } />
+                      </div>
                     </div>
-                  </div>
-                ))
-              }
+                  ))}
               </div>
             </div>
             {isVisible[playerId] && (
@@ -96,7 +114,10 @@ function Player() {
                 </div>
                 <div className="player-all-character">
                   {showComponentForPlayer[playerId] === 'achievements' ? (
-                    <Achievements achievements={ achievements } />
+                    <Achievements
+                      achievements={ findAchievementsForPlayer(playerId) }
+                      characterIndex={ getPlayerIndex(playerId) }
+                    />
                   ) : (
                     <Character
                       characterName={ characterName }
