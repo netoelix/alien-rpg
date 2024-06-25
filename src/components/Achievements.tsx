@@ -1,8 +1,8 @@
 import { AchievementsContainer } from '../styles/AchievementsStyle';
-import MedalIconBasic from '../assets/svg/MedalIconBasic.svg';
 
 interface AchievementsProps {
   achievements: Array<{
+    medal: string | undefined;
     character: any; name: string, description: string
   }>;
   characterIndex: number;
@@ -18,7 +18,7 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
             <p>{achievement.description}</p>
             <p>{achievement.character[characterIndex].date}</p>
             <div className="achievements-img">
-              <img src={ MedalIconBasic } alt="" />
+              <img src={ achievement.medal } alt={ achievement.description } />
             </div>
           </div>
         ))}
