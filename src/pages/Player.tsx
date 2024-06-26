@@ -3,7 +3,6 @@ import Character from '../components/Character';
 import { PlayerStyle } from '../styles/PlayerStyle';
 import { data } from '../assets/data/data';
 import Achievements from '../components/Achievements';
-import MedalIconBasic from '../assets/svg/MedalIconBasic.svg';
 import { achievements } from '../assets/data/achievements';
 
 function Player() {
@@ -74,7 +73,7 @@ function Player() {
                   .map((achievement, index) => (
                     <div key={ index }>
                       <div>
-                        <img src={ MedalIconBasic } alt={ achievement.description } />
+                        <img src={ achievement.medal } alt={ achievement.description } />
                       </div>
                     </div>
                   ))}
