@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Key, useState } from 'react';
 import Character from '../components/Character';
 import { PlayerStyle } from '../styles/PlayerStyle';
 import { data } from '../assets/data/data';
@@ -55,6 +55,14 @@ function Player() {
     }
   };
 
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]]; // Troca de elementos
+    }
+    return array;
+  }
+
   return (
     data.map(({ playerId, characterName, profession,
       codname, images, about }) => (
@@ -69,11 +77,18 @@ function Player() {
               <h1>{playerId}</h1>
 
               <div className="achievements-player">
-                {findAchievementsForPlayer(playerId).slice(0, 3)
-                  .map((achievement, index) => (
+                {shuffleArray(findAchievementsForPlayer(playerId)).slice(0, 3)
+                  .map((
+                    achievement: {
+                      medal: string | undefined; description: string | undefined; },
+                    index: Key | null | undefined,
+                  ) => (
                     <div key={ index }>
                       <div>
-                        <img src={ achievement.medal } alt={ achievement.description } />
+                        <img
+                          src={ achievement.medal }
+                          alt={ achievement.description }
+                        />
                       </div>
                     </div>
                   ))}
