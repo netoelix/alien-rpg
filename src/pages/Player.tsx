@@ -55,6 +55,14 @@ function Player() {
     }
   };
 
+  function shuffleArray<T>(array: T[]): T[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
   return (
     data.map(({ playerId, characterName, profession,
       codname, images, about }) => (
@@ -69,7 +77,7 @@ function Player() {
               <h1>{playerId}</h1>
 
               <div className="achievements-player">
-                {findAchievementsForPlayer(playerId).slice(0, 3)
+                {shuffleArray(findAchievementsForPlayer(playerId)).slice(0, 3)
                   .map((achievement, index) => (
                     <div key={ index }>
                       <div>
