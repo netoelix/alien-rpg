@@ -2,6 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 
 import NicoMoji from '../assets/font/NicoMoji-Regular.ttf';
 import Sevastopol from '../assets/font/Sevastopol-Interface.ttf';
+import alienleaguegradbold from '../assets/font/alienleaguegradbold.ttf';
 
 const GlobalStyle = createGlobalStyle`
    @font-face {
@@ -11,6 +12,10 @@ const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'Sevastopol';
     src: url(${Sevastopol}) format('truetype');
+  }
+  @font-face {
+    font-family: 'alienleaguegradbold';
+    src: url(${alienleaguegradbold}) format('truetype');
   }
   * {
     margin: 0;
