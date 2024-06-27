@@ -16,7 +16,7 @@ export const achievements = [
   { id: 'stress_01',
     medal: medalsStress.StressBronzeSingleGreen,
     description: 'Atingir 1 pontos de stress',
-    name: 'Bronze',
+    name: 'Só mais um dia de trabalho...',
     character: [{
       name: André,
       date: '16/06/2024',
@@ -32,7 +32,7 @@ export const achievements = [
   { id: 'stress_02',
     medal: medalsStress.StressSilverSingleGreen,
     description: 'Atingir 5 pontos de stress',
-    name: 'Prata',
+    name: 'Não estão me pagando o suficiente pra isso',
     character: [{
       name: André,
       date: '22/06/2024',
@@ -48,7 +48,7 @@ export const achievements = [
   { id: 'stress_03',
     medal: medalsStress.StressGoldSingleGreen,
     description: 'Atingir 10 pontos de stress',
-    name: 'Ouro',
+    name: 'Preciso de férias!!!',
     character: [{
       name: '',
       date: '',
@@ -64,7 +64,7 @@ export const achievements = [
   { id: 'stress_04',
     medal: medalsStress.StressPlatinumSingleGreen,
     description: 'Atingir 15+ pontos de stress',
-    name: 'Diamante',
+    name: 'INFERNOOOOO!!!!!',
     character: [{
       name: '',
       date: '',
@@ -96,7 +96,7 @@ export const achievements = [
   { id: 'stress_06',
     medal: medalsStress.StressBronzeTripleGreen,
     description: 'Rolar 7 no teste de pânico',
-    name: '',
+    name: 'Você me da tique, tique nervoso',
     character: [{
       name: André,
       date: '22/06/2024',
@@ -128,7 +128,7 @@ export const achievements = [
   { id: 'stress_08',
     medal: medalsStress.StressGoldDoubleGreen,
     description: 'Rolar 9 no teste de pânico',
-    name: '',
+    name: 'Mão de alface',
     character: [{
       name: '',
       date: '',
@@ -144,7 +144,7 @@ export const achievements = [
   { id: 'stress_09',
     medal: medalsStress.StressGoldTripleGreen,
     description: 'Rolar 10 no teste de pânico',
-    name: '',
+    name: 'Batatinha frita 1, 2, 3',
     character: [{
       name: '',
       date: '',
@@ -160,7 +160,7 @@ export const achievements = [
   { id: 'stress_10',
     medal: medalsStress.StressPlatinumSingleGreen,
     description: 'Rolar 11 no teste de pânico',
-    name: '',
+    name: 'Não é esse tipo de cobertura, Tábata!',
     character: [{
       name: André,
       date: '22/06/2024',
@@ -176,7 +176,7 @@ export const achievements = [
   { id: 'stress_11',
     medal: medalsStress.StressPlatinumDoubleGreen,
     description: 'Rolar 12 no teste de pânico',
-    name: '',
+    name: 'AAAAAAAHHHHH!!!',
     character: [{
       name: '',
       date: '',
@@ -192,7 +192,7 @@ export const achievements = [
   { id: 'stress_12',
     medal: medalsStress.StressPlatinumTripleGreen,
     description: 'Rolar 13 no teste de pânico',
-    name: '',
+    name: 'Run bitch, RUN!!',
     character: [{
       name: '',
       date: '',
@@ -208,7 +208,7 @@ export const achievements = [
   { id: 'stress_13',
     medal: medalsStress.StressPlatinumSingleBlack,
     description: 'Rolar 14 no teste de pânico',
-    name: '',
+    name: 'Vem tranquilo',
     character: [{
       name: '',
       date: '',
@@ -224,7 +224,7 @@ export const achievements = [
   { id: 'stress_14',
     medal: medalsStress.StressPlatinumDoubleBlack,
     description: 'Rolar 15+ no teste de pânico',
-    name: '',
+    name: 'Qual o sentido da vida?',
     character: [{
       name: '',
       date: '',
@@ -256,7 +256,7 @@ export const achievements = [
   { id: 'eliminations_01',
     medal: medalsCombat.CombatBronzeSingleRed,
     description: 'Elimine 1 humano',
-    name: 'Bronze',
+    name: 'O primeiro a gente nunca esquece...',
     character: [{
       name: André,
       date: '16/06/2024',
@@ -272,7 +272,7 @@ export const achievements = [
   { id: 'eliminations_02',
     medal: medalsCombat.CombatSilverSingleRed,
     description: 'Elimine 10 humanos',
-    name: 'Prata',
+    name: 'Assassino de aluguel',
     character: [{
       name: André,
       date: '22/06/2024',
@@ -288,7 +288,7 @@ export const achievements = [
   { id: 'eliminations_03',
     medal: medalsCombat.CombatGoldSingleRed,
     description: 'Elimine 100 humanos',
-    name: 'Ouro',
+    name: 'Serial killer',
     character: [{
       name: '',
       date: '',
@@ -304,7 +304,7 @@ export const achievements = [
   { id: 'eliminations_04',
     medal: medalsCombat.CombatPlatinumSingleRed,
     description: 'Elimine 1000 humanos',
-    name: 'Diamante',
+    name: 'Genocida',
     character: [{
       name: '',
       date: '',
@@ -320,7 +320,7 @@ export const achievements = [
   { id: 'eliminations_01',
     medal: medalsCombat.CombatBronzeDoubleRed,
     description: 'Elimine 3 em um único ataque',
-    name: 'Bronze',
+    name: '3 coelhos com uma cajadada só',
     character: [{
       name: '',
       date: '',
@@ -336,7 +336,7 @@ export const achievements = [
   { id: 'eliminations_02',
     medal: medalsCombat.CombatSilverDoubleRed,
     description: 'Elimine 5 em um único ataque',
-    name: 'Prata',
+    name: 'Pentakill!',
     character: [{
       name: '',
       date: '',
@@ -352,7 +352,7 @@ export const achievements = [
   { id: 'eliminations_03',
     medal: medalsCombat.CombatGoldDoubleRed,
     description: 'Elimine 10 em um único ataque',
-    name: 'Ouro',
+    name: 'Strike!',
     character: [{
       name: '',
       date: '',
@@ -368,7 +368,7 @@ export const achievements = [
   { id: 'eliminations_04',
     medal: medalsCombat.CombatPlatinumDoubleRed,
     description: 'Elimine 20 em um único ataque',
-    name: 'Diamante',
+    name: 'Tudo friamente calculado',
     character: [{
       name: '',
       date: '',
@@ -384,7 +384,7 @@ export const achievements = [
   { id: 'eliminations_xenomorph_01',
     medal: medalsCombat.CombatBronzeTripleBlack,
     description: 'Elimine 1 Xenomorfo',
-    name: 'Bronze',
+    name: 'Tem certeza que ele morreu?',
     character: [{
       name: '',
       date: '',
@@ -400,7 +400,7 @@ export const achievements = [
   { id: 'eliminations_xenomorph_02',
     medal: medalsCombat.CombatSilverTripleBlack,
     description: 'Elimine 5 Xenomorfos',
-    name: 'Prata',
+    name: 'Acho que to pegando o jeito',
     character: [{
       name: '',
       date: '',
@@ -416,7 +416,7 @@ export const achievements = [
   { id: 'eliminations_xenomorph_03',
     medal: medalsCombat.CombatGoldTripleBlack,
     description: 'Elimine 10 Xenomorfos',
-    name: 'Ouro',
+    name: 'Agente da Carrocinha',
     character: [{
       name: '',
       date: '',
@@ -432,7 +432,7 @@ export const achievements = [
   { id: 'eliminations_xenomorph_04',
     medal: medalsCombat.CombatPlatinumTripleBlack,
     description: 'Elimine 50 Xenomorfos',
-    name: 'Diamante',
+    name: 'Predador',
     character: [{
       name: '',
       date: '',
@@ -512,7 +512,7 @@ export const achievements = [
   { id: 'eliminations_local_fauna_01',
     medal: medalsCombat.CombatBronzeSingleGreen,
     description: 'Elimine 1 animal',
-    name: 'Bronze',
+    name: 'Greenhorn',
     character: [{
       name: '',
       date: '',
@@ -528,7 +528,7 @@ export const achievements = [
   { id: 'eliminations_local_fauna_02',
     medal: medalsCombat.CombatSilverSingleGreen,
     description: 'Elimine 10 animais',
-    name: 'Prata',
+    name: 'Decorando a parede',
     character: [{
       name: '',
       date: '',
@@ -544,7 +544,7 @@ export const achievements = [
   { id: 'eliminations_local_fauna_03',
     medal: medalsCombat.CombatGoldSingleGreen,
     description: 'Elimine 100 animais',
-    name: 'Ouro',
+    name: 'Caçador profissional',
     character: [{
       name: '',
       date: '',
@@ -560,7 +560,7 @@ export const achievements = [
   { id: 'eliminations_local_fauna_04',
     medal: medalsCombat.CombatPlatinumSingleGreen,
     description: 'Elimine 1000 animais',
-    name: 'Diamante',
+    name: 'Terror do ibama',
     character: [{
       name: '',
       date: '',
@@ -576,7 +576,7 @@ export const achievements = [
   { id: 'eliminations_mechanical_01',
     medal: medalsCombat.CombatBronzeSingleYellow,
     description: 'Elimine 1 sintético',
-    name: 'Bronze',
+    name: 'Catador de latinhas',
     character: [{
       name: '',
       date: '',
@@ -592,7 +592,7 @@ export const achievements = [
   { id: 'eliminations_mechanical_02',
     medal: medalsCombat.CombatSilverSingleRed,
     description: 'Elimine 5 sintéticos',
-    name: 'Prata',
+    name: 'Detetive Del Spooner',
     character: [{
       name: '',
       date: '',
@@ -608,7 +608,7 @@ export const achievements = [
   { id: 'eliminations_mechanical_03',
     medal: medalsCombat.CombatGoldSingleRed,
     description: 'Elimine 10 sintéticos',
-    name: 'Ouro',
+    name: 'T-800',
     character: [{
       name: '',
       date: '',
@@ -624,7 +624,7 @@ export const achievements = [
   { id: 'eliminations_mechanical_04',
     medal: medalsCombat.CombatPlatinumSingleRed,
     description: 'Elimine 50 sintéticos',
-    name: 'Diamante',
+    name: 'John Connor',
     character: [{
       name: '',
       date: '',
@@ -640,7 +640,7 @@ export const achievements = [
   { id: 'eliminations_innocents_01',
     medal: medalsCombat.CombatBronzeSingleRed,
     description: 'Elimine 1 inocente',
-    name: 'Bronze',
+    name: 'Foi um acidente!',
     character: [{
       name: '',
       date: '',
@@ -656,7 +656,7 @@ export const achievements = [
   { id: 'eliminations_innocents_02',
     medal: medalsCombat.CombatSilverSingleRed,
     description: 'Elimine 10 inocentes',
-    name: 'Prata',
+    name: 'Eles ficam entrando na linha de tiro',
     character: [{
       name: '',
       date: '',
@@ -672,7 +672,7 @@ export const achievements = [
   { id: 'eliminations_innocents_03',
     medal: medalsCombat.CombatGoldSingleRed,
     description: 'Elimine 100 inocentes',
-    name: 'Ouro',
+    name: 'Como é que eu vou explicar isso?',
     character: [{
       name: '',
       date: '',
@@ -688,7 +688,7 @@ export const achievements = [
   { id: 'eliminations_innocents_04',
     medal: medalsCombat.CombatPlatinumSingleRed,
     description: 'Elimine 1000 inocentes',
-    name: 'Diamante',
+    name: 'Num estalar de dedos',
     character: [{
       name: '',
       date: '',
@@ -704,7 +704,7 @@ export const achievements = [
   { id: 'exploration_01',
     medal: medalsExploration.ExplorationBronzeSingleGreen,
     description: 'Viajar 1 parsec',
-    name: 'Bronze',
+    name: 'Proxima Centauri',
     character: [{
       name: '',
       date: '',
@@ -720,7 +720,7 @@ export const achievements = [
   { id: 'exploration_02',
     medal: medalsExploration.ExplorationSilverSingleGreen,
     description: 'Viajar 10 parsecs',
-    name: 'Prata',
+    name: 'Maia',
     character: [{
       name: '',
       date: '',
@@ -736,7 +736,7 @@ export const achievements = [
   { id: 'exploration_03',
     medal: medalsExploration.ExplorationGoldSingleGreen,
     description: 'Viajar 100 parsecs',
-    name: 'Ouro',
+    name: 'Colonia',
     character: [{
       name: '',
       date: '',
@@ -752,7 +752,7 @@ export const achievements = [
   { id: 'exploration_04',
     medal: medalsExploration.ExplorationPlatinumSingleGreen,
     description: 'Viajar 1000 parsecs',
-    name: 'Diamante',
+    name: 'Beagle point',
     character: [{
       name: '',
       date: '',
@@ -768,7 +768,7 @@ export const achievements = [
   { id: 'exploration_star_systems_01',
     medal: medalsExploration.ExplorationBronzeSingleYellow,
     description: 'Viajar 1 sistema estelar',
-    name: 'Bronze',
+    name: 'Explorador',
     character: [{
       name: André,
       date: '16/06/2024',
@@ -784,7 +784,7 @@ export const achievements = [
   { id: 'exploration_star_systems_02',
     medal: medalsExploration.ExplorationSilverSingleYellow,
     description: 'Viajar 10 sistemas estelares',
-    name: 'Prata',
+    name: 'Cartógrafo',
     character: [{
       name: '',
       date: '',
@@ -800,7 +800,7 @@ export const achievements = [
   { id: 'exploration_star_systems_03',
     medal: medalsExploration.ExplorationGoldSingleYellow,
     description: 'Viajar 50 sistemas estelares',
-    name: 'Ouro',
+    name: 'Desbravador',
     character: [{
       name: '',
       date: '',
@@ -816,7 +816,7 @@ export const achievements = [
   { id: 'exploration_star_systems_04',
     medal: medalsExploration.ExplorationPlatinumSingleYellow,
     description: 'Viajar 150 sistemas estelares',
-    name: 'Diamante',
+    name: 'Pioneiro',
     character: [{
       name: '',
       date: '',
@@ -832,7 +832,7 @@ export const achievements = [
   { id: 'exploration_star_systems_05',
     medal: medalsExploration.ExplorationPlatinumTripleBlack,
     description: 'Visitar um de cada tipo de sistema estelar',
-    name: '',
+    name: 'Complecionista',
     character: [{
       name: '',
       date: '',
@@ -848,7 +848,7 @@ export const achievements = [
   { id: 'exploration_planets_01',
     medal: medalsExploration.ExplorationBronzeSingleGreen,
     description: 'Pousar em 1 planeta',
-    name: 'Bronze',
+    name: 'Um pequeno passo para o homem...',
     character: [{
       name: André,
       date: '16/06/2024',
@@ -864,7 +864,7 @@ export const achievements = [
   { id: 'exploration_planets_02',
     medal: medalsExploration.ExplorationSilverSingleGreen,
     description: 'Pousar em 5 planetas',
-    name: 'Prata',
+    name: 'Deixando o rastro',
     character: [{
       name: '',
       date: '',
@@ -880,7 +880,7 @@ export const achievements = [
   { id: 'exploration_planets_03',
     medal: medalsExploration.ExplorationGoldSingleGreen,
     description: 'Pousar em 10 planetas',
-    name: 'Ouro',
+    name: 'Plutão não conta',
     character: [{
       name: '',
       date: '',
@@ -896,7 +896,7 @@ export const achievements = [
   { id: 'exploration_planets_04',
     medal: medalsExploration.ExplorationPlatinumSingleGreen,
     description: 'Pousar em 50 planetas',
-    name: 'Diamante',
+    name: 'Em busca do planeta perfeito',
     character: [{
       name: '',
       date: '',
@@ -912,7 +912,7 @@ export const achievements = [
   { id: 'exploration_planets_05',
     medal: medalsExploration.ExplorationPlatinumTripleBlack,
     description: 'Pousar em um de cada tipo de planeta',
-    name: '',
+    name: 'Até em gigantes gasosos?',
     character: [{
       name: '',
       date: '',
@@ -928,7 +928,7 @@ export const achievements = [
   { id: 'special_exploration_01',
     medal: medalsUnique.UniqueGoldDoubleBlack,
     description: 'Encontrar com os Engenheiros',
-    name: '',
+    name: 'De frente com o criador',
     character: [{
       name: '',
       date: '',
@@ -944,7 +944,7 @@ export const achievements = [
   { id: 'special_exploration_02',
     medal: medalsUnique.UniqueGoldTripleBlack,
     description: 'Visitar todos os planetas dos filmes',
-    name: '',
+    name: 'Cinefilo',
     character: [{
       name: '',
       date: '',
@@ -960,7 +960,7 @@ export const achievements = [
   { id: 'special_eliminations_01',
     medal: medalsUnique.UniquePlatinumTripleBlack,
     description: 'Elimine uma Rainha Alien',
-    name: '',
+    name: 'Xeque-mate?',
     character: [{
       name: '',
       date: '',
@@ -976,7 +976,7 @@ export const achievements = [
   { id: 'special_eliminations_02',
     medal: medalsUnique.UniquePlatinumDoubleBlack,
     description: 'Eliminar um Engenheiro',
-    name: '',
+    name: 'Kratos?',
     character: [{
       name: '',
       date: '',
@@ -992,7 +992,7 @@ export const achievements = [
   { id: 'special_eliminations_03',
     medal: medalsUnique.UniquePlatinumSingleBlack,
     description: 'Eliminar um de cada tipo de Xenomorfo',
-    name: '',
+    name: 'Preenchendo o albúm de figurinhas',
     character: [{
       name: '',
       date: '',
@@ -1056,7 +1056,7 @@ export const achievements = [
   { id: 'xenomorph_attacks_03',
     medal: medalsCombat.CombatGoldDoubleBlack,
     description: "Receber um ataque 'Brincando com a presa'",
-    name: '',
+    name: 'Preliminares',
     character: [{
       name: '',
       date: '',
@@ -1072,7 +1072,7 @@ export const achievements = [
   { id: 'xenomorph_attacks_04',
     medal: medalsCombat.CombatGoldTripleBlack,
     description: "Receber um ataque 'Agarrão mortal'",
-    name: '',
+    name: 'Dom vs Sub',
     character: [{
       name: '',
       date: '',
@@ -1087,8 +1087,8 @@ export const achievements = [
     }] },
   { id: 'xenomorph_attacks_05',
     medal: medalsCombat.CombatPlatinumSingleBlack,
-    description: "Receber um ataque 'Cauda trituradora'",
-    name: '',
+    description: "Receber um ataque 'Ferrão da Cauda'",
+    name: 'Não é so o tamnho da varinha, mas a habilidade do bruxo',
     character: [{
       name: '',
       date: '',
@@ -1103,8 +1103,24 @@ export const achievements = [
     }] },
   { id: 'xenomorph_attacks_06',
     medal: medalsCombat.CombatPlatinumDoubleBlack,
+    description: "Receber um ataque 'Capturar para a colmeia'",
+    name: 'Ninho de amor',
+    character: [{
+      name: '',
+      date: '',
+    },
+    {
+      name: '',
+      date: '',
+    },
+    {
+      name: '',
+      date: '',
+    }] },
+  { id: 'xenomorph_attacks_07',
+    medal: medalsCombat.CombatPlatinumDoubleBlack,
     description: "Receber um ataque 'Sangue ácido'",
-    name: '',
+    name: 'Não se meche, vou buscar o papel',
     character: [{
       name: '',
       date: '',
@@ -1280,7 +1296,7 @@ export const achievements = [
   { id: 'other_dangerous_09',
     medal: medalsSurvival.SurvivalBronzeSingleRed,
     description: 'Morrer no vácuo do espaço',
-    name: '',
+    name: 'No espaço, ninguém pode te ouvir gritar',
     character: [{
       name: '',
       date: '',
@@ -1328,7 +1344,7 @@ export const achievements = [
   { id: 'other_dangerous_12',
     medal: medalsSurvival.SurvivalSilverSingleRed,
     description: 'Morrer pelo status "desidratado"',
-    name: '',
+    name: 'Carne seca',
     character: [{
       name: '',
       date: '',
@@ -1344,7 +1360,7 @@ export const achievements = [
   { id: 'other_dangerous_13',
     medal: medalsSurvival.SurvivalSilverSingleGreen,
     description: 'Morrer pelo status "faminto"',
-    name: '',
+    name: 'Jejum Inter...minavel',
     character: [{
       name: '',
       date: '',
@@ -1360,7 +1376,7 @@ export const achievements = [
   { id: 'other_dangerous_14',
     medal: medalsSurvival.SurvivalBronzeSingleBlack,
     description: 'Adquirir pelo menos uma vez o status "congelando"',
-    name: '',
+    name: 'Leva um casaco!',
     character: [{
       name: '',
       date: '',
@@ -1376,7 +1392,7 @@ export const achievements = [
   { id: 'other_dangerous_15',
     medal: medalsSurvival.SurvivalBronzeSingleBlack,
     description: 'Adquirir pelo menos uma vez o status "exausto"',
-    name: '',
+    name: 'Mas ainda é segunda-feira, capitão',
     character: [{
       name: '',
       date: '',
@@ -1392,7 +1408,7 @@ export const achievements = [
   { id: 'other_dangerous_16',
     medal: medalsSurvival.SurvivalBronzeSingleBlack,
     description: 'Adquirir pelo menos uma vez o status "desidratado"',
-    name: '',
+    name: 'água a 1,5km',
     character: [{
       name: '',
       date: '',
@@ -1408,7 +1424,7 @@ export const achievements = [
   { id: 'other_dangerous_17',
     medal: medalsSurvival.SurvivalBronzeSingleBlack,
     description: 'Adquirir pelo menos uma vez o status "faminto"',
-    name: '',
+    name: 'Tábata Pelegrini',
     character: [{
       name: '',
       date: '',
@@ -1471,8 +1487,8 @@ export const achievements = [
     }] },
   { id: 'other_group_04',
     medal: medalsUnique.UniqueGoldTripleYellow,
-    description: 'A Cura do Abraço: Sobreviva a um abraço carinhoso de um Facehugger sem ser infectado.',
-    name: '',
+    description: 'Sobreviva a um abraço carinhoso de um Facehugger sem ser infectado.',
+    name: 'Com as vacinas em dia',
     character: [{
       name: '',
       date: '',
@@ -1502,7 +1518,7 @@ export const achievements = [
       date: '',
     }] },
   { id: 'other_group_06',
-    medal: medalsUnique.UniqueSilverTripleYellow,
+    medal: medalsUnique.UniquePlatinumTripleBlack,
     description: 'Experimente carne de Alien e não vomite.',
     name: 'Gourmet Intergaláctico',
     character: [{
@@ -1568,7 +1584,7 @@ export const achievements = [
   { id: 'other_group_10',
     medal: medalsUnique.UniqueGoldTripleRed,
     description: 'Descubra uma traição entre os próprios fuzileiros, revelando um espião infiltrado ou um conspirador.',
-    name: 'Olhos Bem Abertos',
+    name: 'É o ciano!!!',
     character: [{
       name: '',
       date: '',
@@ -1600,7 +1616,7 @@ export const achievements = [
   { id: 'other_group_12',
     medal: medalsUnique.UniqueSilverDoubleGreen,
     description: 'Desative uma armadilha usando apenas habilidades humanas, sem depender de tecnologia avançada.',
-    name: 'Reflexos Humanos',
+    name: 'Eu confio no meu taco',
     character: [{
       name: '',
       date: '',
@@ -1616,7 +1632,7 @@ export const achievements = [
   { id: 'other_group_13',
     medal: medalsUnique.UniquePlatinumTripleYellow,
     description: 'Mantenha a sanidade mental após enfrentar horrores cósmicos e sobreviver a um encontro direto com a Rainha Alien.',
-    name: 'Fugindo da Loucura',
+    name: 'Bobo da Corte',
     character: [{
       name: '',
       date: '',
@@ -1632,7 +1648,7 @@ export const achievements = [
   { id: 'other_group_14',
     medal: medalsUnique.UniqueSilverTripleGreen,
     description: 'Una-se a outras facções para enfrentar uma ameaça maior em uma batalha épica.',
-    name: 'Força da União',
+    name: 'Deixando as diferenças de lado',
     character: [{
       name: '',
       date: '',
@@ -1646,9 +1662,9 @@ export const achievements = [
       date: '',
     }] },
   { id: 'other_group_15',
-    medal: medalsUnique.UniqueSilverTripleYellow,
-    description: 'Encontre uma solução pacífica para escapar de uma situação desesperadora, mantendo a esperança viva para sua equipe.',
-    name: 'Luz no Fim do Túnel',
+    medal: medalsUnique.UniquePlatinumTripleBlack,
+    description: 'Matar um cientista',
+    name: 'Dessa vez não!!!!',
     character: [{
       name: '',
       date: '',
@@ -1662,25 +1678,9 @@ export const achievements = [
       date: '',
     }] },
   { id: 'other_group_16',
-    medal: medalsUnique.UniquePlatinumTripleBlack,
-    description: 'Matar um cientista',
-    name: 'Dessa vez não',
-    character: [{
-      name: '',
-      date: '',
-    },
-    {
-      name: '',
-      date: '',
-    },
-    {
-      name: '',
-      date: '',
-    }] },
-  { id: 'other_group_17',
     medal: medalsUnique.UniquePlatinumTripleGreen,
     description: 'Seja responsável parcial ou integralmente por uma catástrofe nuclear',
-    name: 'Chernobyl',
+    name: 'New Chernobyl',
     character: [{
       name: André,
       date: '22/06/2024',
