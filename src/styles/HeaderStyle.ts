@@ -9,7 +9,7 @@ export const HeaderStyle = styled.header`
     align-content: center;
     background-color: #11633F;
     width: 100%;
-    height: 90px;
+    height: 120px;
 
     .header-title {
         padding-top: 8px;
@@ -21,6 +21,8 @@ export const HeaderStyle = styled.header`
         width: 100%;
     }
     h1 {
+        font-family: 'alienleaguegradbold', sans-serif;
+        font-size: 80px;
         padding-left: 20px;
         padding-right: 20px;
         color: white;
