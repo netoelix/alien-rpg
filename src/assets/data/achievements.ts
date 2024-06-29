@@ -86,8 +86,8 @@ export const achievements = [
       date: '',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '29/06/24',
     },
     {
       name: '',
@@ -130,12 +130,12 @@ export const achievements = [
     description: 'Rolar 9 no teste de pânico',
     name: 'Mão de alface',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '29/06/24',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '29/06/24',
     },
     {
       name: Bruno,
@@ -146,8 +146,8 @@ export const achievements = [
     description: 'Rolar 10 no teste de pânico',
     name: 'Batatinha frita 1, 2, 3',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '29/06/24',
     },
     {
       name: '',
@@ -514,12 +514,12 @@ export const achievements = [
     description: 'Elimine 1 animal',
     name: 'Greenhorn',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '29/06/24',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '29/06/24',
     },
     {
       name: '',
@@ -706,16 +706,16 @@ export const achievements = [
     description: 'Viajar 1 parsec',
     name: 'Proxima Centauri',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '29/06/24',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '29/06/24',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '29/06/24',
     }] },
   { id: 'exploration_02',
     medal: medalsExploration.ExplorationSilverSingleGreen,
