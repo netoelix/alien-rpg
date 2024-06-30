@@ -110,13 +110,13 @@ export const CharacterStyle = styled.div`
             }
         }
         .image-character {
-            width: 350px;
-            height: 350px;
+            width: 300px;
+            height: 300px;
             margin-top: 40px;
             margin-bottom: 30px;
             img {
-                width: 380px;
-                height: 380px;
+                width: 340px;
+                height: 340px;
             }
         }
         .bio-character {
