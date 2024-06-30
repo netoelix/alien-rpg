@@ -16,7 +16,6 @@ function Description({ mission, descrition, esquad }: DescriptionProps) {
           </span>
         );
       }
-      // Retorna o segmento não oculto
       return segment;
     });
   };
