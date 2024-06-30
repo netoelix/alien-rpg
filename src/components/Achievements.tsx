@@ -19,11 +19,20 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
   const [dateOrder, setDateOrder] = useState('');
 
   const extractMedalInfo = (medal: string) => {
-    if (!medal) {
+    let processedMedal = medal;
+
+    if (medal.includes('http://') || medal.includes('https://')) {
+      const urlParts = medal.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      processedMedal = fileName.split('-').slice(0, -1).join('-');
+    }
+    processedMedal = processedMedal.replace(/_/g, ', ').replace(/-/g, ', ');
+
+    if (!processedMedal) {
       console.log('Medal is undefined or null');
       return { type: '', rank: '', stripeCount: '', color: '' };
     }
-    const parts = medal.split(', ');
+    const parts = processedMedal.split(', ');
     if (parts.length < 4) {
       console.log('Medal string does not contain all expected parts');
       return { type: '', rank: '', stripeCount: '', color: '' };
@@ -34,7 +43,6 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
       stripeCount: parts[2].split('=')[1] || '',
       color: parts[3].split('=')[1]?.split('.')[0] || '',
     };
-    console.log(info);
 
     return info;
   };
