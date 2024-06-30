@@ -16,6 +16,8 @@ function Player() {
     data.reduce((acc, { playerId }) => ({ ...acc, [playerId]: '80px' }), {}),
   );
   const toggleVisibility = (playerId: string | any) => {
+    setSelectedButton((prevState) => ({ ...prevState, [playerId]: 'character' }));
+    setShowComponentForPlayer((prevState) => ({ ...prevState, [playerId]: 'character' }));
     setIsVisible((prev) => ({ ...prev, [playerId]: !prev[playerId] }));
     setCardHeight((prev) => ({
       ...prev,
@@ -33,6 +35,7 @@ function Player() {
     setSelectedButton((prevState) => ({
       ...prevState,
       [playerId]: buttonName,
+
     }));
     handleShowComponent(playerId, buttonName);
   };
