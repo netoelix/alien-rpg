@@ -25,12 +25,10 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
       const fileName = urlParts[urlParts.length - 1];
       processedMedal = fileName.split('-').slice(0, -1).join('-');
     }
-    // Substitui caracteres de sublinhado e hífen por vírgulas para padronizar a string
     processedMedal = processedMedal.replace(/_/g, '=').replace(/-/g, ' ').replace(/%20/g, ', ');
 
     console.log(processedMedal);
 
-    // Continua com a lógica existente de divisão e extração
     if (!processedMedal) {
       console.log('Medal is undefined or null');
       return { type: '', rank: '', stripeCount: '', color: '' };
@@ -65,7 +63,7 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
 
   return (
     <AchievementsContainer className="player-achievements">
-      <div>
+      <div className="inputs-container">
         <label htmlFor="medalType">Selecione uma categoria:</label>
         <select
           id="medalType"

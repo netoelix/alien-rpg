@@ -90,4 +90,16 @@ export const TimeLineContainer = styled.main`
             font-size: 25px;
         }
     }
+    @media screen and (max-width: 1000px) {
+        .time-lide-content {
+        flex-direction: column;  
+        }
+        .time-line-folder {
+            width: 220px;
+            height: 150px;
+        }
+        .time-line-resume {
+            width: 100%
+        }
+    }
 `;

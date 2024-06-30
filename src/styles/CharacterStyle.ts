@@ -87,20 +87,49 @@ export const CharacterStyle = styled.div`
             font-family: 'Sevastopol', sans-serif;
         }
     }
-
-    .bio-character p::-webkit-scrollbar {
-    width: 10px;
-    }
-
-    .bio-character p::-webkit-scrollbar-track {
-        background: #16B769;
-    }
-
-    .bio-character p::-webkit-scrollbar-thumb {
-        background: #FFFFFF;
-    }
-
-    .bio-character p::-webkit-scrollbar-thumb:hover {
-        background: #11633F;
+    @media screen and (max-width: 1200px) {
+        flex-direction: row;
+        height: auto;
+        .info-character {
+            align-items: center;
+            margin-left: 0px;
+            padding-top: 50px;
+            h3 {
+                font-size: 30px;
+                text-align: center;
+            }
+            div {
+                align-items: center;
+            }
+            p {
+                font-size: 25px;
+                text-align: center;
+            }
+            .character-codnome {
+                margin-right: 0px;
+            }
+        }
+        .image-character {
+            width: 350px;
+            height: 350px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            img {
+                width: 380px;
+                height: 380px;
+            }
+        }
+        .bio-character {
+            width: 90%;
+            height: 350px;
+            margin-right: 0px;
+            margin-bottom: 70px;
+            h3 {
+                font-size: 30px;
+            }
+            p {
+                font-size: 25px;
+            }
+        }
     }
     `;
