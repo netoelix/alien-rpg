@@ -101,5 +101,14 @@ export const TimeLineContainer = styled.main`
         .time-line-resume {
             width: 100%
         }
+        .time-line-header-mission {
+            width: 100%;
+            h1 {
+                width: 95%;
+            }
+            h2 {
+                width: 95%;
+            }
+        }
     }
 `;
