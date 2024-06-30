@@ -19,13 +19,23 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
   const [dateOrder, setDateOrder] = useState('');
 
   const extractMedalInfo = (medal: string) => {
+    if (!medal) {
+      console.log('Medal is undefined or null');
+      return { type: '', rank: '', stripeCount: '', color: '' };
+    }
     const parts = medal.split(', ');
+    if (parts.length < 4) {
+      console.log('Medal string does not contain all expected parts');
+      return { type: '', rank: '', stripeCount: '', color: '' };
+    }
     const info = {
-      type: parts[0].split('=')[1],
-      rank: parts[1].split('=')[1],
-      stripeCount: parts[2].split('=')[1],
-      color: parts[3].split('=')[1].split('.')[0],
+      type: parts[0].split('=')[1] || '',
+      rank: parts[1].split('=')[1] || '',
+      stripeCount: parts[2].split('=')[1] || '',
+      color: parts[3].split('=')[1]?.split('.')[0] || '',
     };
+    console.log(info);
+
     return info;
   };
 
