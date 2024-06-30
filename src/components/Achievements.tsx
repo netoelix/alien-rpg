@@ -36,7 +36,7 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
     && (!rankFilter || rank === rankFilter);
   });
 
-  function convertDateToISO(dateString) {
+  function convertDateToISO(dateString: string) {
     const parts = dateString.split('/');
     return `${parts[2]}-${parts[1]}-${parts[0]}`;
   }
