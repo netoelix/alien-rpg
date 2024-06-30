@@ -1,12 +1,12 @@
 {
-  "name": "portifolio-elix",
+  "name": "diario-de-um-rpg",
   "version": "2.3.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
     "coverage": "vitest run --coverage",
-    "dev": "vite --open --host --port 3000",
+    "dev": "vite --open --host --port 3333",
     "lint": "eslint -c .eslintrc.json . --ext .js,.jsx,.ts,.tsx",
     "preview": "vite preview",
     "test": "vitest",

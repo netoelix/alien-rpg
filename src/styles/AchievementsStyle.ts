@@ -83,4 +83,39 @@ export const AchievementsContainer = styled.div`
         }
     }
 
+    @media screen and (max-width: 1200px) {
+        height: 25%;
+        .inputs-container {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            margin: 10px;
+        }
+        .info-achievements {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+            .achievements {
+                width: 95%;
+                height: 130px;
+                h3 {
+                    font-size: 1rem;
+                    width: 70%;
+                }
+                p {
+                    font-size: 1.5rem;
+                    text-align: center;
+                    width: 70%;
+                }
+                .achievements-img {
+                    height: 100%;
+                    background-color: #11633F;
+                }
+            }
+        }
+    }
 `;

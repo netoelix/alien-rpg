@@ -117,22 +117,6 @@ export const PlayerStyle = styled.main`
         width: 100%;
     }
 
-    .player-all-character::-webkit-scrollbar {
-    width: 10px;
-    }
-
-    .player-all-character::-webkit-scrollbar-track {
-    background: #16B769;
-    }
-
-    .player-all-character::-webkit-scrollbar-thumb {
-    background: #FFFFFF;
-    }
-
-    .player-all-character::-webkit-scrollbar-thumb:hover {
-    background: #11633F;
-    }
-
     .player-final-card {
         display: flex;
         flex-direction: row;
@@ -145,5 +129,30 @@ export const PlayerStyle = styled.main`
         background-color: #16B769;
         border-bottom-right-radius: 20px;
         border-bottom-left-radius: 20px;
+    }
+    @media screen and (max-width: 1200px) {
+        .player-container {
+            height: 400px;
+        }
+        .player-header {
+            h3 {
+                font-size: 10px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+        }
+        .button-container {
+            height: 50px;
+            .information-button {
+                font-size: 15px;
+            }
+        }
+        .player-final-card {
+            height: 25px;
+        }
+        .player-final-card {
+            height: 35px;
+        }
     }
     `;

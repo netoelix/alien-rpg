@@ -28,7 +28,7 @@ export const HeaderStyle = styled.header`
         color: white;
     }
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 1200px) {
         height: 25%;
         h1 {
             font-size: 45px;
