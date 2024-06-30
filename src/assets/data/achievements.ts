@@ -87,7 +87,7 @@ export const achievements = [
     },
     {
       name: Fernando,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: '',
@@ -131,11 +131,11 @@ export const achievements = [
     name: 'Mão de alface',
     character: [{
       name: André,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: Fernando,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: Bruno,
@@ -147,7 +147,7 @@ export const achievements = [
     name: 'Batatinha frita 1, 2, 3',
     character: [{
       name: André,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: '',
@@ -515,11 +515,11 @@ export const achievements = [
     name: 'Greenhorn',
     character: [{
       name: André,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: Fernando,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: '',
@@ -707,15 +707,15 @@ export const achievements = [
     name: 'Proxima Centauri',
     character: [{
       name: André,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: Fernando,
-      date: '29/06/24',
+      date: '29/06/2024',
     },
     {
       name: Bruno,
-      date: '29/06/24',
+      date: '29/06/2024',
     }] },
   { id: 'exploration_02',
     medal: medalsExploration.ExplorationSilverSingleGreen,

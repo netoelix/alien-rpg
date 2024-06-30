@@ -16,6 +16,7 @@ interface AchievementsProps {
 function Achievements({ achievements, characterIndex }: AchievementsProps) {
   const [medalTypeFilter, setMedalTypeFilter] = useState('');
   const [rankFilter, setRankFilter] = useState('');
+  const [dateOrder, setDateOrder] = useState('');
 
   const extractMedalInfo = (medal: string) => {
     const parts = medal.split(', ');
@@ -35,7 +36,10 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
     && (!rankFilter || rank === rankFilter);
   });
 
-  console.log(filteredAchievements);
+  function convertDateToISO(dateString) {
+    const parts = dateString.split('/');
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
 
   return (
     <AchievementsContainer className="player-achievements">
@@ -66,9 +70,36 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
           <option value="Gold">Ouro</option>
           <option value="Platinum">Platina</option>
         </select>
+        <label htmlFor="dateOrder">Ordenar por data:</label>
+        <select
+          id="dateOrder"
+          value={ dateOrder }
+          onChange={ (e) => setDateOrder(e.target.value) }
+        >
+          <option value="">Selecione</option>
+          <option value="newest">Mais recente primeiro</option>
+          <option value="oldest">Mais antigo primeiro</option>
+        </select>
       </div>
       <div className="info-achievements">
-        {filteredAchievements.map((achievement, index) => (
+        {filteredAchievements.sort((a, b) => {
+          const stringA = a.character[characterIndex].date;
+          const stringB = b.character[characterIndex].date;
+          const stringAISO = convertDateToISO(stringA);
+          const stringBISO = convertDateToISO(stringB);
+          const dateANumber = new Date(stringAISO).getTime();
+          const dateBNumber = new Date(stringBISO).getTime();
+          const dateA = dateANumber;
+          const dateB = dateBNumber;
+
+          if (dateOrder === 'newest') {
+            return dateB - dateA;
+          } if (dateOrder === 'oldest') {
+            return dateA - dateB;
+          }
+
+          return 0;
+        }).map((achievement, index) => (
           <div key={ index } className="achievements">
             <h3>{achievement.name}</h3>
             <p>{achievement.description}</p>
