@@ -14,7 +14,7 @@ const Fernando = 'Fernando (Gelatto)';
 
 export const achievements = [
   { id: 'stress_01',
-    medal: 'https://diario-alien-rpg.vercel.app/assets/Type_Stress_%20Rank_Bronze_%20Stripe%20Count_Single%20Striped_%20Color_Yellow-1cd1d974.svg',
+    medal: medalsStress.StressBronzeSingleYellow,
     description: 'Atingir 1 pontos de stress',
     name: 'Só mais um dia de trabalho...',
     character: [{
