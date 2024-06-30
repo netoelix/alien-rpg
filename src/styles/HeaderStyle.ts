@@ -27,6 +27,14 @@ export const HeaderStyle = styled.header`
         padding-right: 20px;
         color: white;
     }
+
+    @media screen and (max-width: 1000px) {
+        height: 25%;
+        h1 {
+            font-size: 45px;
+            padding: 5px;
+        }
+    }
 `;
 
 export const NavigationStyle = styled.nav`
@@ -63,5 +71,12 @@ export const NavigationStyle = styled.nav`
         justify-content: center;
         align-content: center;
         padding: 0px 20px;
+    }
+    @media screen and (max-width: 1000px) {
+        flex-direction: column;
+        height: 100px;
+        .nav-container {
+            padding: 5px;
+        }
     }
 `;
