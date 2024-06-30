@@ -84,7 +84,7 @@ export const PlayerStyle = styled.main`
 
         .selected {
         background-color: white;
-        width:20px;
+        width: 20px;
         height: 20px;
         margin: 0px 10px;
     }
@@ -145,7 +145,16 @@ export const PlayerStyle = styled.main`
         .button-container {
             height: 50px;
             .information-button {
-                font-size: 15px;
+                font-size: 14px;
+                padding: 3px;
+            }
+            .selected {
+                width: 15px;
+                height: 15px;
+            }
+            .unselected {
+                width: 15px;
+                height: 15px;
             }
         }
         .player-final-card {
