@@ -33,6 +33,7 @@ export const HeaderStyle = styled.header`
         h1 {
             font-size: 45px;
             padding: 5px;
+            text-align: center;
         }
     }
 `;
