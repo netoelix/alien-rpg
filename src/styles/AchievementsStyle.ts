@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const AchievementsContainer = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     align-content: center;
     justify-content: space-around;
@@ -12,6 +12,16 @@ export const AchievementsContainer = styled.div`
     border-top-left-radius: 150px;
     border-bottom-left-radius: 150px;
     margin: 70px 0px;
+
+    select {
+        width: 160px;
+        height: 30px;
+        border-radius: 5px;
+        margin: 10px;
+        border: 1px solid #12B866;
+        background-color: #152E1B;
+        color: #fff;
+    }
 
     .info-achievements {
         display: flex;
@@ -28,7 +38,7 @@ export const AchievementsContainer = styled.div`
             justify-content: space-around;
             align-content: space-between;
             flex-wrap: wrap;
-            width: 45%;
+            min-width: 45%;
             height: 100px;
             background-size: 200% 100%;
             border: 2px solid #12B866;
