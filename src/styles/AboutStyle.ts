@@ -49,28 +49,28 @@ export const AboutStyle = styled.div`
         width: 95%;
         padding: 5px;
         h1 {
-            font-size: 35px;
+            font-size: 28px;
             padding: 5px;
         }
         h2 {
-        font-size: 30px;
+        font-size: 25px;
         color: white;
         padding: 5px;
         }
         h3 {
-            font-size: 27px;
+            font-size: 23px;
             padding: 5px;
         }
         h4 {
-            font-size: 25px;
+            font-size: 20px;
             padding: 5px;
         }
         p {
-            font-size: 23px;
+            font-size: 20px;
             padding: 5px 15px;
         }
         span {
-            font-size: 20px;
+            font-size: 17px;
         }
         a {
             font-size: 15px;

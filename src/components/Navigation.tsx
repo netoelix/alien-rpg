@@ -19,7 +19,7 @@ function Navigation() {
       </div>
       <div className="nav-container">
         <div className={ isSelected('/timeline') ? 'selected' : 'unselected' } />
-        <NavLink to="/timeline">Linha do tempo</NavLink>
+        <NavLink to="/timeline">Logs das missões</NavLink>
         <div className={ isSelected('/timeline') ? 'selected' : 'unselected' } />
       </div>
     </>

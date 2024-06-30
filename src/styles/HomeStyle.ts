@@ -27,4 +27,12 @@ export const HomeStyle = styled.div`
             color: black;
         }
     }
+    @media screen and (max-width: 1000px) {
+        h1 {
+            font-size: 4.5vw;
+        }
+        a {
+            font-size: 4vw;
+        }
+    }
 `;
