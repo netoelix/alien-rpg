@@ -20,14 +20,17 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
 
   const extractMedalInfo = (medal: string) => {
     let processedMedal = medal;
-
     if (medal.includes('http://') || medal.includes('https://')) {
       const urlParts = medal.split('/');
       const fileName = urlParts[urlParts.length - 1];
       processedMedal = fileName.split('-').slice(0, -1).join('-');
     }
-    processedMedal = processedMedal.replace(/_/g, ', ').replace(/-/g, ', ');
+    // Substitui caracteres de sublinhado e hífen por vírgulas para padronizar a string
+    processedMedal = processedMedal.replace(/_/g, '=').replace(/-/g, ' ').replace(/%20/g, ', ');
 
+    console.log(processedMedal);
+
+    // Continua com a lógica existente de divisão e extração
     if (!processedMedal) {
       console.log('Medal is undefined or null');
       return { type: '', rank: '', stripeCount: '', color: '' };
@@ -43,6 +46,7 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
       stripeCount: parts[2].split('=')[1] || '',
       color: parts[3].split('=')[1]?.split('.')[0] || '',
     };
+    console.log(info);
 
     return info;
   };
