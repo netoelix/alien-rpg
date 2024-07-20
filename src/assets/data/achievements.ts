@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable max-len */
+/* eslint-disable max-lines */
 
 import { medalsCombat } from './medals-combat';
 import { medalsExploration } from './medals-exploration';
@@ -7,7 +8,6 @@ import { medalsStress } from './medals-stress';
 import { medalsSurvival } from './medals-survival';
 import { medalsUnique } from './medals-unique';
 
-/* eslint-disable max-lines */
 const Bruno = 'Bruno';
 const André = 'André';
 const Fernando = 'Fernando (Gelatto)';
@@ -122,8 +122,8 @@ export const achievements = [
       date: '',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/07/2024',
     }] },
   { id: 'stress_08',
     medal: medalsStress.StressBronzeTripleRed,
@@ -154,8 +154,8 @@ export const achievements = [
       date: '',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/07/2024',
     }] },
   { id: 'stress_10',
     medal: medalsStress.StressSilverDoubleRed,
@@ -170,8 +170,8 @@ export const achievements = [
       date: '',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/07/2024',
     }] },
   { id: 'stress_11',
     medal: medalsStress.StressSilverTripleRed,
@@ -252,6 +252,54 @@ export const achievements = [
     {
       name: '',
       date: '',
+    }] },
+  { id: 'stress_16',
+    medal: medalsStress.StressPlatinumTripleGreen,
+    description: 'Rolar 2 vezes seguidas um valor de stress entre 1 e 6 e falhar na terceira',
+    name: 'Nervos de água',
+    character: [{
+      name: André,
+      date: '06/07/2024',
+    },
+    {
+      name: '',
+      date: '',
+    },
+    {
+      name: Bruno,
+      date: '06/07/2024',
+    }] },
+  { id: 'stress_17',
+    medal: medalsStress.StressPlatinumTripleGreen,
+    description: 'Rolar o mesmo resultado de um pânico ativo e ter que subir para o próximo nível.',
+    name: 'Fora de controle',
+    character: [{
+      name: André,
+      date: '06/07/2024',
+    },
+    {
+      name: '',
+      date: '',
+    },
+    {
+      name: Bruno,
+      date: '06/07/2024',
+    }] },
+  { id: 'stress_18',
+    medal: medalsStress.StressPlatinumTripleGreen,
+    description: 'Aquirir em uma sessão 2+ pontos de stress decorrente de várias rolagens de pânico.',
+    name: 'for (let stress = 6; stress < 15; stress++)',
+    character: [{
+      name: André,
+      date: '06/07/2024',
+    },
+    {
+      name: '',
+      date: '',
+    },
+    {
+      name: Bruno,
+      date: '06/07/2024',
     }] },
   { id: 'eliminations_01',
     medal: medalsCombat.CombatBronzeDoubleRed,
@@ -522,8 +570,8 @@ export const achievements = [
       date: '29/06/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/07/2024',
     }] },
   { id: 'eliminations_local_fauna_02',
     medal: medalsCombat.CombatSilverSingleYellow,
