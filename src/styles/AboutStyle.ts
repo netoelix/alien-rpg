@@ -4,12 +4,23 @@ export const AboutStyle = styled.div`
 
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     padding: 20px;
-    margin-bottom: 20px;
-    width:90%;
+    margin: 50px auto 100px;
+    width: 90%;
+    overflow-y: auto;
+    background-color: #0b0c10;
+    border: 10px solid #333; 
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 20px; 
+
     
+    h1, h2, h3, h4 {
+        color: #dcdcaa;
+        text-shadow: 0 0 5px rgba(220,220,170,0.8);
+    }
+
     h1 {
         font-size: 2rem;
         color: white;
