@@ -101,13 +101,13 @@ export const AchievementsContainer = styled.div`
             align-content: center;
             .achievements {
                 width: 95%;
-                height: 130px;
+                height: 145px;
                 h3 {
                     font-size: 1rem;
                     width: 70%;
                 }
                 p {
-                    font-size: 1.5rem;
+                    font-size: 1.3rem;
                     text-align: center;
                     width: 70%;
                 }

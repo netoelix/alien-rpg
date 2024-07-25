@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-const esquadMembers = 'Trisha M. - Harper J. - Sean B., Song L. - Chistopher L. - Carla R.';
+const esquadMembers = 'Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.';
 export const timelines = [
   {
     dateTime: '04/04/2120',
     location: 'Acheron Prime',
     mission: 'Sobreviva a guerra',
-    esquad: 'Roberto M. - Trisha M. - Harper J. - Sean B., Song L. - Chistopher L. - Carla R.',
+    esquad: 'Roberto M. - Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.',
     descrition: '06:57 O som estridente da sirene ecoou pela base, arrancando-nos do sono, Roberto foi o primeiro a se levantar, O oficial entrou correndo, olhos arregalados de pânico, "Estamos sob ataque!" ele gritou. 07:10 Podíamos ver as naves /da UPP/ desembarcando tropas que destruíam tudo em seu caminho, A base estava em chamas. 07:15 /Soldados da Weyland Yutani/ apareceram tentando defender a base, não fazia sentido, eles estavam protegendo algo?. 07:19 Estávamos encurralados, Harper tentava encontrar uma rota de escape enquanto Sean preparava nossas armas, As torretas anti-aéreas estavam inativas. 07:30 Nosso oficial caiu, atingido no peito, Roberto gritou uma ordem e corremos em direção à torreta mais próxima, nossa última esperança. 07:40 Vermes subterrâneos emergiram, atacando soldados indiscriminadamente, /A base, construída para estudar essas criaturas, estava agora infestada por elas/. 08:01 Chegamos à torreta, Harper abriu a porta, mas antes que pudéssemos ativá-la, Sean notou uma /nave Titã/ entrando na atmosfera, /Os soldados da Weyland caíram, revelando sua verdadeira natureza: eram todos sintéticos/. 08:13 Sem energia e opções, encontramos um caminho pelo subsolo, buscando abrigo na instalação médica-científica. 08:15 Em meio à confusão, Roberto se separou do grupo e foi morto por /um dos vermes/, a esperança vacilava. 08:37 Encontramos uma saída, Lá fora, a destruição era total, mas uma nave ainda estava operacional, Subimos a bordo e Harper começou a forçar os motores e o reator a ligar. 08:40 Harper sabia dos riscos, mas era nossa única chance, Ele suava enquanto trabalhava nos controles, Trisha mantinha a guarda. 08:50 Conseguimos decolar, Em órbita, demos um salto cego para longe do planeta, momentos antes da nave inimiga /disparar um raio de luz em direção à superfície/, Estávamos feridos, exaustos e com um companheiro a menos, mas vivos.',
   },
   {

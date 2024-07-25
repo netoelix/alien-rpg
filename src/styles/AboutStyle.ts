@@ -4,7 +4,7 @@ export const AboutStyle = styled.div`
 
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     padding: 20px;
     margin: 50px auto 100px;
@@ -20,7 +20,7 @@ export const AboutStyle = styled.div`
         color: #dcdcaa;
         text-shadow: 0 0 5px rgba(220,220,170,0.8);
     }
-
+    
     h1 {
         font-size: 2rem;
         color: white;
