@@ -62,7 +62,9 @@ function Achievements({ achievements, characterIndex }: AchievementsProps) {
   }
 
   return (
-    <AchievementsContainer className="player-achievements">
+    <AchievementsContainer
+      className="player-achievements"
+    >
       <div className="inputs-container">
         <label htmlFor="medalType">Selecione uma categoria:</label>
         <select
