@@ -76,7 +76,7 @@ function Player() {
               { height: cardHeight[playerId] }
             }
           >
-            <div className="player-header">
+            <header className="player-header">
               <h1>{playerId}</h1>
 
               <div className="achievements-player">
@@ -89,7 +89,7 @@ function Player() {
                     </div>
                   ))}
               </div>
-            </div>
+            </header>
             {isVisible[playerId] && (
               <div className="player-card">
                 <div className="button-container">
