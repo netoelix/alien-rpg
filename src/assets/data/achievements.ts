@@ -406,8 +406,8 @@ export const achievements = [
       date: '',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '03/08/2024',
     },
     {
       name: '',
@@ -578,16 +578,16 @@ export const achievements = [
     description: 'Elimine 10 animais',
     name: 'Decorando a parede',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '03/08/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '03/08/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '03/08/2024',
     }] },
   { id: 'eliminations_local_fauna_03',
     medal: medalsCombat.CombatGoldSingleYellow,
@@ -770,16 +770,16 @@ export const achievements = [
     description: 'Viajar 10 parsecs',
     name: 'Maia',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '28/07/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '28/07/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '28/07/2024',
     }] },
   { id: 'exploration_03',
     medal: medalsExploration.ExplorationGoldSingleGreen,

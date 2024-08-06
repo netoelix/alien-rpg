@@ -5,25 +5,25 @@ import { TimeLineContainer } from '../styles/TimeLineStyle';
 function Timeline() {
   return (
     <TimeLineContainer>
-      <div className="time-line-container">
+      <section className="time-line-container">
         {
           timelines.map(({ dateTime, location, mission, descrition, esquad }, index) => (
-            <section className="time-lide-content" key={ index }>
-              <div className="time-line-folder">
+            <article className="time-lide-content" key={ index }>
+              <header className="time-line-folder">
                 <div>
                   <h3>{dateTime}</h3>
                   <h3>{location}</h3>
                 </div>
-              </div>
+              </header>
               <Description
                 mission={ mission }
                 descrition={ descrition }
                 esquad={ esquad }
               />
-            </section>
+            </article>
           ))
         }
-      </div>
+      </section>
     </TimeLineContainer>
   );
 }
