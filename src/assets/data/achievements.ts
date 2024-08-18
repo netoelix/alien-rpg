@@ -597,6 +597,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '06/07/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'eliminations_local_fauna_02',
     medal: medalsCombat.CombatSilverSingleYellow,
