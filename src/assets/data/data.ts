@@ -36,6 +36,6 @@ export const data = [
     profession: 'Dropship Crew Chief',
     codname: 'Brown Weasel',
     images: tokenRaissa,
-    about: '',
+    about: 'Carla Rodriguez nasceu em uma metrópole imensa e passou sua infância sobrevivendo nas ruas ao lado de outras crianças abandonadas. A vida nas ruas a transformou em uma lutadora feroz e engenhosa, desenvolvendo uma aptidão natural para o combate. Em busca de uma saída, ela se alistou nas Forças Armadas de Acheron Prime, onde suas habilidades adquiridas nas ruas encontraram um novo propósito. Embora sua carreira inicial tenha sido marcada por trabalho em uma pequena empresa com recursos e treinamento limitados, Carla aproveitou ao máximo o que estava disponível, sempre se esforçando para se fortalecer. Ela não é movida por grandes ambições, mas tem um desejo inabalável de aprimorar sua habilidade no combate. Carla é uma pessoa quieta e reservada, frequentemente à espreita, observando e aguardando o momento certo para agir. Sua lealdade é difícil de conquistar, mas uma vez que alguém ganha sua confiança, ela permanece ao lado dessa pessoa com uma dedicação feroz. Sua natureza impulsiva pode ser controlada pelas circunstâncias, permitindo que ela aja com precisão calculada quando necessário. Uma verdadeira guerreira de coração, Carla tem uma intensa fascinação por armas—tanto de fogo quanto brancas—o que a torna uma força formidável em qualquer conflito.',
   },
 ];
