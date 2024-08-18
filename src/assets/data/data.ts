@@ -3,6 +3,7 @@
 import tokenAndré from '../pictures/TrishaMonroe.png';
 import tokenFernando from '../pictures/HarperJammer.png';
 import tokenBruno from '../pictures/SeanBean.png';
+import tokenRaissa from '../pictures/CarlaRodriguez.png';
 
 export const data = [
   {
@@ -28,5 +29,13 @@ export const data = [
     codname: 'Black Weasel',
     images: tokenBruno,
     about: 'Sean Bean nasceu em uma colônia mineradora nas fronteiras da galáxia. Filho de um minerador e uma enfermeira, sua infância foi marcada pelas dificuldades da vida em um ambiente hostil, onde aprendeu a importância da resistência e da força física. Aos 18 anos, em busca de aventura e uma vida melhor, Sean se alistou no exército. Demonstrou rapidamente habilidades excepcionais em combate corpo a corpo, mas nunca recebeu uma promoção, permanecendo um soldado dedicado e determinado. Cansado da burocracia militar, Sean deixou o exército e se juntou a uma empresa de mercenários, acreditando que essa vida lhe proporcionaria mais liberdade. Ganhou a reputação de combatente implacável e estrategista astuto. Contratado para uma missão prometendo alta recompensa, Sean foi enviado a um planeta inexplorado, esperando ação e aventura. Ao chegar, descobriu que se tratava de uma expedição de pesquisa científica. Frustrado inicialmente, ele passou a ver o valor do trabalho dos cientistas e se dedicou a protegê-los. Antes que pudesse se adaptar completamente, o planeta foi devastado por uma catástrofe desconhecida. Sean foi um dos poucos sobreviventes, escapando por pouco. Traumatizado, mas determinado a encontrar um novo propósito, ele se alistou no exército das Américas Unidas. Durante o primeiro ano no novo exército, Sean passou por treinamentos rigorosos, aprimorando suas habilidades e adquirindo novas técnicas. Ganhou o apelido de "Night Rider" devido à sua eficácia em missões noturnas e de infiltração. Agora, Sean "Night Rider" Bean é um fuzileiro naval altamente treinado e resiliente, pronto para enfrentar qualquer desafio. Jovem e determinado, ele encontrou um novo propósito no exército das Américas Unidas, preparado para proteger a humanidade contra todas as ameaças.',
+  },
+  {
+    playerId: 'Raissa',
+    characterName: 'Carla Rodriguez',
+    profession: 'Dropship Crew Chief',
+    codname: 'Brown Weasel',
+    images: tokenRaissa,
+    about: '',
   },
 ];

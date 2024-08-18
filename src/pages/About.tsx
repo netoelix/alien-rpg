@@ -59,6 +59,23 @@ function About() {
           <li>
             <article>
               <header>
+                <h4>Andre</h4>
+              </header>
+              <p>
+                <span>Nome:</span>
+                {' '}
+                Trisha Monroe
+              </p>
+              <p>
+                <span>Função:</span>
+                {' '}
+                Comtech Marine
+              </p>
+            </article>
+          </li>
+          <li>
+            <article>
+              <header>
                 <h4>Fernando (Gelatto)</h4>
               </header>
               <p>
@@ -87,6 +104,23 @@ function About() {
                 <span>Função:</span>
                 {' '}
                 Fuzileiro
+              </p>
+            </article>
+          </li>
+          <li>
+            <article>
+              <header>
+                <h4>Raissa</h4>
+              </header>
+              <p>
+                <span>Nome:</span>
+                {' '}
+                Carla Rodriguez
+              </p>
+              <p>
+                <span>Função:</span>
+                {' '}
+                Dropship Crew Chief
               </p>
             </article>
           </li>
