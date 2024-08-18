@@ -11,6 +11,7 @@ import { medalsUnique } from './medals-unique';
 const Bruno = 'Bruno';
 const André = 'André';
 const Fernando = 'Fernando (Gelatto)';
+const Raissa = 'Raissa';
 
 export const achievements = [
   { id: 'stress_01',
@@ -28,6 +29,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '22/06/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'stress_02',
     medal: medalsStress.StressSilverSingleYellow,
@@ -44,6 +49,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '22/06/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'stress_03',
     medal: medalsStress.StressGoldSingleYellow,
@@ -92,6 +101,10 @@ export const achievements = [
     {
       name: '',
       date: '',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'stress_06',
     medal: medalsStress.StressBronzeSingleRed,
@@ -108,6 +121,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '22/06/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'stress_07',
     medal: medalsStress.StressBronzeDoubleRed,
@@ -124,6 +141,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '06/07/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'stress_08',
     medal: medalsStress.StressBronzeTripleRed,
@@ -156,6 +177,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '06/07/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'stress_10',
     medal: medalsStress.StressSilverDoubleRed,
@@ -764,6 +789,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '29/06/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'exploration_02',
     medal: medalsExploration.ExplorationSilverSingleGreen,
@@ -780,6 +809,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '28/07/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'exploration_03',
     medal: medalsExploration.ExplorationGoldSingleGreen,
@@ -828,6 +861,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '16/06/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'exploration_star_systems_02',
     medal: medalsExploration.ExplorationSilverSingleYellow,
@@ -908,6 +945,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '16/06/2024',
+    },
+    {
+      name: Raissa,
+      date: '17/08/2024',
     }] },
   { id: 'exploration_planets_02',
     medal: medalsExploration.ExplorationSilverSingleRed,
