@@ -90,6 +90,29 @@ export const TimeLineContainer = styled.main`
             font-size: 25px;
         }
     }
+
+    @keyframes slideBackground {
+        0% {
+            background-position: 0% 0%;
+        }
+        100% {
+            background-position: 100% 0%;
+        }
+    }
+
+    .corrompido {
+        background-image: repeating-linear-gradient(
+                45deg,
+                #11633F,
+                #11633F 1px,
+                #0e5533 1px,
+                #0e5533 2px,
+                #12B866 2px,
+                #12B866 3px
+            );
+        animation: slideBackground 1s linear infinite;
+    }
+    
     @media screen and (max-width: 1000px) {
         .time-lide-content {
         flex-direction: column;  

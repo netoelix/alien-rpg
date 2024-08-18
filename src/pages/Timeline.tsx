@@ -19,6 +19,7 @@ function Timeline() {
                 mission={ mission }
                 descrition={ descrition }
                 esquad={ esquad }
+                isCorrupted={ descrition === 'CORROMPIDO' }
               />
             </article>
           ))
