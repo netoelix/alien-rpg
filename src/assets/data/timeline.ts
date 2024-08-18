@@ -63,6 +63,6 @@ export const timelines = [
     location: '55 Cancri',
     mission: 'AU - Operação Checkout',
     esquad: 'Trisha M., Harper J., Sean B., Chistopher L., Carla R.',
-    descrition: 'ESTE LOG É CONFIDENCIAL',
+    descrition: 'CORROMPIDO',
   },
 ];

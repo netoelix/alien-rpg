@@ -2,12 +2,12 @@ interface DescriptionProps {
   mission: string | undefined;
   descrition: string;
   esquad: string | undefined;
+  isCorrupted: boolean;
 }
 
-function Description({ mission, descrition, esquad }: DescriptionProps) {
+function Description({ mission, descrition, esquad, isCorrupted }: DescriptionProps) {
   const hideTextBetweenSlashes = (text: string) => {
     const segments = text.split(/(\/.*?\/)/g);
-
     return segments.map((segment, index) => {
       if (segment.startsWith('/') && segment.endsWith('/')) {
         return (
@@ -33,7 +33,7 @@ function Description({ mission, descrition, esquad }: DescriptionProps) {
       );
     });
 
-  console.log(descriptionWithBreaksAndHiddenWords);
+  const corrompido = `time-line-description ${isCorrupted ? 'corrompido' : ''}`;
 
   return (
     <div className="time-line-resume">
@@ -43,7 +43,9 @@ function Description({ mission, descrition, esquad }: DescriptionProps) {
           {esquad}
         </h2>
       </div>
-      <div className="time-line-description">
+      <div
+        className={ corrompido }
+      >
         <div />
         {descriptionWithBreaksAndHiddenWords}
       </div>
