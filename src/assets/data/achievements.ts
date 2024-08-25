@@ -59,8 +59,8 @@ export const achievements = [
     description: 'Atingir 10 pontos de stress',
     name: 'Preciso de férias!!!',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '25/08/2024',
     },
     {
       name: '',
@@ -69,14 +69,18 @@ export const achievements = [
     {
       name: '',
       date: '',
+    },
+    {
+      nname: Raissa,
+      date: '25/08/2024',
     }] },
   { id: 'stress_04',
     medal: medalsStress.StressPlatinumSingleYellow,
-    description: 'Atingir 15+ pontos de stress',
+    description: 'Atingir 10+ pontos de stress',
     name: 'INFERNOOOOO!!!!!',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '25/08/2024',
     },
     {
       name: '',
@@ -203,8 +207,8 @@ export const achievements = [
     description: 'Rolar 12 no teste de pânico',
     name: 'AAAAAAAHHHHH!!!',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '25/08/2024',
     },
     {
       name: '',
@@ -213,6 +217,10 @@ export const achievements = [
     {
       name: '',
       date: '',
+    },
+    {
+      name: Raissa,
+      date: '25/08/2024',
     }] },
   { id: 'stress_12',
     medal: medalsStress.StressGoldSingleRed,
@@ -325,6 +333,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '06/07/2024',
+    },
+    {
+      name: Raissa,
+      date: '25/08/2024',
     }] },
   { id: 'eliminations_01',
     medal: medalsCombat.CombatBronzeDoubleRed,
@@ -1771,7 +1783,7 @@ export const achievements = [
       date: '',
     }] },
   { id: 'other_group_16',
-    medal: medalsUnique.UniquePlatinumTripleGreen,
+    medal: medalsUnique.UniquePlatinumTripleRed,
     description: 'Seja responsável parcial ou integralmente por uma catástrofe nuclear',
     name: 'New Chernobyl',
     character: [{
@@ -1785,5 +1797,37 @@ export const achievements = [
     {
       name: Bruno,
       date: '22/06/2024',
+    }] },
+  { id: 'other_group_17',
+    medal: medalsUnique.UniquePlatinumTripleGreen,
+    description: 'Protagonize uma cena cinematográfica na campanha',
+    name: 'Traga um oscar para esse jogador',
+    character: [{
+      name: André,
+      date: '25/08/2024',
+    },
+    {
+      name: '',
+      date: '',
+    },
+    {
+      name: '',
+      date: '',
+    }] },
+  { id: 'other_group_18',
+    medal: medalsUnique.UniquePlatinumTripleGreen,
+    description: 'Tente protagonizar uma cena cinematográfica na campanha e falhe miseravelmente',
+    name: 'Traga dois oscar para caso ele perca o primeiro',
+    character: [{
+      name: '',
+      date: '',
+    },
+    {
+      name: '',
+      date: '',
+    },
+    {
+      name: '',
+      date: '',
     }] },
 ];
