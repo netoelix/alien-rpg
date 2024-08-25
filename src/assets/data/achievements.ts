@@ -56,7 +56,7 @@ export const achievements = [
     }] },
   { id: 'stress_03',
     medal: medalsStress.StressGoldSingleYellow,
-    description: 'Atingir 10 pontos de stress',
+    description: 'Atingir 8 pontos de stress',
     name: 'Preciso de férias!!!',
     character: [{
       name: André,
@@ -201,6 +201,10 @@ export const achievements = [
     {
       name: Bruno,
       date: '06/07/2024',
+    },
+    {
+      name: Raissa,
+      date: '25/08/2024',
     }] },
   { id: 'stress_11',
     medal: medalsStress.StressSilverTripleRed,
@@ -243,8 +247,8 @@ export const achievements = [
     description: 'Rolar 14 no teste de pânico',
     name: 'Vem tranquilo',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '25/08/2024',
     },
     {
       name: '',
