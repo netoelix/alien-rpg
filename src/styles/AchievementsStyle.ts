@@ -38,8 +38,8 @@ export const AchievementsContainer = styled.div`
             justify-content: space-around;
             align-content: space-between;
             flex-wrap: wrap;
-            min-width: 45%;
-            height: 100px;
+            width: 45%;
+            height: 110px;
             background-size: 200% 100%;
             border: 2px solid #12B866;
             margin: 5px;
@@ -59,8 +59,10 @@ export const AchievementsContainer = styled.div`
             p {
                 padding-left: 10px;
                 font-size: 25px;
-                color: #142E15;
+                width: 80%;
                 color: #fff;
+                word-wrap: break-word;
+                word-break: break-word;
             }
 
             h3 {
