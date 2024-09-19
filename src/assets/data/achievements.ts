@@ -1850,4 +1850,20 @@ export const achievements = [
       name: '',
       date: '',
     }] },
+  { id: 'other_group_19',
+    medal: medalsUnique.UniqueGoldTripleGreen,
+    description: 'Finalize uma missão complexa sem nenhuma baixa oficial',
+    name: 'Ajudinha do editor',
+    character: [{
+      name: '',
+      date: '',
+    },
+    {
+      name: Fernando,
+      date: '07/09/2024',
+    },
+    {
+      name: '',
+      date: '',
+    }] },
 ];
