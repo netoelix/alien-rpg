@@ -1853,7 +1853,7 @@ export const achievements = [
   { id: 'other_group_19',
     medal: medalsUnique.UniqueGoldTripleGreen,
     description: 'Finalize uma missão complexa sem nenhuma baixa oficial',
-    name: 'Ajudinha do editor',
+    name: 'Entrar e sair, sem casualidades',
     character: [{
       name: '',
       date: '',
