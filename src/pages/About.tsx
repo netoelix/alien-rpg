@@ -14,6 +14,10 @@ function About() {
           encontrará resumos das sessões, informações detalhadas
           sobre os personagens e uma linha do tempo desse universo incrível.
         </p>
+        <p>
+          Gostaria de agradecer especialmente a André Luiz Brandão pelo
+          desenvolvimento excepcional de cada medalha nas conquistas.
+        </p>
         <h3>
           Seja bem vindo e lembre-se,
           <span> No espaço, ninguém pode te ouvir gritar</span>
