@@ -95,8 +95,8 @@ export const achievements = [
     description: 'Rolar 3 vezes seguidas um valor de stress entre 1 e 6',
     name: 'Nervos de aço',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '28/09/2024',
     },
     {
       name: Fernando,
