@@ -1727,8 +1727,8 @@ export const achievements = [
     description: 'Execute uma ordem difícil, mas necessária, que vá contra seus princípios morais em prol da sobrevivência da equipe.',
     name: 'Coração de Ferro',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '28/09/2024',
     },
     {
       name: '',
