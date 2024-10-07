@@ -67,87 +67,89 @@ function Player() {
   }
 
   return (
-    data.map(({ playerId, characterName, profession,
-      codname, images, about }) => (
-        <PlayerStyle key={ playerId }>
-          <section
-            className="player-container"
-            style={
+    data.map(({ playerId, characters }) => (
+      <PlayerStyle key={ playerId }>
+        <section
+          className="player-container"
+          style={
               { height: cardHeight[playerId] }
             }
-          >
-            <header className="player-header">
-              <h1>{playerId}</h1>
+        >
+          <header className="player-header">
+            <h1>{playerId}</h1>
 
-              <div className="achievements-player">
-                {shuffleArray(findAchievementsForPlayer(playerId)).slice(0, 3)
-                  .map((achievement, index) => (
-                    <div key={ index }>
-                      <div>
-                        <img src={ achievement.medal } alt={ achievement.description } />
-                      </div>
+            <div className="achievements-player">
+              {shuffleArray(findAchievementsForPlayer(playerId)).slice(0, 3)
+                .map((achievement, index) => (
+                  <div key={ index }>
+                    <div>
+                      <img src={ achievement.medal } alt={ achievement.description } />
                     </div>
-                  ))}
+                  </div>
+                ))}
+            </div>
+          </header>
+          {isVisible[playerId] && (
+            <div className="player-card">
+              <div className="button-container">
+                <div
+                  className={ selectedButton[playerId] === 'character'
+                    ? 'selected' : 'unselected' }
+                />
+                <button
+                  className="information-button"
+                  onClick={ () => handleButtonClick(playerId, 'character') }
+                >
+                  Personagens
+                </button>
+                <div
+                  className={ selectedButton[playerId] === 'character'
+                    ? 'selected' : 'unselected' }
+                />
+                <div
+                  className={ selectedButton[playerId] === 'achievements'
+                    ? 'selected' : 'unselected' }
+                />
+                <button
+                  className="information-button"
+                  onClick={ () => handleButtonClick(playerId, 'achievements') }
+                >
+                  Conquistas
+                </button>
+                <div
+                  className={ selectedButton[playerId] === 'achievements'
+                    ? 'selected' : 'unselected' }
+                />
               </div>
-            </header>
-            {isVisible[playerId] && (
-              <div className="player-card">
-                <div className="button-container">
-                  <div
-                    className={ selectedButton[playerId] === 'character'
-                      ? 'selected' : 'unselected' }
+              <div className="player-all-character">
+                {showComponentForPlayer[playerId] === 'achievements' ? (
+                  <Achievements
+                    achievements={ findAchievementsForPlayer(playerId) }
+                    characterIndex={ getPlayerIndex(playerId) }
                   />
-                  <button
-                    className="information-button"
-                    onClick={ () => handleButtonClick(playerId, 'character') }
-                  >
-                    Personagens
-                  </button>
-                  <div
-                    className={ selectedButton[playerId] === 'character'
-                      ? 'selected' : 'unselected' }
-                  />
-                  <div
-                    className={ selectedButton[playerId] === 'achievements'
-                      ? 'selected' : 'unselected' }
-                  />
-                  <button
-                    className="information-button"
-                    onClick={ () => handleButtonClick(playerId, 'achievements') }
-                  >
-                    Conquistas
-                  </button>
-                  <div
-                    className={ selectedButton[playerId] === 'achievements'
-                      ? 'selected' : 'unselected' }
-                  />
-                </div>
-                <div className="player-all-character">
-                  {showComponentForPlayer[playerId] === 'achievements' ? (
-                    <Achievements
-                      achievements={ findAchievementsForPlayer(playerId) }
-                      characterIndex={ getPlayerIndex(playerId) }
-                    />
-                  ) : (
+                ) : (
+                  characters.map((character, index) => (
                     <Character
-                      characterName={ characterName }
-                      profession={ profession }
-                      codname={ codname }
-                      images={ images }
-                      about={ about }
+                      key={ index }
+                      characterName={ character.characterName }
+                      profession={ character.profession }
+                      codname={ character.codname }
+                      images={ character.images }
+                      about={ character.about }
                     />
-                  )}
-                </div>
+                  ))
+                )}
               </div>
-            )}
-            <button
-              className="player-final-card"
-              onClick={ () => toggleVisibility(playerId) }
-            >
-              Expandir / Recolher
-            </button>
-          </section>
-        </PlayerStyle>
+            </div>
+          )}
+          <button
+            className="player-final-card"
+            onClick={ () => toggleVisibility(playerId) }
+          >
+            Expandir / Recolher
+          </button>
+        </section>
+      </PlayerStyle>
     ))
   );
 }
