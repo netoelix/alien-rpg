@@ -215,8 +215,8 @@ export const achievements = [
       date: '25/08/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/10/2024',
     },
     {
       name: '',
@@ -231,12 +231,12 @@ export const achievements = [
     description: 'Rolar 13 no teste de pânico',
     name: 'Run bitch, RUN!!',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '06/10/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/10/2024',
     },
     {
       name: '',
@@ -263,8 +263,8 @@ export const achievements = [
     description: 'Rolar 15+ no teste de pânico',
     name: 'Qual o sentido da vida?',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '06/10/2024',
     },
     {
       name: '',
@@ -279,8 +279,8 @@ export const achievements = [
     description: 'Adquirir algum Trauma mental permanente',
     name: 'Ala psiquiátrica',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '06/10/2024',
     },
     {
       name: '',
@@ -1861,6 +1861,22 @@ export const achievements = [
     {
       name: Fernando,
       date: '07/09/2024',
+    },
+    {
+      name: '',
+      date: '',
+    }] },
+  { id: 'other_group_19',
+    medal: medalsUnique.UniqueBronzeSingleBlack,
+    description: 'Perca um personagem',
+    name: 'Descanse em paz',
+    character: [{
+      name: André,
+      date: '06/10/2024',
+    },
+    {
+      name: '',
+      date: '',
     },
     {
       name: '',
