@@ -22,6 +22,11 @@ function Navigation() {
         <NavLink to="/timeline">Logs das missões</NavLink>
         <div className={ isSelected('/timeline') ? 'selected' : 'unselected' } />
       </div>
+      {/* <div className="nav-container">
+        <div className={ isSelected('/map') ? 'selected' : 'unselected' } />
+        <NavLink to="/map">Mapa</NavLink>
+        <div className={ isSelected('/map') ? 'selected' : 'unselected' } />
+      </div> */}
     </>
   );
 }

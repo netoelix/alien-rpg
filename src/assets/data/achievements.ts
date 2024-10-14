@@ -1875,8 +1875,8 @@ export const achievements = [
       date: '06/10/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '12/10/24',
     },
     {
       name: '',
