@@ -63,8 +63,8 @@ export const achievements = [
       date: '25/08/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/10/2024',
     },
     {
       name: '',
@@ -271,8 +271,8 @@ export const achievements = [
       date: '',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/10/2024',
     }] },
   { id: 'stress_15',
     medal: medalsStress.StressPlatinumTripleBlack,
