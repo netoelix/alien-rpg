@@ -68,12 +68,12 @@ function About() {
               <p>
                 <span>Nome:</span>
                 {' '}
-                Trisha Monroe
+                Takeo &quot;Kaiju&quot; Ichinoda
               </p>
               <p>
                 <span>Função:</span>
                 {' '}
-                Comtech Marine
+                Operario - Breacher
               </p>
             </article>
           </li>
@@ -85,12 +85,12 @@ function About() {
               <p>
                 <span>Nome:</span>
                 {' '}
-                Harper &quot;Offroad&quot; Jammer
+                C.R.I.S.
               </p>
               <p>
                 <span>Função:</span>
                 {' '}
-                Piloto
+                Protocol Rifleman
               </p>
             </article>
           </li>
