@@ -83,8 +83,8 @@ export const achievements = [
       date: '25/08/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/10/2024',
     },
     {
       name: Raissa,
@@ -283,8 +283,8 @@ export const achievements = [
       date: '06/10/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Bruno,
+      date: '06/10/2024',
     },
     {
       name: Raissa,
