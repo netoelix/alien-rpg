@@ -91,14 +91,14 @@ export const timelines = [
     location: 'Zeta Herculis',
     mission: 'AU - Infiltração',
     esquad: 'Sean B., Carla R., C.R.I.S., Takeo "Kaiju" Ichinoda, Rubber Joe',
-    descrition: 'CORROMPIDO',
+    descrition: 'Após chegar ao sistema /NN3049/, o grupo Wild Weasel recebeu uma nova missão: recuperar uma base abandonada em /Zeta Herculis/, localizada /dentro do território da UPP/. A AU acredita que retomar essa base, anteriormente /operada pela Weyland-Yutani/, pode mudar os rumos da guerra. A viagem ocorreu sem incidentes, e ao chegar, os Wild Weasel enfrentaram pouca resistência, /devido ao isolamento do sistema/. A base, identificada como /Hadleys Hope/, foi localizada rapidamente no planeta. Carla pousou a nave com segurança próximo à instalação, que aparentava estar abandonada há muito tempo. CRIS e Sean investigaram os arredores enquanto Carla e Takeo exploraram o interior da base. Durante a varredura interna, /encontraram oficiais da UPP recém-chegados/. Após um combate breve, os inimigos foram eliminados e a base foi dominada. A equipe iniciou os preparativos para reativar a operação da instalação, /marcando a conquista do primeiro sistema da UPP pela missão/.',
   },
   {
     dateTime: '17/09/2122',
     location: 'KOI-2311',
     mission: 'AU - Invasão',
     esquad: 'Sean B., Carla R., C.R.I.S., Takeo "Kaiju" Ichinoda, Rubber Joe',
-    descrition: 'CORROMPIDO',
+    descrition: 'Poucos dias após a retomada de /Hadleys Hope/, os Wild Weasel receberam uma nova missão: infiltrar-se em um posto avançado da /UPP localizado no sistema KOI-2311/. A ordem da AU era clara: evitar chamar atenção inicialmente, evacuar civis, se possível, e destruir toda a base. /Utilizando uma nave civil/, o grupo chegou ao sistema sem problemas, /atracando na estação civil de transporte interestelar/. /Optaram por se infiltrar pelo terminal de cargas, disfarçando-se como trabalhadores locais/. /CRIS conseguiu convencer um supervisor civil a contratá-los como temporários, garantindo acesso à área militar/. Sob disfarce, implantaram explosivos em cada estrutura militar, planejando a detonação remota. Durante a operação, Takeo teve a ideia de criar uma vala para impedir que o combustível da tubulação conectando as áreas militar e civil alcançasse a zona civil, minimizando danos colaterais. /Apesar de quase serem descobertos durante a última instalação dos explosivos, conseguiram escapar e detonaram toda a área militar/, preservando a segurança da zona civil. Com a destruição da base militar, as naves de guerra da AU avançaram e /consolidaram o domínio sobre o segundo sistema da UPP/.',
   },
   {
     dateTime: '25/10/2122',
