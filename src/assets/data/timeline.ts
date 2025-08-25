@@ -112,6 +112,13 @@ export const timelines = [
     location: 'KEPLER 22B',
     mission: 'AU - Sabotar suprimentos',
     esquad: 'Sean B., Carla R., C.R.I.S., Takeo "Kaiju" Ichinoda, Rubber Joe',
-    descrition: 'Em andamento',
+    descrition: 'Sem retorno',
+  },
+  {
+    dateTime: '[REDACTED]',
+    location: 'QG Provisorio – AU',
+    mission: 'Alto Comando, Divisao de Operacoes Especiais',
+    esquad: 'Wild Weasel',
+    descrition: 'Após 96 horas sem comunicações válidas, protocolos de contingência foram acionados. Todas as tentativas de reconectar canais criptografados resultaram em silêncio absoluto. Não há registros de tráfego de nave, transmissões de socorro ou indicadores de sobrevivência. Unidade WILD WEASEL oficialmente designada como: "ESQUADRÃO DESAPARECIDO". Integrantes listados como KIA (presumidos mortos em combate):. Sean B – Líder de esquadrão. Carla R – Piloto de combate. CRIS – Unidade de Inteligência Sintética. Takeo "Kaiju" Ichinoda – Artilharia de Assalto. Rubber Joe – Suporte de Campo. Registro final anexado ao banco de dados memorial da AU. Status: Encerrado. Observação: Sem corpos. Sem respostas. Apenas silêncio.',
   },
 ];

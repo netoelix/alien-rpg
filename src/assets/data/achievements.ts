@@ -491,8 +491,8 @@ export const achievements = [
     description: 'Elimine 1 Xenomorfo',
     name: 'Tem certeza que ele morreu?',
     character: [{
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '16/08/2025',
     },
     {
       name: '',
@@ -507,8 +507,8 @@ export const achievements = [
     description: 'Elimine 5 Xenomorfos',
     name: 'Acho que to pegando o jeito',
     character: [{
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '16/08/2025',
     },
     {
       name: '',
@@ -1055,16 +1055,16 @@ export const achievements = [
     description: 'Encontrar com os Engenheiros',
     name: 'De frente com o criador',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '16/08/2025',
     },
     {
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '16/08/2025',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '16/08/2025',
     }] },
   { id: 'special_exploration_02',
     medal: medalsUnique.UniqueSilverTripleBlack,
@@ -1535,12 +1535,12 @@ export const achievements = [
     description: 'Adquirir pelo menos uma vez o status "desidratado"',
     name: 'água a 1,5km',
     character: [{
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '10/08/2025',
     },
     {
-      name: '',
-      date: '',
+      name: André,
+      date: '10/08/2025',
     },
     {
       name: '',
@@ -1551,12 +1551,12 @@ export const achievements = [
     description: 'Adquirir pelo menos uma vez o status "faminto"',
     name: 'Tábata Pelegrini',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '10/08/2025',
     },
     {
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '10/08/2025',
     },
     {
       name: '',
@@ -1599,16 +1599,16 @@ export const achievements = [
     description: 'Escape de uma nave prestes a explodir.',
     name: 'Escapadinha Espacial',
     character: [{
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '10/05/2025',
     },
     {
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '10/05/2025',
     },
     {
-      name: '',
-      date: '',
+      name: André,
+      date: '10/05/2025',
     }] },
   { id: 'other_group_04',
     medal: medalsUnique.UniqueGoldTripleYellow,
@@ -1631,8 +1631,8 @@ export const achievements = [
     description: 'Tenha três lesões críticas consecutivas contra você e sobreviva.',
     name: 'Maré de Azar',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '16/08/2025',
     },
     {
       name: '',
@@ -1663,8 +1663,8 @@ export const achievements = [
     description: 'Salve um companheiro de equipe de um ataque alienígena em um momento crítico.',
     name: 'Espírito de Equipe',
     character: [{
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '16/08/2025',
     },
     {
       name: '',
@@ -1679,8 +1679,8 @@ export const achievements = [
     description: 'Priorize salvar civis inocentes em uma missão, mesmo que isso signifique colocar sua própria vida em risco.',
     name: 'Humanidade em Primeiro Lugar',
     character: [{
-      name: '',
-      date: '',
+      name: Fernando,
+      date: '24/08/2025',
     },
     {
       name: '',
@@ -1759,8 +1759,8 @@ export const achievements = [
     description: 'Mantenha a sanidade mental após enfrentar horrores cósmicos e sobreviver a um encontro direto com a Rainha Alien.',
     name: 'Bobo da Corte',
     character: [{
-      name: '',
-      date: '',
+      name: André,
+      date: '16/08/2025',
     },
     {
       name: '',
@@ -1827,8 +1827,8 @@ export const achievements = [
       date: '25/08/2024',
     },
     {
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '16/08/2025',
     },
     {
       name: '',
@@ -1879,7 +1879,7 @@ export const achievements = [
       date: '12/10/24',
     },
     {
-      name: '',
-      date: '',
+      name: Raissa,
+      date: '24/08/2025',
     }] },
 ];
