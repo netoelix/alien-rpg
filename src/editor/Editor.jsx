@@ -1,3 +1,4 @@
+import { NavigationEditor } from './NavigationEditor.jsx';
 import { useEffect, useState } from 'react';
 import {
   newCampaign,
@@ -18,6 +19,7 @@ import { Eyebrow } from '../components/Common.jsx';
 
 const sections = [
   ['campaign', 'CAMPANHA'],
+  ['navigation', 'MAPA ESTELAR'],
   ['players', 'JOGADORES'],
   ['characters', 'PERSONAGENS'],
   ['timelines', 'MISSÕES'],
@@ -815,7 +817,21 @@ export default function Editor() {
               selecionada.
             </p>
           ) : null}
-          {section !== 'campaign' ? (
+          {section === 'navigation' ? (
+            <NavigationEditor
+              key={campaignId}
+              campaign={campaign}
+              onApply={(navigation) =>
+                updateArchive({
+                  ...archive,
+                  campaigns: archive.campaigns.map((entry) =>
+                    entry.id === campaignId ? { ...entry, navigation } : entry,
+                  ),
+                })
+              }
+            />
+          ) : null}
+          {section !== 'campaign' && section !== 'navigation' ? (
             <div className="toolbar">
               <label>
                 Registro
@@ -837,7 +853,7 @@ export default function Editor() {
               </label>
             </div>
           ) : null}
-          {record ? (
+          {record && section !== 'navigation' ? (
             <RecordForm
               key={`${campaignId}:${section}:${selected}:${dirty}:${appliedVersion}`}
               section={section}

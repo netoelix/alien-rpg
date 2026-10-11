@@ -1,3 +1,4 @@
+import { validateNavigation } from './star-map.js';
 import { normalizePlayerProfiles } from './player-profiles.js';
 import { validateCampaign } from './schema.js';
 
@@ -69,6 +70,7 @@ export function validateArchive(archive) {
       ...campaign,
       achievements: campaignAchievements(archive, campaign),
     });
+    campaignErrors.push(...validateNavigation(campaign));
     const grantIds = new Set();
     for (const grant of campaign.achievements) {
       if (!grant || typeof grant.id !== 'string' || !Array.isArray(grant.character)) {
