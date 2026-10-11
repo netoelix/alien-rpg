@@ -1,0 +1,6 @@
+Campo nname convertido para name em stress_03
+ID repetido preservado no original: other_group_19
+Ano abreviado expandido em other_group_19-legacy-2
+Vínculos dos logs derivados provisoriamente dos nomes do esquadrão.
+Não foram criadas concessões exclusivas de personagens nem repetidas.
+O mapa do protótipo é esquemático, não representa coordenadas astronômicas oficiais.
