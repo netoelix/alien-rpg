@@ -633,7 +633,7 @@ export default function Editor() {
               : 'Os arquivos locais estão salvos.'}{' '}
             Alterações no formulário precisam ser aplicadas ao rascunho.
           </p>
-          <div className="toolbar">
+          <div className="toolbar campaign-picker">
             <label>
               Campanha
               <select

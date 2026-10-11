@@ -374,6 +374,12 @@ footer {
   font-size: 11px;
   color: var(--muted);
 }
+.campaign-picker select,
+.campaign-picker > button {
+  min-height: 44px;
+  font-size: 12px;
+  line-height: 1.4;
+}
 .toolbar input {
   width: 280px;
   max-width: 100%;
