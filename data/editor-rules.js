@@ -2,7 +2,7 @@ export const requiredRecordFields = {
   campaign: [],
   players: ['playerId'],
   characters: ['characterName', 'profession', 'about', 'owner', 'images'],
-  timelines: ['mission', 'location', 'dateTime', 'esquad', 'descrition'],
+  timelines: ['mission', 'location', 'dateTime', 'esquad'],
   logs: ['title', 'dateTime', 'esquad', 'descrition', 'missionIndex'],
   achievements: ['name', 'description', 'medal', 'category', 'rank'],
 };

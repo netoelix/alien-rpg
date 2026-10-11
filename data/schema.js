@@ -1,12 +1,17 @@
 export function missionRecords(mission) {
   const { logs, ...primary } = mission;
+  const records = Object.hasOwn(mission, 'descrition')
+    ? [
+        {
+          ...primary,
+          title: mission.logTitle || 'Relato oficial',
+          dateTime: mission.logDateTime || mission.dateTime,
+          session: mission.session || '',
+        },
+      ]
+    : [];
   return [
-    {
-      ...primary,
-      title: mission.logTitle || 'Relato oficial',
-      dateTime: mission.logDateTime || mission.dateTime,
-      session: mission.session || '',
-    },
+    ...records,
     ...(logs || []).map((log) => ({
       ...log,
       mission: mission.mission,
@@ -114,16 +119,15 @@ export function validateCampaign(data) {
   if (
     data.timelines.some(
       (log) =>
-        !log ||
-        ['mission', 'location', 'dateTime', 'esquad', 'descrition'].some(
-          (field) => !text(log[field]),
-        ),
+        !log || ['mission', 'location', 'dateTime', 'esquad'].some((field) => !text(log[field])),
     )
   )
     return ['Registro de missão incompleto.'];
   for (const mission of data.timelines) {
     if (mission.logs !== undefined && !Array.isArray(mission.logs))
       return ['Lista de registros inválida.'];
+    if (Object.hasOwn(mission, 'descrition') && !text(mission.descrition))
+      return ['Relato antigo inválido.'];
     const logIds = new Set();
     for (const log of mission.logs || []) {
       if (
@@ -178,7 +182,7 @@ export function validateCampaign(data) {
     }
   }
   for (const log of data.timelines)
-    if (!log.mission || !log.location || !log.dateTime || typeof log.descrition !== 'string')
+    if (!log.mission || !log.location || !log.dateTime)
       errors.push('Registro de missão incompleto.');
   return errors;
 }

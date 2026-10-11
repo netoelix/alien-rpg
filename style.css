@@ -822,3 +822,56 @@ button:disabled {
   flex-direction: column;
   gap: 10px;
 }
+
+.collapsible-section {
+  margin-top: 28px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.collapsible-section summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  list-style: none;
+}
+.collapsible-section summary::-webkit-details-marker {
+  display: none;
+}
+.collapsible-section summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.collapsible-section summary h2 {
+  margin: 0;
+}
+.section-count {
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: 8px;
+}
+.expand-label,
+.collapse-label {
+  color: var(--accent);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.collapse-label {
+  display: none;
+}
+.collapsible-section[open] .expand-label {
+  display: none;
+}
+.collapsible-section[open] .collapse-label {
+  display: inline;
+}
+.collapsible-content {
+  padding: 0 18px 18px;
+}
+@media (max-width: 600px) {
+  .collapsible-section summary {
+    flex-wrap: wrap;
+  }
+}

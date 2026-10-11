@@ -101,7 +101,13 @@ test('salvar gera backup exato e conflitos ou dados inválidos preservam o arqui
     const original = JSON.stringify(fixture);
     await writeFile(path.join(root, 'data', 'archive.json'), original);
     const store = createEditorStore(root);
+    const initial = await store.load();
+    await writeFile(
+      path.join(root, 'data', 'mission-migration.json'),
+      JSON.stringify({ fromRevision: 'revisao-anterior', toRevision: initial.revision }),
+    );
     const loaded = await store.load();
+    assert.equal(loaded.previousDraftRevision, 'revisao-anterior');
     const changed = structuredClone(fixture);
     changed.campaigns[0].title = 'Título editado';
     changed.campaigns[0].timelines[0].logs = [
@@ -120,6 +126,7 @@ test('salvar gera backup exato e conflitos ou dados inválidos preservam o arqui
       original,
     );
     assert.equal((await store.load()).archive.campaigns[0].title, 'Título editado');
+    assert.equal((await store.load()).previousDraftRevision, undefined);
     assert.equal(
       (await store.load()).archive.campaigns[0].timelines[0].logs[0].title,
       'Relatório secundário',

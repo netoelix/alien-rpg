@@ -85,6 +85,12 @@ export function MissionPage({ id }) {
           </p>
           <h3 className="section-intro">Registros desta missão</h3>
           <div className="mission-record-links">
+            {!records.length ? (
+              <div className="empty">
+                Nenhum registro de sessão nesta missão. Os relatos podem ser adicionados pelo
+                editor.
+              </div>
+            ) : null}
             {records.map((record, index) => (
               <RouteLink key={record.id || index} to={`log/${id}/${index}`}>
                 {String(index + 1).padStart(2, '0')} · {record.title} →
@@ -108,9 +114,7 @@ export function MissionPage({ id }) {
           {records.map((record, index) => (
             <div className="document mission-record" key={record.id || index}>
               <span className="tag">REGISTRO / {String(index + 1).padStart(2, '0')}</span>
-              <h2 className="section-intro">
-                {records.length === 1 && !log.logTitle ? 'Relato da missão' : record.title}
-              </h2>
+              <h2 className="section-intro">{record.title}</h2>
               <p className="muted small-text">
                 {record.dateTime} · DATA NO UNIVERSO{record.session ? ' · ' + record.session : ''}
               </p>

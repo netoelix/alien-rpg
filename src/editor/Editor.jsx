@@ -46,7 +46,6 @@ const missionFields = [
   ['location', 'Sistema / localização'],
   ['dateTime', 'Data no universo'],
   ['esquad', 'Equipe registrada'],
-  ['descrition', 'Relato oficial', 'textarea'],
 ];
 const logFields = [
   ['title', 'Título do registro'],
@@ -97,7 +96,7 @@ function emptyRecord(section, assets) {
       descrition: '',
     };
   if (section === 'timelines')
-    return { mission: '', location: '', dateTime: '', esquad: '', descrition: '' };
+    return { mission: '', location: '', dateTime: '', esquad: '', logs: [] };
   return {
     id,
     name: '',
@@ -346,7 +345,7 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
             required
             value={value.missionIndex}
             onChange={(event) => change('missionIndex', event.target.value)}
-            disabled={record.primary || record.recordIndex !== undefined}
+            disabled={record.recordIndex !== undefined}
           >
             <option value="">Selecione uma missão</option>
             {campaign.timelines.map((mission, index) => (
@@ -359,8 +358,8 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
       ) : null}
       {section === 'timelines' ? (
         <p className="muted small-text">
-          As datas são fictícias. Para censura narrativa, escreva /texto censurado/. Use CORROMPIDO
-          para um relato indisponível.
+          Cadastre os dados da operação. Depois, adicione os relatos em Registros de sessão. As
+          datas pertencem ao universo do jogo.
         </p>
       ) : null}
       {section === 'achievements' ? (
@@ -494,6 +493,7 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
 export default function Editor() {
   const [archive, setArchive] = useState(null);
   const [revision, setRevision] = useState('');
+  const [draftRevision, setDraftRevision] = useState('');
   const [assets, setAssets] = useState([]);
   const [campaignId, setCampaignId] = useState('');
   const [section, setSection] = useState('campaign');
@@ -515,6 +515,10 @@ export default function Editor() {
         let cached;
         try {
           cached = sessionStorage.getItem('alien-editor-draft:' + result.revision);
+          if (!cached && result.previousDraftRevision) {
+            cached = sessionStorage.getItem('alien-editor-draft:' + result.previousDraftRevision);
+            if (cached) setDraftRevision(result.previousDraftRevision);
+          }
         } catch {
           /* Armazenamento opcional. */
         }
@@ -543,6 +547,7 @@ export default function Editor() {
   }, [dirty]);
 
   function updateArchive(next) {
+    next = normalizeArchive(next);
     try {
       sessionStorage.setItem('alien-editor-draft:' + revision, JSON.stringify(next));
     } catch {
@@ -569,7 +574,6 @@ export default function Editor() {
                   ...log,
                   missionIndex: String(missionIndex),
                   recordIndex,
-                  primary: recordIndex === 0,
                 })),
               )
             : section === 'players'
@@ -603,19 +607,9 @@ export default function Editor() {
         setMessage('Crie uma missão antes de adicionar registros.');
         return false;
       }
-      if (primary) {
-        Object.assign(parent, {
-          logTitle: log.title,
-          session: log.session,
-          logDateTime: log.dateTime,
-          esquad: log.esquad,
-          descrition: log.descrition,
-        });
-      } else {
-        parent.logs ??= [];
-        if (selected === 'new') parent.logs.push(log);
-        else parent.logs[recordIndex - 1] = log;
-      }
+      parent.logs ??= [];
+      if (selected === 'new') parent.logs.push(log);
+      else parent.logs[recordIndex] = log;
     } else if (section === 'characters') {
       const { owner, ...character } = value;
       if (!target.players[Number(owner)])
@@ -674,6 +668,7 @@ export default function Editor() {
       if (!response.ok) throw new Error(result.error);
       try {
         sessionStorage.removeItem('alien-editor-draft:' + revision);
+        if (draftRevision) sessionStorage.removeItem('alien-editor-draft:' + draftRevision);
       } catch {
         /* Armazenamento opcional. */
       }
@@ -809,8 +804,8 @@ export default function Editor() {
           </div>
           {section === 'logs' ? (
             <p className="muted">
-              Cada missão começa com um relato oficial. Aqui você pode editar esse relato ou
-              acrescentar registros para outras sessões, com títulos livres e datas próprias.
+              Selecione uma missão e adicione registros com títulos livres e datas próprias. Todos
+              os relatos são editados aqui.
             </p>
           ) : null}
           {section === 'achievements' ? (

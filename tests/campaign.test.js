@@ -41,7 +41,9 @@ test('todos os retratos e medalhas referenciados existem', async () => {
 });
 test('logs distinguem menção de participação registrada no esquadrão', () => {
   const minsk = model.characters[6];
-  const log = data.timelines.find((item) => item.descrition.includes('Minsk'));
+  const log = data.timelines.find((item) =>
+    item.logs.some((record) => record.descrition.includes('Minsk')),
+  );
   assert(model.relatedTo(log, minsk));
   assert(!model.logMembers(log).some((character) => character.id === minsk.id));
 });

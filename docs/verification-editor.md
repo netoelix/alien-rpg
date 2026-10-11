@@ -40,3 +40,10 @@ O acervo original não foi reescrito. Dados antigos recebem adaptação em memó
 
 
 Os cards de campanhas do perfil levam à rota `player-characters`, que exibe somente os personagens daquele jogador na campanha escolhida. Verificado no navegador: André na campanha de teste abriu o card de Fragmentos da Guerra e visualizou exclusivamente Trisha e Takeo, com links para seus dossiês.
+
+
+## Separação completa entre missão e registros
+
+O cadastro de missão contém nome, sistema, data fictícia e equipe; pode existir sem relatos. Todos os textos são cadastrados e editados em REGISTROS DE SESSÃO. Os 17 relatos de Fragmentos da Guerra foram transferidos para `mission.logs` após gerar um backup integral. Impressões SHA-256 verificam texto, equipe, data, sistema e ordem originais. A normalização converte backups e rascunhos antigos de forma idempotente, incluindo registros adicionais já criados. O manifesto de migração permite recuperar o rascunho aplicado à revisão anterior somente enquanto o arquivo ainda corresponde exatamente à revisão migrada; a proteção contra conflitos continua ativa. Links antigos continuam abrindo o primeiro registro.
+
+Conquistas, acervo entre campanhas e missões do perfil do jogador começam recolhidos. O botão EXPANDIR abre o conteúdo e passa a RECOLHER, mantendo contagens visíveis. As missões na guia de personagem usam o mesmo controle. Verificação no navegador: 40 conquistas e 17 missões expandiram e recolheram; missão criada sem texto e relato migrado disponível na seção de registros.

@@ -1,0 +1,91 @@
+{
+  "fromRevision": "d21c1f50f509683b356c6fd1de5e418cb06d6666ede712eebc6375c65ff1da5b",
+  "toRevision": "af2bcc7e16156100f799dea6e6687b13f1c63ebd27a67734a3de65a802a52c67",
+  "fingerprints": [
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 0,
+      "sha256": "9dc630cae266a75e939cbbf4fd418ec95272eee6290ca98b8459f145338cfc27"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 1,
+      "sha256": "4c66b3350a065d1f03562735e45213af5f31143269a08b0b2d434c5c615e8bd8"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 2,
+      "sha256": "13455c0cb6cacd1ef1aae6fdfc2f81823f11abbd91a1adef60b8b4faf59c6dba"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 3,
+      "sha256": "a836b8f091a673b3e6caff007ca02bab04de4ff08a720fcb801e992021d82b62"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 4,
+      "sha256": "ad90368fc8d590aedec63ce05d19425463a98a69bf87486d16eaa5c0ed77a6d6"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 5,
+      "sha256": "dd8495467d51179ffa52f821e23643cf179addb2372cf33b319903af9dfb0ea8"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 6,
+      "sha256": "d49d88355389c052b8a6af793295dffaabb62726e6781ad50d1da700a04452b5"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 7,
+      "sha256": "38c4c3bfba7ae04ba2def4d0c524e3c2eeb906cb89cce651151cfa1dcb017cb2"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 8,
+      "sha256": "d104c25cfb51ff526b03ce1c42bfc28a714a40cf524a1c6e214c2d40447a1be5"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 9,
+      "sha256": "9f1afe3831e2eb3e8595e45fbcb23f533402548279e22cb97f4275609f7eb6e8"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 10,
+      "sha256": "c0df237aa4305f0e4319a798fc9311e30f6af041c6c9b08391dacd58ec43b0c1"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 11,
+      "sha256": "ab3a886758f23d090b7d66d5ba2dab9a6d30487f6d52cd4d2b3842df3688e04f"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 12,
+      "sha256": "0c555bc6bbee9165905502baf29dfef23561a7c5ca7b2588b98c0eb9aa559304"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 13,
+      "sha256": "14808769958c5b4477ba84b6982bb971871775b20d5f899373a6265b83edba06"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 14,
+      "sha256": "cab99dd957f4a7cc300e338e713049f9294eac875e66bf0a06d2396df170b59c"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 15,
+      "sha256": "9fb99d9d0640fcd9a0b807105aae64a8d5d54a9e9c4810e537ace22ba7a9c4f1"
+    },
+    {
+      "campaignId": "fragmentos-da-guerra",
+      "index": 16,
+      "sha256": "6aed8c9937590b592e33259671888779f17ef9bcaebd1342f7f045843bdf5db2"
+    }
+  ]
+}

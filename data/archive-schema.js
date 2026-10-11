@@ -169,6 +169,24 @@ export function normalizeArchive(archive) {
   }
   if (!Array.isArray(normalized.achievements)) throw new Error('Catálogo ausente.');
   for (const campaign of normalized.campaigns) {
+    for (const [index, mission] of (campaign.timelines || []).entries()) {
+      if (Object.hasOwn(mission, 'descrition')) {
+        if (typeof mission.descrition !== 'string') throw new Error('Relato antigo inválido.');
+        mission.logs = [
+          {
+            id: 'relato-original-' + index,
+            title: mission.logTitle || 'Relato oficial',
+            session: mission.session || '',
+            dateTime: mission.logDateTime || mission.dateTime,
+            esquad: mission.esquad,
+            descrition: mission.descrition,
+          },
+          ...(mission.logs || []),
+        ];
+        for (const field of ['descrition', 'logTitle', 'logDateTime', 'session'])
+          delete mission[field];
+      } else mission.logs ??= [];
+    }
     campaign.title =
       campaign.title?.trim() || automaticCampaignTitle(normalized.campaigns, campaign.id);
     for (const field of [

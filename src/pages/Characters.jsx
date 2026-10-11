@@ -8,6 +8,7 @@ import {
   MissionFolders,
   Narrative,
   CharacterStatus,
+  CollapsibleSection,
 } from '../components/Common.jsx';
 
 export function CharactersPage() {
@@ -163,9 +164,11 @@ export function CharacterPage({ id }) {
           <div id="character-content">
             {section === 'bio' ? <Biography character={character} /> : null}
             {section === 'logs' ? (
-              <div className="folders">
-                <MissionFolders entries={relatedLogs} />
-              </div>
+              <CollapsibleSection title="Missões relacionadas" count={relatedLogs.length}>
+                <div className="folders">
+                  <MissionFolders entries={relatedLogs} />
+                </div>
+              </CollapsibleSection>
             ) : null}
             {section === 'awards' ? (
               <div className="empty">

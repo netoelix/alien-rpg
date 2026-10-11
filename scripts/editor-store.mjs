@@ -12,7 +12,17 @@ export function createEditorStore(root) {
 
   async function load() {
     const content = await readFile(archivePath, 'utf8');
-    return { archive: JSON.parse(content), revision: revisionOf(content) };
+    const revision = revisionOf(content);
+    let previousDraftRevision;
+    try {
+      const migration = JSON.parse(
+        await readFile(path.join(root, 'data', 'mission-migration.json'), 'utf8'),
+      );
+      if (migration.toRevision === revision) previousDraftRevision = migration.fromRevision;
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+    return { archive: JSON.parse(content), revision, previousDraftRevision };
   }
 
   async function save(archive, expectedRevision) {

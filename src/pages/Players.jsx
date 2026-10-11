@@ -7,6 +7,7 @@ import {
   CharacterCards,
   AwardCards,
   MissionFolders,
+  CollapsibleSection,
 } from '../components/Common.jsx';
 
 export function PlayersPage() {
@@ -105,73 +106,72 @@ export function PlayerPage({ id }) {
       <div className="grid">
         <CharacterCards characters={playerCharacters} />
       </div>
-      <div className="section-head spaced">
-        <h2>Conquistas do jogador</h2>
-        <span className="tag">TITULAR · JOGADOR</span>
-      </div>
-      <p className="muted small-text">
-        As conquistas abaixo pertencem ao jogador. O arquivo anterior não identifica o personagem
-        envolvido em cada concessão.
-      </p>
-      <div className="toolbar">
-        <label>
-          CATEGORIA
-          <select value={category} onChange={(event) => setCategory(event.target.value)}>
-            <option value="">Todas</option>
-            {categories.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          ORDEM
-          <select value={order} onChange={(event) => setOrder(event.target.value)}>
-            <option value="new">Mais recentes primeiro</option>
-            <option value="old">Mais antigas primeiro</option>
-          </select>
-        </label>
-      </div>
-      <div className="awards">
-        <AwardCards awards={awards} playerId={id} />
-      </div>
+      <CollapsibleSection title="Conquistas do jogador" count={awards.length}>
+        <p className="muted small-text">
+          As conquistas abaixo pertencem ao jogador. O arquivo anterior não identifica o personagem
+          envolvido em cada concessão.
+        </p>
+        <div className="toolbar">
+          <label>
+            CATEGORIA
+            <select value={category} onChange={(event) => setCategory(event.target.value)}>
+              <option value="">Todas</option>
+              {categories.map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            ORDEM
+            <select value={order} onChange={(event) => setOrder(event.target.value)}>
+              <option value="new">Mais recentes primeiro</option>
+              <option value="old">Mais antigas primeiro</option>
+            </select>
+          </label>
+        </div>
+        <div className="awards">
+          <AwardCards awards={awards} playerId={id} />
+        </div>
+      </CollapsibleSection>
       {playerCampaigns(id).length > 1 ? (
         <>
-          <div className="section-head spaced">
-            <h2>Acervo de conquistas entre campanhas</h2>
-          </div>
-          <p className="muted small-text">
-            Cada conquista aparece uma vez no cadastro pessoal, com a origem dos registros.
-          </p>
-          <div className="awards">
-            {globalAwards.length ? (
-              globalAwards.map((award) => (
-                <article className="award" key={award.id}>
-                  <img src={award.medal} alt={`Medalha ${award.rank}`} loading="lazy" />
-                  <div>
-                    <h3>{award.name || 'Conquista sem título'}</h3>
-                    <p>{award.description}</p>
-                    {award.occurrences.map((occurrence) => (
-                      <p className="muted small-text" key={occurrence.campaignId}>
-                        {occurrence.date} · {occurrence.campaignTitle}
-                      </p>
-                    ))}
-                  </div>
-                </article>
-              ))
-            ) : (
-              <div className="empty">Nenhuma conquista registrada.</div>
-            )}
-          </div>
+          <CollapsibleSection
+            title="Acervo de conquistas entre campanhas"
+            count={globalAwards.length}
+          >
+            <p className="muted small-text">
+              Cada conquista aparece uma vez no cadastro pessoal, com a origem dos registros.
+            </p>
+            <div className="awards">
+              {globalAwards.length ? (
+                globalAwards.map((award) => (
+                  <article className="award" key={award.id}>
+                    <img src={award.medal} alt={`Medalha ${award.rank}`} loading="lazy" />
+                    <div>
+                      <h3>{award.name || 'Conquista sem título'}</h3>
+                      <p>{award.description}</p>
+                      {award.occurrences.map((occurrence) => (
+                        <p className="muted small-text" key={occurrence.campaignId}>
+                          {occurrence.date} · {occurrence.campaignTitle}
+                        </p>
+                      ))}
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="empty">Nenhuma conquista registrada.</div>
+              )}
+            </div>
+          </CollapsibleSection>
         </>
       ) : null}
-      <div className="section-head spaced">
-        <h2>Missões relacionadas</h2>
-      </div>
-      <div className="folders">
-        <MissionFolders entries={relatedLogs} />
-      </div>
+      <CollapsibleSection title="Missões relacionadas" count={relatedLogs.length}>
+        <div className="folders">
+          <MissionFolders entries={relatedLogs} />
+        </div>
+      </CollapsibleSection>
     </>
   );
 }

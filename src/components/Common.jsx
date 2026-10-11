@@ -124,3 +124,18 @@ export function MissingPage() {
     </>
   );
 }
+
+export function CollapsibleSection({ title, count, children }) {
+  return (
+    <details className="collapsible-section">
+      <summary>
+        <h2>
+          {title} <span className="section-count">{count}</span>
+        </h2>
+        <span className="expand-label">EXPANDIR +</span>
+        <span className="collapse-label">RECOLHER −</span>
+      </summary>
+      <div className="collapsible-content">{children}</div>
+    </details>
+  );
+}
