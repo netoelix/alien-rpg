@@ -1,7 +1,7 @@
 import { readFile, writeFile, mkdir, rename, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { validateArchive } from '../data/archive-schema.js';
+import { validateArchive, normalizeArchive } from '../data/archive-schema.js';
 
 export const revisionOf = (content) => createHash('sha256').update(content).digest('hex');
 
@@ -22,6 +22,7 @@ export function createEditorStore(root) {
     try {
       const errors = validateArchive(archive);
       if (errors.length) throw Object.assign(new Error(errors.join('\n')), { status: 422 });
+      archive = normalizeArchive(archive);
       // Somente recursos locais existentes são aceitos; nenhum caminho é usado para escrita.
       const available = new Set(await readdir(path.join(root, 'public', 'assets')));
       for (const campaign of archive.campaigns) {

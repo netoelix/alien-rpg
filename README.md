@@ -80,3 +80,13 @@ A API de gravação só é montada nesse modo, escuta em loopback e exige a orig
 **Exportar backup** baixa o rascunho inteiro. **Importar backup** carrega um arquivo JSON validado como rascunho, sem gravar imediatamente. Para restaurar uma cópia automática, escolha um arquivo de `.editor-backups/`, confira e salve. Os rascunhos de formulários e do acervo são recuperados na mesma sessão do navegador, quando a revisão em disco permanece igual. Eles não substituem os backups em arquivo.
 
 Nesta etapa, os retratos e medalhas são escolhidos entre os recursos já presentes em `public/assets/`. Upload de imagens, exclusão de registros, níveis de conquistas e publicação automática ainda não estão disponíveis. Jogadores e concessões são cadastrados por campanha; uma identidade global de jogador entre campanhas será implementada antes da progressão compartilhada. O editor local não permite que outras pessoas editem remotamente.
+
+## Campos obrigatórios e opcionais
+
+- Campanha: nome opcional (nome automático Campanha 2, Campanha 3 etc.); resumo, apresentação, período, unidade, divisão e créditos opcionais. Estado inicia como Planejada e pode ser alterado.
+- Jogador: nome obrigatório.
+- Personagem: nome, profissão, biografia, jogador e retrato obrigatórios. Codinome, nomes usados nos logs e situação são opcionais. Situação aceita Vivo, Morto ou Desaparecido e só aparece quando informada. O acervo existente não recebe situações automaticamente.
+- Missão: nome, sistema/localização, data fictícia, equipe e relato obrigatórios.
+- Conquista: nome, descrição, medalha, categoria e grau obrigatórios. Concessões são opcionais; cada concessão selecionada exige data válida.
+
+O formulário identifica os campos e mostra mensagens de validação ao aplicar. Um nome de campanha vazio recebe automaticamente um nome numerado, que continua editável.

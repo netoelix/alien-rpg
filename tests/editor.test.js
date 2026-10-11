@@ -21,10 +21,10 @@ test('campanhas novas não herdam conquistas, personagens ou aliases da anterior
       {
         id: 'novo',
         characterName: 'Alex',
-        profession: '',
+        profession: 'Piloto',
         codname: '',
         images: 'assets/default-portrait.svg',
-        about: '',
+        about: 'Biografia de teste.',
         aliases: ['Alex'],
       },
     ],
@@ -116,6 +116,10 @@ test('salvar gera backup exato e conflitos ou dados inválidos preservam o arqui
       (error) => error.status === 422,
     );
     assert.equal((await store.load()).revision, saved.revision);
+    changed.campaigns[0].title = '';
+    const renamed = await store.save(changed, saved.revision);
+    assert.equal((await store.load()).archive.campaigns[0].title, 'Campanha 1');
+    assert.equal((await store.load()).revision, renamed.revision);
   } finally {
     const resolved = path.resolve(root);
     if (

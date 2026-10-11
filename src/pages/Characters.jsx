@@ -7,6 +7,7 @@ import {
   CharacterCards,
   MissionFolders,
   Narrative,
+  CharacterStatus,
 } from '../components/Common.jsx';
 
 export function CharactersPage() {
@@ -136,8 +137,9 @@ export function CharacterPage({ id }) {
             Dossiê{' '}
             {String(characters.findIndex((character) => character.id === id) + 1).padStart(3, '0')}
           </Eyebrow>
-          <h3>{character.codname}</h3>
+          {character.codname?.trim() ? <h3>{character.codname}</h3> : null}
           <p className="muted">{character.profession}</p>
+          <CharacterStatus character={character} />
           <RouteLink to={`player/${character.playerId}`}>
             JOGADOR · {players[character.playerId].playerId} →
           </RouteLink>

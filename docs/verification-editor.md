@@ -17,3 +17,5 @@ Foram executados 11 testes, formatação, build e verificação de navegação. 
 O teste revelou que a atualização automática do servidor removia a mensagem de gravação. O plugin passou a suprimir essa atualização para o acervo; a mensagem agora permanece visível e a prévia é recarregada separadamente.
 
 Limites: sem publicação automática, escrita remota, upload de imagens ou identidade global dos jogadores. Backup exige espaço e permissões locais; falha na cópia impede a gravação. Os links de missões e jogadores ainda dependem da ordem dos registros no acervo importado.
+
+Atualização de campos: 15 testes passaram. No navegador, um nome de campanha vazio foi aplicado e convertido em Campanha 2; personagens incompletos exibiram nome, profissão, biografia, jogador e retrato como erros explícitos. A situação opcional dos personagens existentes permaneceu não informada. Nenhuma edição de teste foi gravada no acervo.

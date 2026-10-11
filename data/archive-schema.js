@@ -18,8 +18,8 @@ export function validateArchive(archive) {
     }
     if (ids.has(campaign.id)) errors.push('Campanha repetida: ' + campaign.id);
     ids.add(campaign.id);
-    if (typeof campaign.title !== 'string' || !campaign.title.trim())
-      errors.push('Título de campanha obrigatório.');
+    if (campaign.title !== undefined && typeof campaign.title !== 'string')
+      errors.push('Nome de campanha inválido.');
     for (const field of [
       'author',
       'medalArtist',
@@ -29,7 +29,7 @@ export function validateArchive(archive) {
       'summary',
       'description',
     ]) {
-      if (typeof campaign[field] !== 'string')
+      if (campaign[field] !== undefined && typeof campaign[field] !== 'string')
         errors.push('Campo de apresentação inválido: ' + field);
     }
     if (!['encerrada', 'em-andamento', 'planejada'].includes(campaign.status))
@@ -61,10 +61,41 @@ export function validateArchive(archive) {
   return errors;
 }
 
-export function newCampaign(title) {
+export function automaticCampaignTitle(campaigns, campaignId) {
+  let number = campaignId
+    ? campaigns.findIndex((campaign) => campaign.id === campaignId) + 1
+    : campaigns.length + 1;
+  number = Math.max(number, 1);
+  const used = new Set(
+    campaigns.filter((campaign) => campaign.id !== campaignId).map((campaign) => campaign.title),
+  );
+  while (used.has(`Campanha ${number}`)) number += 1;
+  return `Campanha ${number}`;
+}
+
+export function normalizeArchive(archive) {
+  const normalized = structuredClone(archive);
+  for (const campaign of normalized.campaigns) {
+    campaign.title =
+      campaign.title?.trim() || automaticCampaignTitle(normalized.campaigns, campaign.id);
+    for (const field of [
+      'author',
+      'medalArtist',
+      'unit',
+      'division',
+      'period',
+      'summary',
+      'description',
+    ])
+      campaign[field] ??= '';
+  }
+  return normalized;
+}
+
+export function newCampaign(title, campaigns = []) {
   return {
     id: `campanha-${crypto.randomUUID()}`,
-    title,
+    title: title?.trim() || automaticCampaignTitle(campaigns),
     status: 'planejada',
     author: '',
     medalArtist: '',

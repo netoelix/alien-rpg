@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react';
-import { newCampaign, validateArchive } from '../../data/archive-schema.js';
+import {
+  newCampaign,
+  normalizeArchive,
+  validateArchive,
+  automaticCampaignTitle,
+} from '../../data/archive-schema.js';
+import {
+  requiredRecordFields,
+  validateEditorRecord,
+  characterStates,
+} from '../../data/editor-rules.js';
 import { Eyebrow } from '../components/Common.jsx';
 
 const sections = [
@@ -55,12 +65,13 @@ function emptyRecord(section, assets) {
   if (section === 'characters')
     return {
       id,
-      owner: '0',
+      owner: '',
       characterName: '',
       codname: '',
       profession: '',
       about: '',
-      images: 'assets/default-portrait.svg',
+      images: '',
+      lifeStatus: '',
       aliases: [],
     };
   if (section === 'timelines')
@@ -85,6 +96,8 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
     }
   });
   const [formDirty, setFormDirty] = useState(false);
+  const [formErrors, setFormErrors] = useState([]);
+  const isRequired = (name) => requiredRecordFields[section].includes(name);
   const change = (name, next) => {
     const changed = { ...value, [name]: next };
     setValue(changed);
@@ -119,8 +132,15 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
   return (
     <form
       className="editor-form"
+      noValidate
       onSubmit={(event) => {
         event.preventDefault();
+        const errors = validateEditorRecord(section, value);
+        if (errors.length) {
+          setFormErrors(errors);
+          return;
+        }
+        setFormErrors([]);
         if (onApply(value)) {
           setFormDirty(false);
           try {
@@ -133,9 +153,12 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
     >
       {fields.map(([name, label, type]) => (
         <label key={name}>
-          {label}
+          <span className="field-label">
+            {label} <small>{isRequired(name) ? 'Obrigatório' : 'Opcional'}</small>
+          </span>
           {type === 'textarea' ? (
             <textarea
+              required={isRequired(name)}
               value={value[name] || ''}
               onChange={(event) => change(name, event.target.value)}
             />
@@ -143,28 +166,26 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             <input
               value={value[name] || ''}
               onChange={(event) => change(name, event.target.value)}
-              required={[
-                'title',
-                'playerId',
-                'characterName',
-                'mission',
-                'location',
-                'dateTime',
-                'name',
-              ].includes(name)}
+              required={isRequired(name)}
             />
           )}
         </label>
       ))}
       {section === 'campaign' ? (
-        <label>
-          Estado
-          <select value={value.status} onChange={(event) => change('status', event.target.value)}>
-            <option value="planejada">Planejada</option>
-            <option value="em-andamento">Em andamento</option>
-            <option value="encerrada">Encerrada</option>
-          </select>
-        </label>
+        <>
+          <p className="muted small-text">
+            Nome ainda indefinido? Deixe em branco para usar o nome automático. Os demais textos
+            podem ser preenchidos depois.
+          </p>
+          <label>
+            Estado <small className="field-hint">Preenchido automaticamente · editável</small>
+            <select value={value.status} onChange={(event) => change('status', event.target.value)}>
+              <option value="planejada">Planejada</option>
+              <option value="em-andamento">Em andamento</option>
+              <option value="encerrada">Encerrada</option>
+            </select>
+          </label>
+        </>
       ) : null}
       {section === 'players' ? (
         <label className="editor-checkbox">
@@ -179,8 +200,15 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
       {section === 'characters' ? (
         <>
           <label>
-            Jogador
-            <select value={value.owner} onChange={(event) => change('owner', event.target.value)}>
+            <span className="field-label">
+              Jogador <small>Obrigatório</small>
+            </span>
+            <select
+              required
+              value={value.owner}
+              onChange={(event) => change('owner', event.target.value)}
+            >
+              <option value="">Selecione um jogador</option>
               {campaign.players.map((player, index) => (
                 <option key={player.id} value={String(index)}>
                   {player.playerId}
@@ -189,8 +217,15 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             </select>
           </label>
           <label>
-            Retrato
-            <select value={value.images} onChange={(event) => change('images', event.target.value)}>
+            <span className="field-label">
+              Retrato <small>Obrigatório</small>
+            </span>
+            <select
+              required
+              value={value.images}
+              onChange={(event) => change('images', event.target.value)}
+            >
+              <option value="">Selecione um retrato</option>
               {assets
                 .filter(
                   (asset) =>
@@ -205,7 +240,25 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             </select>
           </label>
           <label>
-            Nomes usados nos logs (separados por vírgula)
+            <span className="field-label">
+              Situação do personagem <small>Opcional</small>
+            </span>
+            <select
+              value={value.lifeStatus || ''}
+              onChange={(event) => change('lifeStatus', event.target.value)}
+            >
+              <option value="">Não informado</option>
+              {Object.entries(characterStates).map(([state, label]) => (
+                <option key={state} value={state}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span className="field-label">
+              Nomes usados nos logs (separados por vírgula) <small>Opcional</small>
+            </span>
             <input
               value={(value.aliases || []).join(', ')}
               onChange={(event) =>
@@ -230,7 +283,9 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
       {section === 'achievements' ? (
         <>
           <label>
-            Medalha
+            <span className="field-label">
+              Medalha <small>Obrigatório</small>
+            </span>
             <select value={value.medal} onChange={(event) => change('medal', event.target.value)}>
               {assets
                 .filter((asset) => asset.endsWith('.svg') && asset.includes('Type='))
@@ -242,7 +297,9 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             </select>
           </label>
           <label>
-            Categoria
+            <span className="field-label">
+              Categoria <small>Obrigatório</small>
+            </span>
             <select
               value={value.category}
               onChange={(event) => change('category', event.target.value)}
@@ -253,7 +310,9 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             </select>
           </label>
           <label>
-            Grau
+            <span className="field-label">
+              Grau <small>Obrigatório</small>
+            </span>
             <select value={value.rank} onChange={(event) => change('rank', event.target.value)}>
               {['Bronze', 'Silver', 'Gold', 'Platinum'].map((rank) => (
                 <option key={rank}>{rank}</option>
@@ -261,7 +320,7 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             </select>
           </label>
           <fieldset>
-            <legend>Concessões ao jogador</legend>
+            <legend>Concessões ao jogador · opcionais</legend>
             {campaign.players
               .filter((player) => !player.mascot)
               .map((player) => {
@@ -285,7 +344,9 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
                     </label>
                     {award ? (
                       <label>
-                        Data da concessão (DD/MM/AAAA)
+                        <span className="field-label">
+                          Data da concessão (DD/MM/AAAA) <small>Obrigatório</small>
+                        </span>
                         <input
                           placeholder="DD/MM/AAAA"
                           value={award.date}
@@ -309,6 +370,16 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
           </fieldset>
         </>
       ) : null}
+      {formErrors.length ? (
+        <div className="warning" role="alert">
+          <p>Confira os campos abaixo:</p>
+          <ul>
+            {formErrors.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <button type="submit" className="button solid">
         APLICAR AO RASCUNHO
       </button>
@@ -326,6 +397,7 @@ export default function Editor() {
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [appliedVersion, setAppliedVersion] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -342,7 +414,7 @@ export default function Editor() {
         } catch {
           /* Armazenamento opcional. */
         }
-        setArchive(cached ? JSON.parse(cached) : result.archive);
+        setArchive(normalizeArchive(cached ? JSON.parse(cached) : result.archive));
         setDirty(Boolean(cached));
         if (cached) setMessage('Rascunho desta sessão recuperado. Confira antes de salvar.');
         setRevision(result.revision);
@@ -401,6 +473,7 @@ export default function Editor() {
     if (section === 'campaign') {
       for (const field of [...campaignFields.map(([name]) => name), 'status'])
         target[field] = value[field];
+      target.title = target.title?.trim() || automaticCampaignTitle(next.campaigns, target.id);
     } else if (section === 'characters') {
       const { owner, ...character } = value;
       if (!target.players[Number(owner)])
@@ -442,6 +515,7 @@ export default function Editor() {
       return false;
     }
     updateArchive(next);
+    setAppliedVersion((version) => version + 1);
     setSelected('');
     setMessage('Alteração aplicada ao rascunho. Use Salvar arquivos para gravar no projeto.');
     return true;
@@ -482,7 +556,7 @@ export default function Editor() {
       const imported = JSON.parse(await file.text());
       const errors = validateArchive(imported);
       if (errors.length) throw new Error(errors.join('\n'));
-      updateArchive(imported);
+      updateArchive(normalizeArchive(imported));
       setCampaignId(imported.campaigns[0].id);
       setSection('campaign');
       setSelected('');
@@ -550,7 +624,7 @@ export default function Editor() {
             </label>
             <button
               onClick={() => {
-                const added = newCampaign('Nova campanha');
+                const added = newCampaign(undefined, archive.campaigns);
                 updateArchive({ ...archive, campaigns: [...archive.campaigns, added] });
                 setCampaignId(added.id);
                 setSection('campaign');
@@ -597,7 +671,7 @@ export default function Editor() {
           ) : null}
           {record ? (
             <RecordForm
-              key={`${campaignId}:${section}:${selected}:${dirty}`}
+              key={`${campaignId}:${section}:${selected}:${dirty}:${appliedVersion}`}
               section={section}
               record={record}
               campaign={campaign}

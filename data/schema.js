@@ -56,7 +56,7 @@ export function validateCampaign(data) {
         !text(character.characterName) ||
         !character.characterName.trim() ||
         !text(character.about) ||
-        !text(character.codname) ||
+        (character.codname !== undefined && !text(character.codname)) ||
         !text(character.profession) ||
         !localResource(character.images) ||
         (character.aliases !== undefined &&
@@ -64,6 +64,13 @@ export function validateCampaign(data) {
             character.aliases.some((alias) => !text(alias) || !alias.trim())))
       )
         return ['Personagem incompleto ou retrato inválido.'];
+      if (!character.about.trim() || !character.profession.trim())
+        errors.push('Profissão e biografia são obrigatórias: ' + character.characterName);
+      if (
+        character.lifeStatus !== undefined &&
+        !['', 'vivo', 'morto', 'desaparecido'].includes(character.lifeStatus)
+      )
+        errors.push('Situação de personagem inválida: ' + character.characterName);
     }
   }
   for (const achievement of data.achievements) {

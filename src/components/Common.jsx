@@ -1,5 +1,6 @@
 import { useCampaign } from '../context/CampaignContext.jsx';
 import { parseNarrative } from '../lib/narrative.js';
+import { characterStates } from '../../data/editor-rules.js';
 
 export function RouteLink({ to = '', className = '', children, ...props }) {
   const { campaign } = useCampaign();
@@ -14,6 +15,15 @@ export function RouteLink({ to = '', className = '', children, ...props }) {
 
 export function Eyebrow({ children }) {
   return <div className="eyebrow">{children}</div>;
+}
+
+export function CharacterStatus({ character }) {
+  const label = characterStates[character.lifeStatus];
+  return label ? (
+    <span className="tag life-state" data-status={character.lifeStatus}>
+      {label}
+    </span>
+  ) : null;
 }
 
 export function Breadcrumbs({ children }) {
@@ -73,8 +83,9 @@ export function CharacterCards({ characters }) {
       <div className="person-card">
         <img src={character.images} alt={`Retrato de ${character.characterName}`} loading="lazy" />
         <div>
-          <Eyebrow>{character.codname}</Eyebrow>
+          {character.codname?.trim() ? <Eyebrow>{character.codname}</Eyebrow> : null}
           <h3>{character.characterName}</h3>
+          <CharacterStatus character={character} />
           <p className="meta">{character.profession}</p>
           <p className="meta">{players[character.playerId].playerId}</p>
         </div>
