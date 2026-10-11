@@ -11,6 +11,8 @@ import {
   validateEditorRecord,
   characterStates,
 } from '../../data/editor-rules.js';
+import { applyPlayerProfile } from '../../data/player-profiles.js';
+import { missionRecords } from '../../data/schema.js';
 import { createDraftPreview } from '../lib/draft-preview.js';
 import { Eyebrow } from '../components/Common.jsx';
 
@@ -19,6 +21,7 @@ const sections = [
   ['players', 'JOGADORES'],
   ['characters', 'PERSONAGENS'],
   ['timelines', 'MISSÕES'],
+  ['logs', 'REGISTROS DE SESSÃO'],
   ['achievements', 'CONQUISTAS'],
 ];
 
@@ -44,6 +47,13 @@ const missionFields = [
   ['dateTime', 'Data no universo'],
   ['esquad', 'Equipe registrada'],
   ['descrition', 'Relato oficial', 'textarea'],
+];
+const logFields = [
+  ['title', 'Título do registro'],
+  ['session', 'Sessão / referência'],
+  ['dateTime', 'Data no universo'],
+  ['esquad', 'Equipe registrada'],
+  ['descrition', 'Texto do registro', 'textarea'],
 ];
 const awardFields = [
   ['name', 'Nome da conquista'],
@@ -76,6 +86,16 @@ function emptyRecord(section, assets) {
       lifeStatus: '',
       aliases: [],
     };
+  if (section === 'logs')
+    return {
+      id,
+      missionIndex: '',
+      title: '',
+      session: '',
+      dateTime: '',
+      esquad: '',
+      descrition: '',
+    };
   if (section === 'timelines')
     return { mission: '', location: '', dateTime: '', esquad: '', descrition: '' };
   return {
@@ -89,7 +109,7 @@ function emptyRecord(section, assets) {
   };
 }
 
-function RecordForm({ section, record, campaign, assets, onApply, storageKey }) {
+function RecordForm({ section, record, campaign, archive, assets, onApply, storageKey }) {
   const [value, setValue] = useState(() => {
     try {
       return JSON.parse(sessionStorage.getItem(storageKey)) || structuredClone(record);
@@ -101,7 +121,13 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
   const [formErrors, setFormErrors] = useState([]);
   const isRequired = (name) => requiredRecordFields[section].includes(name);
   const change = (name, next) => {
-    const changed = { ...value, [name]: next };
+    const profile =
+      name === 'profileId' ? archive.playerProfiles.find((profile) => profile.id === next) : null;
+    const changed = {
+      ...value,
+      [name]: next,
+      ...(profile ? { playerId: profile.name, biography: profile.biography } : {}),
+    };
     setValue(changed);
     setFormDirty(true);
     try {
@@ -125,11 +151,16 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
       ? campaignFields
       : section === 'characters'
         ? characterFields
-        : section === 'timelines'
-          ? missionFields
-          : section === 'achievements'
-            ? awardFields
-            : [['playerId', 'Nome do jogador']];
+        : section === 'logs'
+          ? logFields
+          : section === 'timelines'
+            ? missionFields
+            : section === 'achievements'
+              ? awardFields
+              : [
+                  ['playerId', 'Nome do jogador'],
+                  ['biography', 'Sobre o jogador', 'textarea'],
+                ];
 
   return (
     <form
@@ -161,11 +192,13 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
           {type === 'textarea' ? (
             <textarea
               required={isRequired(name)}
+              readOnly={section === 'players' && !record.profileId && Boolean(value.profileId)}
               value={value[name] || ''}
               onChange={(event) => change(name, event.target.value)}
             />
           ) : (
             <input
+              readOnly={section === 'players' && !record.profileId && Boolean(value.profileId)}
               value={value[name] || ''}
               onChange={(event) => change(name, event.target.value)}
               required={isRequired(name)}
@@ -188,6 +221,36 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             </select>
           </label>
         </>
+      ) : null}
+      {section === 'players' && !record.profileId && !value.mascot ? (
+        <label>
+          Cadastro do jogador
+          <select
+            value={value.profileId || ''}
+            onChange={(event) => change('profileId', event.target.value)}
+          >
+            <option value="">Criar uma pessoa nova</option>
+            {archive.playerProfiles
+              .filter(
+                (profile) => !campaign.players.some((member) => member.profileId === profile.id),
+              )
+              .map((profile) => (
+                <option key={profile.id} value={profile.id}>
+                  {profile.name} · cadastro existente
+                </option>
+              ))}
+          </select>
+          <span className="muted small-text">
+            Reutilize o cadastro para manter personagens e conquistas ligados à mesma pessoa. Nomes
+            iguais não são unidos automaticamente.
+          </span>
+        </label>
+      ) : null}
+      {section === 'players' && record.profileId ? (
+        <p className="muted small-text">
+          Nome e biografia pertencem ao cadastro pessoal. Alterar esses campos atualiza todas as
+          campanhas deste jogador; seus personagens continuam separados por campanha.
+        </p>
       ) : null}
       {section === 'players' ? (
         <label className="editor-checkbox">
@@ -276,6 +339,24 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
           </label>
         </>
       ) : null}
+      {section === 'logs' ? (
+        <label>
+          Missão <small>Obrigatório</small>
+          <select
+            required
+            value={value.missionIndex}
+            onChange={(event) => change('missionIndex', event.target.value)}
+            disabled={record.primary || record.recordIndex !== undefined}
+          >
+            <option value="">Selecione uma missão</option>
+            {campaign.timelines.map((mission, index) => (
+              <option key={index} value={String(index)}>
+                {mission.mission}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
       {section === 'timelines' ? (
         <p className="muted small-text">
           As datas são fictícias. Para censura narrativa, escreva /texto censurado/. Use CORROMPIDO
@@ -327,12 +408,27 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
               .filter((player) => !player.mascot)
               .map((player) => {
                 const award = value.character.find((award) => award.name === player.playerId);
+                const earnedElsewhere = archive.campaigns.find(
+                  (entry) =>
+                    entry.id !== campaign.id &&
+                    entry.players.some(
+                      (member) =>
+                        member.profileId === player.profileId &&
+                        !member.mascot &&
+                        entry.achievements.some(
+                          (item) =>
+                            item.id === value.id &&
+                            item.character.some((grant) => grant.name === member.playerId),
+                        ),
+                    ),
+                );
                 return (
                   <div className="grant" key={player.id}>
                     <label className="editor-checkbox">
                       <input
                         type="checkbox"
                         checked={Boolean(award)}
+                        disabled={Boolean(earnedElsewhere) && !award}
                         onChange={(event) =>
                           change(
                             'character',
@@ -344,6 +440,12 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
                       />
                       {player.playerId}
                     </label>
+                    {earnedElsewhere ? (
+                      <p className="muted small-text">
+                        Já conquistada em {earnedElsewhere.title}. A conquista pertence ao jogador e
+                        não precisa ser concedida novamente.
+                      </p>
+                    ) : null}
                     {award ? (
                       <label>
                         <span className="field-label">
@@ -461,7 +563,23 @@ export default function Editor() {
         ? characters
         : section === 'achievements'
           ? campaignAchievements(archive, campaign)
-          : campaign[section];
+          : section === 'logs'
+            ? campaign.timelines.flatMap((mission, missionIndex) =>
+                missionRecords(mission).map((log, recordIndex) => ({
+                  ...log,
+                  missionIndex: String(missionIndex),
+                  recordIndex,
+                  primary: recordIndex === 0,
+                })),
+              )
+            : section === 'players'
+              ? campaign.players.map((player) => ({
+                  ...player,
+                  biography:
+                    archive.playerProfiles.find((profile) => profile.id === player.profileId)
+                      ?.biography || '',
+                }))
+              : campaign[section];
   const record =
     section === 'campaign'
       ? campaign
@@ -478,6 +596,26 @@ export default function Editor() {
       for (const field of [...campaignFields.map(([name]) => name), 'status'])
         target[field] = value[field];
       target.title = target.title?.trim() || automaticCampaignTitle(next.campaigns, target.id);
+    } else if (section === 'logs') {
+      const { missionIndex, recordIndex, primary, mission, location, ...log } = value;
+      const parent = target.timelines[Number(missionIndex)];
+      if (!parent) {
+        setMessage('Crie uma missão antes de adicionar registros.');
+        return false;
+      }
+      if (primary) {
+        Object.assign(parent, {
+          logTitle: log.title,
+          session: log.session,
+          logDateTime: log.dateTime,
+          esquad: log.esquad,
+          descrition: log.descrition,
+        });
+      } else {
+        parent.logs ??= [];
+        if (selected === 'new') parent.logs.push(log);
+        else parent.logs[recordIndex - 1] = log;
+      }
     } else if (section === 'characters') {
       const { owner, ...character } = value;
       if (!target.players[Number(owner)])
@@ -501,24 +639,16 @@ export default function Editor() {
       else next.achievements[index] = definition;
       target.achievements = target.achievements.filter((item) => item.id !== definition.id);
       if (character.length) target.achievements.push({ id: definition.id, character });
-    } else {
-      if (section === 'players' && selected !== 'new') {
-        const previousName = target.players[Number(selected)].playerId;
-        for (const achievement of target.achievements)
-          for (const grant of achievement.character) {
-            if (grant.name === previousName) grant.name = value.playerId;
-          }
+    } else if (section === 'players') {
+      try {
+        applyPlayerProfile(next, campaignId, value, selected);
+      } catch (error) {
+        setMessage(error.message);
+        return false;
       }
+    } else {
       if (selected === 'new') target[section].push(value);
-      else
-        target[section][Number(selected)] =
-          section === 'players'
-            ? {
-                ...target.players[Number(selected)],
-                playerId: value.playerId,
-                mascot: value.mascot,
-              }
-            : value;
+      else target[section][Number(selected)] = value;
     }
     const errors = validateArchive(next);
     if (errors.length) {
@@ -677,6 +807,12 @@ export default function Editor() {
               </button>
             ))}
           </div>
+          {section === 'logs' ? (
+            <p className="muted">
+              Cada missão começa com um relato oficial. Aqui você pode editar esse relato ou
+              acrescentar registros para outras sessões, com títulos livres e datas próprias.
+            </p>
+          ) : null}
           {section === 'achievements' ? (
             <p className="muted">
               Catálogo geral do RPG: disponível em todas as campanhas. Alterar nome, descrição ou
@@ -695,7 +831,9 @@ export default function Editor() {
                     <option key={record.id || index} value={String(index)}>
                       {record.playerId ||
                         record.characterName ||
-                        record.mission ||
+                        (section === 'logs'
+                          ? record.title + ' · ' + record.mission
+                          : record.mission) ||
                         record.name ||
                         'Conquista sem título'}
                     </option>
@@ -710,6 +848,7 @@ export default function Editor() {
               section={section}
               record={record}
               campaign={campaign}
+              archive={archive}
               assets={assets}
               onApply={applyRecord}
               storageKey={`alien-editor-form:${revision}:${campaignId}:${section}:${selected}`}

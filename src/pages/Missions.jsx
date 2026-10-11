@@ -16,11 +16,18 @@ export function MissionsPage() {
   const normalizedQuery = query.toLocaleLowerCase('pt-BR');
   const entries = timelines
     .map((log, id) => ({ log, id }))
-    .filter(({ log }) =>
-      `${log.mission} ${log.location} ${log.dateTime}`
-        .toLocaleLowerCase('pt-BR')
-        .includes(normalizedQuery),
-    );
+    .filter(({ log }) => {
+      const fields = [
+        log.mission,
+        log.location,
+        log.dateTime,
+        log.logTitle || '',
+        log.session || '',
+      ];
+      for (const record of log.logs || [])
+        fields.push(record.title, record.session || '', record.dateTime);
+      return fields.join(' ').toLocaleLowerCase('pt-BR').includes(normalizedQuery);
+    });
   if (order === 'new') entries.reverse();
 
   return (
@@ -60,9 +67,10 @@ export function MissionsPage() {
 }
 
 export function MissionPage({ id }) {
-  const { timelines, logMembers } = useCampaign();
+  const { timelines, logMembers, missionRecords } = useCampaign();
   const log = timelines[id];
   const participants = logMembers(log);
+  const records = missionRecords(log);
   return (
     <>
       <Breadcrumbs>{log.mission}</Breadcrumbs>
@@ -76,7 +84,13 @@ export function MissionPage({ id }) {
             <small>DATA NO UNIVERSO</small>
           </p>
           <h3 className="section-intro">Registros desta missão</h3>
-          <RouteLink to={`log/${id}`}>01 · Relato oficial →</RouteLink>
+          <div className="mission-record-links">
+            {records.map((record, index) => (
+              <RouteLink key={record.id || index} to={`log/${id}/${index}`}>
+                {String(index + 1).padStart(2, '0')} · {record.title} →
+              </RouteLink>
+            ))}
+          </div>
           <h3 className="section-intro">Personagens associados</h3>
           {participants.length ? (
             participants.map((character) => (
@@ -91,19 +105,28 @@ export function MissionPage({ id }) {
         <section>
           <Eyebrow>Pasta de operação</Eyebrow>
           <h1>{log.mission}</h1>
-          <div className="document">
-            <span className="tag">LOG OFICIAL / 01</span>
-            <h2 className="section-intro">Relato da missão</h2>
-            <p className="muted">{log.esquad}</p>
-            <div className="actions">
-              <RouteLink to={`log/${id}`} className="button solid">
-                ABRIR REGISTRO →
-              </RouteLink>
+          {records.map((record, index) => (
+            <div className="document mission-record" key={record.id || index}>
+              <span className="tag">REGISTRO / {String(index + 1).padStart(2, '0')}</span>
+              <h2 className="section-intro">
+                {records.length === 1 && !log.logTitle ? 'Relato da missão' : record.title}
+              </h2>
+              <p className="muted small-text">
+                {record.dateTime} · DATA NO UNIVERSO{record.session ? ' · ' + record.session : ''}
+              </p>
+              <p className="muted">{record.esquad}</p>
+              <div className="actions">
+                <RouteLink to={`log/${id}/${index}`} className="button solid">
+                  ABRIR REGISTRO →
+                </RouteLink>
+              </div>
             </div>
-          </div>
+          ))}
           <p className="muted small-text section-intro">
-            Cada operação reúne seus registros. Esta missão possui um relato oficial no arquivo
-            atual.
+            Cada operação reúne seus registros.{' '}
+            {records.length === 1
+              ? 'Esta missão possui um relato oficial no arquivo atual.'
+              : `Esta missão possui ${records.length} registros no arquivo atual.`}
           </p>
         </section>
       </div>
@@ -111,15 +134,20 @@ export function MissionPage({ id }) {
   );
 }
 
-export function LogPage({ id }) {
-  const { timelines, campaign } = useCampaign();
-  const log = timelines[id];
+export function LogPage({ id, recordIndex = 0 }) {
+  const { timelines, campaign, missionRecords } = useCampaign();
+  const log = missionRecords(timelines[id])[recordIndex];
   const [revealed, setRevealed] = useState(false);
   const censored = hasRedactions(log.descrition);
 
   return (
     <>
-      <Breadcrumbs>Registro {String(id + 1).padStart(3, '0')}</Breadcrumbs>
+      <Breadcrumbs>
+        Registro {String(id + 1).padStart(3, '0')}
+        {missionRecords(timelines[id]).length > 1
+          ? ' / ' + String(recordIndex + 1).padStart(2, '0')
+          : ''}
+      </Breadcrumbs>
       <div className="split">
         <aside className="sidepanel">
           <Eyebrow>Pastas</Eyebrow>
@@ -142,7 +170,17 @@ export function LogPage({ id }) {
         <article className="document">
           <header className="document-head">
             <Eyebrow>Arquivo oficial / {campaign.unit || campaign.title}</Eyebrow>
-            <h2>{log.mission}</h2>
+            <h2>
+              {log.title === 'Relato oficial' && missionRecords(timelines[id]).length === 1
+                ? log.mission
+                : log.title}
+            </h2>
+            {missionRecords(timelines[id]).length > 1 || log.session ? (
+              <p className="muted">
+                {log.mission}
+                {log.session ? ' · ' + log.session : ''}
+              </p>
+            ) : null}
             <small>
               {log.dateTime} · {log.location} · DATA NO UNIVERSO
             </small>

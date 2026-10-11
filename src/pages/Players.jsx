@@ -47,7 +47,10 @@ const categories = [
 export function PlayerPage({ id }) {
   const { players, characters, timelines, playerAwards, awardDate, relatedTo, campaign } =
     useCampaign();
+  const { playerProfile, profileAwards, playerCampaigns } = useCampaign();
   const player = players[id];
+  const profile = playerProfile(id);
+  const globalAwards = profileAwards(id);
   const [category, setCategory] = useState('');
   const [order, setOrder] = useState('new');
   const playerCharacters = characters.filter((character) => character.playerId === id);
@@ -65,7 +68,10 @@ export function PlayerPage({ id }) {
       <Breadcrumbs>{player.playerId}</Breadcrumbs>
       <Eyebrow>Registro de jogador</Eyebrow>
       <h1>{player.playerId}</h1>
-      <p className="lead">Participante de {campaign.title}. Perfil pessoal ainda não preenchido.</p>
+      <p className="lead">
+        {profile?.biography ||
+          'Participante de ' + campaign.title + '. Perfil pessoal ainda não preenchido.'}
+      </p>
       <div className="stats">
         <div>
           <b>{player.characters.length}</b>
@@ -75,6 +81,23 @@ export function PlayerPage({ id }) {
           <b>{playerAwards(id).length}</b>
           <small>CONQUISTAS REGISTRADAS</small>
         </div>
+      </div>
+      <div className="section-head">
+        <h2>Campanhas deste jogador</h2>
+      </div>
+      <div className="grid">
+        {playerCampaigns(id).map((entry) => (
+          <RouteLink
+            className="card"
+            key={entry.campaign.id}
+            to={`c/${entry.campaign.id}/player-characters/${entry.playerIndex}`}
+          >
+            <h3>{entry.campaign.title}</h3>
+            <p className="muted">
+              {entry.campaign.players[entry.playerIndex].characters.length} personagem(ns) →
+            </p>
+          </RouteLink>
+        ))}
       </div>
       <div className="section-head">
         <h2>Personagens nesta campanha</h2>
@@ -113,11 +136,69 @@ export function PlayerPage({ id }) {
       <div className="awards">
         <AwardCards awards={awards} playerId={id} />
       </div>
+      {playerCampaigns(id).length > 1 ? (
+        <>
+          <div className="section-head spaced">
+            <h2>Acervo de conquistas entre campanhas</h2>
+          </div>
+          <p className="muted small-text">
+            Cada conquista aparece uma vez no cadastro pessoal, com a origem dos registros.
+          </p>
+          <div className="awards">
+            {globalAwards.length ? (
+              globalAwards.map((award) => (
+                <article className="award" key={award.id}>
+                  <img src={award.medal} alt={`Medalha ${award.rank}`} loading="lazy" />
+                  <div>
+                    <h3>{award.name || 'Conquista sem título'}</h3>
+                    <p>{award.description}</p>
+                    {award.occurrences.map((occurrence) => (
+                      <p className="muted small-text" key={occurrence.campaignId}>
+                        {occurrence.date} · {occurrence.campaignTitle}
+                      </p>
+                    ))}
+                  </div>
+                </article>
+              ))
+            ) : (
+              <div className="empty">Nenhuma conquista registrada.</div>
+            )}
+          </div>
+        </>
+      ) : null}
       <div className="section-head spaced">
         <h2>Missões relacionadas</h2>
       </div>
       <div className="folders">
         <MissionFolders entries={relatedLogs} />
+      </div>
+    </>
+  );
+}
+
+export function PlayerCharactersPage({ id }) {
+  const { players, characters, campaign } = useCampaign();
+  const player = players[id];
+  const entries = characters.filter((character) => character.playerId === id);
+  return (
+    <>
+      <Breadcrumbs>Personagens de {player.playerId}</Breadcrumbs>
+      <Eyebrow>{campaign.title} / Arquivo de pessoal</Eyebrow>
+      <h1>Personagens de {player.playerId}</h1>
+      <p className="lead list-intro">Os personagens deste jogador em {campaign.title}.</p>
+      <div className="actions">
+        <RouteLink to={`player/${id}`} className="button">
+          ← PERFIL DO JOGADOR
+        </RouteLink>
+      </div>
+      <div className="grid">
+        {entries.length ? (
+          <CharacterCards characters={entries} />
+        ) : (
+          <div className="empty">
+            Nenhum personagem registrado para este jogador nesta campanha.
+          </div>
+        )}
       </div>
     </>
   );

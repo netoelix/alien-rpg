@@ -104,12 +104,27 @@ test('salvar gera backup exato e conflitos ou dados inválidos preservam o arqui
     const loaded = await store.load();
     const changed = structuredClone(fixture);
     changed.campaigns[0].title = 'Título editado';
+    changed.campaigns[0].timelines[0].logs = [
+      {
+        id: 'sessao-2',
+        title: 'Relatório secundário',
+        session: 'Sessão 2',
+        dateTime: '2123',
+        esquad: 'Equipe',
+        descrition: 'Outro texto',
+      },
+    ];
     const saved = await store.save(changed, loaded.revision);
     assert.equal(
       await readFile(path.join(root, '.editor-backups', saved.backup), 'utf8'),
       original,
     );
     assert.equal((await store.load()).archive.campaigns[0].title, 'Título editado');
+    assert.equal(
+      (await store.load()).archive.campaigns[0].timelines[0].logs[0].title,
+      'Relatório secundário',
+    );
+    assert.equal((await store.load()).archive.playerProfiles.length, 4);
     await assert.rejects(store.save(fixture, loaded.revision), (error) => error.status === 409);
     await assert.rejects(
       store.save({ version: 99 }, saved.revision),

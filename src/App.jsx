@@ -6,7 +6,7 @@ import { RouteLink, MissingPage } from './components/Common.jsx';
 import { HomePage, CampaignPage } from './pages/Home.jsx';
 import { MissionsPage, MissionPage, LogPage } from './pages/Missions.jsx';
 import { CharactersPage, CharacterPage } from './pages/Characters.jsx';
-import { PlayersPage, PlayerPage } from './pages/Players.jsx';
+import { PlayersPage, PlayerPage, PlayerCharactersPage } from './pages/Players.jsx';
 import { MapPage } from './pages/Map.jsx';
 
 import { readDraftPreview } from './lib/draft-preview.js';
@@ -15,12 +15,12 @@ const navigation = [
   { route: 'campaign', label: 'CAMPANHA', children: ['campaign'] },
   { route: 'missions', label: 'ARQUIVOS', children: ['missions', 'mission', 'log'] },
   { route: 'characters', label: 'PERSONAGENS', children: ['characters', 'character'] },
-  { route: 'players', label: 'JOGADORES', children: ['players', 'player'] },
+  { route: 'players', label: 'JOGADORES', children: ['players', 'player', 'player-characters'] },
   { route: 'map', label: 'NAVEGAÇÃO', children: ['map'] },
 ];
 
-function RoutePage({ route, idText }) {
-  const { characters, players, timelines } = useCampaign();
+function RoutePage({ route, idText, recordText }) {
+  const { characters, players, timelines, missionRecords } = useCampaign();
   const id = /^\d+$/.test(idText || '') ? Number(idText) : -1;
   switch (route) {
     case 'editor':
@@ -40,7 +40,14 @@ function RoutePage({ route, idText }) {
     case 'mission':
       return timelines[id] ? <MissionPage id={id} /> : <MissingPage />;
     case 'log':
-      return timelines[id] ? <LogPage id={id} /> : <MissingPage />;
+      return timelines[id] &&
+        missionRecords(timelines[id])[
+          /^\d+$/.test(recordText || '0') ? Number(recordText || 0) : -1
+        ] ? (
+        <LogPage id={id} recordIndex={Number(recordText || 0)} />
+      ) : (
+        <MissingPage />
+      );
     case 'characters':
       return <CharactersPage />;
     case 'character':
@@ -53,6 +60,8 @@ function RoutePage({ route, idText }) {
       return <PlayersPage />;
     case 'player':
       return players[id] ? <PlayerPage id={id} /> : <MissingPage />;
+    case 'player-characters':
+      return players[id] ? <PlayerCharactersPage id={id} /> : <MissingPage />;
     case 'map':
       return <MapPage />;
     default:
@@ -79,7 +88,7 @@ export default function App() {
   const model = scoped
     ? campaignModels.find((model) => model.campaign.id === segments[1])
     : campaignModels[0];
-  const [route = '', idText] = scoped ? segments.slice(2) : segments;
+  const [route = '', idText, recordText] = scoped ? segments.slice(2) : segments;
   const title = model?.campaign.title || 'Arquivo Alien';
 
   useEffect(() => {
@@ -151,7 +160,7 @@ export default function App() {
             {preview.error ? (
               <p role="alert">{preview.error}</p>
             ) : model ? (
-              <RoutePage key={hash} route={route} idText={idText} />
+              <RoutePage key={hash} route={route} idText={idText} recordText={recordText} />
             ) : (
               <MissingPage />
             )}

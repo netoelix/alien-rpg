@@ -813,3 +813,12 @@ button:disabled {
   color: var(--amber);
   border-color: #7e6836;
 }
+
+.mission-record + .mission-record {
+  margin-top: 18px;
+}
+.mission-record-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

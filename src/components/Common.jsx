@@ -58,6 +58,7 @@ export function Narrative({ text, className = '', id }) {
 }
 
 export function MissionFolders({ entries }) {
+  const { missionRecords } = useCampaign();
   if (!entries.length) return <div className="empty">Nenhum arquivo encontrado.</div>;
   return entries.map(({ log, id }) => (
     <RouteLink key={id} to={`mission/${id}`} className="folder">
@@ -68,6 +69,9 @@ export function MissionFolders({ entries }) {
         ARQUIVO {String(id + 1).padStart(3, '0')} · {log.dateTime}
       </small>
       <h3>{log.mission}</h3>
+      {missionRecords(log).length > 1 ? (
+        <small>{missionRecords(log).length} REGISTROS</small>
+      ) : null}
       <div className="bottom">
         <small>{log.location}</small>
         <span>→</span>

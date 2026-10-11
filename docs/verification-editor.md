@@ -28,3 +28,15 @@ As 113 definições de conquistas são universais. O formato 2 guarda o catálog
 Conferir site cria uma cópia independente do rascunho aplicado no armazenamento local do navegador. A aba de prévia exibe um aviso e permite navegar entre campanhas, missões, jogadores e personagens dessa cópia. Não grava arquivos nem publica. As cinco prévias mais recentes são mantidas; links antigos podem precisar ser abertos novamente pelo editor. A versão pública ignora esse mecanismo.
 
 Validação: 17 testes; catálogo universal com concessões antigas preservadas; nova campanha sem concessões herdadas; prévia independente com jogador e missão; backup atômico e conflitos. No navegador, uma campanha e missão novas abriram sem gravação, e o seletor de conquistas da nova campanha apresentou as 113 definições.
+
+
+## Registros por sessão e cadastro único de jogadores
+
+Uma missão continua sendo uma pasta. Seu relato original permanece como primeiro registro; novos registros ficam em `mission.logs`, com título livre, referência de sessão opcional, data fictícia, equipe e texto próprios. O editor oferece REGISTROS DE SESSÃO para criar e editar esses registros. Links antigos `log/0` continuam abrindo o relato original; novos links `log/0/1` abrem registros adicionais. A data própria do primeiro registro usa `logDateTime`, preservando a data da missão. A associação a personagens considera as equipes e relatos de todos os registros da pasta.
+
+Jogadores passam a ter um cadastro pessoal em `playerProfiles`, ligado explicitamente às participações de cada campanha. Ao criar um jogador, escolha uma pessoa existente ou crie uma nova. Nomes iguais não unem pessoas. Personagens continuam pertencendo à campanha. Renomear um cadastro atualiza seus vínculos e concessões nas campanhas; a página pessoal mostra as campanhas e o acervo de conquistas com sua origem. Uma conquista universal já recebida não pode ser concedida novamente em outra campanha. Estrelas por repetição permanecem para uma etapa posterior.
+
+O acervo original não foi reescrito. Dados antigos recebem adaptação em memória e só mudam de formato no próximo salvamento com backup. Validação: registros originais preservados, registros adicionais vinculados a personagens, rejeição de registros incompletos ou repetidos, reutilização de pessoas, homônimos independentes, renomeação com datas preservadas, prevenção de concessões duplicadas e salvamento com backup de registros por sessão. No navegador: uma missão de teste exibiu dois registros, a sessão 2 abriu seu título e texto próprios, e o jogador existente manteve seus personagens e conquistas de Fragmentos da Guerra no perfil entre campanhas.
+
+
+Os cards de campanhas do perfil levam à rota `player-characters`, que exibe somente os personagens daquele jogador na campanha escolhida. Verificado no navegador: André na campanha de teste abriu o card de Fragmentos da Guerra e visualizou exclusivamente Trisha e Takeo, com links para seus dossiês.

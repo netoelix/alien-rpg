@@ -1,3 +1,20 @@
+export function missionRecords(mission) {
+  const { logs, ...primary } = mission;
+  return [
+    {
+      ...primary,
+      title: mission.logTitle || 'Relato oficial',
+      dateTime: mission.logDateTime || mission.dateTime,
+      session: mission.session || '',
+    },
+    ...(logs || []).map((log) => ({
+      ...log,
+      mission: mission.mission,
+      location: mission.location,
+    })),
+  ];
+}
+
 export function createCampaignModel(data) {
   const { players, achievements, timelines } = data;
   const characters = players
@@ -15,8 +32,14 @@ export function createCampaignModel(data) {
     (character.aliases?.length ? character.aliases : [character.characterName]).some((name) =>
       text.toLocaleLowerCase('pt-BR').includes(name.toLocaleLowerCase('pt-BR')),
     );
-  const logMembers = (log) => characters.filter((character) => mentions(log.esquad, character));
-  const relatedTo = (log, character) => mentions(log.esquad + ' ' + log.descrition, character);
+  const logMembers = (log) =>
+    characters.filter((character) =>
+      missionRecords(log).some((record) => mentions(record.esquad, character)),
+    );
+  const relatedTo = (log, character) =>
+    missionRecords(log).some((record) =>
+      mentions(record.esquad + ' ' + record.descrition, character),
+    );
   return {
     players,
     achievements,
@@ -25,6 +48,7 @@ export function createCampaignModel(data) {
     playerAwards,
     awardDate,
     logMembers,
+    missionRecords,
     relatedTo,
   };
 }
@@ -97,6 +121,33 @@ export function validateCampaign(data) {
     )
   )
     return ['Registro de missão incompleto.'];
+  for (const mission of data.timelines) {
+    if (mission.logs !== undefined && !Array.isArray(mission.logs))
+      return ['Lista de registros inválida.'];
+    const logIds = new Set();
+    for (const log of mission.logs || []) {
+      if (
+        !log ||
+        !text(log.id) ||
+        !log.id ||
+        logIds.has(log.id) ||
+        ['title', 'dateTime', 'esquad', 'descrition'].some(
+          (field) => !text(log[field]) || !log[field].trim(),
+        ) ||
+        (log.session !== undefined && !text(log.session))
+      )
+        return ['Registro de sessão incompleto ou identificador repetido.'];
+      logIds.add(log.id);
+    }
+    if (mission.logTitle !== undefined && (!text(mission.logTitle) || !mission.logTitle.trim()))
+      errors.push('Título de registro inválido.');
+    if (
+      mission.logDateTime !== undefined &&
+      (!text(mission.logDateTime) || !mission.logDateTime.trim())
+    )
+      errors.push('Data do registro inválida.');
+    if (mission.session !== undefined && !text(mission.session)) errors.push('Sessão inválida.');
+  }
   const names = new Set(data.players.map((player) => player.playerId));
   if (names.size !== data.players.length) errors.push('Jogadores repetidos.');
   const ids = new Set();

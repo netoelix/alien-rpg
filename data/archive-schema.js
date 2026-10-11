@@ -1,3 +1,4 @@
+import { normalizePlayerProfiles } from './player-profiles.js';
 import { validateCampaign } from './schema.js';
 
 export function validateArchive(archive) {
@@ -15,8 +16,24 @@ export function validateArchive(archive) {
     timelines: [],
     achievements: archive.achievements.map((item) => ({ ...item, character: [] })),
   });
+  const profileIds = new Set();
+  const profileErrors = [];
+  for (const profile of archive.playerProfiles) {
+    if (
+      !profile ||
+      typeof profile.id !== 'string' ||
+      !/^[a-zA-Z0-9-]+$/.test(profile.id) ||
+      profileIds.has(profile.id) ||
+      typeof profile.name !== 'string' ||
+      !profile.name.trim() ||
+      typeof profile.biography !== 'string'
+    )
+      profileErrors.push('Cadastro de jogador inválido ou repetido.');
+    profileIds.add(profile?.id);
+  }
   const ids = new Set();
-  const errors = [...catalogErrors];
+  const errors = [...catalogErrors, ...profileErrors];
+  const earned = new Set();
   for (const campaign of archive.campaigns) {
     if (
       !campaign ||
@@ -63,8 +80,24 @@ export function validateArchive(archive) {
       if (!archive.achievements.some((item) => item.id === grant.id))
         campaignErrors.push('Conquista desconhecida: ' + grant.id);
     }
+    for (const achievement of campaign.achievements) {
+      for (const grant of Array.isArray(achievement?.character) ? achievement.character : []) {
+        const player = campaign.players?.find((member) => member.playerId === grant?.name);
+        if (!player?.profileId || player.mascot) continue;
+        const key = player.profileId + '/' + achievement.id;
+        if (earned.has(key))
+          campaignErrors.push(
+            'Este jogador já possui a conquista em outra campanha: ' +
+              grant.name +
+              '/' +
+              achievement.id,
+          );
+        earned.add(key);
+      }
+    }
     errors.push(...campaignErrors.map((error) => `${campaign.title}: ${error}`));
     if (campaignErrors.length) continue;
+    const memberProfiles = new Set();
     const characterIds = new Set();
     const playerIds = new Set();
     for (const player of campaign.players || []) {
@@ -75,6 +108,12 @@ export function validateArchive(archive) {
       )
         errors.push('Identificador de jogador ausente ou repetido.');
       playerIds.add(player.id);
+      if (!player.mascot) {
+        const profile = archive.playerProfiles.find((item) => item.id === player.profileId);
+        if (!profile || profile.name !== player.playerId || memberProfiles.has(player.profileId))
+          errors.push('Vínculo de jogador inválido ou repetido.');
+        memberProfiles.add(player.profileId);
+      }
       for (const character of player.characters || []) {
         if (
           typeof character.id !== 'string' ||
@@ -143,7 +182,7 @@ export function normalizeArchive(archive) {
     ])
       campaign[field] ??= '';
   }
-  return normalized;
+  return normalizePlayerProfiles(normalized);
 }
 
 export function newCampaign(title, campaigns = []) {

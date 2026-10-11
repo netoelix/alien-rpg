@@ -56,7 +56,12 @@ export function HomePage() {
           <p className="lead">{model.campaign.summary}</p>
           <div className="stats">
             <div>
-              <b>{model.timelines.length}</b>
+              <b>
+                {model.timelines.reduce(
+                  (total, mission) => total + model.missionRecords(mission).length,
+                  0,
+                )}
+              </b>
               <small>REGISTROS DE MISSÃO</small>
             </div>
             <div>
@@ -102,7 +107,7 @@ const campaignSections = [
 ];
 
 export function CampaignPage() {
-  const { campaign, timelines, characters, players } = useCampaign();
+  const { campaign, timelines, characters, players, missionRecords } = useCampaign();
   const last = timelines.at(-1);
   return (
     <>
@@ -113,7 +118,7 @@ export function CampaignPage() {
       <p className="lead section-intro">{campaign.description}</p>
       <div className="stats">
         <div>
-          <b>{timelines.length}</b>
+          <b>{timelines.reduce((total, mission) => total + missionRecords(mission).length, 0)}</b>
           <small>REGISTROS</small>
         </div>
         <div>

@@ -3,6 +3,7 @@ export const requiredRecordFields = {
   players: ['playerId'],
   characters: ['characterName', 'profession', 'about', 'owner', 'images'],
   timelines: ['mission', 'location', 'dateTime', 'esquad', 'descrition'],
+  logs: ['title', 'dateTime', 'esquad', 'descrition', 'missionIndex'],
   achievements: ['name', 'description', 'medal', 'category', 'rank'],
 };
 
@@ -10,6 +11,8 @@ export const characterStates = { vivo: 'Vivo', morto: 'Morto', desaparecido: 'De
 
 export function validateEditorRecord(section, record) {
   const labels = {
+    title: 'Título do registro',
+    missionIndex: 'Missão',
     playerId: 'Nome do jogador',
     characterName: 'Nome do personagem',
     profession: 'Profissão',
