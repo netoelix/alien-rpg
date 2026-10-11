@@ -30,7 +30,7 @@ export function createEditorStore(root) {
           ...campaign.players.flatMap((player) =>
             player.characters.map((character) => character.images),
           ),
-          ...campaign.achievements.map((achievement) => achievement.medal),
+          ...archive.achievements.map((achievement) => achievement.medal),
         ];
         if (resources.some((resource) => !available.has(resource.slice('assets/'.length)))) {
           throw Object.assign(new Error('Selecione um retrato ou medalha existente no acervo.'), {

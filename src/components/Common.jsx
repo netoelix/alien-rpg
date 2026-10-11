@@ -7,7 +7,7 @@ export function RouteLink({ to = '', className = '', children, ...props }) {
   const destination =
     to && !to.startsWith('c/') && to !== 'editor' ? 'c/' + campaign.id + '/' + to : to;
   return (
-    <a href={`#/${destination}`} className={className} {...props}>
+    <a href={to === 'editor' ? '/#/editor' : `#/${destination}`} className={className} {...props}>
       {children}
     </a>
   );

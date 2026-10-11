@@ -4,12 +4,14 @@ import {
   normalizeArchive,
   validateArchive,
   automaticCampaignTitle,
+  campaignAchievements,
 } from '../../data/archive-schema.js';
 import {
   requiredRecordFields,
   validateEditorRecord,
   characterStates,
 } from '../../data/editor-rules.js';
+import { createDraftPreview } from '../lib/draft-preview.js';
 import { Eyebrow } from '../components/Common.jsx';
 
 const sections = [
@@ -320,7 +322,7 @@ function RecordForm({ section, record, campaign, assets, onApply, storageKey }) 
             </select>
           </label>
           <fieldset>
-            <legend>Concessões ao jogador · opcionais</legend>
+            <legend>Concessões nesta campanha · opcionais</legend>
             {campaign.players
               .filter((player) => !player.mascot)
               .map((player) => {
@@ -457,7 +459,9 @@ export default function Editor() {
       ? []
       : section === 'characters'
         ? characters
-        : campaign[section];
+        : section === 'achievements'
+          ? campaignAchievements(archive, campaign)
+          : campaign[section];
   const record =
     section === 'campaign'
       ? campaign
@@ -490,6 +494,13 @@ export default function Editor() {
           player.characters = player.characters.filter((item) => item.id !== character.id);
         target.players[Number(owner)].characters.push(character);
       }
+    } else if (section === 'achievements') {
+      const { character, ...definition } = value;
+      const index = next.achievements.findIndex((item) => item.id === definition.id);
+      if (index < 0) next.achievements.push(definition);
+      else next.achievements[index] = definition;
+      target.achievements = target.achievements.filter((item) => item.id !== definition.id);
+      if (character.length) target.achievements.push({ id: definition.id, character });
     } else {
       if (section === 'players' && selected !== 'new') {
         const previousName = target.players[Number(selected)].playerId;
@@ -592,9 +603,26 @@ export default function Editor() {
             </label>
             <a
               className="button"
+              href="#"
               target="_blank"
               rel="noreferrer"
-              href={`/#/c/${campaign.id}/campaign`}
+              onClick={(event) => {
+                try {
+                  const url = createDraftPreview(
+                    archive,
+                    campaign.id,
+                    window.localStorage,
+                    window.location.origin,
+                  );
+                  event.currentTarget.href = url;
+                  setMessage(
+                    'Prévia aberta com o rascunho aplicado. Salvar e publicar continuam sendo etapas separadas.',
+                  );
+                } catch (error) {
+                  event.preventDefault();
+                  setMessage('Não foi possível abrir a prévia: ' + error.message);
+                }
+              }}
             >
               CONFERIR SITE ↗
             </a>
@@ -649,6 +677,13 @@ export default function Editor() {
               </button>
             ))}
           </div>
+          {section === 'achievements' ? (
+            <p className="muted">
+              Catálogo geral do RPG: disponível em todas as campanhas. Alterar nome, descrição ou
+              medalha atualiza a conquista em todas elas. As concessões abaixo pertencem à campanha
+              selecionada.
+            </p>
+          ) : null}
           {section !== 'campaign' ? (
             <div className="toolbar">
               <label>

@@ -7,3 +7,6 @@ export function useCampaign() {
   if (!campaign) throw new Error('Campanha não selecionada.');
   return campaign;
 }
+
+export const ArchiveContext = createContext([]);
+export const useArchiveModels = () => useContext(ArchiveContext);

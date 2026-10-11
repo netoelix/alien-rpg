@@ -1,8 +1,8 @@
-import { campaignModels } from '../../data/model.js';
-import { useCampaign } from '../context/CampaignContext.jsx';
+import { useCampaign, useArchiveModels } from '../context/CampaignContext.jsx';
 import { Breadcrumbs, Eyebrow, RouteLink } from '../components/Common.jsx';
 
 export function HomePage() {
+  const campaignModels = useArchiveModels();
   return (
     <>
       <div className="hero">
