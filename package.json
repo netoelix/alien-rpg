@@ -3,12 +3,23 @@
   "version": "3.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
-    "dev": "node scripts/dev.mjs",
+    "dev": "vite",
     "build": "node scripts/build.mjs",
-    "preview": "node scripts/dev.mjs --dist",
+    "preview": "vite preview",
     "test": "node --test",
-    "check": "node --check app.js && node --check data/model.js && node --check data/schema.js"
+    "check": "prettier --check src data/model.js data/schema.js style.css vite.config.js scripts tests",
+    "format": "prettier --write src data/model.js data/schema.js style.css vite.config.js scripts tests"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10",
+    "vite": "^8.3.4"
   }
 }

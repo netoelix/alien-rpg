@@ -4,7 +4,11 @@ Arquivo público de campanhas com interface inspirada nos terminais de Alien. Es
 
 ## Executar
 
-Requer Node.js 22 ou superior. Não há dependências externas.
+Requer Node.js 22.12 ou superior. A interface usa React e o build usa Vite. Instale as dependências antes de executar:
+
+```sh
+npm ci
+```
 
 ```sh
 npm run dev
@@ -25,9 +29,12 @@ O resultado fica em `dist/`. A configuração do Vercel usa essa pasta. Os antig
 
 - `data/fragmentos-da-guerra.json`: jogadores, conquistas e logs migrados.
 - `data/schema.js`: relações e validação dos dados.
-- `app.js`: navegação, busca, filtros, dossiês, diário e mapa.
+- `src/App.jsx`: estrutura da aplicação e navegação.
+- `src/pages/`: páginas em React, separadas por assunto.
+- `src/components/`: elementos compartilhados.
+- `src/lib/narrative.js`: interpretação das tarjas e dos parágrafos.
 - `style.css`: identidade visual e comportamento responsivo.
-- `assets/`: fontes, retratos, medalhas e imagem do mapa utilizados.
+- `public/assets/`: fontes, retratos, medalhas e imagem do mapa utilizados.
 - `tests/`: validação da migração e das relações.
 - `docs/migration-notes.txt`: correções aplicadas na migração.
 
@@ -46,3 +53,9 @@ As relações entre personagens e logs são inferidas por nomes mencionados no t
 A branch `alien-rpg-3.0` prepara a substituição da interface anterior. O merge para `alien-rpg-page` deve acontecer somente após revisão. Nenhum servidor pago é necessário para leitura do site; a edição e publicação seguras serão desenvolvidas separadamente.
 
 Desenvolvido por Elix Merlino Neto. Créditos das medalhas: André Luiz Brandão. Projeto de fãs para acompanhamento de RPG.
+
+## Convenções de edição
+
+O código-fonte permanece formatado para leitura humana; apenas os arquivos gerados em `dist/` são compactados. Execute `npm run format` após editar e `npm run check` para conferir a formatação. Os dados continuam separados em JSON, e o React escapa textos ao renderizá-los, sem inserir HTML dos relatos.
+
+No celular, biografias longas podem ser expandidas e recolhidas. No desktop, o retrato acompanha a rolagem. Logs usam texto justificado, e o botão de revelação só aparece quando o relato contém trechos entre barras, como `/informação sensível/`. Datas numéricas não são interpretadas como censura.

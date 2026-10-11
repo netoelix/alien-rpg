@@ -1,18 +1,14 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Arquivo de campanhas, personagens e missões de Alien RPG.">
-<title>Arquivo de campanha — Terminal Alien</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="shell">
-<header class="masthead"><a class="brand" href="#/">ARQUIVO <span>ALIEN</span></a><div class="system"><i></i> TERMINAL DE CONSULTA <small>REGISTROS DE CAMPANHA / 01</small></div><button id="effects" aria-pressed="true" title="Ativar ou desativar textura da tela">CRT ON</button></header>
-<div class="topline"><span>INTERFACE DE ACESSO PÚBLICO</span><span>REGISTROS DISPONÍVEIS · LEITURA</span></div>
-<nav id="nav" aria-label="Navegação principal"></nav>
-<main id="app" tabindex="-1"></main>
-<footer><span>DESENVOLVIDO POR ELIX MERLINO NETO</span><span>VERSÃO 3.0 · FRAGMENTOS DA GUERRA</span></footer>
-</div>
-<script type="module">import('./app.js').catch(() => { document.getElementById('app').textContent = 'Não foi possível carregar os registros. Recarregue a página para tentar novamente.'; });</script>
-</body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Arquivo de campanhas, personagens e missões de Alien RPG." />
+    <title>Arquivo Alien — Terminal de campanhas</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Ative o JavaScript para consultar o arquivo de campanhas.</noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
