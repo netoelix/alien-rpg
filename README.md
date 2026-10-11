@@ -27,7 +27,7 @@ O resultado fica em `dist/`. A configuração do Vercel usa essa pasta. Os antig
 
 ## Conteúdo e estrutura
 
-- `data/fragmentos-da-guerra.json`: jogadores, conquistas e logs migrados.
+- `data/archive.json`: campanhas, jogadores, personagens, conquistas e logs.
 - `data/schema.js`: relações e validação dos dados.
 - `src/App.jsx`: estrutura da aplicação e navegação.
 - `src/pages/`: páginas em React, separadas por assunto.
@@ -42,15 +42,15 @@ As datas das missões pertencem à cronologia fictícia. As tarjas são efeitos 
 
 ## Limites desta primeira integração
 
-O seletor apresenta uma campanha migrada. O cadastro de novas campanhas e o editor administrativo ainda precisam ser implementados. Não há autenticação, banco de dados ou serviço remoto de escrita.
+O seletor aceita várias campanhas e o editor local permite criar e editar o acervo. A gravação existe somente ao executar o modo editor na sua máquina. Não há autenticação remota, banco de dados ou serviço público de escrita.
 
 O diário guarda rascunhos apenas no navegador e permite baixar o texto; não publica registros nem sincroniza dispositivos. As conquistas continuam sendo as concessões do acervo original: níveis por repetição e conquistas próprias de personagens são etapas futuras.
 
-As relações entre personagens e logs são inferidas por nomes mencionados no texto ou no esquadrão. Menção não significa participação. Os identificadores de páginas ainda dependem da ordem dos registros: não reordene jogadores ou personagens sem uma migração para identificadores permanentes.
+As relações entre personagens e logs são inferidas por nomes mencionados no texto ou no esquadrão. Menção não significa participação. Campanhas e personagens possuem identificadores permanentes. Os links de jogadores e missões ainda usam a posição dos registros: preserve a ordem ao importar backups. O editor adiciona novos jogadores e missões ao final.
 
 ## Publicação e revisão
 
-A branch `alien-rpg-3.0` prepara a substituição da interface anterior. O merge para `alien-rpg-page` deve acontecer somente após revisão. Nenhum servidor pago é necessário para leitura do site; a edição e publicação seguras serão desenvolvidas separadamente.
+A branch `alien-rpg-3.0` prepara a substituição da interface anterior. O merge para `alien-rpg-page` deve acontecer somente após revisão. Nenhum servidor pago é necessário para leitura do site; a publicação é uma etapa separada da edição local.
 
 Desenvolvido por Elix Merlino Neto. Créditos das medalhas: André Luiz Brandão. Projeto de fãs para acompanhamento de RPG.
 
@@ -59,3 +59,24 @@ Desenvolvido por Elix Merlino Neto. Créditos das medalhas: André Luiz Brandão
 O código-fonte permanece formatado para leitura humana; apenas os arquivos gerados em `dist/` são compactados. Execute `npm run format` após editar e `npm run check` para conferir a formatação. Os dados continuam separados em JSON, e o React escapa textos ao renderizá-los, sem inserir HTML dos relatos.
 
 No celular, biografias longas podem ser expandidas e recolhidas. No desktop, o retrato acompanha a rolagem. Logs usam texto justificado, e o botão de revelação só aparece quando o relato contém trechos entre barras, como `/informação sensível/`. Datas numéricas não são interpretadas como censura.
+
+## Editor local
+
+```sh
+npm run editor
+```
+
+Abra http://127.0.0.1:3841/#/editor. O modo usa a mesma porta da prévia: encerre outro processo do site antes de iniciá-lo. Acesse exatamente 127.0.0.1, e não localhost.
+
+1. Selecione ou crie uma campanha.
+2. Edite a apresentação, jogadores, personagens, missões e conquistas pelos formulários.
+3. Clique em **Aplicar ao rascunho** para cada registro.
+4. Clique em **Salvar arquivos com backup** para gravar `data/archive.json`.
+5. Abra **Conferir site** em outra aba. Recarregue a prévia depois de uma nova gravação.
+6. Para publicar, gere o site e envie os arquivos pela sua rotina de publicação. Salvar no editor não publica no GitHub nem na hospedagem.
+
+A API de gravação só é montada nesse modo, escuta em loopback e exige a origem local na gravação. O build público exclui o editor. Antes de gravar, o conteúdo passa por validação e a versão anterior é copiada para `.editor-backups/` (fora do Git). Uma edição antiga é recusada se o arquivo mudou em disco. Uma falha na criação do backup interrompe a gravação.
+
+**Exportar backup** baixa o rascunho inteiro. **Importar backup** carrega um arquivo JSON validado como rascunho, sem gravar imediatamente. Para restaurar uma cópia automática, escolha um arquivo de `.editor-backups/`, confira e salve. Os rascunhos de formulários e do acervo são recuperados na mesma sessão do navegador, quando a revisão em disco permanece igual. Eles não substituem os backups em arquivo.
+
+Nesta etapa, os retratos e medalhas são escolhidos entre os recursos já presentes em `public/assets/`. Upload de imagens, exclusão de registros, níveis de conquistas e publicação automática ainda não estão disponíveis. Jogadores e concessões são cadastrados por campanha; uma identidade global de jogador entre campanhas será implementada antes da progressão compartilhada. O editor local não permite que outras pessoas editem remotamente.

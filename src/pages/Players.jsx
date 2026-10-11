@@ -1,12 +1,5 @@
 import { useState } from 'react';
-import {
-  players,
-  characters,
-  timelines,
-  playerAwards,
-  awardDate,
-  relatedTo,
-} from '../../data/model.js';
+import { useCampaign } from '../context/CampaignContext.jsx';
 import {
   Breadcrumbs,
   Eyebrow,
@@ -17,17 +10,18 @@ import {
 } from '../components/Common.jsx';
 
 export function PlayersPage() {
+  const { players, playerAwards, campaign } = useCampaign();
   return (
     <>
       <Breadcrumbs>Jogadores</Breadcrumbs>
-      <Eyebrow>Participantes / Fragmentos da Guerra</Eyebrow>
+      <Eyebrow>Participantes / {campaign.title}</Eyebrow>
       <h1>Jogadores</h1>
       <p className="lead list-intro">
         Personagens, histórias e conquistas de quem construiu esta campanha.
       </p>
       <div className="grid">
         {players.map((player, id) =>
-          id === 4 ? null : (
+          player.mascot ? null : (
             <RouteLink key={player.playerId} to={`player/${id}`} className="card">
               <Eyebrow>Participante {String(id + 1).padStart(2, '0')}</Eyebrow>
               <h3>{player.playerId}</h3>
@@ -51,6 +45,8 @@ const categories = [
 ];
 
 export function PlayerPage({ id }) {
+  const { players, characters, timelines, playerAwards, awardDate, relatedTo, campaign } =
+    useCampaign();
   const player = players[id];
   const [category, setCategory] = useState('');
   const [order, setOrder] = useState('new');
@@ -69,9 +65,7 @@ export function PlayerPage({ id }) {
       <Breadcrumbs>{player.playerId}</Breadcrumbs>
       <Eyebrow>Registro de jogador</Eyebrow>
       <h1>{player.playerId}</h1>
-      <p className="lead">
-        Participante de Fragmentos da Guerra. Perfil pessoal ainda não preenchido.
-      </p>
+      <p className="lead">Participante de {campaign.title}. Perfil pessoal ainda não preenchido.</p>
       <div className="stats">
         <div>
           <b>{player.characters.length}</b>

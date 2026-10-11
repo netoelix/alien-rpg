@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { characters, players, timelines } from '../data/model.js';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { campaignModels } from '../data/model.js';
+import { CampaignContext, useCampaign } from './context/CampaignContext.jsx';
+const Editor = import.meta.env.MODE === 'editor' ? lazy(() => import('./editor/Editor.jsx')) : null;
 import { RouteLink, MissingPage } from './components/Common.jsx';
 import { HomePage, CampaignPage } from './pages/Home.jsx';
 import { MissionsPage, MissionPage, LogPage } from './pages/Missions.jsx';
@@ -16,8 +18,17 @@ const navigation = [
 ];
 
 function RoutePage({ route, idText }) {
+  const { characters, players, timelines } = useCampaign();
   const id = /^\d+$/.test(idText || '') ? Number(idText) : -1;
   switch (route) {
+    case 'editor':
+      return Editor ? (
+        <Suspense fallback={<p>Carregando editor local…</p>}>
+          <Editor />
+        </Suspense>
+      ) : (
+        <MissingPage />
+      );
     case '':
       return <HomePage />;
     case 'campaign':
@@ -31,7 +42,11 @@ function RoutePage({ route, idText }) {
     case 'characters':
       return <CharactersPage />;
     case 'character':
-      return characters[id] ? <CharacterPage id={id} /> : <MissingPage />;
+      return characters.some((character) => character.id === idText) ? (
+        <CharacterPage id={idText} />
+      ) : (
+        <MissingPage />
+      );
     case 'players':
       return <PlayersPage />;
     case 'player':
@@ -47,7 +62,13 @@ export default function App() {
   const [hash, setHash] = useState(window.location.hash);
   const [effects, setEffects] = useState(true);
   const mainRef = useRef(null);
-  const [route = '', idText] = hash.replace(/^#\/?/, '').split('/');
+  const segments = hash.replace(/^#\/?/, '').split('/');
+  const scoped = segments[0] === 'c';
+  const model = scoped
+    ? campaignModels.find((model) => model.campaign.id === segments[1])
+    : campaignModels[0];
+  const [route = '', idText] = scoped ? segments.slice(2) : segments;
+  const title = model?.campaign.title || 'Arquivo Alien';
 
   useEffect(() => {
     function handleNavigation() {
@@ -60,8 +81,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    document.title = `${route ? 'Fragmentos da Guerra' : 'Arquivo Alien'} · Terminal de campanhas`;
-  }, [route]);
+    document.title = `${route ? title : 'Arquivo Alien'} · Terminal de campanhas`;
+  }, [route, title]);
 
   useEffect(() => {
     document.body.classList.toggle('clean', !effects);
@@ -69,47 +90,51 @@ export default function App() {
   }, [effects]);
 
   return (
-    <div className="shell">
-      <header className="masthead">
-        <RouteLink className="brand">
-          ARQUIVO <span>ALIEN</span>
-        </RouteLink>
-        <div className="system">
-          <i /> TERMINAL DE CONSULTA <small>REGISTROS DE CAMPANHA / 01</small>
+    <CampaignContext.Provider value={model || campaignModels[0]}>
+      <div className="shell">
+        <header className="masthead">
+          <RouteLink className="brand">
+            ARQUIVO <span>ALIEN</span>
+          </RouteLink>
+          <div className="system">
+            <i /> TERMINAL DE CONSULTA{' '}
+            <small>REGISTROS DE CAMPANHA / {String(campaignModels.length).padStart(2, '0')}</small>
+          </div>
+          <button
+            aria-pressed={effects}
+            title="Ativar ou desativar textura da tela"
+            onClick={() => setEffects((value) => !value)}
+          >
+            {effects ? 'CRT ON' : 'CRT OFF'}
+          </button>
+        </header>
+        <div className="topline">
+          <span>INTERFACE DE ACESSO PÚBLICO</span>
+          <span>REGISTROS DISPONÍVEIS · LEITURA</span>
         </div>
-        <button
-          aria-pressed={effects}
-          title="Ativar ou desativar textura da tela"
-          onClick={() => setEffects((value) => !value)}
-        >
-          {effects ? 'CRT ON' : 'CRT OFF'}
-        </button>
-      </header>
-      <div className="topline">
-        <span>INTERFACE DE ACESSO PÚBLICO</span>
-        <span>REGISTROS DISPONÍVEIS · LEITURA</span>
+        <nav aria-label="Navegação principal">
+          {Editor ? <RouteLink to="editor">EDITOR LOCAL</RouteLink> : null}
+          {route && route !== 'editor'
+            ? navigation.map((item) => (
+                <RouteLink
+                  key={item.route}
+                  to={item.route}
+                  className={item.children.includes(route) ? 'active' : ''}
+                  aria-current={item.children.includes(route) ? 'page' : undefined}
+                >
+                  {item.label}
+                </RouteLink>
+              ))
+            : null}
+        </nav>
+        <main ref={mainRef} tabIndex={-1}>
+          {model ? <RoutePage key={hash} route={route} idText={idText} /> : <MissingPage />}
+        </main>
+        <footer>
+          <span>DESENVOLVIDO POR ELIX MERLINO NETO</span>
+          <span>VERSÃO 3.0 · {route ? title : 'ARQUIVO DE CAMPANHAS'}</span>
+        </footer>
       </div>
-      <nav aria-label="Navegação principal">
-        {route
-          ? navigation.map((item) => (
-              <RouteLink
-                key={item.route}
-                to={item.route}
-                className={item.children.includes(route) ? 'active' : ''}
-                aria-current={item.children.includes(route) ? 'page' : undefined}
-              >
-                {item.label}
-              </RouteLink>
-            ))
-          : null}
-      </nav>
-      <main ref={mainRef} tabIndex={-1}>
-        <RoutePage key={hash} route={route} idText={idText} />
-      </main>
-      <footer>
-        <span>DESENVOLVIDO POR ELIX MERLINO NETO</span>
-        <span>VERSÃO 3.0 · FRAGMENTOS DA GUERRA</span>
-      </footer>
-    </div>
+    </CampaignContext.Provider>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { characters, players, timelines, relatedTo } from '../../data/model.js';
+import { useCampaign } from '../context/CampaignContext.jsx';
 import {
   Breadcrumbs,
   Eyebrow,
@@ -10,10 +10,11 @@ import {
 } from '../components/Common.jsx';
 
 export function CharactersPage() {
+  const { characters, campaign } = useCampaign();
   return (
     <>
       <Breadcrumbs>Personagens</Breadcrumbs>
-      <Eyebrow>Arquivo de pessoal / Wild Weasel</Eyebrow>
+      <Eyebrow>Arquivo de pessoal / {campaign.unit || campaign.title}</Eyebrow>
       <h1>Dossiês de personagens</h1>
       <p className="lead list-intro">Os integrantes que fizeram parte desta história.</p>
       <div className="grid">
@@ -48,11 +49,18 @@ function Biography({ character }) {
 }
 
 function Diary({ character }) {
+  const { campaign } = useCampaign();
   // Preserva os rascunhos escritos antes da conversão para React.
-  const storageKey = `alien-prototype-diary-${character.id}`;
+  const storageKey = `alien-rpg-diary-${campaign.id}-${character.id}`;
   const [draft, setDraft] = useState(() => {
     try {
-      return localStorage.getItem(storageKey) || '';
+      return (
+        localStorage.getItem(storageKey) ??
+        (campaign.id === 'fragmentos-da-guerra'
+          ? localStorage.getItem(`alien-prototype-diary-${character.id}`)
+          : '') ??
+        ''
+      );
     } catch {
       return '';
     }
@@ -111,7 +119,8 @@ const characterSections = [
 ];
 
 export function CharacterPage({ id }) {
-  const character = characters[id];
+  const { characters, players, timelines, relatedTo } = useCampaign();
+  const character = characters.find((character) => character.id === id);
   const [section, setSection] = useState('bio');
   const relatedLogs = timelines
     .map((log, logId) => ({ log, id: logId }))
@@ -123,7 +132,10 @@ export function CharacterPage({ id }) {
       <div className="split character-layout">
         <aside className="sidepanel character-sidebar">
           <img className="portrait" src={character.images} alt={character.characterName} />
-          <Eyebrow>Dossiê {String(id + 1).padStart(3, '0')}</Eyebrow>
+          <Eyebrow>
+            Dossiê{' '}
+            {String(characters.findIndex((character) => character.id === id) + 1).padStart(3, '0')}
+          </Eyebrow>
           <h3>{character.codname}</h3>
           <p className="muted">{character.profession}</p>
           <RouteLink to={`player/${character.playerId}`}>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { timelines, logMembers } from '../../data/model.js';
+import { useCampaign } from '../context/CampaignContext.jsx';
 import {
   Breadcrumbs,
   Eyebrow,
@@ -10,6 +10,7 @@ import {
 import { hasRedactions } from '../lib/narrative.js';
 
 export function MissionsPage() {
+  const { timelines } = useCampaign();
   const [query, setQuery] = useState('');
   const [order, setOrder] = useState('old');
   const normalizedQuery = query.toLocaleLowerCase('pt-BR');
@@ -59,6 +60,7 @@ export function MissionsPage() {
 }
 
 export function MissionPage({ id }) {
+  const { timelines, logMembers } = useCampaign();
   const log = timelines[id];
   const participants = logMembers(log);
   return (
@@ -110,6 +112,7 @@ export function MissionPage({ id }) {
 }
 
 export function LogPage({ id }) {
+  const { timelines, campaign } = useCampaign();
   const log = timelines[id];
   const [revealed, setRevealed] = useState(false);
   const censored = hasRedactions(log.descrition);
@@ -138,7 +141,7 @@ export function LogPage({ id }) {
         </aside>
         <article className="document">
           <header className="document-head">
-            <Eyebrow>Arquivo oficial / Wild Weasel</Eyebrow>
+            <Eyebrow>Arquivo oficial / {campaign.unit || campaign.title}</Eyebrow>
             <h2>{log.mission}</h2>
             <small>
               {log.dateTime} · {log.location} · DATA NO UNIVERSO

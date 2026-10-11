@@ -11,8 +11,9 @@
     "build": "node scripts/build.mjs",
     "preview": "vite preview",
     "test": "node --test",
-    "check": "prettier --check src data/model.js data/schema.js style.css vite.config.js scripts tests",
-    "format": "prettier --write src data/model.js data/schema.js style.css vite.config.js scripts tests"
+    "check": "prettier --check src data/*.js style.css vite.config.js scripts tests",
+    "format": "prettier --write src data/*.js style.css vite.config.js scripts tests",
+    "editor": "vite --mode editor"
   },
   "dependencies": {
     "react": "^19.3.0",

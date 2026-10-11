@@ -1,3 +1,5 @@
+import { campaignModels } from '../../data/model.js';
+import { useCampaign } from '../context/CampaignContext.jsx';
 import { Breadcrumbs, Eyebrow, RouteLink } from '../components/Common.jsx';
 
 export function HomePage() {
@@ -32,36 +34,42 @@ export function HomePage() {
           <small>
             INTEGRIDADE DOS REGISTROS · ARQUIVO DISPONÍVEL
             <br />
-            01 CAMPANHA / WILD WEASEL
+            {String(campaignModels.length).padStart(2, '0')} CAMPANHA(S)
           </small>
         </div>
       </div>
       <div className="section-head">
         <h2>Campanhas disponíveis</h2>
-        <span className="eyebrow">01 ARQUIVO</span>
+        <span className="eyebrow">{String(campaignModels.length).padStart(2, '0')} ARQUIVO(S)</span>
       </div>
-      <RouteLink to="campaign" className="card">
-        <span className="arrow">↗</span>
-        <span className="tag amber">ENCERRADA</span>
-        <h3>Fragmentos da Guerra</h3>
-        <p className="lead">
-          O registro do esquadrão Wild Weasel, entre as corporações e a guerra.
-        </p>
-        <div className="stats">
-          <div>
-            <b>17</b>
-            <small>REGISTROS DE MISSÃO</small>
+      {campaignModels.map((model) => (
+        <RouteLink
+          key={model.campaign.id}
+          to={'c/' + model.campaign.id + '/campaign'}
+          className="card campaign-card"
+        >
+          <span className="arrow">↗</span>
+          <span className="tag amber">
+            {model.campaign.status.replaceAll('-', ' ').toUpperCase()}
+          </span>
+          <h3>{model.campaign.title}</h3>
+          <p className="lead">{model.campaign.summary}</p>
+          <div className="stats">
+            <div>
+              <b>{model.timelines.length}</b>
+              <small>REGISTROS DE MISSÃO</small>
+            </div>
+            <div>
+              <b>{String(model.characters.length).padStart(2, '0')}</b>
+              <small>PERSONAGENS</small>
+            </div>
+            <div>
+              <b>{model.campaign.period || '—'}</b>
+              <small>CRONOLOGIA DO UNIVERSO</small>
+            </div>
           </div>
-          <div>
-            <b>07</b>
-            <small>PERSONAGENS</small>
-          </div>
-          <div>
-            <b>2120–2122</b>
-            <small>CRONOLOGIA DO UNIVERSO</small>
-          </div>
-        </div>
-      </RouteLink>
+        </RouteLink>
+      ))}
     </>
   );
 }
@@ -94,27 +102,26 @@ const campaignSections = [
 ];
 
 export function CampaignPage() {
+  const { campaign, timelines, characters, players } = useCampaign();
+  const last = timelines.at(-1);
   return (
     <>
       <Breadcrumbs />
-      <Eyebrow>AU / Divisão de operações especiais</Eyebrow>
-      <h1>Fragmentos da Guerra</h1>
-      <span className="tag amber">CAMPANHA ENCERRADA</span>
-      <p className="lead section-intro">
-        Presos entre a Weyland-Yutani e a UPP, os sobreviventes de Acheron Prime encontram um novo
-        caminho nas forças especiais das Américas Unidas. Este é o arquivo do esquadrão Wild Weasel.
-      </p>
+      <Eyebrow>{campaign.division || 'Arquivo de campanha'}</Eyebrow>
+      <h1>{campaign.title}</h1>
+      <span className="tag amber">{campaign.status.replaceAll('-', ' ').toUpperCase()}</span>
+      <p className="lead section-intro">{campaign.description}</p>
       <div className="stats">
         <div>
-          <b>17</b>
+          <b>{timelines.length}</b>
           <small>REGISTROS</small>
         </div>
         <div>
-          <b>04</b>
+          <b>{String(players.filter((player) => !player.mascot).length).padStart(2, '0')}</b>
           <small>JOGADORES</small>
         </div>
         <div>
-          <b>07</b>
+          <b>{String(characters.length).padStart(2, '0')}</b>
           <small>PERSONAGENS E MASCOTE</small>
         </div>
       </div>
@@ -133,10 +140,14 @@ export function CampaignPage() {
         <h2>Último registro</h2>
         <span className="tag amber">ARQUIVO FINAL</span>
       </div>
-      <RouteLink to="mission/16" className="card">
-        <h3>Alto Comando, Divisão de Operações Especiais</h3>
-        <p className="muted section-intro">Unidade WILD WEASEL: esquadrão desaparecido.</p>
-      </RouteLink>
+      {last ? (
+        <RouteLink to={'mission/' + (timelines.length - 1)} className="card">
+          <h3>{last.mission}</h3>
+          <p className="muted section-intro">{last.esquad}</p>
+        </RouteLink>
+      ) : (
+        <div className="empty">Nenhum registro publicado.</div>
+      )}
     </>
   );
 }

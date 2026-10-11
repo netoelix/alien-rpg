@@ -1,19 +1,10 @@
 export function createCampaignModel(data) {
   const { players, achievements, timelines } = data;
-  const aliases = [
-    ['Trisha', 'Trisha M.'],
-    ['Takeo'],
-    ['Harper'],
-    ['C.R.I.S.', 'CRIS'],
-    ['Sean'],
-    ['Carla'],
-    ['Minsk'],
-  ];
   const characters = players
     .flatMap((player, playerId) =>
       player.characters.map((character) => ({ ...character, playerId })),
     )
-    .map((character, id) => ({ ...character, id }));
+    .map((character, index) => ({ ...character, id: character.id ?? String(index) }));
   const playerAwards = (playerId) =>
     achievements.filter((achievement) =>
       achievement.character.some((award) => award.name === players[playerId]?.playerId),
@@ -21,7 +12,7 @@ export function createCampaignModel(data) {
   const awardDate = (achievement, playerId) =>
     achievement.character.find((award) => award.name === players[playerId]?.playerId)?.date || '';
   const mentions = (text, character) =>
-    (aliases[character.id] || [character.characterName]).some((name) =>
+    (character.aliases?.length ? character.aliases : [character.characterName]).some((name) =>
       text.toLocaleLowerCase('pt-BR').includes(name.toLocaleLowerCase('pt-BR')),
     );
   const logMembers = (log) => characters.filter((character) => mentions(log.esquad, character));
@@ -31,7 +22,6 @@ export function createCampaignModel(data) {
     achievements,
     timelines,
     characters,
-    aliases,
     playerAwards,
     awardDate,
     logMembers,
@@ -42,11 +32,64 @@ export function createCampaignModel(data) {
 export function validateCampaign(data) {
   const errors = [];
   if (
+    !data ||
     !Array.isArray(data.players) ||
     !Array.isArray(data.achievements) ||
     !Array.isArray(data.timelines)
   )
     return ['Catálogos obrigatórios ausentes.'];
+  const text = (value) => typeof value === 'string';
+  const localResource = (value) => text(value) && /^assets\/[^/\\]+\.(png|jpg|svg)$/i.test(value);
+  for (const player of data.players) {
+    if (
+      !player ||
+      !text(player.playerId) ||
+      !player.playerId.trim() ||
+      !Array.isArray(player.characters)
+    )
+      return ['Jogador incompleto.'];
+    if (player.mascot !== undefined && typeof player.mascot !== 'boolean')
+      return ['Tipo de jogador inválido.'];
+    for (const character of player.characters) {
+      if (
+        !character ||
+        !text(character.characterName) ||
+        !character.characterName.trim() ||
+        !text(character.about) ||
+        !text(character.codname) ||
+        !text(character.profession) ||
+        !localResource(character.images) ||
+        (character.aliases !== undefined &&
+          (!Array.isArray(character.aliases) ||
+            character.aliases.some((alias) => !text(alias) || !alias.trim())))
+      )
+        return ['Personagem incompleto ou retrato inválido.'];
+    }
+  }
+  for (const achievement of data.achievements) {
+    if (
+      !achievement ||
+      !text(achievement.id) ||
+      !text(achievement.name) ||
+      !text(achievement.description) ||
+      !localResource(achievement.medal) ||
+      !text(achievement.category) ||
+      !text(achievement.rank) ||
+      !Array.isArray(achievement.character) ||
+      achievement.character.some((award) => !award || !text(award.name) || !text(award.date))
+    )
+      return ['Conquista incompleta ou concessão inválida.'];
+  }
+  if (
+    data.timelines.some(
+      (log) =>
+        !log ||
+        ['mission', 'location', 'dateTime', 'esquad', 'descrition'].some(
+          (field) => !text(log[field]),
+        ),
+    )
+  )
+    return ['Registro de missão incompleto.'];
   const names = new Set(data.players.map((player) => player.playerId));
   if (names.size !== data.players.length) errors.push('Jogadores repetidos.');
   const ids = new Set();

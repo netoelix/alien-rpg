@@ -1,9 +1,12 @@
-import { players, awardDate } from '../../data/model.js';
+import { useCampaign } from '../context/CampaignContext.jsx';
 import { parseNarrative } from '../lib/narrative.js';
 
 export function RouteLink({ to = '', className = '', children, ...props }) {
+  const { campaign } = useCampaign();
+  const destination =
+    to && !to.startsWith('c/') && to !== 'editor' ? 'c/' + campaign.id + '/' + to : to;
   return (
-    <a href={`#/${to}`} className={className} {...props}>
+    <a href={`#/${destination}`} className={className} {...props}>
       {children}
     </a>
   );
@@ -14,9 +17,10 @@ export function Eyebrow({ children }) {
 }
 
 export function Breadcrumbs({ children }) {
+  const { campaign } = useCampaign();
   return (
     <div className="breadcrumbs">
-      <RouteLink>INÍCIO</RouteLink> / <RouteLink to="campaign">FRAGMENTOS DA GUERRA</RouteLink>
+      <RouteLink>INÍCIO</RouteLink> / <RouteLink to="campaign">{campaign.title}</RouteLink>
       {children ? <> / {children}</> : null}
     </div>
   );
@@ -63,6 +67,7 @@ export function MissionFolders({ entries }) {
 }
 
 export function CharacterCards({ characters }) {
+  const { players } = useCampaign();
   return characters.map((character) => (
     <RouteLink key={character.id} to={`character/${character.id}`} className="card">
       <div className="person-card">
@@ -79,6 +84,7 @@ export function CharacterCards({ characters }) {
 }
 
 export function AwardCards({ awards, playerId }) {
+  const { awardDate } = useCampaign();
   if (!awards.length) return <div className="empty">Nenhuma conquista registrada.</div>;
   return awards.map((award) => (
     <article className="award" key={award.id}>

@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { timelines } from '../../data/model.js';
+import { useCampaign } from '../context/CampaignContext.jsx';
 import { Breadcrumbs, Eyebrow, RouteLink } from '../components/Common.jsx';
 
-const knownLogs = timelines
-  .map((log, id) => ({ log, id }))
-  .filter(({ log }) => log.dateTime !== '[REDACTED]');
-
 export function MapPage() {
+  const { timelines, campaign } = useCampaign();
+  const knownLogs = timelines
+    .map((log, id) => ({ log, id }))
+    .filter(({ log }) => log.dateTime !== '[REDACTED]');
+
   const [cutoff, setCutoff] = useState(knownLogs.length - 1);
   const visited = knownLogs.slice(0, cutoff + 1);
   const systems = [...new Set(visited.map(({ log }) => log.location))];
@@ -19,11 +20,19 @@ export function MapPage() {
   const pointFor = (name) => points.find((point) => point.name === name);
   const lastStop = visited.at(-1);
 
+  if (!visited.length)
+    return (
+      <>
+        <Breadcrumbs>Navegação estelar</Breadcrumbs>
+        <h1>Rota da campanha</h1>
+        <div className="empty">Nenhuma parada registrada.</div>
+      </>
+    );
   return (
     <>
       <Breadcrumbs>Navegação estelar</Breadcrumbs>
       <Eyebrow>Cartografia / Percurso da campanha</Eyebrow>
-      <h1>Rota do Wild Weasel</h1>
+      <h1>Rota de {campaign.unit || campaign.title}</h1>
       <p className="map-note">
         ESQUEMA DE NAVEGAÇÃO · Posições ilustrativas. Coordenadas oficiais ainda não cadastradas.
       </p>

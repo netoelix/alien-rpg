@@ -3,9 +3,8 @@ import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
 import { createCampaignModel, validateCampaign } from '../data/schema.js';
 
-const data = JSON.parse(
-  await readFile(new URL('../data/fragmentos-da-guerra.json', import.meta.url), 'utf8'),
-);
+const data = JSON.parse(await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'))
+  .campaigns[0];
 const model = createCampaignModel(data);
 test('o catálogo migrado conserva jogadores, personagens e registros', () => {
   assert.equal(data.players.length, 5);
