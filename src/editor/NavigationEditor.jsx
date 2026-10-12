@@ -1,73 +1,87 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StarGrid } from '../components/StarGrid.jsx';
 import { validateNavigation } from '../../data/star-map.js';
+import { MapSystemsEditor } from './MapSystemsEditor.jsx';
+import { MapTerritoriesEditor } from './MapTerritoriesEditor.jsx';
+import { MapRouteEditor } from './MapRouteEditor.jsx';
 
-export function NavigationEditor({ campaign, onApply }) {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [name, setName] = useState('');
-  const [installations, setInstallations] = useState('');
+export function NavigationEditor({ campaign, onApply, storageKey }) {
+  const [tool, setTool] = useState('inspect');
+  const [systemPick, setSystemPick] = useState(null);
+  const [territoryPick, setTerritoryPick] = useState(null);
+  const [contour, setContour] = useState([]);
+  const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  function add(event) {
-    event.preventDefault();
-    const navigation = {
-      ...campaign.navigation,
-      systems: [
-        ...(campaign.navigation?.systems || []),
-        {
-          id: crypto.randomUUID(),
-          name: name.trim(),
-          ...position,
-          installations: installations
-            .split('\n')
-            .map((line) => line.trim())
-            .filter(Boolean),
-        },
-      ],
-    };
-    const errors = validateNavigation({ navigation });
+  const updateContour = useCallback((points) => setContour(points), []);
+  function apply(navigation) {
+    const errors = validateNavigation({ ...campaign, navigation });
     if (errors.length) {
       setError(errors.join(' '));
-      return;
+      setMessage('');
+      return false;
     }
     onApply(navigation);
-    setName('');
-    setInstallations('');
     setError('');
+    setMessage('Cartografia aplicada ao rascunho. Confira o site e salve os arquivos com backup.');
+    return true;
   }
   return (
     <>
       <p>
-        Sol é a origem. Sistemas oficiais são compartilhados e fixos. Novos sistemas pertencem
-        exclusivamente a esta campanha. Clique no mapa ou informe coordenadas em parsecs.
+        Sol é a origem. O catálogo oficial é compartilhado e fixo. Descobertas, territórios e
+        percurso pertencem somente à campanha selecionada.
       </p>
-      <StarGrid campaign={campaign} onPosition={setPosition} />
-      <form onSubmit={add}>
-        <label>
-          Nome do novo sistema
-          <input required value={name} onChange={(event) => setName(event.target.value)} />
-        </label>
-        {['x', 'y'].map((axis) => (
-          <label key={axis}>
-            Eixo {axis.toUpperCase()} (parsecs)
-            <input
-              required
-              type="number"
-              step="0.1"
-              value={position[axis]}
-              onChange={(event) => setPosition({ ...position, [axis]: Number(event.target.value) })}
-            />
-          </label>
-        ))}
-        <label>
-          Estações / postos planetários (um por linha)
-          <textarea
-            value={installations}
-            onChange={(event) => setInstallations(event.target.value)}
-          />
-        </label>
-        {error && <p role="alert">{error}</p>}
-        <button type="submit">ADICIONAR AO RASCUNHO</button>
-      </form>
+      <label className="map-tool">
+        Ferramenta ao clicar no mapa
+        <select value={tool} onChange={(event) => setTool(event.target.value)}>
+          <option value="inspect">Consultar sistemas</option>
+          <option value="system">Posicionar sistema da campanha</option>
+          <option value="territory">Posicionar centro / desenhar território</option>
+        </select>
+      </label>
+      <StarGrid
+        campaign={campaign}
+        polygonPoints={tool === 'territory' ? contour : []}
+        marker={tool === 'system' ? systemPick?.point : undefined}
+        onPosition={(point) => {
+          if (tool === 'system') setSystemPick({ point });
+          if (tool === 'territory') setTerritoryPick({ point });
+        }}
+      />
+      {error && (
+        <p role="alert" className="map-editor-message">
+          {error}
+        </p>
+      )}
+      {message && (
+        <p role="status" className="map-editor-message">
+          {message}
+        </p>
+      )}
+      <details className="map-editor-section" open>
+        <summary>SISTEMAS DA CAMPANHA</summary>
+        <MapSystemsEditor
+          campaign={campaign}
+          onApply={apply}
+          pick={systemPick}
+          storageKey={storageKey + ':systems'}
+        />
+      </details>
+      <details className="map-editor-section">
+        <summary>TERRITÓRIOS E REGIÕES</summary>
+        <MapTerritoriesEditor
+          campaign={campaign}
+          onApply={apply}
+          pick={territoryPick}
+          onDraw={() => setTool('territory')}
+          onContour={updateContour}
+          storageKey={storageKey + ':territories'}
+        />
+      </details>
+      <details className="map-editor-section">
+        <summary>ROTA E PARADAS</summary>
+        <MapRouteEditor campaign={campaign} onApply={apply} storageKey={storageKey + ':route'} />
+      </details>
     </>
   );
 }

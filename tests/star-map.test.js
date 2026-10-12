@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { campaignSystems, validateNavigation } from '../data/star-map.js';
+import { campaignSystems, validateNavigation, officialSystems } from '../data/star-map.js';
 
 test('sistemas descobertos ficam restritos à campanha', () => {
   const system = {
@@ -12,8 +12,8 @@ test('sistemas descobertos ficam restritos à campanha', () => {
   };
   const campaign = { navigation: { systems: [system] } };
   assert.deepEqual(validateNavigation(campaign), []);
-  assert.equal(campaignSystems(campaign).length, 2);
-  assert.equal(campaignSystems({}).length, 1);
+  assert.equal(campaignSystems(campaign).length, officialSystems.length + 1);
+  assert.equal(campaignSystems({}).length, officialSystems.length);
   assert.equal(campaignSystems({})[0].name, 'Sol');
 });
 

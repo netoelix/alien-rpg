@@ -821,6 +821,7 @@ export default function Editor() {
             <NavigationEditor
               key={campaignId}
               campaign={campaign}
+              storageKey={`alien-map-form:${revision}:${campaignId}`}
               onApply={(navigation) =>
                 updateArchive({
                   ...archive,

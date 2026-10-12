@@ -90,3 +90,5 @@ Nesta etapa, os retratos e medalhas são escolhidos entre os recursos já presen
 - Conquista: nome, descrição, medalha, categoria e grau obrigatórios. Concessões são opcionais; cada concessão selecionada exige data válida.
 
 O formulário identifica os campos e mostra mensagens de validação ao aplicar. Um nome de campanha vazio recebe automaticamente um nome numerado, que continua editável.
+
+A cartografia e seu editor est?o descritos em [docs/mapa.md](docs/mapa.md). O cat?logo oficial interativo ainda ? parcial (56 sistemas), e a imagem de refer?ncia conserva o mapa completo.

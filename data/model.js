@@ -1,4 +1,4 @@
-import sourceArchive from './archive.json';
+import sourceArchive from './archive.json' with { type: 'json' };
 import { normalizeArchive, campaignAchievements } from './archive-schema.js';
 import { profileAchievements } from './player-profiles.js';
 import { createCampaignModel } from './schema.js';

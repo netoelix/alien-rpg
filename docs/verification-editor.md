@@ -47,3 +47,14 @@ Os cards de campanhas do perfil levam à rota `player-characters`, que exibe som
 O cadastro de missão contém nome, sistema, data fictícia e equipe; pode existir sem relatos. Todos os textos são cadastrados e editados em REGISTROS DE SESSÃO. Os 17 relatos de Fragmentos da Guerra foram transferidos para `mission.logs` após gerar um backup integral. Impressões SHA-256 verificam texto, equipe, data, sistema e ordem originais. A normalização converte backups e rascunhos antigos de forma idempotente, incluindo registros adicionais já criados. O manifesto de migração permite recuperar o rascunho aplicado à revisão anterior somente enquanto o arquivo ainda corresponde exatamente à revisão migrada; a proteção contra conflitos continua ativa. Links antigos continuam abrindo o primeiro registro.
 
 Conquistas, acervo entre campanhas e missões do perfil do jogador começam recolhidos. O botão EXPANDIR abre o conteúdo e passa a RECOLHER, mantendo contagens visíveis. As missões na guia de personagem usam o mesmo controle. Verificação no navegador: 40 conquistas e 17 missões expandiram e recolheram; missão criada sem texto e relato migrado disponível na seção de registros.
+
+## Cartografia por campanha
+
+- Cat?logo oficial de 56 sistemas somente para leitura, com origem Sol e levantamento de pixels da refer?ncia. A imagem inteira permanece como camada opcional; o cat?logo ainda ? parcial.
+- Territ?rios-base simplificados separados de ?reas locais, com c?rculos em anos-luz, pol?gonos, personaliza??o e oculta??o por campanha.
+- Sistemas locais edit?veis por quadrado/subdivis?o ou coordenadas; sem transfer?ncia autom?tica entre campanhas.
+- Rota manual ordenada com retornos, datas fict?cias e miss?o opcional; percurso identificado nas miss?es interrompe segmentos em locais desconhecidos.
+- Testes cobrem coordenadas negativas, convers?o de unidades, imutabilidade do cat?logo, isolamento, refer?ncias inv?lidas, pol?gonos degenerados e grava??o/reabertura com backup exato.
+- Navegador: sistema local com duas instala??es; quadrado ?1/2 com coluna 5/linha 3; c?rculo de 0,5 ano-luz; contorno com v?rtice marcado no Canvas; duas paradas reordenadas; pr?via com ?reas e rota; sistema ausente na outra campanha; remo??o de sistema usado na rota recusada.
+- P?gina m?vel conferida a 390 px; seletor de percurso limitado ? largura da ?rea de leitura. R?tulos do Canvas evitam sobreposi??o, priorizando sele??o e percurso.
+- Nenhum dado de teste foi salvo no arquivo real da campanha. Detalhes operacionais e limites est?o em docs/mapa.md.
