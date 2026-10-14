@@ -53,7 +53,7 @@ export function HomePage() {
             {model.campaign.status.replaceAll('-', ' ').toUpperCase()}
           </span>
           <h3>{model.campaign.title}</h3>
-          <p className="lead">{model.campaign.summary}</p>
+          <p className="lead reading-text">{model.campaign.summary}</p>
           <div className="stats">
             <div>
               <b>
@@ -115,7 +115,7 @@ export function CampaignPage() {
       <Eyebrow>{campaign.division || 'Arquivo de campanha'}</Eyebrow>
       <h1>{campaign.title}</h1>
       <span className="tag amber">{campaign.status.replaceAll('-', ' ').toUpperCase()}</span>
-      <p className="lead section-intro">{campaign.description}</p>
+      <p className="lead section-intro reading-text">{campaign.description}</p>
       <div className="stats">
         <div>
           <b>{timelines.reduce((total, mission) => total + missionRecords(mission).length, 0)}</b>

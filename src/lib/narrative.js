@@ -2,26 +2,46 @@
 // Exigir uma letra evita confundir /04/ ou /2120/ com trechos narrativos.
 const redactionPattern = /(?<!\d)\/([^/]*\p{L}[^/]*)\/(?!\d)/gu;
 const paragraphBoundary =
-  /(?<=\.)\s+(?=(?:\d{2}:\d{2}|DESAPARECIDOS:|MORTOS:|Fim da transmissão))/g;
+  /\r?\n\s*\r?\n|(?<=[.!?])\s+(?=(?:\d{2}:\d{2}|DESAPARECIDOS:|MORTOS:|Fim da transmissão))/g;
 
 export function parseNarrative(text = '') {
-  const paragraphs = [[]];
+  const segments = [];
+  let plainText = '';
   let cursor = 0;
 
-  function appendPlainText(value) {
-    const parts = value.split(paragraphBoundary);
-    parts.forEach((part, index) => {
-      if (index > 0) paragraphs.push([]);
-      if (part) paragraphs.at(-1).push({ text: part, redacted: false });
-    });
+  function append(value, redacted) {
+    if (!value) return;
+    const start = plainText.length;
+    plainText += value;
+    segments.push({ start, end: plainText.length, redacted });
   }
 
+  // Reconhece as tarjas antes dos parágrafos: uma quebra nunca expõe
+  // o restante de um trecho censurado, mesmo quando inclui horários.
   for (const match of text.matchAll(redactionPattern)) {
-    appendPlainText(text.slice(cursor, match.index));
-    paragraphs.at(-1).push({ text: match[1], redacted: true });
+    append(text.slice(cursor, match.index), false);
+    append(match[1], true);
     cursor = match.index + match[0].length;
   }
-  appendPlainText(text.slice(cursor));
+  append(text.slice(cursor), false);
+
+  const paragraphs = [];
+  function appendParagraph(start, end) {
+    const paragraph = segments
+      .filter((segment) => segment.start < end && segment.end > start)
+      .map((segment) => ({
+        text: plainText.slice(Math.max(start, segment.start), Math.min(end, segment.end)),
+        redacted: segment.redacted,
+      }));
+    if (paragraph.some((segment) => segment.text.trim())) paragraphs.push(paragraph);
+  }
+
+  cursor = 0;
+  for (const boundary of plainText.matchAll(paragraphBoundary)) {
+    appendParagraph(cursor, boundary.index);
+    cursor = boundary.index + boundary[0].length;
+  }
+  appendParagraph(cursor, plainText.length);
   return paragraphs;
 }
 
