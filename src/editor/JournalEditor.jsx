@@ -4,7 +4,7 @@ import { editJournal } from '../../data/journal-editing.js';
 
 const emptyEntry = { id: '', title: '', dateTime: '', text: '' };
 
-export function JournalEditor({ campaign, storageKey, onApply }) {
+export function JournalEditor({ campaign, storageKey, onApply, onRemove }) {
   const characters = campaign.players.flatMap((player) =>
     player.characters.map((character) => ({ ...character, ownerName: player.playerId })),
   );
@@ -16,6 +16,13 @@ export function JournalEditor({ campaign, storageKey, onApply }) {
 
   function apply(remove = false) {
     if (!character) return setMessage('Selecione um personagem.');
+    if (remove) {
+      if (onRemove(character.id, form.id)) {
+        setForm({ characterId: character.id, ...emptyEntry });
+        setMessage('Entrada enviada à lixeira do rascunho.');
+      }
+      return;
+    }
     let journal;
     try {
       journal = editJournal(entries, form, { remove });
@@ -109,7 +116,7 @@ export function JournalEditor({ campaign, storageKey, onApply }) {
               <button type="submit">APLICAR DIÁRIO AO RASCUNHO</button>
               {form.id && (
                 <button type="button" onClick={() => apply(true)}>
-                  REMOVER ENTRADA DO RASCUNHO
+                  ENVIAR ENTRADA À LIXEIRA
                 </button>
               )}
             </div>

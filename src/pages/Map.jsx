@@ -3,11 +3,13 @@ import { StarGrid } from '../components/StarGrid.jsx';
 import { useCampaign } from '../context/CampaignContext.jsx';
 import { Breadcrumbs, Eyebrow, RouteLink } from '../components/Common.jsx';
 import { campaignRoute, officialSystems } from '../../data/star-map.js';
+import { resolveMapLink } from '../../data/map-links.js';
 
-export function MapPage() {
+export function MapPage({ targetKind, targetId }) {
   const { campaign } = useCampaign();
   const stops = campaignRoute(campaign);
-  const [cutoff, setCutoff] = useState(null);
+  const target = resolveMapLink(campaign, targetKind, targetId);
+  const [cutoff, setCutoff] = useState(target.index >= 0 ? target.index : null);
   const lastIndex = stops.length - 1;
   const limit = cutoff === null ? lastIndex : Math.min(cutoff, lastIndex);
   const visibleStops = stops.slice(0, limit + 1);
@@ -39,7 +41,15 @@ export function MapPage() {
           </select>
         </label>
       )}
-      <StarGrid campaign={campaign} stops={visibleStops} />
+      {target.invalid && (
+        <p role="status">O ponto deste link não existe mais. Exibindo o mapa completo.</p>
+      )}
+      {targetKind === 'system' && target.system && (
+        <p className="muted">
+          Localização de {target.system.name}. Este link não indica uma parada da equipe.
+        </p>
+      )}
+      <StarGrid campaign={campaign} stops={visibleStops} focusSystemId={target.system?.id} />
       {!stops.length && <p className="empty">Nenhuma parada registrada nesta campanha.</p>}
       {pending.length > 0 && (
         <details className="map-editor-section">

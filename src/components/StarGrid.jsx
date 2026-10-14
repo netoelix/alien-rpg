@@ -11,12 +11,16 @@ export function StarGrid({
   polygonPoints = noPoints,
   marker,
   stops: suppliedStops,
+  focusSystemId,
 }) {
   const canvas = useRef(null);
   const drag = useRef(null);
   const [zoom, setZoom] = useState(16);
-  const [center, setCenter] = useState({ x: 0, y: 0 });
-  const [selectedId, setSelectedId] = useState('');
+  const [center, setCenter] = useState(() => {
+    const system = campaignSystems(campaign).find((item) => item.id === focusSystemId);
+    return system ? { x: system.x, y: system.y } : { x: 0, y: 0 };
+  });
+  const [selectedId, setSelectedId] = useState(focusSystemId || '');
   const [search, setSearch] = useState('');
   const [showTerritories, setShowTerritories] = useState(true);
   const [showRoute, setShowRoute] = useState(true);

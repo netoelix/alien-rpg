@@ -1,6 +1,20 @@
 import { useCampaign } from '../context/CampaignContext.jsx';
 import { parseNarrative } from '../lib/narrative.js';
 import { characterStates } from '../../data/editor-rules.js';
+import { missionMapLink } from '../../data/map-links.js';
+
+export function MissionSystemLink({ missionIndex }) {
+  const { campaign, timelines } = useCampaign();
+  const destination = missionMapLink(campaign, missionIndex);
+  const label = timelines[missionIndex]?.location;
+  return destination ? (
+    <RouteLink to={destination} className="system-link" title="Ver esta localização no mapa">
+      {label} ↗
+    </RouteLink>
+  ) : (
+    <span>{label}</span>
+  );
+}
 
 export function RouteLink({ to = '', className = '', children, ...props }) {
   const { campaign } = useCampaign();
@@ -61,22 +75,28 @@ export function MissionFolders({ entries }) {
   const { missionRecords } = useCampaign();
   if (!entries.length) return <div className="empty">Nenhum arquivo encontrado.</div>;
   return entries.map(({ log, id }) => (
-    <RouteLink key={id} to={`mission/${id}`} className="folder">
+    <article key={id} className="folder">
       <span className="icon" aria-hidden="true">
         ▱
       </span>
       <small>
         ARQUIVO {String(id + 1).padStart(3, '0')} · {log.dateTime}
       </small>
-      <h3>{log.mission}</h3>
+      <h3>
+        <RouteLink to={`mission/${id}`}>{log.mission}</RouteLink>
+      </h3>
       {missionRecords(log).length > 1 ? (
         <small>{missionRecords(log).length} REGISTROS</small>
       ) : null}
       <div className="bottom">
-        <small>{log.location}</small>
-        <span>→</span>
+        <small>
+          <MissionSystemLink missionIndex={id} />
+        </small>
+        <RouteLink to={`mission/${id}`} aria-label={`Abrir missão ${log.mission}`}>
+          ABRIR →
+        </RouteLink>
       </div>
-    </RouteLink>
+    </article>
   ));
 }
 

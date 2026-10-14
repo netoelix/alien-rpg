@@ -1187,3 +1187,19 @@ button:disabled {
 .journal-entries .prose {
   overflow-wrap: break-word;
 }
+.system-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.trash-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.danger-button {
+  color: #f4b5a5;
+  border-color: #ad6554;
+}

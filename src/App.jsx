@@ -20,7 +20,7 @@ const navigation = [
 ];
 
 function RoutePage({ route, idText, recordText }) {
-  const { characters, players, timelines, missionRecords } = useCampaign();
+  const { campaign, characters, players, timelines, missionRecords } = useCampaign();
   const id = /^\d+$/.test(idText || '') ? Number(idText) : -1;
   switch (route) {
     case 'editor':
@@ -63,7 +63,13 @@ function RoutePage({ route, idText, recordText }) {
     case 'player-characters':
       return players[id] ? <PlayerCharactersPage id={id} /> : <MissingPage />;
     case 'map':
-      return <MapPage />;
+      return (
+        <MapPage
+          key={`${campaign.id}:${idText}:${recordText}`}
+          targetKind={idText}
+          targetId={recordText}
+        />
+      );
     default:
       return <MissingPage />;
   }
