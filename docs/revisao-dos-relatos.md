@@ -1,6 +1,18 @@
 # Revisão editorial dos relatos de Fragmentos da Guerra
 
-Revisão de 14/10/2026. Foram lidos os 17 registros atuais em `data/archive.json`, incluindo os marcadores de registros indisponíveis. Este documento propõe ajustes; os textos, as censuras, os IDs e as relações do acervo permanecem intactos.
+Revisão de 14/10/2026. Foram lidos os 17 registros atuais em `data/archive.json`, incluindo os marcadores de registros indisponíveis. A avaliação abaixo registra o diagnóstico anterior à revisão autorizada pelo autor.
+
+## Revisão aplicada
+
+- Horários confirmados pelo autor: registro 07, `24:30` corrigido para `00:30`; registro 10, organização do salão corrigida de `09:00` para `09:30`, após a chegada às `09:15`.
+- Pontuação, concordância evidente, espaços e parágrafos por cena revisados em 13 relatos. Os quatro registros de indisponibilidade foram preservados.
+- A barra sem par em Blackout foi completada antes de “Trisha e Sean compartilharam novamente um sonho conjunto”, preservando a censura desse acontecimento e dos trechos seguintes.
+- O leitor agora reconhece parágrafos explícitos e horários, inclusive dentro das tarjas, sem expor o conteúdo censurado. Testes cobrem quebras internas e datas com barras.
+- Textos longos de missões, biografias, diários, resumos e apresentações de campanha recebem justificação, com a última linha alinhada ao início e hifenização automática. Rótulos, títulos, botões e descrições curtas de conquistas permanecem com o alinhamento anterior.
+- Nenhum registro foi dividido em sessões novas. Datas, equipes, IDs e sistemas principais das missões foram preservados. Grafias e patentes ambíguas continuam pendentes, sem correções por suposição.
+- `data/mission-editorial-review.json` guarda os textos anteriores e a assinatura de cada revisão; os testes continuam conferindo os originais contra as assinaturas da migração, sem sobrescrevê-las.
+
+A revisão dos sistemas mencionados e das paradas está em `docs/revisao-do-percurso.md`.
 
 ## Recomendação
 

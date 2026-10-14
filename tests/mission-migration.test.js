@@ -9,7 +9,10 @@ const source = JSON.parse(await readFile(new URL('../data/archive.json', import.
 const migration = JSON.parse(
   await readFile(new URL('../data/mission-migration.json', import.meta.url), 'utf8'),
 );
-test('os 17 relatos migrados conservam conteúdo, equipes, datas, locais e ordem originais', () => {
+const editorialReview = JSON.parse(
+  await readFile(new URL('../data/mission-editorial-review.json', import.meta.url), 'utf8'),
+);
+test('os 17 relatos conservam originais auditáveis e apenas as revisões editoriais registradas', () => {
   assert.equal(migration.fingerprints.length, 17);
   for (const fingerprint of migration.fingerprints) {
     const mission = source.campaigns.find((item) => item.id === fingerprint.campaignId).timelines[
@@ -29,7 +32,25 @@ test('os 17 relatos migrados conservam conteúdo, equipes, datas, locais e ordem
         ]),
       )
       .digest('hex');
-    assert.equal(actual, fingerprint.sha256);
+    const revision = editorialReview.revisions.find(
+      (item) => item.campaignId === fingerprint.campaignId && item.index === fingerprint.index,
+    );
+    assert.equal(actual, revision?.revisedSha256 || fingerprint.sha256);
+    if (revision) {
+      assert.equal(record.id, revision.recordId);
+      const original = createHash('sha256')
+        .update(
+          JSON.stringify([
+            mission.mission,
+            mission.location,
+            record.dateTime,
+            record.esquad,
+            revision.originalText,
+          ]),
+        )
+        .digest('hex');
+      assert.equal(original, fingerprint.sha256, 'O original migrado permanece recuperável');
+    }
   }
   assert.deepEqual(validateArchive(source), []);
 });

@@ -73,7 +73,7 @@ export function PlayerPage({ id }) {
       <Breadcrumbs>{player.playerId}</Breadcrumbs>
       <Eyebrow>Registro de jogador</Eyebrow>
       <h1>{player.playerId}</h1>
-      <p className="lead">
+      <p className="lead reading-text">
         {profile?.biography ||
           'Participante de ' + campaign.title + '. Perfil pessoal ainda não preenchido.'}
       </p>

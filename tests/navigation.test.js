@@ -105,8 +105,20 @@ test('missões preservam rótulos narrativos e resolvem sistemas pelo ID', () =>
   const campaign = fixture.campaigns[0];
   const route = campaignRoute(campaign);
   assert.equal(route.filter((stop) => !stop.system).length, 0);
-  assert.equal(route.at(-1).system.id, 'zkh-341');
-  assert.equal(route.at(-1).note, 'QG Provisorio – AU');
+  assert.equal(route.at(-1).system.id, 'kepler-22b');
+  assert.equal(campaign.timelines.at(-1).systemId, 'zkh-341');
+  assert.equal(
+    route.some((stop) => stop.missionIndex === 16),
+    false,
+  );
+  const transitIndex = route.findIndex((stop) => stop.system.id === 'nn3049');
+  assert.ok(transitIndex > 0);
+  assert.equal(route[transitIndex + 1].system.id, 'zeta-herculis');
+  assert.match(route[transitIndex].arrival, /data exata não registrada/);
+  assert.equal(
+    route.some((stop) => stop.system.id === 'gl783b'),
+    false,
+  );
   const sea = campaignSystems(campaign).find((system) => system.id === 'sea-delta');
   assert.deepEqual([sea.x, sea.y], [0, -60]);
   const acheron = campaignSystems(campaign).find((system) => system.id === 'acheron-prime');

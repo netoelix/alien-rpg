@@ -464,6 +464,15 @@ footer {
 .prose p {
   margin-bottom: 17px;
 }
+.prose,
+.reading-text,
+.map-note {
+  text-align: justify;
+  text-align-last: start;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+}
 .redacted {
   background: #010302;
   color: #010302;
@@ -490,7 +499,7 @@ footer {
   width: 100%;
   max-height: 290px;
   object-fit: contain;
-  background: #07120d;
+  background: transparent;
   filter: saturate(0.65);
   margin-bottom: 15px;
 }
@@ -692,8 +701,7 @@ footer {
   overflow-y: auto;
 }
 .mission-prose {
-  text-align: justify;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .biography-toggle {
   display: none;
@@ -1177,6 +1185,5 @@ button:disabled {
 }
 
 .journal-entries .prose {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
