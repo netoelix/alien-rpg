@@ -81,7 +81,23 @@ A API de gravação só é montada nesse modo, escuta em loopback e exige a orig
 
 **Exportar backup** baixa o rascunho inteiro. **Importar backup** carrega um arquivo JSON validado como rascunho, sem gravar imediatamente. Para restaurar uma cópia automática, escolha um arquivo de `.editor-backups/`, confira e salve. Os rascunhos de formulários e do acervo são recuperados na mesma sessão do navegador, quando a revisão em disco permanece igual. Eles não substituem os backups em arquivo.
 
-Retratos podem ser importados pelo formulário do personagem e são armazenados em `public/assets/`; medalhas são selecionadas entre os recursos existentes. O backup JSON não contém as imagens: preserve também a pasta de recursos. Entradas de diário podem ser removidas pelo editor; a exclusão geral de registros e a publicação automática ainda não estão disponíveis. O editor local não permite que outras pessoas editem remotamente.
+Retratos podem ser importados pelo formulário do personagem e são armazenados em `public/assets/`; medalhas são selecionadas entre os recursos existentes. O backup JSON não contém as imagens: preserve também a pasta de recursos. A publicação automática pelo editor ainda não está disponível. O editor local não permite que outras pessoas editem remotamente.
+
+### Exclusão e restauração
+
+Selecione um registro existente para enviá-lo à **Lixeira**. A confirmação explica os vínculos afetados; formulários ainda não aplicados da campanha são descartados. Confira o rascunho e use **Salvar arquivos com backup** para persistir a exclusão ou restauração. A publicação continua sendo uma etapa separada.
+
+- Campanhas levam seus registros para a lixeira; mantenha ao menos uma campanha ativa.
+- Remover uma participação afeta somente aquela campanha e seus personagens. O cadastro universal do jogador permanece. Na Lixeira, cadastros globais sem participação ativa podem ser removidos separadamente.
+- Excluir um personagem inclui seu diário, mas preserva os feitos do jogador. Excluir uma missão inclui seus relatos e paradas vinculadas; os índices das outras paradas são ajustados.
+- Excluir uma conquista universal remove também suas concessões em todas as campanhas. A restauração recupera os vínculos originais.
+- Registros de sessão e entradas de diário podem ser removidos individualmente.
+
+A Lixeira persiste no JSON e nos backups, mas é excluída do pacote do site público. Não é armazenamento confidencial: o arquivo-fonte continua no repositório. A restauração preserva edições independentes e recusa conflitos nos mesmos registros; quando necessário, restaure primeiro a campanha ou personagem ao qual o item pertence. Não há descarte definitivo pela interface.
+
+### Missões e mapa
+
+O nome do sistema nos cartões, detalhes e relatos da missão abre o mapa centralizado no sistema e com o percurso selecionado naquela visita. Retornos ao mesmo sistema mantêm etapas distintas. Uma localização sem parada registrada abre somente o sistema, sem inventar uma viagem. Os links das paradas usam identificadores estáveis, inclusive quando uma missão anterior é excluída.
 
 ## Campos obrigatórios e opcionais
 

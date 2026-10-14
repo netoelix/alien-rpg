@@ -1,4 +1,6 @@
 import { JournalEditor } from './JournalEditor.jsx';
+import { TrashPanel } from './TrashPanel.jsx';
+import { moveToTrash, restoreFromTrash } from '../../data/trash.js';
 import { AchievementGrants } from './AchievementGrants.jsx';
 import { NavigationEditor } from './NavigationEditor.jsx';
 import { PortraitUpload } from './PortraitUpload.jsx';
@@ -32,6 +34,7 @@ const sections = [
   ['logs', 'REGISTROS DE SESSÃO'],
   ['journal', 'DIÁRIOS'],
   ['achievements', 'CONQUISTAS'],
+  ['trash', 'LIXEIRA'],
 ];
 
 const campaignFields = [
@@ -104,7 +107,7 @@ function emptyRecord(section, assets) {
       descrition: '',
     };
   if (section === 'timelines')
-    return { mission: '', location: '', dateTime: '', esquad: '', logs: [] };
+    return { id, mission: '', location: '', dateTime: '', esquad: '', logs: [] };
   return {
     id,
     name: '',
@@ -538,7 +541,7 @@ export default function Editor() {
       player.characters.map((character) => ({ ...character, owner: String(owner) })),
     ) || [];
   const records =
-    !campaign || ['campaign', 'journal', 'navigation'].includes(section)
+    !campaign || ['campaign', 'journal', 'navigation', 'trash'].includes(section)
       ? []
       : section === 'characters'
         ? characters
@@ -644,6 +647,78 @@ export default function Editor() {
     setSelected('');
     setMessage('Alteração aplicada ao rascunho. Use Salvar arquivos para gravar no projeto.');
     return true;
+  }
+
+  function acceptArchive(next, status) {
+    // Formulários usam índices de listas. Após remover/restaurar, um cache
+    // antigo não pode preencher o registro que passou a ocupar aquele índice.
+    try {
+      for (const key of Object.keys(sessionStorage)) {
+        if (
+          key.startsWith(`alien-editor-form:${revision}:${campaignId}:`) ||
+          key === `alien-journal-form:${revision}:${campaignId}`
+        )
+          sessionStorage.removeItem(key);
+      }
+    } catch {
+      /* Armazenamento opcional. */
+    }
+    updateArchive(next);
+    if (!next.campaigns.some((item) => item.id === campaignId)) setCampaignId(next.campaigns[0].id);
+    setSelected('');
+    setAppliedVersion((version) => version + 1);
+    setMessage(status);
+  }
+
+  function removeRecord(request, explanation) {
+    if (
+      !window.confirm(
+        explanation +
+          '\n\nAlterações não aplicadas dos formulários desta campanha serão descartadas. Confirmar envio à lixeira?',
+      )
+    )
+      return false;
+    try {
+      acceptArchive(
+        moveToTrash(archive, { campaignId, ...request }),
+        'Item enviado à lixeira do rascunho. Salve os arquivos para guardar a alteração.',
+      );
+      return true;
+    } catch (error) {
+      setMessage(error.message);
+      return false;
+    }
+  }
+
+  function restoreRecord(id) {
+    try {
+      acceptArchive(
+        restoreFromTrash(archive, id),
+        'Item restaurado no rascunho. Confira e salve os arquivos.',
+      );
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+
+  function removeSelected() {
+    const request = { kind: section, id: record.id };
+    const effects = {
+      campaign:
+        'A campanha e seus personagens, missões, diários e concessões sairão do acervo ativo. Cadastros globais de jogadores e conquistas serão preservados.',
+      players:
+        'Esta participação, seus personagens e diários e as concessões deste jogador nesta campanha serão removidos. O cadastro global e as outras campanhas serão preservados.',
+      characters:
+        'O personagem e seu diário serão removidos. Os feitos do jogador e os textos históricos das missões serão preservados.',
+      timelines:
+        'A missão, seus registros de sessão e as paradas vinculadas serão removidos. As demais paradas serão mantidas.',
+      logs: 'Somente este registro de sessão será removido. A missão e os demais relatos serão preservados.',
+      achievements:
+        'Esta definição UNIVERSAL e todas as suas concessões serão removidas de TODAS as campanhas. A restauração inclui as concessões.',
+    };
+    if (section === 'timelines') request.missionIndex = Number(selected);
+    if (section === 'logs') request.missionIndex = Number(record.missionIndex);
+    removeRecord(request, effects[section]);
   }
 
   async function save() {
@@ -810,6 +885,12 @@ export default function Editor() {
               key={campaignId}
               campaign={campaign}
               storageKey={`alien-journal-form:${revision}:${campaignId}`}
+              onRemove={(characterId, entryId) =>
+                removeRecord(
+                  { kind: 'journal', id: characterId, entryId },
+                  'Esta entrada de diário será enviada à lixeira. As demais páginas serão preservadas.',
+                )
+              }
               onApply={(characterId, journal) => {
                 const next = structuredClone(archive);
                 const character = next.campaigns
@@ -828,6 +909,9 @@ export default function Editor() {
               }}
             />
           )}
+          {section === 'trash' && (
+            <TrashPanel archive={archive} onRestore={restoreRecord} onDelete={removeRecord} />
+          )}
           {section === 'navigation' ? (
             <NavigationEditor
               key={campaignId}
@@ -843,7 +927,7 @@ export default function Editor() {
               }
             />
           ) : null}
-          {!['campaign', 'navigation', 'journal'].includes(section) ? (
+          {!['campaign', 'navigation', 'journal', 'trash'].includes(section) ? (
             <div className="toolbar">
               <label>
                 Registro
@@ -877,6 +961,21 @@ export default function Editor() {
               storageKey={`alien-editor-form:${revision}:${campaignId}:${section}:${selected}`}
             />
           ) : null}
+          {record &&
+            ['campaign', 'players', 'characters', 'timelines', 'logs', 'achievements'].includes(
+              section,
+            ) &&
+            selected !== 'new' && (
+              <div className="actions">
+                <button className="danger-button" onClick={removeSelected}>
+                  {section === 'players'
+                    ? 'REMOVER PARTICIPAÇÃO DESTA CAMPANHA'
+                    : section === 'achievements'
+                      ? 'EXCLUIR CONQUISTA UNIVERSAL'
+                      : 'ENVIAR À LIXEIRA'}
+                </button>
+              </div>
+            )}
         </>
       ) : null}
     </>

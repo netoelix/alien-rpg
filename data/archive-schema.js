@@ -8,6 +8,19 @@ export function validateArchive(archive) {
     return ['Formato de arquivo não reconhecido.'];
   }
   if (!archive.campaigns.length) return ['Mantenha pelo menos uma campanha no arquivo.'];
+  if (
+    archive.trash !== undefined &&
+    (!Array.isArray(archive.trash) ||
+      archive.trash.some(
+        (entry) =>
+          !entry ||
+          typeof entry.id !== 'string' ||
+          typeof entry.label !== 'string' ||
+          !Array.isArray(entry.patches),
+      ) ||
+      new Set(archive.trash.map((entry) => entry.id)).size !== archive.trash.length)
+  )
+    return ['Lixeira inválida.'];
   try {
     archive = normalizeArchive(archive);
   } catch {
@@ -71,6 +84,16 @@ export function validateArchive(archive) {
       achievements: campaignAchievements(archive, campaign),
     });
     campaignErrors.push(...validateNavigation(campaign));
+    const missionIds = new Set();
+    for (const mission of campaign.timelines || []) {
+      if (
+        typeof mission.id !== 'string' ||
+        !/^[a-zA-Z0-9-]+$/.test(mission.id) ||
+        missionIds.has(mission.id)
+      )
+        campaignErrors.push('Identificador de missão inválido ou repetido.');
+      missionIds.add(mission.id);
+    }
     const grantIds = new Set();
     for (const grant of campaign.achievements) {
       if (!grant || typeof grant.id !== 'string' || !Array.isArray(grant.character)) {
@@ -158,6 +181,8 @@ export function normalizeArchive(archive) {
   if (!Array.isArray(normalized.achievements)) throw new Error('Catálogo ausente.');
   for (const campaign of normalized.campaigns) {
     for (const [index, mission] of (campaign.timelines || []).entries()) {
+      // Identidade persistente para links; índices podem mudar ao excluir.
+      mission.id ??= `mission-${index}`;
       if (Object.hasOwn(mission, 'descrition')) {
         if (typeof mission.descrition !== 'string') throw new Error('Relato antigo inválido.');
         mission.logs = [

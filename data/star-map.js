@@ -148,7 +148,7 @@ export function campaignRoute(campaign) {
   if (campaign.navigation?.route?.length)
     return campaign.navigation.route.map((stop) => ({ ...stop, system: byId.get(stop.systemId) }));
   return (campaign.timelines || []).map((mission, index) => ({
-    id: 'mission-' + index,
+    id: mission.id || 'mission-' + index,
     system:
       mission.systemId === undefined
         ? systemForLocation(systems, mission.location)

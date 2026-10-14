@@ -6,6 +6,7 @@ import {
   RouteLink,
   MissionFolders,
   Narrative,
+  MissionSystemLink,
 } from '../components/Common.jsx';
 import { hasRedactions } from '../lib/narrative.js';
 
@@ -77,7 +78,9 @@ export function MissionPage({ id }) {
       <div className="split">
         <aside className="sidepanel">
           <Eyebrow>Arquivo {String(id + 1).padStart(3, '0')}</Eyebrow>
-          <h3 className="section-intro">{log.location}</h3>
+          <h3 className="section-intro">
+            <MissionSystemLink missionIndex={id} />
+          </h3>
           <p className="muted">
             {log.dateTime}
             <br />
@@ -186,7 +189,7 @@ export function LogPage({ id, recordIndex = 0 }) {
               </p>
             ) : null}
             <small>
-              {log.dateTime} · {log.location} · DATA NO UNIVERSO
+              {log.dateTime} · <MissionSystemLink missionIndex={id} /> · DATA NO UNIVERSO
             </small>
           </header>
           {log.descrition === 'CORROMPIDO' ? (
