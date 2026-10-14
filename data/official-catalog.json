@@ -1,0 +1,2382 @@
+[
+  {
+    "id": "sol",
+    "name": "Sol",
+    "pixelX": 4004,
+    "pixelY": 2587,
+    "installations": []
+  },
+  {
+    "id": "proxima-centauri",
+    "name": "Proxima Centauri",
+    "pixelX": 4138,
+    "pixelY": 2719,
+    "installations": [
+      "Jon Eve Station"
+    ]
+  },
+  {
+    "id": "rigel-kentaurus-a",
+    "name": "Rigel Kentaurus A",
+    "pixelX": 4155,
+    "pixelY": 2739,
+    "installations": [
+      "Aurore 510"
+    ]
+  },
+  {
+    "id": "toliman",
+    "name": "Toliman",
+    "pixelX": 4177,
+    "pixelY": 2724,
+    "installations": [
+      "B54C"
+    ]
+  },
+  {
+    "id": "barnards-star",
+    "name": "Barnard’s Star",
+    "pixelX": 4255,
+    "pixelY": 2435,
+    "installations": []
+  },
+  {
+    "id": "xarminas-star",
+    "name": "Xarmina’s Star",
+    "pixelX": 4470,
+    "pixelY": 2570,
+    "installations": [
+      "Xarem"
+    ]
+  },
+  {
+    "id": "ross-154",
+    "name": "Ross 154",
+    "pixelX": 4515,
+    "pixelY": 2365,
+    "installations": [
+      "New Chicago"
+    ]
+  },
+  {
+    "id": "hd202206",
+    "name": "HD202206",
+    "pixelX": 4450,
+    "pixelY": 2335,
+    "installations": [
+      "Henri Gaston Colony"
+    ]
+  },
+  {
+    "id": "lalande-21185",
+    "name": "Lalande 21185",
+    "pixelX": 3520,
+    "pixelY": 2460,
+    "installations": [
+      "Oryza"
+    ]
+  },
+  {
+    "id": "groombridge-1618",
+    "name": "Groombridge 1618",
+    "pixelX": 3595,
+    "pixelY": 2505,
+    "installations": []
+  },
+  {
+    "id": "epsilon-eridani",
+    "name": "Epsilon Eridani",
+    "pixelX": 3655,
+    "pixelY": 2680,
+    "installations": []
+  },
+  {
+    "id": "procyon",
+    "name": "Procyon",
+    "pixelX": 3530,
+    "pixelY": 2900,
+    "installations": []
+  },
+  {
+    "id": "sirius",
+    "name": "Sirius",
+    "pixelX": 3711,
+    "pixelY": 2895,
+    "installations": []
+  },
+  {
+    "id": "40-eridani",
+    "name": "40 Eridani",
+    "pixelX": 3375,
+    "pixelY": 2805,
+    "installations": []
+  },
+  {
+    "id": "luytens-star",
+    "name": "Luyten’s Star",
+    "pixelX": 3485,
+    "pixelY": 2950,
+    "installations": []
+  },
+  {
+    "id": "61-cygni-a",
+    "name": "61 Cygni A",
+    "pixelX": 4090,
+    "pixelY": 2025,
+    "installations": []
+  },
+  {
+    "id": "kruger-60",
+    "name": "Kruger 60",
+    "pixelX": 4110,
+    "pixelY": 2305,
+    "installations": [
+      "Fort Nebraska"
+    ]
+  },
+  {
+    "id": "gj1253",
+    "name": "GJ1253",
+    "pixelX": 4045,
+    "pixelY": 2200,
+    "installations": [
+      "Luther Colony"
+    ]
+  },
+  {
+    "id": "koi-812",
+    "name": "KOI-812",
+    "pixelX": 4075,
+    "pixelY": 2170,
+    "installations": [
+      "Ruby Colony"
+    ]
+  },
+  {
+    "id": "koi-227",
+    "name": "KOI-227",
+    "pixelX": 4100,
+    "pixelY": 2245,
+    "installations": [
+      "Hualien Colony"
+    ]
+  },
+  {
+    "id": "gliese-876",
+    "name": "Gliese 876",
+    "pixelX": 4456,
+    "pixelY": 1982,
+    "installations": [
+      "Xiwang Colony",
+      "Chiu Outpost",
+      "Wan An Outpost"
+    ]
+  },
+  {
+    "id": "pi-mensae-b",
+    "name": "Pi Mensae B",
+    "pixelX": 4110,
+    "pixelY": 2900,
+    "installations": [
+      "HD39091B",
+      "Olympia Colony"
+    ]
+  },
+  {
+    "id": "hd162264",
+    "name": "HD162264",
+    "pixelX": 3900,
+    "pixelY": 2945,
+    "installations": [
+      "Statler Colony"
+    ]
+  },
+  {
+    "id": "ag-4550",
+    "name": "AG-4550",
+    "pixelX": 4145,
+    "pixelY": 3054,
+    "installations": [
+      "Alexandria"
+    ]
+  },
+  {
+    "id": "82-eridani",
+    "name": "82 Eridani",
+    "pixelX": 3750,
+    "pixelY": 3210,
+    "installations": [
+      "Helene 215"
+    ]
+  },
+  {
+    "id": "ross-128",
+    "name": "Ross 128",
+    "pixelX": 4000,
+    "pixelY": 3210,
+    "installations": []
+  },
+  {
+    "id": "kapteyns-star",
+    "name": "Kapteyn’s Star",
+    "pixelX": 3790,
+    "pixelY": 3245,
+    "installations": []
+  },
+  {
+    "id": "kepler-22b",
+    "name": "Kepler 22B",
+    "pixelX": 4290,
+    "pixelY": 1064,
+    "installations": [
+      "Pozhaluista Outpost"
+    ]
+  },
+  {
+    "id": "koi-1871",
+    "name": "KOI-1871",
+    "pixelX": 4350,
+    "pixelY": 980,
+    "installations": [
+      "Kahn Outpost"
+    ]
+  },
+  {
+    "id": "koi-2311",
+    "name": "KOI-2311",
+    "pixelX": 4570,
+    "pixelY": 1115,
+    "installations": [
+      "Hui Outpost"
+    ]
+  },
+  {
+    "id": "zeta-herculis",
+    "name": "Zeta Herculis",
+    "pixelX": 5025,
+    "pixelY": 1205,
+    "installations": []
+  },
+  {
+    "id": "vega",
+    "name": "Vega",
+    "pixelX": 4475,
+    "pixelY": 1445,
+    "installations": []
+  },
+  {
+    "id": "koi-438",
+    "name": "KOI-438",
+    "pixelX": 4120,
+    "pixelY": 1720,
+    "installations": [
+      "Horizon City"
+    ]
+  },
+  {
+    "id": "koi-494",
+    "name": "KOI-494",
+    "pixelX": 4180,
+    "pixelY": 1795,
+    "installations": [
+      "Angkor Colony"
+    ]
+  },
+  {
+    "id": "koi-255",
+    "name": "KOI-255",
+    "pixelX": 4235,
+    "pixelY": 1695,
+    "installations": [
+      "Honshu Colony"
+    ]
+  },
+  {
+    "id": "55-cancri",
+    "name": "55 Cancri",
+    "pixelX": 2105,
+    "pixelY": 3170,
+    "installations": []
+  },
+  {
+    "id": "pollux",
+    "name": "Pollux",
+    "pixelX": 2370,
+    "pixelY": 2950,
+    "installations": [
+      "Thesties",
+      "Clytemnestra"
+    ]
+  },
+  {
+    "id": "111-tauri",
+    "name": "111 Tauri",
+    "pixelX": 1655,
+    "pixelY": 2890,
+    "installations": [
+      "Sutter’s World"
+    ]
+  },
+  {
+    "id": "10-tauri",
+    "name": "10 Tauri",
+    "pixelX": 1785,
+    "pixelY": 2785,
+    "installations": [
+      "Chione"
+    ]
+  },
+  {
+    "id": "eta-leporis",
+    "name": "Eta Leporis",
+    "pixelX": 2160,
+    "pixelY": 4140,
+    "installations": []
+  },
+  {
+    "id": "alpha-fornacis",
+    "name": "Alpha Fornacis",
+    "pixelX": 2545,
+    "pixelY": 4165,
+    "installations": []
+  },
+  {
+    "id": "hr3259",
+    "name": "HR3259",
+    "pixelX": 2840,
+    "pixelY": 4230,
+    "installations": [
+      "Alpha I"
+    ]
+  },
+  {
+    "id": "ross-627",
+    "name": "Ross 627",
+    "pixelX": 2465,
+    "pixelY": 4095,
+    "installations": []
+  },
+  {
+    "id": "hr2007",
+    "name": "HR2007",
+    "pixelX": 1880,
+    "pixelY": 3785,
+    "installations": [
+      "Gamma III"
+    ]
+  },
+  {
+    "id": "gj180",
+    "name": "GJ180",
+    "pixelX": 2445,
+    "pixelY": 3785,
+    "installations": []
+  },
+  {
+    "id": "gl259",
+    "name": "GL259",
+    "pixelX": 2695,
+    "pixelY": 4515,
+    "installations": [
+      "Arceon Station"
+    ]
+  },
+  {
+    "id": "nn3553",
+    "name": "NN3553",
+    "pixelX": 2395,
+    "pixelY": 4590,
+    "installations": [
+      "Scorcher"
+    ]
+  },
+  {
+    "id": "nn3503",
+    "name": "NN3503",
+    "pixelX": 2575,
+    "pixelY": 4595,
+    "installations": [
+      "Helix"
+    ]
+  },
+  {
+    "id": "hr2225",
+    "name": "HR2225",
+    "pixelX": 2240,
+    "pixelY": 4640,
+    "installations": [
+      "Bowen’s Landing"
+    ]
+  },
+  {
+    "id": "alpha-caeli",
+    "name": "Alpha Caeli",
+    "pixelX": 2805,
+    "pixelY": 4755,
+    "installations": [
+      "The Solomons"
+    ]
+  },
+  {
+    "id": "hr2429",
+    "name": "HR2429",
+    "pixelX": 1920,
+    "pixelY": 4980,
+    "installations": [
+      "Byal Station"
+    ]
+  },
+  {
+    "id": "zkh-341",
+    "name": "ZKH-341",
+    "pixelX": 5410,
+    "pixelY": 3605,
+    "installations": [
+      "Byron’s Hope"
+    ]
+  },
+  {
+    "id": "gamma-pavonis",
+    "name": "Gamma Pavonis",
+    "pixelX": 5295,
+    "pixelY": 3370,
+    "installations": []
+  },
+  {
+    "id": "zeta-2-reticuli",
+    "name": "Zeta 2 Reticuli",
+    "pixelX": 4265,
+    "pixelY": 4460,
+    "installations": [
+      "Calpamos",
+      "LV-223",
+      "LV-426 (Acheron)",
+      "Kathar Station"
+    ]
+  },
+  {
+    "id": "zeta-1-reticuli",
+    "name": "Zeta 1 Reticuli",
+    "pixelX": 4300,
+    "pixelY": 4480,
+    "installations": [
+      "KG-348",
+      "Former site Sevastapol"
+    ]
+  },
+  {
+    "id": "epsilon-reticuli",
+    "name": "Epsilon Reticuli",
+    "pixelX": 4020,
+    "pixelY": 4855,
+    "installations": [
+      "Thedus",
+      "LNB-14"
+    ]
+  },
+  {
+    "id": "alderamin",
+    "name": "Alderamin",
+    "pixelX": 3616,
+    "pixelY": 162,
+    "installations": []
+  },
+  {
+    "id": "19-draconis",
+    "name": "19 Draconis",
+    "pixelX": 3739,
+    "pixelY": 180,
+    "installations": []
+  },
+  {
+    "id": "theta-bootis",
+    "name": "Theta Boötis",
+    "pixelX": 3823,
+    "pixelY": 264,
+    "installations": []
+  },
+  {
+    "id": "26-draconis",
+    "name": "26 Draconis",
+    "pixelX": 3977,
+    "pixelY": 309,
+    "installations": [
+      "GJ 685",
+      "LV-1113"
+    ]
+  },
+  {
+    "id": "iota-piscium",
+    "name": "Iota Piscium",
+    "pixelX": 3807,
+    "pixelY": 559,
+    "installations": []
+  },
+  {
+    "id": "gl537a",
+    "name": "GL537A",
+    "pixelX": 3977,
+    "pixelY": 600,
+    "installations": [
+      "Delos"
+    ]
+  },
+  {
+    "id": "lhs-1140",
+    "name": "LHS-1140",
+    "pixelX": 3133,
+    "pixelY": 798,
+    "installations": []
+  },
+  {
+    "id": "upsilon-adromedae",
+    "name": "Upsilon Adromedae",
+    "pixelX": 2545,
+    "pixelY": 994,
+    "installations": []
+  },
+  {
+    "id": "pol-6362",
+    "name": "POL-6362",
+    "pixelX": 3687,
+    "pixelY": 890,
+    "installations": [
+      "Jacob-Tallis"
+    ]
+  },
+  {
+    "id": "jpg973c",
+    "name": "JPG973C",
+    "pixelX": 3297,
+    "pixelY": 1117,
+    "installations": [
+      "Tark Weyland Station"
+    ]
+  },
+  {
+    "id": "gj1187",
+    "name": "GJ1187",
+    "pixelX": 3942,
+    "pixelY": 817,
+    "installations": []
+  },
+  {
+    "id": "p-pelops",
+    "name": "P Pelops",
+    "pixelX": 4070,
+    "pixelY": 943,
+    "installations": [
+      "Pylos",
+      "Sphacteria Fuel Depot"
+    ]
+  },
+  {
+    "id": "gj1227",
+    "name": "GJ1227",
+    "pixelX": 3936,
+    "pixelY": 1197,
+    "installations": [
+      "Kawlang"
+    ]
+  },
+  {
+    "id": "nn4053",
+    "name": "NN4053",
+    "pixelX": 3919,
+    "pixelY": 1370,
+    "installations": [
+      "Lacerta"
+    ]
+  },
+  {
+    "id": "theta-persei",
+    "name": "Theta Persei",
+    "pixelX": 2567,
+    "pixelY": 1429,
+    "installations": []
+  },
+  {
+    "id": "trappist-1",
+    "name": "TRAPPIST 1",
+    "pixelX": 4679,
+    "pixelY": 695,
+    "installations": []
+  },
+  {
+    "id": "iota-pegasi",
+    "name": "Iota Pegasi",
+    "pixelX": 4234,
+    "pixelY": 817,
+    "installations": []
+  },
+  {
+    "id": "gl519",
+    "name": "GL519",
+    "pixelX": 4381,
+    "pixelY": 900,
+    "installations": [
+      "Qi Xi III"
+    ]
+  },
+  {
+    "id": "koi-252",
+    "name": "KOI-252",
+    "pixelX": 4224,
+    "pixelY": 1072,
+    "installations": [
+      "September Outpost"
+    ]
+  },
+  {
+    "id": "koi-899",
+    "name": "KOI-899",
+    "pixelX": 4297,
+    "pixelY": 1162,
+    "installations": [
+      "Echo Outpost"
+    ]
+  },
+  {
+    "id": "koi-898",
+    "name": "KOI-898",
+    "pixelX": 4368,
+    "pixelY": 1187,
+    "installations": [
+      "February Outpost"
+    ]
+  },
+  {
+    "id": "koi-2770",
+    "name": "KOI-2770",
+    "pixelX": 4206,
+    "pixelY": 1197,
+    "installations": [
+      "Izvinte Outpost"
+    ]
+  },
+  {
+    "id": "gj1256",
+    "name": "GJ1256",
+    "pixelX": 4805,
+    "pixelY": 1232,
+    "installations": [
+      "Stratus"
+    ]
+  },
+  {
+    "id": "gj1232",
+    "name": "GJ1232",
+    "pixelX": 5123,
+    "pixelY": 1261,
+    "installations": [
+      "Badayaga",
+      "LV-991"
+    ]
+  },
+  {
+    "id": "gl649",
+    "name": "GL649",
+    "pixelX": 5131,
+    "pixelY": 1337,
+    "installations": [
+      "LV-8156"
+    ]
+  },
+  {
+    "id": "gl849",
+    "name": "GL849",
+    "pixelX": 4800,
+    "pixelY": 1389,
+    "installations": [
+      "Pandora"
+    ]
+  },
+  {
+    "id": "gl747b",
+    "name": "GL747B",
+    "pixelX": 4566,
+    "pixelY": 1371,
+    "installations": [
+      "Plymouth"
+    ]
+  },
+  {
+    "id": "gl791-2",
+    "name": "GL791.2",
+    "pixelX": 4813,
+    "pixelY": 1430,
+    "installations": []
+  },
+  {
+    "id": "rasalhague",
+    "name": "Rasalhague",
+    "pixelX": 5791,
+    "pixelY": 1290,
+    "installations": []
+  },
+  {
+    "id": "49-delta-capricorni",
+    "name": "49 Delta Capricorni",
+    "pixelX": 5559,
+    "pixelY": 1383,
+    "installations": []
+  },
+  {
+    "id": "koi-1422",
+    "name": "KOI-1422",
+    "pixelX": 4197,
+    "pixelY": 1372,
+    "installations": [
+      "Tzu Chi City"
+    ]
+  },
+  {
+    "id": "koi-2410",
+    "name": "KOI-2410",
+    "pixelX": 4216,
+    "pixelY": 1418,
+    "installations": [
+      "Themis Outpost"
+    ]
+  },
+  {
+    "id": "beta-aquilae",
+    "name": "Beta Aquilae",
+    "pixelX": 5557,
+    "pixelY": 962,
+    "installations": []
+  },
+  {
+    "id": "78-nu-ceti",
+    "name": "78 Nu Ceti",
+    "pixelX": 196,
+    "pixelY": 1757,
+    "installations": [
+      "Myssa 340",
+      "Tanburo Station"
+    ]
+  },
+  {
+    "id": "alpha-aurigae",
+    "name": "Alpha Aurigae",
+    "pixelX": 1957,
+    "pixelY": 1942,
+    "installations": [
+      "Capella Aa",
+      "Capella Ab",
+      "Capella H",
+      "Capella L"
+    ]
+  },
+  {
+    "id": "theta-ursae-majoris",
+    "name": "Theta Ursae Majoris",
+    "pixelX": 1856,
+    "pixelY": 2000,
+    "installations": []
+  },
+  {
+    "id": "lambda-aurigae",
+    "name": "Lambda Aurigae",
+    "pixelX": 1940,
+    "pixelY": 2132,
+    "installations": []
+  },
+  {
+    "id": "47-ursa-majoris",
+    "name": "47 Ursa Majoris",
+    "pixelX": 1928,
+    "pixelY": 2529,
+    "installations": []
+  },
+  {
+    "id": "aldebaran",
+    "name": "Aldebaran",
+    "pixelX": 846,
+    "pixelY": 2665,
+    "installations": []
+  },
+  {
+    "id": "sz-ursae-majoris",
+    "name": "SZ Ursae Majoris",
+    "pixelX": 2887,
+    "pixelY": 1525,
+    "installations": []
+  },
+  {
+    "id": "iota-persei",
+    "name": "Iota Persei",
+    "pixelX": 2582,
+    "pixelY": 1564,
+    "installations": []
+  },
+  {
+    "id": "delta-trianguli",
+    "name": "Delta Trianguli",
+    "pixelX": 2704,
+    "pixelY": 1584,
+    "installations": []
+  },
+  {
+    "id": "beta-canum-venaticorum",
+    "name": "Beta Canum Venaticorum",
+    "pixelX": 2987,
+    "pixelY": 1631,
+    "installations": []
+  },
+  {
+    "id": "lhs-252-kauffman",
+    "name": "LHS-252 (Kauffman)",
+    "pixelX": 2599,
+    "pixelY": 1997,
+    "installations": [
+      "Former site Station RB-232"
+    ]
+  },
+  {
+    "id": "pol-6387",
+    "name": "POL-6387",
+    "pixelX": 2649,
+    "pixelY": 2209,
+    "installations": [
+      "Atol"
+    ]
+  },
+  {
+    "id": "mu-cassiopeiae",
+    "name": "Mu Cassiopeiae",
+    "pixelX": 3287,
+    "pixelY": 1572,
+    "installations": []
+  },
+  {
+    "id": "hd219134",
+    "name": "HD219134",
+    "pixelX": 3637,
+    "pixelY": 1617,
+    "installations": []
+  },
+  {
+    "id": "eta-cassiopeiae",
+    "name": "Eta Cassiopeiae",
+    "pixelX": 3483,
+    "pixelY": 1747,
+    "installations": []
+  },
+  {
+    "id": "gj625",
+    "name": "GJ625",
+    "pixelX": 4081,
+    "pixelY": 1560,
+    "installations": []
+  },
+  {
+    "id": "koi-952",
+    "name": "KOI-952",
+    "pixelX": 4130,
+    "pixelY": 1773,
+    "installations": [
+      "Huan Ying Colony"
+    ]
+  },
+  {
+    "id": "gj687",
+    "name": "GJ687",
+    "pixelX": 3797,
+    "pixelY": 1830,
+    "installations": []
+  },
+  {
+    "id": "koi-736",
+    "name": "KOI-736",
+    "pixelX": 2930,
+    "pixelY": 2074,
+    "installations": [
+      "Davos Colony"
+    ]
+  },
+  {
+    "id": "lhs-26",
+    "name": "LHS-26",
+    "pixelX": 3289,
+    "pixelY": 2053,
+    "installations": [
+      "Perdition"
+    ]
+  },
+  {
+    "id": "268g-cet",
+    "name": "268G. Cet",
+    "pixelX": 2883,
+    "pixelY": 2251,
+    "installations": [
+      "Traon"
+    ]
+  },
+  {
+    "id": "omni-ceti",
+    "name": "Omni Ceti",
+    "pixelX": 3032,
+    "pixelY": 2365,
+    "installations": [
+      "Mira Ceti IV"
+    ]
+  },
+  {
+    "id": "hat-p-13",
+    "name": "HAT-P-13",
+    "pixelX": 3231,
+    "pixelY": 2393,
+    "installations": [
+      "Zeus Colony"
+    ]
+  },
+  {
+    "id": "hd10697",
+    "name": "HD10697",
+    "pixelX": 3753,
+    "pixelY": 2334,
+    "installations": [
+      "Tagg Colony"
+    ]
+  },
+  {
+    "id": "groombridge-34",
+    "name": "Groombridge 34",
+    "pixelX": 3774,
+    "pixelY": 2063,
+    "installations": []
+  },
+  {
+    "id": "van-maanen-s-star",
+    "name": "Van Maanen’s Star",
+    "pixelX": 3637,
+    "pixelY": 2007,
+    "installations": []
+  },
+  {
+    "id": "groombridge-1830",
+    "name": "Groombridge 1830",
+    "pixelX": 2486,
+    "pixelY": 2275,
+    "installations": []
+  },
+  {
+    "id": "gj1105",
+    "name": "GJ1105",
+    "pixelX": 2949,
+    "pixelY": 2542,
+    "installations": [
+      "Rim"
+    ]
+  },
+  {
+    "id": "gl268",
+    "name": "GL268",
+    "pixelX": 2952,
+    "pixelY": 2500,
+    "installations": [
+      "Station 949"
+    ]
+  },
+  {
+    "id": "52-tau-ceti-ii",
+    "name": "52 Tau Ceti II",
+    "pixelX": 3589,
+    "pixelY": 2504,
+    "installations": [
+      "Nene 246"
+    ]
+  },
+  {
+    "id": "gj1276",
+    "name": "GJ1276",
+    "pixelX": 4580,
+    "pixelY": 1428,
+    "installations": []
+  },
+  {
+    "id": "mu-herculis-a-iii",
+    "name": "Mu Herculis A III",
+    "pixelX": 4842,
+    "pixelY": 1497,
+    "installations": [
+      "Bernice 378"
+    ]
+  },
+  {
+    "id": "koi-448",
+    "name": "KOI-448",
+    "pixelX": 4460,
+    "pixelY": 1449,
+    "installations": [
+      "M’Toa Colony"
+    ]
+  },
+  {
+    "id": "koi-2626",
+    "name": "KOI-2626",
+    "pixelX": 4145,
+    "pixelY": 1516,
+    "installations": [
+      "Sevodnya Colony"
+    ]
+  },
+  {
+    "id": "gj1230ab",
+    "name": "GJ1230AB",
+    "pixelX": 4772,
+    "pixelY": 1582,
+    "installations": [
+      "Sahara",
+      "Grandhi"
+    ]
+  },
+  {
+    "id": "nn3789",
+    "name": "NN3789",
+    "pixelX": 4840,
+    "pixelY": 1626,
+    "installations": [
+      "LK-176"
+    ]
+  },
+  {
+    "id": "nn4274",
+    "name": "NN4274",
+    "pixelX": 4896,
+    "pixelY": 1742,
+    "installations": [
+      "O’Bannon’s World"
+    ]
+  },
+  {
+    "id": "gl884",
+    "name": "GL884",
+    "pixelX": 5091,
+    "pixelY": 1753,
+    "installations": [
+      "Solano"
+    ]
+  },
+  {
+    "id": "gl568a",
+    "name": "GL568A",
+    "pixelX": 5363,
+    "pixelY": 1694,
+    "installations": [
+      "Haarsa"
+    ]
+  },
+  {
+    "id": "43-beta-comae-bernices",
+    "name": "43 Beta Comae Bernices",
+    "pixelX": 5070,
+    "pixelY": 1566,
+    "installations": []
+  },
+  {
+    "id": "gl609",
+    "name": "GL609",
+    "pixelX": 5336,
+    "pixelY": 1638,
+    "installations": [
+      "LV-7324"
+    ]
+  },
+  {
+    "id": "gl754-1b",
+    "name": "GL754.1B",
+    "pixelX": 5569,
+    "pixelY": 1706,
+    "installations": [
+      "Sargon IV"
+    ]
+  },
+  {
+    "id": "gliese-688",
+    "name": "Gliese 688",
+    "pixelX": 5499,
+    "pixelY": 1772,
+    "installations": [
+      "Stoner-1"
+    ]
+  },
+  {
+    "id": "gj1265",
+    "name": "GJ1265",
+    "pixelX": 5296,
+    "pixelY": 1525,
+    "installations": [
+      "Symbaris"
+    ]
+  },
+  {
+    "id": "gj2005",
+    "name": "GJ2005",
+    "pixelX": 5009,
+    "pixelY": 1987,
+    "installations": [
+      "Transert"
+    ]
+  },
+  {
+    "id": "altair",
+    "name": "Altair",
+    "pixelX": 4558,
+    "pixelY": 1961,
+    "installations": []
+  },
+  {
+    "id": "70-ophiuchi-av",
+    "name": "70 Ophiuchi AV",
+    "pixelX": 4750,
+    "pixelY": 2122,
+    "installations": [
+      "Georgia 525",
+      "Chinook 91 Station"
+    ]
+  },
+  {
+    "id": "xi-bootis",
+    "name": "Xi Boötis",
+    "pixelX": 5000,
+    "pixelY": 2159,
+    "installations": []
+  },
+  {
+    "id": "konor-minor",
+    "name": "Konor Minor",
+    "pixelX": 4855,
+    "pixelY": 2230,
+    "installations": []
+  },
+  {
+    "id": "crestus-prime-alpha",
+    "name": "Crestus Prime α",
+    "pixelX": 5143,
+    "pixelY": 1942,
+    "installations": []
+  },
+  {
+    "id": "crestus-prime",
+    "name": "Crestus Prime",
+    "pixelX": 5278,
+    "pixelY": 1998,
+    "installations": []
+  },
+  {
+    "id": "crestus-prime-delta",
+    "name": "Crestus Prime Δ",
+    "pixelX": 5198,
+    "pixelY": 2088,
+    "installations": []
+  },
+  {
+    "id": "crestus-prime-gamma",
+    "name": "Crestus Prime γ",
+    "pixelX": 5259,
+    "pixelY": 2130,
+    "installations": []
+  },
+  {
+    "id": "hr7222",
+    "name": "HR7222",
+    "pixelX": 5429,
+    "pixelY": 2149,
+    "installations": [
+      "Nivalis-4"
+    ]
+  },
+  {
+    "id": "alpha-bootis",
+    "name": "Alpha Boötis",
+    "pixelX": 5556,
+    "pixelY": 2108,
+    "installations": [
+      "Arcturus"
+    ]
+  },
+  {
+    "id": "gliese-785",
+    "name": "Gliese 785",
+    "pixelX": 5497,
+    "pixelY": 2180,
+    "installations": []
+  },
+  {
+    "id": "lambda-serpentis",
+    "name": "Lambda Serpentis",
+    "pixelX": 5368,
+    "pixelY": 2202,
+    "installations": [
+      "LV-666"
+    ]
+  },
+  {
+    "id": "fomalhaut",
+    "name": "Fomalhaut",
+    "pixelX": 5129,
+    "pixelY": 2208,
+    "installations": []
+  },
+  {
+    "id": "gl643",
+    "name": "GL643",
+    "pixelX": 5021,
+    "pixelY": 2337,
+    "installations": [
+      "New Kiev"
+    ]
+  },
+  {
+    "id": "pol-9414",
+    "name": "POL-9414",
+    "pixelX": 5186,
+    "pixelY": 2376,
+    "installations": [
+      "Nimbus"
+    ]
+  },
+  {
+    "id": "gl879",
+    "name": "GL879",
+    "pixelX": 5290,
+    "pixelY": 2419,
+    "installations": [
+      "Eyesore"
+    ]
+  },
+  {
+    "id": "gj1224",
+    "name": "GJ1224",
+    "pixelX": 5168,
+    "pixelY": 2468,
+    "installations": [
+      "Chitin"
+    ]
+  },
+  {
+    "id": "gl783b",
+    "name": "GL783B",
+    "pixelX": 5215,
+    "pixelY": 2541,
+    "installations": [
+      "Aerodyne"
+    ]
+  },
+  {
+    "id": "lacille-8760",
+    "name": "Lacille 8760",
+    "pixelX": 4847,
+    "pixelY": 2482,
+    "installations": [
+      "Lucien",
+      "Avril",
+      "Titleman Station"
+    ]
+  },
+  {
+    "id": "gl1",
+    "name": "GL1",
+    "pixelX": 4570,
+    "pixelY": 2724,
+    "installations": [
+      "Starview"
+    ]
+  },
+  {
+    "id": "hip67090",
+    "name": "HIP67090",
+    "pixelX": 5735,
+    "pixelY": 2574,
+    "installations": [
+      "KL7 Sungun Station"
+    ]
+  },
+  {
+    "id": "hd196982",
+    "name": "HD196982",
+    "pixelX": 5813,
+    "pixelY": 2284,
+    "installations": [
+      "Noble Ore"
+    ]
+  },
+  {
+    "id": "8-eta-bootis",
+    "name": "8 Eta Boötis",
+    "pixelX": 5619,
+    "pixelY": 2442,
+    "installations": [
+      "A III Tientsin"
+    ]
+  },
+  {
+    "id": "23-psi-serpentis",
+    "name": "23 Psi Serpentis",
+    "pixelX": 6331,
+    "pixelY": 2167,
+    "installations": []
+  },
+  {
+    "id": "18-scorpii",
+    "name": "18 Scorpii",
+    "pixelX": 6036,
+    "pixelY": 2417,
+    "installations": [
+      "HR6060-G"
+    ]
+  },
+  {
+    "id": "nn3892",
+    "name": "NN3892",
+    "pixelX": 6221,
+    "pixelY": 2371,
+    "installations": [
+      "LV-8215"
+    ]
+  },
+  {
+    "id": "4-tau-bootis",
+    "name": "4 Tau Boötis",
+    "pixelX": 6495,
+    "pixelY": 2600,
+    "installations": [
+      "GBH-45"
+    ]
+  },
+  {
+    "id": "gl251",
+    "name": "GL251",
+    "pixelX": 3052,
+    "pixelY": 2631,
+    "installations": [
+      "Red Rock"
+    ]
+  },
+  {
+    "id": "gl213",
+    "name": "GL213",
+    "pixelX": 3101,
+    "pixelY": 2792,
+    "installations": [
+      "Soulages"
+    ]
+  },
+  {
+    "id": "delta-eridani",
+    "name": "Delta Eridani",
+    "pixelX": 3000,
+    "pixelY": 2922,
+    "installations": []
+  },
+  {
+    "id": "nn31193b",
+    "name": "NN31193B",
+    "pixelX": 3004,
+    "pixelY": 2964,
+    "installations": [
+      "Panamar"
+    ]
+  },
+  {
+    "id": "gl285",
+    "name": "GL285",
+    "pixelX": 3210,
+    "pixelY": 3143,
+    "installations": [
+      "Delorme"
+    ]
+  },
+  {
+    "id": "ross-619",
+    "name": "Ross 619",
+    "pixelX": 3034,
+    "pixelY": 3170,
+    "installations": [
+      "Skyfire Down"
+    ]
+  },
+  {
+    "id": "gl223-2-khadaji",
+    "name": "GL223.2 (Khadaji)",
+    "pixelX": 3290,
+    "pixelY": 3268,
+    "installations": [
+      "Lebanon II"
+    ]
+  },
+  {
+    "id": "gl408",
+    "name": "GL408",
+    "pixelX": 3320,
+    "pixelY": 3357,
+    "installations": [
+      "Liberty Echo"
+    ]
+  },
+  {
+    "id": "nn3325",
+    "name": "NN3325",
+    "pixelX": 3143,
+    "pixelY": 3438,
+    "installations": [
+      "Devil’s Peak"
+    ]
+  },
+  {
+    "id": "gj11038",
+    "name": "GJ11038",
+    "pixelX": 3060,
+    "pixelY": 3510,
+    "installations": [
+      "Deadfall"
+    ]
+  },
+  {
+    "id": "gj2066",
+    "name": "GJ2066",
+    "pixelX": 2936,
+    "pixelY": 3609,
+    "installations": [
+      "Anchorpoint Station"
+    ]
+  },
+  {
+    "id": "gamma-leporis",
+    "name": "Gamma Leporis",
+    "pixelX": 3034,
+    "pixelY": 3632,
+    "installations": [
+      "A3 (Terraform 3)"
+    ]
+  },
+  {
+    "id": "96-kappa-ceti",
+    "name": "96 Kappa Ceti",
+    "pixelX": 2991,
+    "pixelY": 3695,
+    "installations": []
+  },
+  {
+    "id": "gl300-alpha-linna",
+    "name": "GL300 (Alpha Linna)",
+    "pixelX": 3519,
+    "pixelY": 3438,
+    "installations": [
+      "Linna 349"
+    ]
+  },
+  {
+    "id": "pol-5360",
+    "name": "POL-5360",
+    "pixelX": 3550,
+    "pixelY": 3370,
+    "installations": [
+      "Wilson Scarps Asteroid"
+    ]
+  },
+  {
+    "id": "pol-5362",
+    "name": "POL-5362",
+    "pixelX": 3998,
+    "pixelY": 3471,
+    "installations": [
+      "Aires Outpost"
+    ]
+  },
+  {
+    "id": "fiori-16",
+    "name": "Fiori 16",
+    "pixelX": 3765,
+    "pixelY": 3518,
+    "installations": [
+      "Fiorina 161"
+    ]
+  },
+  {
+    "id": "hip-51317",
+    "name": "HIP 51317",
+    "pixelX": 3721,
+    "pixelY": 3621,
+    "installations": [
+      "Former site Mendel Station"
+    ]
+  },
+  {
+    "id": "hip53020",
+    "name": "HIP53020",
+    "pixelX": 3415,
+    "pixelY": 3609,
+    "installations": [
+      "LV-895"
+    ]
+  },
+  {
+    "id": "gl382",
+    "name": "GL382",
+    "pixelX": 3601,
+    "pixelY": 3787,
+    "installations": [
+      "Temple"
+    ]
+  },
+  {
+    "id": "gj2034",
+    "name": "GJ2034",
+    "pixelX": 3717,
+    "pixelY": 3792,
+    "installations": [
+      "Argos"
+    ]
+  },
+  {
+    "id": "gl257ab",
+    "name": "GL257AB",
+    "pixelX": 3802,
+    "pixelY": 3725,
+    "installations": [
+      "LV-797 (Tartarus)"
+    ]
+  },
+  {
+    "id": "ltt-12352",
+    "name": "LTT-12352",
+    "pixelX": 3441,
+    "pixelY": 3047,
+    "installations": [
+      "C-3L7M"
+    ]
+  },
+  {
+    "id": "w0359",
+    "name": "W0359",
+    "pixelX": 3893,
+    "pixelY": 2775,
+    "installations": [
+      "Lobo"
+    ]
+  },
+  {
+    "id": "gl447",
+    "name": "GL447",
+    "pixelX": 3998,
+    "pixelY": 3121,
+    "installations": [
+      "Motinea"
+    ]
+  },
+  {
+    "id": "17-phei-phei",
+    "name": "17 Phei Phei",
+    "pixelX": 3796,
+    "pixelY": 3269,
+    "installations": [
+      "Znoy Outpost"
+    ]
+  },
+  {
+    "id": "gj229a",
+    "name": "GJ229A",
+    "pixelX": 3392,
+    "pixelY": 3276,
+    "installations": [
+      "Torin Prime"
+    ]
+  },
+  {
+    "id": "1-tau-1-eridani",
+    "name": "1 Tau 1 Eridani",
+    "pixelX": 1910,
+    "pixelY": 3480,
+    "installations": []
+  },
+  {
+    "id": "2m0746-2-shambleau",
+    "name": "2M0746+2 (Shambleau)",
+    "pixelX": 2172,
+    "pixelY": 3280,
+    "installations": [
+      "Gorgon",
+      "Medusa"
+    ]
+  },
+  {
+    "id": "gj832",
+    "name": "GJ832",
+    "pixelX": 4780,
+    "pixelY": 2726,
+    "installations": [
+      "Celeste Asteroid"
+    ]
+  },
+  {
+    "id": "gj674",
+    "name": "GJ674",
+    "pixelX": 4758,
+    "pixelY": 2775,
+    "installations": [
+      "Hilo"
+    ]
+  },
+  {
+    "id": "gj682",
+    "name": "GJ682",
+    "pixelX": 4874,
+    "pixelY": 2818,
+    "installations": [
+      "Marduk",
+      "HD Research Station"
+    ]
+  },
+  {
+    "id": "epsilon-indi",
+    "name": "Epsilon Indi",
+    "pixelX": 4368,
+    "pixelY": 2755,
+    "installations": [
+      "Neijv"
+    ]
+  },
+  {
+    "id": "gl563-2b",
+    "name": "GL563.2B",
+    "pixelX": 4375,
+    "pixelY": 2815,
+    "installations": [
+      "Ventix"
+    ]
+  },
+  {
+    "id": "heske-337",
+    "name": "Heske 337",
+    "pixelX": 4256,
+    "pixelY": 2834,
+    "installations": [
+      "Volcus",
+      "Etna"
+    ]
+  },
+  {
+    "id": "heske-262",
+    "name": "Heske 262",
+    "pixelX": 4256,
+    "pixelY": 2951,
+    "installations": [
+      "Relitor"
+    ]
+  },
+  {
+    "id": "hip-82725",
+    "name": "HIP 82725",
+    "pixelX": 4510,
+    "pixelY": 2945,
+    "installations": [
+      "Fantasia"
+    ]
+  },
+  {
+    "id": "gl563-2a",
+    "name": "GL563.2A",
+    "pixelX": 4427,
+    "pixelY": 3041,
+    "installations": [
+      "Exeter"
+    ]
+  },
+  {
+    "id": "gl588",
+    "name": "GL588",
+    "pixelX": 4842,
+    "pixelY": 3041,
+    "installations": [
+      "St John"
+    ]
+  },
+  {
+    "id": "gl693",
+    "name": "GL693",
+    "pixelX": 4753,
+    "pixelY": 3021,
+    "installations": [
+      "Morningstar"
+    ]
+  },
+  {
+    "id": "gl440",
+    "name": "GL440",
+    "pixelX": 4218,
+    "pixelY": 3228,
+    "installations": [
+      "Paragon"
+    ]
+  },
+  {
+    "id": "gl473a",
+    "name": "GL473A",
+    "pixelX": 4329,
+    "pixelY": 3250,
+    "installations": [
+      "Crysalis"
+    ]
+  },
+  {
+    "id": "jpg118",
+    "name": "JPG118",
+    "pixelX": 4567,
+    "pixelY": 3279,
+    "installations": [
+      "Shinon"
+    ]
+  },
+  {
+    "id": "nn3622",
+    "name": "NN3622",
+    "pixelX": 4220,
+    "pixelY": 3300,
+    "installations": [
+      "Goliath"
+    ]
+  },
+  {
+    "id": "pol-3191",
+    "name": "POL-3191",
+    "pixelX": 4548,
+    "pixelY": 3366,
+    "installations": [
+      "Coren",
+      "Apta"
+    ]
+  },
+  {
+    "id": "nn4285",
+    "name": "NN4285",
+    "pixelX": 4859,
+    "pixelY": 3250,
+    "installations": [
+      "Grendel"
+    ]
+  },
+  {
+    "id": "gl581",
+    "name": "GL581",
+    "pixelX": 4987,
+    "pixelY": 2682,
+    "installations": [
+      "Unity City",
+      "Coronado Colony",
+      "Gedda"
+    ]
+  },
+  {
+    "id": "gl667",
+    "name": "GL667",
+    "pixelX": 5105,
+    "pixelY": 2734,
+    "installations": [
+      "Levon Colony",
+      "Dante Colony",
+      "Morrison Outpost"
+    ]
+  },
+  {
+    "id": "gliese-326-3837",
+    "name": "Gliese 326-3837",
+    "pixelX": 5330,
+    "pixelY": 2712,
+    "installations": [
+      "Bracken’s World",
+      "Juilet"
+    ]
+  },
+  {
+    "id": "requist",
+    "name": "Requist",
+    "pixelX": 5417,
+    "pixelY": 2654,
+    "installations": [
+      "DP-27"
+    ]
+  },
+  {
+    "id": "gl595",
+    "name": "GL595",
+    "pixelX": 5208,
+    "pixelY": 2849,
+    "installations": [
+      "Taurus 7"
+    ]
+  },
+  {
+    "id": "delta-pavonis",
+    "name": "Delta Pavonis",
+    "pixelX": 5119,
+    "pixelY": 3019,
+    "installations": [
+      "Surier 430"
+    ]
+  },
+  {
+    "id": "gl514",
+    "name": "GL514",
+    "pixelX": 5282,
+    "pixelY": 3116,
+    "installations": [
+      "LB-329",
+      "Kellerat"
+    ]
+  },
+  {
+    "id": "gl514-feldspar",
+    "name": "GL514",
+    "pixelX": 5158,
+    "pixelY": 3153,
+    "installations": [
+      "Feldspar"
+    ]
+  },
+  {
+    "id": "gl915",
+    "name": "GL915",
+    "pixelX": 5095,
+    "pixelY": 3154,
+    "installations": [
+      "Micor"
+    ]
+  },
+  {
+    "id": "gj1001",
+    "name": "GJ1001",
+    "pixelX": 5442,
+    "pixelY": 3192,
+    "installations": [
+      "LV-2824"
+    ]
+  },
+  {
+    "id": "hd122303",
+    "name": "HD122303",
+    "pixelX": 5485,
+    "pixelY": 3265,
+    "installations": [
+      "Alphatech Research Station #2378"
+    ]
+  },
+  {
+    "id": "61-virginis",
+    "name": "61 Virginis",
+    "pixelX": 4951,
+    "pixelY": 3419,
+    "installations": [
+      "Summit"
+    ]
+  },
+  {
+    "id": "gj1128",
+    "name": "GJ1128",
+    "pixelX": 4294,
+    "pixelY": 3361,
+    "installations": [
+      "Keystone"
+    ]
+  },
+  {
+    "id": "heske-441",
+    "name": "Heske 441",
+    "pixelX": 4457,
+    "pixelY": 3424,
+    "installations": [
+      "Dustball"
+    ]
+  },
+  {
+    "id": "hd86512",
+    "name": "HD86512",
+    "pixelX": 3923,
+    "pixelY": 3481,
+    "installations": [
+      "Former site New Earth Colony"
+    ]
+  },
+  {
+    "id": "gj1156",
+    "name": "GJ1156",
+    "pixelX": 4014,
+    "pixelY": 3613,
+    "installations": [
+      "Honeycomb"
+    ]
+  },
+  {
+    "id": "beta-hydri",
+    "name": "Beta Hydri",
+    "pixelX": 4622,
+    "pixelY": 3618,
+    "installations": []
+  },
+  {
+    "id": "gl293",
+    "name": "GL293",
+    "pixelX": 4179,
+    "pixelY": 3737,
+    "installations": [
+      "LV-229"
+    ]
+  },
+  {
+    "id": "gj1123",
+    "name": "GJ1123",
+    "pixelX": 4495,
+    "pixelY": 3767,
+    "installations": [
+      "Ferro"
+    ]
+  },
+  {
+    "id": "gj1154a",
+    "name": "GJ1154A",
+    "pixelX": 4228,
+    "pixelY": 3948,
+    "installations": [
+      "LV-422"
+    ]
+  },
+  {
+    "id": "289-g-hydrae",
+    "name": "289 G.Hydrae",
+    "pixelX": 4339,
+    "pixelY": 3975,
+    "installations": [
+      "Arcadian Asteroid Belt"
+    ]
+  },
+  {
+    "id": "alpha-mensae",
+    "name": "Alpha Mensae",
+    "pixelX": 4402,
+    "pixelY": 4019,
+    "installations": []
+  },
+  {
+    "id": "gl493-1",
+    "name": "GL493.1",
+    "pixelX": 4841,
+    "pixelY": 3582,
+    "installations": [
+      "Morning Glory"
+    ]
+  },
+  {
+    "id": "zeta-tucanae",
+    "name": "Zeta Tucanae",
+    "pixelX": 4912,
+    "pixelY": 3591,
+    "installations": []
+  },
+  {
+    "id": "nn3049",
+    "name": "NN3049",
+    "pixelX": 5134,
+    "pixelY": 3697,
+    "installations": [
+      "Sullivan 9"
+    ]
+  },
+  {
+    "id": "gl479",
+    "name": "GL479",
+    "pixelX": 5100,
+    "pixelY": 4000,
+    "installations": [
+      "LV-478 (New Galveston)"
+    ]
+  },
+  {
+    "id": "gl902",
+    "name": "GL902",
+    "pixelX": 5173,
+    "pixelY": 3925,
+    "installations": [
+      "Twilight"
+    ]
+  },
+  {
+    "id": "tycho-2-2000",
+    "name": "Tycho 2-2000",
+    "pixelX": 5173,
+    "pixelY": 3997,
+    "installations": [
+      "LV-832"
+    ]
+  },
+  {
+    "id": "beta-trianguli-australis",
+    "name": "Beta Trianguli Australis",
+    "pixelX": 5775,
+    "pixelY": 3841,
+    "installations": []
+  },
+  {
+    "id": "zeta-trianguli-australis",
+    "name": "Zeta Trianguli Australis",
+    "pixelX": 5661,
+    "pixelY": 3851,
+    "installations": []
+  },
+  {
+    "id": "mu-arae",
+    "name": "Mu Arae",
+    "pixelX": 6358,
+    "pixelY": 3448,
+    "installations": []
+  },
+  {
+    "id": "62-g-scorpii-a",
+    "name": "62 G Scorpii A",
+    "pixelX": 5951,
+    "pixelY": 3235,
+    "installations": []
+  },
+  {
+    "id": "w09724",
+    "name": "W09724",
+    "pixelX": 6391,
+    "pixelY": 2719,
+    "installations": [
+      "Cyclone"
+    ]
+  },
+  {
+    "id": "denebola",
+    "name": "Denebola",
+    "pixelX": 3429,
+    "pixelY": 4257,
+    "installations": []
+  },
+  {
+    "id": "beta-virginis",
+    "name": "Beta Virginis",
+    "pixelX": 3914,
+    "pixelY": 4111,
+    "installations": []
+  },
+  {
+    "id": "zeta-doradus",
+    "name": "Zeta Doradus",
+    "pixelX": 3887,
+    "pixelY": 4443,
+    "installations": [
+      "Former site LV-44-40"
+    ]
+  },
+  {
+    "id": "cc-eridani",
+    "name": "CC Eridani",
+    "pixelX": 3573,
+    "pixelY": 4443,
+    "installations": []
+  },
+  {
+    "id": "nn3637",
+    "name": "NN3637",
+    "pixelX": 3336,
+    "pixelY": 4676,
+    "installations": [
+      "Zagreus"
+    ]
+  },
+  {
+    "id": "nn3490b",
+    "name": "NN3490B",
+    "pixelX": 3337,
+    "pixelY": 4738,
+    "installations": [
+      "Weststar"
+    ]
+  },
+  {
+    "id": "gl146",
+    "name": "GL146",
+    "pixelX": 3584,
+    "pixelY": 4760,
+    "installations": [
+      "Kuliki"
+    ]
+  },
+  {
+    "id": "nn3403",
+    "name": "NN3403",
+    "pixelX": 3813,
+    "pixelY": 4694,
+    "installations": [
+      "Pestron"
+    ]
+  },
+  {
+    "id": "gl364",
+    "name": "GL364",
+    "pixelX": 3447,
+    "pixelY": 4885,
+    "installations": [
+      "Mach"
+    ]
+  },
+  {
+    "id": "nn3563",
+    "name": "NN3563",
+    "pixelX": 3350,
+    "pixelY": 4917,
+    "installations": [
+      "Icarus"
+    ]
+  },
+  {
+    "id": "nn3666",
+    "name": "NN3666",
+    "pixelX": 3160,
+    "pixelY": 4942,
+    "installations": [
+      "Cyrus"
+    ]
+  },
+  {
+    "id": "gj163",
+    "name": "GJ163",
+    "pixelX": 3700,
+    "pixelY": 4937,
+    "installations": [
+      "Charon Base",
+      "Charon 13 Station"
+    ]
+  },
+  {
+    "id": "hd57095",
+    "name": "HD57095",
+    "pixelX": 3544,
+    "pixelY": 4880,
+    "installations": [
+      "Leibnitz"
+    ]
+  },
+  {
+    "id": "nn3614",
+    "name": "NN3614",
+    "pixelX": 3689,
+    "pixelY": 4909,
+    "installations": [
+      "Astyanax"
+    ]
+  },
+  {
+    "id": "nn3530",
+    "name": "NN3530",
+    "pixelX": 2069,
+    "pixelY": 4800,
+    "installations": [
+      "Cristobal"
+    ]
+  },
+  {
+    "id": "31-tau-hya",
+    "name": "31 Tau Hya",
+    "pixelX": 2599,
+    "pixelY": 4786,
+    "installations": [
+      "Xian",
+      "MT-067"
+    ]
+  },
+  {
+    "id": "gl488",
+    "name": "GL488",
+    "pixelX": 4905,
+    "pixelY": 4048,
+    "installations": [
+      "Ajax"
+    ]
+  },
+  {
+    "id": "dt-virginis",
+    "name": "DT Virginis",
+    "pixelX": 5119,
+    "pixelY": 4083,
+    "installations": []
+  },
+  {
+    "id": "gj2092",
+    "name": "GJ2092",
+    "pixelX": 4991,
+    "pixelY": 4251,
+    "installations": [
+      "Atlas"
+    ]
+  },
+  {
+    "id": "gamma-virginis-b",
+    "name": "Gamma Virginis B",
+    "pixelX": 4869,
+    "pixelY": 4221,
+    "installations": []
+  },
+  {
+    "id": "ltt-4167",
+    "name": "LTT-4167",
+    "pixelX": 4717,
+    "pixelY": 4489,
+    "installations": [
+      "RWL-1209"
+    ]
+  },
+  {
+    "id": "gl454",
+    "name": "GL454",
+    "pixelX": 4481,
+    "pixelY": 4586,
+    "installations": [
+      "Riesling"
+    ]
+  },
+  {
+    "id": "gl471",
+    "name": "GL471",
+    "pixelX": 4695,
+    "pixelY": 4606,
+    "installations": [
+      "Polarstar"
+    ]
+  },
+  {
+    "id": "gl461",
+    "name": "GL461",
+    "pixelX": 4824,
+    "pixelY": 4711,
+    "installations": [
+      "Cryosphere"
+    ]
+  },
+  {
+    "id": "gl1401b",
+    "name": "GL1401B",
+    "pixelX": 3974,
+    "pixelY": 4647,
+    "installations": [
+      "Wright-Aberra 2 Fuel Depot",
+      "Tirgu-Mires"
+    ]
+  },
+  {
+    "id": "gl469",
+    "name": "GL469",
+    "pixelX": 4592,
+    "pixelY": 4659,
+    "installations": [
+      "LV-871"
+    ]
+  },
+  {
+    "id": "nu-phoenicis",
+    "name": "Nu Phoenicis",
+    "pixelX": 4822,
+    "pixelY": 4866,
+    "installations": [
+      "LV-KR 115"
+    ]
+  },
+  {
+    "id": "hd10180",
+    "name": "HD10180",
+    "pixelX": 5017,
+    "pixelY": 4971,
+    "installations": [
+      "HEX-5"
+    ]
+  },
+  {
+    "id": "nn3082",
+    "name": "NN3082",
+    "pixelX": 5125,
+    "pixelY": 4970,
+    "installations": [
+      "Alamar"
+    ]
+  },
+  {
+    "id": "alpha-comae-berenices",
+    "name": "Alpha Comae Berenices",
+    "pixelX": 5810,
+    "pixelY": 4772,
+    "installations": []
+  },
+  {
+    "id": "psi-velorum",
+    "name": "Psi Velorum",
+    "pixelX": 1281,
+    "pixelY": 4219,
+    "installations": [
+      "Achilles Two-IV",
+      "G435"
+    ]
+  },
+  {
+    "id": "nn3293",
+    "name": "NN3293",
+    "pixelX": 1928,
+    "pixelY": 4580,
+    "installations": [
+      "PCW9512"
+    ]
+  },
+  {
+    "id": "gl199a",
+    "name": "GL199A",
+    "pixelX": 1701,
+    "pixelY": 4781,
+    "installations": [
+      "RF/C16"
+    ]
+  },
+  {
+    "id": "nn3419",
+    "name": "NN3419",
+    "pixelX": 1767,
+    "pixelY": 4810,
+    "installations": [
+      "LV-492"
+    ]
+  },
+  {
+    "id": "nn3346-tanaka-s-star",
+    "name": "NN3346 (Tanaka’s Star)",
+    "pixelX": 935,
+    "pixelY": 5000,
+    "installations": [
+      "Tanaka 5"
+    ]
+  },
+  {
+    "id": "gj2077",
+    "name": "GJ2077",
+    "pixelX": 1370,
+    "pixelY": 4912,
+    "installations": [
+      "Gimeno Station"
+    ]
+  },
+  {
+    "id": "regulus",
+    "name": "Regulus",
+    "pixelX": 1409,
+    "pixelY": 4950,
+    "installations": []
+  },
+  {
+    "id": "nu-octantis",
+    "name": "Nu Octantis",
+    "pixelX": 6176,
+    "pixelY": 4787,
+    "installations": [
+      "LV-138"
+    ]
+  }
+]
