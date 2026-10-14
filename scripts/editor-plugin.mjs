@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { createEditorStore } from './editor-store.mjs';
+import { savePortrait } from './portrait-store.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const store = createEditorStore(root);
@@ -27,7 +28,8 @@ export function localEditorPlugin() {
     },
     configureServer(server) {
       server.middlewares.use(async (request, response, next) => {
-        if (request.url?.split('?')[0] !== endpoint) return next();
+        const route = request.url?.split('?')[0];
+        if (![endpoint, '/__local-editor/portrait'].includes(route)) return next();
         response.setHeader('Content-Type', 'application/json; charset=utf-8');
         response.setHeader('Cache-Control', 'no-store');
         response.setHeader('X-Content-Type-Options', 'nosniff');
@@ -38,6 +40,22 @@ export function localEditorPlugin() {
         if (!isLocalEditorRequest(request))
           return respond(403, { error: 'Editor disponível apenas na origem local.' });
         try {
+          if (route === '/__local-editor/portrait') {
+            if (request.method !== 'POST') return respond(405, { error: 'Método não permitido.' });
+            if (request.headers.origin !== 'http://127.0.0.1:3841')
+              return respond(403, { error: 'Envio deve partir do editor local.' });
+            const chunks = [];
+            let size = 0;
+            for await (const chunk of request) {
+              size += chunk.length;
+              if (size > 2 * 1024 * 1024) return respond(413, { error: 'Retrato acima de 2 MB.' });
+              chunks.push(chunk);
+            }
+            return respond(
+              200,
+              await savePortrait(root, Buffer.concat(chunks), request.headers['content-type']),
+            );
+          }
           if (request.method === 'GET') {
             const assets = (await readdir(path.join(root, 'public', 'assets'))).map(
               (name) => 'assets/' + name,

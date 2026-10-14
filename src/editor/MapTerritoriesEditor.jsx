@@ -12,10 +12,14 @@ const initialTerritory = {
   y: 0,
   radiusLy: 1,
   points: [],
+  islands: [],
+  part: 0,
 };
 
 export function MapTerritoriesEditor({ campaign, onApply, pick, storageKey, onDraw, onContour }) {
   const [form, setForm] = useMapDraft(storageKey, initialTerritory);
+  const rings = [form.points, ...(form.islands || [])];
+  const points = rings[form.part || 0] || form.points;
   const territories = campaign.navigation?.territories || [];
   const hidden = campaign.navigation?.hiddenTerritories || [];
   const systems = campaignSystems(campaign);
@@ -23,15 +27,27 @@ export function MapTerritoriesEditor({ campaign, onApply, pick, storageKey, onDr
     if (!pick) return;
     setForm((current) =>
       current.shape === 'polygon'
-        ? { ...current, points: [...current.points, pick.point] }
+        ? updateRing(current, [
+            ...[current.points, ...(current.islands || [])][current.part || 0],
+            pick.point,
+          ])
         : { ...current, ...pick.point },
     );
   }, [pick, setForm]);
   useEffect(() => {
-    onContour(form.shape === 'polygon' ? form.points : []);
-  }, [form.shape, form.points, onContour]);
+    onContour(form.shape === 'polygon' ? points : []);
+  }, [form.shape, points, onContour]);
+  function updateRing(current, value) {
+    if (!current.part) return { ...current, points: value };
+    return {
+      ...current,
+      islands: current.islands.map((ring, index) => (index === current.part - 1 ? value : ring)),
+    };
+  }
   function change(field, value) {
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm((current) =>
+      field === 'points' ? updateRing(current, value) : { ...current, [field]: value },
+    );
   }
   function choose(id) {
     const territory = territories.find((entry) => entry.id === id);
@@ -39,7 +55,7 @@ export function MapTerritoriesEditor({ campaign, onApply, pick, storageKey, onDr
   }
   function personalize(base) {
     const territory = {
-      ...base,
+      ...structuredClone(base),
       id: crypto.randomUUID(),
       official: false,
       points: base.points.map((point) => ({ ...point })),
@@ -63,7 +79,7 @@ export function MapTerritoriesEditor({ campaign, onApply, pick, storageKey, onDr
       shape: form.shape,
       ...(form.shape === 'circle'
         ? { x: form.x, y: form.y, radiusLy: form.radiusLy }
-        : { points: form.points }),
+        : { points: form.points, islands: form.islands || [] }),
     };
     const next = form.selected
       ? territories.map((entry) => (entry.id === form.selected ? territory : entry))
@@ -212,12 +228,54 @@ export function MapTerritoriesEditor({ campaign, onApply, pick, storageKey, onDr
             <button type="button" onClick={onDraw}>
               DESENHAR NO MAPA
             </button>
+            <label>
+              Área do contorno
+              <select
+                value={form.part || 0}
+                onChange={(event) => change('part', Number(event.target.value))}
+              >
+                {rings.map((_, index) => (
+                  <option value={index} key={index}>
+                    {index === 0 ? 'Área principal' : 'Área separada ' + index}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="toolbar">
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((current) => ({
+                    ...current,
+                    islands: [...(current.islands || []), []],
+                    part: (current.islands || []).length + 1,
+                  }))
+                }
+              >
+                ADICIONAR ÁREA SEPARADA
+              </button>
+              {form.part > 0 && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((current) => ({
+                      ...current,
+                      islands: current.islands.filter((_, index) => index !== current.part - 1),
+                      part: 0,
+                    }))
+                  }
+                >
+                  REMOVER ESTA ÁREA
+                </button>
+              )}
+            </div>
             <div className="map-vertices">
-              {form.points.map((point, index) => (
-                <div className="map-form-grid" key={index}>
+              {points.map((point, index) => (
+                <div className="map-vertex-card" key={index}>
+                  <strong>Ponto {index + 1}</strong>
                   {['x', 'y'].map((axis) => (
                     <label key={axis}>
-                      Vértice {index + 1} · {axis.toUpperCase()}
+                      {axis.toUpperCase()}
                       <input
                         type="number"
                         step="0.1"
@@ -225,7 +283,7 @@ export function MapTerritoriesEditor({ campaign, onApply, pick, storageKey, onDr
                         onChange={(event) =>
                           change(
                             'points',
-                            form.points.map((entry, pointIndex) =>
+                            points.map((entry, pointIndex) =>
                               pointIndex === index
                                 ? {
                                     ...entry,
@@ -241,22 +299,20 @@ export function MapTerritoriesEditor({ campaign, onApply, pick, storageKey, onDr
                   ))}
                   <button
                     type="button"
+                    aria-label={'Remover vértice ' + (index + 1)}
                     onClick={() =>
                       change(
                         'points',
-                        form.points.filter((_, pointIndex) => pointIndex !== index),
+                        points.filter((_, pointIndex) => pointIndex !== index),
                       )
                     }
                   >
-                    REMOVER VÉRTICE {index + 1}
+                    REMOVER
                   </button>
                 </div>
               ))}
             </div>
-            <button
-              type="button"
-              onClick={() => change('points', [...form.points, { x: 0, y: 0 }])}
-            >
+            <button type="button" onClick={() => change('points', [...points, { x: 0, y: 0 }])}>
               ADICIONAR VÉRTICE MANUALMENTE
             </button>
           </>

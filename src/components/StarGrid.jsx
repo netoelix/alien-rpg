@@ -19,9 +19,7 @@ export function StarGrid({
   const [selectedId, setSelectedId] = useState('');
   const [search, setSearch] = useState('');
   const [showTerritories, setShowTerritories] = useState(true);
-  const [showReference, setShowReference] = useState(false);
   const [showRoute, setShowRoute] = useState(true);
-  const [referenceImage, setReferenceImage] = useState(null);
   const systems = useMemo(() => campaignSystems(campaign), [campaign]);
   const territories = useMemo(() => campaignTerritories(campaign), [campaign]);
   const stops = useMemo(() => suppliedStops ?? campaignRoute(campaign), [campaign, suppliedStops]);
@@ -33,32 +31,14 @@ export function StarGrid({
   );
 
   useEffect(() => {
-    if (!showReference || referenceImage) return;
-    let active = true;
-    const image = new Image();
-    image.onload = () => {
-      if (active) setReferenceImage(image);
-    };
-    image.src = '/assets/galaxy-map.jpg';
-    return () => {
-      active = false;
-    };
-  }, [showReference, referenceImage]);
-
-  useEffect(() => {
     const context = canvas.current.getContext('2d');
     drawStarMap(context, {
       center,
       zoom,
       systems,
-      territories: showTerritories
-        ? showReference
-          ? territories.filter((entry) => !entry.official)
-          : territories
-        : [],
+      territories: showTerritories ? territories : [],
       stops: showRoute ? stops : [],
       selectedId,
-      referenceImage: showReference ? referenceImage : null,
       polygonPoints,
       marker,
     });
@@ -70,9 +50,7 @@ export function StarGrid({
     stops,
     selectedId,
     showTerritories,
-    showReference,
     showRoute,
-    referenceImage,
     polygonPoints,
     marker,
   ]);
@@ -98,6 +76,18 @@ export function StarGrid({
     setSelectedId(id);
     if (system) setCenter({ x: system.x, y: system.y });
   }
+  function fitRoute() {
+    const points = stops.flatMap((stop) => (stop.system ? [stop.system] : []));
+    if (!points.length) return;
+    const minX = Math.min(...points.map((point) => point.x));
+    const maxX = Math.max(...points.map((point) => point.x));
+    const minY = Math.min(...points.map((point) => point.y));
+    const maxY = Math.max(...points.map((point) => point.y));
+    setCenter({ x: (minX + maxX) / 2, y: (minY + maxY) / 2 });
+    setZoom(
+      Math.max(0.02, Math.min(64, 760 / Math.max(1, maxX - minX), 420 / Math.max(1, maxY - minY))),
+    );
+  }
   function keyboard(event) {
     const directions = {
       ArrowLeft: [-3, 0],
@@ -111,108 +101,109 @@ export function StarGrid({
       setCenter((current) => ({ x: current.x + direction[0], y: current.y + direction[1] }));
     }
     if (event.key === '+' || event.key === '=') setZoom((current) => Math.min(256, current * 2));
-    if (event.key === '-') setZoom((current) => Math.max(8, current / 2));
+    if (event.key === '-') setZoom((current) => Math.max(2, current / 2));
   }
   return (
     <div className="star-map">
-      <div className="toolbar map-controls">
-        <button type="button" onClick={() => setZoom((current) => Math.min(256, current * 2))}>
-          AMPLIAR +
-        </button>
-        <button type="button" onClick={() => setZoom((current) => Math.max(8, current / 2))}>
-          REDUZIR −
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setCenter({ x: 0, y: 0 });
-            setZoom(16);
-          }}
-        >
-          CENTRAR EM SOL
-        </button>
-        {[
-          ['←', -4, 0],
-          ['→', 4, 0],
-          ['↑', 0, 4],
-          ['↓', 0, -4],
-        ].map(([label, x, y]) => (
+      <div className="map-canvas-frame">
+        <div className="toolbar map-controls">
           <button
             type="button"
-            key={label}
-            aria-label={'Deslocar mapa ' + label}
-            onClick={() => setCenter((current) => ({ x: current.x + x, y: current.y + y }))}
+            aria-label="Ampliar mapa"
+            title="Ampliar"
+            onClick={() => setZoom((current) => Math.min(256, current * 2))}
           >
-            {label}
+            +
           </button>
-        ))}
-      </div>
-      <div className="map-layer-controls">
-        <label>
-          <input
-            type="checkbox"
-            checked={showTerritories}
-            onChange={(event) => setShowTerritories(event.target.checked)}
-          />{' '}
-          Territórios
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={showRoute}
-            onChange={(event) => setShowRoute(event.target.checked)}
-          />{' '}
-          Percurso
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={showReference}
-            onChange={(event) => setShowReference(event.target.checked)}
-          />{' '}
-          Referência oficial
-        </label>
+          <button
+            type="button"
+            aria-label="Reduzir mapa"
+            title="Reduzir"
+            onClick={() => setZoom((current) => Math.max(2, current / 2))}
+          >
+            −
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setCenter({ x: 0, y: 0 });
+              setZoom(16);
+            }}
+          >
+            SOL
+          </button>
+          <button type="button" onClick={fitRoute} disabled={!stops.some((stop) => stop.system)}>
+            ROTA
+          </button>
+          {[
+            ['←', -4, 0],
+            ['→', 4, 0],
+            ['↑', 0, 4],
+            ['↓', 0, -4],
+          ].map(([label, x, y]) => (
+            <button
+              type="button"
+              key={label}
+              aria-label={'Deslocar mapa ' + label}
+              onClick={() => setCenter((current) => ({ x: current.x + x, y: current.y + y }))}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="map-layer-controls">
+          <label>
+            <input
+              type="checkbox"
+              checked={showTerritories}
+              onChange={(event) => setShowTerritories(event.target.checked)}
+            />{' '}
+            Territórios
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={showRoute}
+              onChange={(event) => setShowRoute(event.target.checked)}
+            />{' '}
+            Percurso
+          </label>
+        </div>
+        <canvas
+          ref={canvas}
+          width="900"
+          height="540"
+          tabIndex="0"
+          aria-label="Mapa estelar interativo. Use as setas para navegar, mais e menos para ajustar o zoom. A lista abaixo permite selecionar sistemas."
+          onKeyDown={keyboard}
+          onPointerDown={(event) => {
+            if (event.button !== 0) return;
+            canvas.current.setPointerCapture(event.pointerId);
+            drag.current = { point: canvasPoint(event), center, moved: false };
+          }}
+          onPointerMove={(event) => {
+            if (!drag.current) return;
+            const point = canvasPoint(event);
+            const start = drag.current;
+            const dx = point.x - start.point.x;
+            const dy = point.y - start.point.y;
+            if (Math.hypot(dx, dy) > 5) start.moved = true;
+            if (start.moved)
+              setCenter({ x: start.center.x - dx / zoom, y: start.center.y + dy / zoom });
+          }}
+          onPointerUp={(event) => {
+            if (drag.current && !drag.current.moved) choose(canvasPoint(event));
+            drag.current = null;
+          }}
+          onPointerCancel={() => {
+            drag.current = null;
+          }}
+        />
       </div>
       <p className="muted small-text">
         Arraste para navegar. Use os botões ou as setas do teclado. Cada quadrado representa 1 pc; o
         zoom revela a divisão em décimos.
       </p>
-      {showReference && (
-        <p className="muted small-text">
-          A referência conserva as cores originais da imagem; oculte-a para visualizar somente os
-          territórios desta campanha.
-        </p>
-      )}
-      <canvas
-        ref={canvas}
-        width="900"
-        height="540"
-        tabIndex="0"
-        aria-label="Mapa estelar interativo. Use as setas para navegar, mais e menos para ajustar o zoom. A lista abaixo permite selecionar sistemas."
-        onKeyDown={keyboard}
-        onPointerDown={(event) => {
-          if (event.button !== 0) return;
-          canvas.current.setPointerCapture(event.pointerId);
-          drag.current = { point: canvasPoint(event), center, moved: false };
-        }}
-        onPointerMove={(event) => {
-          if (!drag.current) return;
-          const point = canvasPoint(event);
-          const start = drag.current;
-          const dx = point.x - start.point.x;
-          const dy = point.y - start.point.y;
-          if (Math.hypot(dx, dy) > 5) start.moved = true;
-          if (start.moved)
-            setCenter({ x: start.center.x - dx / zoom, y: start.center.y + dy / zoom });
-        }}
-        onPointerUp={(event) => {
-          if (drag.current && !drag.current.moved) choose(canvasPoint(event));
-          drag.current = null;
-        }}
-        onPointerCancel={() => {
-          drag.current = null;
-        }}
-      />
       <div className="map-legend">
         <span>
           <i style={{ background: '#7ce5c6' }} /> Sistema oficial
@@ -250,6 +241,7 @@ export function StarGrid({
             {choices.map((system) => (
               <option key={system.id} value={system.id}>
                 {system.name}
+                {system.installations.length ? ' · ' + system.installations.join(' / ') : ''}
                 {system.official ? ' · oficial' : ' · campanha'}
               </option>
             ))}

@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { readFile, writeFile, mkdir, mkdtemp, readdir, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { validateArchive, newCampaign } from '../data/archive-schema.js';
+import { validateArchive, newCampaign, normalizeArchive } from '../data/archive-schema.js';
+import { profileAchievements } from '../data/player-profiles.js';
+import { characterAchievements } from '../data/character-records.js';
 import { createCampaignModel } from '../data/schema.js';
 import { createEditorStore } from '../scripts/editor-store.mjs';
 import { isLocalEditorRequest } from '../scripts/editor-plugin.mjs';
@@ -108,8 +110,45 @@ test('salvar gera backup exato e conflitos ou dados inválidos preservam o arqui
     );
     const loaded = await store.load();
     assert.equal(loaded.previousDraftRevision, 'revisao-anterior');
-    const changed = structuredClone(fixture);
+    await writeFile(
+      path.join(root, 'data', 'navigation-migration.json'),
+      JSON.stringify({ fromRevision: 'revisao-intermediaria', toRevision: initial.revision }),
+    );
+    await writeFile(
+      path.join(root, 'data', 'mission-migration.json'),
+      JSON.stringify({ fromRevision: 'revisao-anterior', toRevision: 'revisao-intermediaria' }),
+    );
+    assert.deepEqual((await store.load()).previousDraftRevisions, [
+      'revisao-intermediaria',
+      'revisao-anterior',
+    ]);
+    const changed = normalizeArchive(fixture);
+    const member = changed.campaigns[0].players[0];
+    const awardId = changed.campaigns[0].achievements.find((award) =>
+      award.character.some((grant) => grant.name === member.playerId),
+    ).id;
+    const extraCampaign = newCampaign('Campanha de verificação');
+    const extraCharacter = { ...structuredClone(member.characters[0]), id: 'novo-personagem' };
+    extraCampaign.players = [{ ...structuredClone(member), characters: [extraCharacter] }];
+    extraCampaign.achievements = [
+      {
+        id: awardId,
+        character: [
+          { name: member.playerId, date: '01/01/2120', characterIds: [extraCharacter.id] },
+        ],
+      },
+    ];
+    changed.campaigns.push(extraCampaign);
     changed.campaigns[0].title = 'Título editado';
+    const journal = [
+      {
+        id: 'pagina-persistida',
+        title: 'Após a missão',
+        dateTime: '2120 — dia seguinte',
+        text: 'Pensamentos pessoais.\n\nSegundo parágrafo.',
+      },
+    ];
+    changed.campaigns[0].players[0].characters[0].journal = journal;
     changed.campaigns[0].timelines[0].logs = [
       {
         id: 'sessao-2',
@@ -126,12 +165,32 @@ test('salvar gera backup exato e conflitos ou dados inválidos preservam o arqui
       original,
     );
     assert.equal((await store.load()).archive.campaigns[0].title, 'Título editado');
+    assert.deepEqual(
+      (await store.load()).archive.campaigns[0].players[0].characters[0].journal,
+      journal,
+    );
     assert.equal((await store.load()).previousDraftRevision, undefined);
     assert.equal(
       (await store.load()).archive.campaigns[0].timelines[0].logs[0].title,
       'Relatório secundário',
     );
     assert.equal((await store.load()).archive.playerProfiles.length, 4);
+    const reopened = normalizeArchive((await store.load()).archive);
+    const earned = profileAchievements(reopened, member.profileId).find(
+      (award) => award.id === awardId,
+    );
+    assert.equal(earned.stars, 2);
+    assert.equal(earned.occurrences.length, 2);
+    assert.equal(
+      characterAchievements(reopened.campaigns.at(-1), reopened.achievements, extraCharacter.id)[0]
+        .id,
+      awardId,
+    );
+    assert.equal(
+      characterAchievements(reopened.campaigns[0], reopened.achievements, member.characters[0].id)
+        .length,
+      0,
+    );
     await assert.rejects(store.save(fixture, loaded.revision), (error) => error.status === 409);
     await assert.rejects(
       store.save({ version: 99 }, saved.revision),

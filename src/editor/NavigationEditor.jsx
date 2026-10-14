@@ -63,6 +63,12 @@ export function NavigationEditor({ campaign, onApply, storageKey }) {
         <MapSystemsEditor
           campaign={campaign}
           onApply={apply}
+          onPick={() => {
+            setTool('system');
+            document
+              .querySelector('.map-canvas-frame')
+              ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }}
           pick={systemPick}
           storageKey={storageKey + ':systems'}
         />

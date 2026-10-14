@@ -1,4 +1,10 @@
+import { JournalEditor } from './JournalEditor.jsx';
+import { AchievementGrants } from './AchievementGrants.jsx';
 import { NavigationEditor } from './NavigationEditor.jsx';
+import { PortraitUpload } from './PortraitUpload.jsx';
+import { MissionSystemPicker } from './MissionSystemPicker.jsx';
+import { emptyNavigation } from '../../data/star-map.js';
+import { addFragmentosNavigation } from '../../data/fragmentos-navigation.js';
 import { useEffect, useState } from 'react';
 import {
   newCampaign,
@@ -24,6 +30,7 @@ const sections = [
   ['characters', 'PERSONAGENS'],
   ['timelines', 'MISSÕES'],
   ['logs', 'REGISTROS DE SESSÃO'],
+  ['journal', 'DIÁRIOS'],
   ['achievements', 'CONQUISTAS'],
 ];
 
@@ -45,7 +52,6 @@ const characterFields = [
 ];
 const missionFields = [
   ['mission', 'Nome da missão'],
-  ['location', 'Sistema / localização'],
   ['dateTime', 'Data no universo'],
   ['esquad', 'Equipe registrada'],
 ];
@@ -111,6 +117,7 @@ function emptyRecord(section, assets) {
 }
 
 function RecordForm({ section, record, campaign, archive, assets, onApply, storageKey }) {
+  const [uploadedAssets, setUploadedAssets] = useState([]);
   const [value, setValue] = useState(() => {
     try {
       return JSON.parse(sessionStorage.getItem(storageKey)) || structuredClone(record);
@@ -121,6 +128,16 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
   const [formDirty, setFormDirty] = useState(false);
   const [formErrors, setFormErrors] = useState([]);
   const isRequired = (name) => requiredRecordFields[section].includes(name);
+  const changeFields = (patch) => {
+    const changed = { ...value, ...patch };
+    setValue(changed);
+    setFormDirty(true);
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify(changed));
+    } catch {
+      /* Armazenamento opcional. */
+    }
+  };
   const change = (name, next) => {
     const profile =
       name === 'profileId' ? archive.playerProfiles.find((profile) => profile.id === next) : null;
@@ -129,6 +146,14 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
       [name]: next,
       ...(profile ? { playerId: profile.name, biography: profile.biography } : {}),
     };
+    if (section === 'logs' && name === 'missionIndex' && next !== '') {
+      const mission = campaign.timelines[Number(next)];
+      const previous = campaign.timelines[Number(value.missionIndex)];
+      for (const field of ['dateTime', 'esquad']) {
+        if (!value[field] || (value.missionIndex !== '' && value[field] === previous?.[field]))
+          changed[field] = mission?.[field] || '';
+      }
+    }
     setValue(changed);
     setFormDirty(true);
     try {
@@ -207,6 +232,9 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
           )}
         </label>
       ))}
+      {section === 'timelines' && (
+        <MissionSystemPicker campaign={campaign} value={value} onChange={changeFields} />
+      )}
       {section === 'campaign' ? (
         <>
           <p className="muted small-text">
@@ -292,7 +320,7 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
               onChange={(event) => change('images', event.target.value)}
             >
               <option value="">Selecione um retrato</option>
-              {assets
+              {[...new Set([...assets, ...uploadedAssets, ...(value.images ? [value.images] : [])])]
                 .filter(
                   (asset) =>
                     (/\.(png|jpg)$/.test(asset) && !asset.includes('galaxy')) ||
@@ -321,6 +349,12 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
               ))}
             </select>
           </label>
+          <PortraitUpload
+            onUpload={(asset) => {
+              setUploadedAssets((current) => [...current, asset]);
+              change('images', asset);
+            }}
+          />
           <label>
             <span className="field-label">
               Nomes usados nos logs (separados por vírgula) <small>Opcional</small>
@@ -403,76 +437,12 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
               ))}
             </select>
           </label>
-          <fieldset>
-            <legend>Concessões nesta campanha · opcionais</legend>
-            {campaign.players
-              .filter((player) => !player.mascot)
-              .map((player) => {
-                const award = value.character.find((award) => award.name === player.playerId);
-                const earnedElsewhere = archive.campaigns.find(
-                  (entry) =>
-                    entry.id !== campaign.id &&
-                    entry.players.some(
-                      (member) =>
-                        member.profileId === player.profileId &&
-                        !member.mascot &&
-                        entry.achievements.some(
-                          (item) =>
-                            item.id === value.id &&
-                            item.character.some((grant) => grant.name === member.playerId),
-                        ),
-                    ),
-                );
-                return (
-                  <div className="grant" key={player.id}>
-                    <label className="editor-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(award)}
-                        disabled={Boolean(earnedElsewhere) && !award}
-                        onChange={(event) =>
-                          change(
-                            'character',
-                            event.target.checked
-                              ? [...value.character, { name: player.playerId, date: '' }]
-                              : value.character.filter((item) => item.name !== player.playerId),
-                          )
-                        }
-                      />
-                      {player.playerId}
-                    </label>
-                    {earnedElsewhere ? (
-                      <p className="muted small-text">
-                        Já conquistada em {earnedElsewhere.title}. A conquista pertence ao jogador e
-                        não precisa ser concedida novamente.
-                      </p>
-                    ) : null}
-                    {award ? (
-                      <label>
-                        <span className="field-label">
-                          Data da concessão (DD/MM/AAAA) <small>Obrigatório</small>
-                        </span>
-                        <input
-                          placeholder="DD/MM/AAAA"
-                          value={award.date}
-                          onChange={(event) =>
-                            change(
-                              'character',
-                              value.character.map((item) =>
-                                item.name === player.playerId
-                                  ? { ...item, date: event.target.value }
-                                  : item,
-                              ),
-                            )
-                          }
-                          required
-                        />
-                      </label>
-                    ) : null}
-                  </div>
-                );
-              })}
-          </fieldset>
+          <AchievementGrants
+            archive={archive}
+            campaign={campaign}
+            value={value}
+            onChange={(grants) => change('character', grants)}
+          />
         </>
       ) : null}
       {formErrors.length ? (
@@ -517,9 +487,13 @@ export default function Editor() {
         let cached;
         try {
           cached = sessionStorage.getItem('alien-editor-draft:' + result.revision);
-          if (!cached && result.previousDraftRevision) {
-            cached = sessionStorage.getItem('alien-editor-draft:' + result.previousDraftRevision);
-            if (cached) setDraftRevision(result.previousDraftRevision);
+          for (const previous of result.previousDraftRevisions || []) {
+            if (cached) break;
+            cached = sessionStorage.getItem('alien-editor-draft:' + previous);
+            if (cached) {
+              setDraftRevision(previous);
+              cached = JSON.stringify(addFragmentosNavigation(JSON.parse(cached)));
+            }
           }
         } catch {
           /* Armazenamento opcional. */
@@ -564,7 +538,7 @@ export default function Editor() {
       player.characters.map((character) => ({ ...character, owner: String(owner) })),
     ) || [];
   const records =
-    !campaign || section === 'campaign'
+    !campaign || ['campaign', 'journal', 'navigation'].includes(section)
       ? []
       : section === 'characters'
         ? characters
@@ -642,6 +616,20 @@ export default function Editor() {
         setMessage(error.message);
         return false;
       }
+    } else if (section === 'timelines') {
+      const { newSystem, ...mission } = value;
+      if (newSystem) {
+        target.navigation ??= emptyNavigation();
+        target.navigation.systems ??= [];
+        target.navigation.systems.push({
+          ...newSystem,
+          name: newSystem.name.trim(),
+          installations: newSystem.installations.map((name) => name.trim()).filter(Boolean),
+        });
+        mission.systemId = newSystem.id;
+      }
+      if (selected === 'new') target.timelines.push(mission);
+      else target.timelines[Number(selected)] = mission;
     } else {
       if (selected === 'new') target[section].push(value);
       else target[section][Number(selected)] = value;
@@ -817,6 +805,29 @@ export default function Editor() {
               selecionada.
             </p>
           ) : null}
+          {section === 'journal' && (
+            <JournalEditor
+              key={campaignId}
+              campaign={campaign}
+              storageKey={`alien-journal-form:${revision}:${campaignId}`}
+              onApply={(characterId, journal) => {
+                const next = structuredClone(archive);
+                const character = next.campaigns
+                  .find((entry) => entry.id === campaignId)
+                  .players.flatMap((player) => player.characters)
+                  .find((entry) => entry.id === characterId);
+                character.journal = journal;
+                const errors = validateArchive(next);
+                if (errors.length) {
+                  setMessage(errors.join(' '));
+                  return false;
+                }
+                updateArchive(next);
+                setMessage('Diário aplicado ao rascunho. Confira antes de salvar os arquivos.');
+                return true;
+              }}
+            />
+          )}
           {section === 'navigation' ? (
             <NavigationEditor
               key={campaignId}
@@ -832,7 +843,7 @@ export default function Editor() {
               }
             />
           ) : null}
-          {section !== 'campaign' && section !== 'navigation' ? (
+          {!['campaign', 'navigation', 'journal'].includes(section) ? (
             <div className="toolbar">
               <label>
                 Registro

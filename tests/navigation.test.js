@@ -20,6 +20,7 @@ import { screenPoint, worldPoint } from '../src/lib/draw-star-map.js';
 import { createEditorStore } from '../scripts/editor-store.mjs';
 import { normalizeArchive, validateArchive, newCampaign } from '../data/archive-schema.js';
 import { modelsForArchive } from '../data/model.js';
+import { addFragmentosNavigation } from '../data/fragmentos-navigation.js';
 
 const fixture = JSON.parse(
   await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'),
@@ -47,6 +48,23 @@ const triangle = {
   ],
 };
 
+test('recuperação de rascunho acrescenta vínculos sem substituir alterações do autor', () => {
+  const old = structuredClone(fixture);
+  const campaign = old.campaigns[0];
+  delete campaign.navigation;
+  campaign.timelines.forEach((mission) => delete mission.systemId);
+  campaign.title = 'Título do rascunho';
+  campaign.timelines[0].systemId = 'sol';
+  campaign.timelines[1].systemId = '';
+  const updated = addFragmentosNavigation(old);
+  assert.equal(updated.campaigns[0].title, 'Título do rascunho');
+  assert.equal(campaign.timelines[0].systemId, 'sol');
+  assert.equal(campaign.timelines[1].systemId, '');
+  assert.equal(campaign.timelines.at(-1).systemId, 'zkh-341');
+  assert.deepEqual(addFragmentosNavigation(structuredClone(updated)), updated);
+  assert.equal(campaignRoute(campaign)[1].system, undefined);
+});
+
 test('origem, orientação do mapa e quadrados negativos preservam coordenadas', () => {
   assert.deepEqual(positionFromReference(mapReference.originX, mapReference.originY), {
     x: 0,
@@ -65,9 +83,13 @@ test('origem, orientação do mapa e quadrados negativos preservam coordenadas',
   assert.ok(Math.abs(0.5 / lightYearsPerParsec - 0.1533) < 0.0001);
 });
 
-test('catálogo oficial é imutável e possui IDs, nomes e referências distintos', () => {
+test('catálogo oficial é imutável e distingue as duas designações GL514 da referência', () => {
   assert.equal(new Set(officialSystems.map((system) => system.id)).size, officialSystems.length);
-  assert.equal(new Set(officialSystems.map((system) => system.name)).size, officialSystems.length);
+  assert.equal(
+    new Set(officialSystems.map((system) => system.name)).size,
+    officialSystems.length - 1,
+  );
+  assert.equal(officialSystems.filter((system) => system.name === 'GL514').length, 2);
   const proxima = officialSystems.find((system) => system.id === 'proxima-centauri');
   assert.deepEqual(proxima.installations, ['Jon Eve Station']);
   assert.throws(() => {
@@ -77,6 +99,38 @@ test('catálogo oficial é imutável e possui IDs, nomes e referências distinto
   assert.throws(() => {
     officialTerritories[0].points[0].x = 99;
   }, TypeError);
+});
+
+test('missões preservam rótulos narrativos e resolvem sistemas pelo ID', () => {
+  const campaign = fixture.campaigns[0];
+  const route = campaignRoute(campaign);
+  assert.equal(route.filter((stop) => !stop.system).length, 0);
+  assert.equal(route.at(-1).system.id, 'zkh-341');
+  assert.equal(route.at(-1).note, 'QG Provisorio – AU');
+  const sea = campaignSystems(campaign).find((system) => system.id === 'sea-delta');
+  assert.deepEqual([sea.x, sea.y], [0, -60]);
+  const acheron = campaignSystems(campaign).find((system) => system.id === 'acheron-prime');
+  assert.deepEqual([acheron.x, acheron.y], [10.5, 6.2]);
+  assert.equal(
+    campaignSystems({}).some((system) => system.id === acheron.id || system.id === sea.id),
+    false,
+  );
+  assert.ok(validateNavigation({ timelines: [{ systemId: 'sea-delta' }] }).length);
+  const ambiguous = campaignRoute({
+    timelines: [{ location: 'GL514' }, { location: 'Base', systemId: 'gl514-feldspar' }],
+  });
+  assert.equal(ambiguous[0].system, undefined);
+  assert.equal(ambiguous[1].system.id, 'gl514-feldspar');
+});
+
+test('contornos separados sobrevivem à personalização e validam cada área', () => {
+  for (const base of officialTerritories) {
+    const local = { ...structuredClone(base), id: 'local-copy', official: false };
+    assert.deepEqual(validateNavigation({ navigation: { territories: [local] } }), []);
+    assert.throws(() => base.islands.push([]), TypeError);
+    local.islands.push([{ x: 0, y: 0 }]);
+    assert.ok(validateNavigation({ navigation: { territories: [local] } }).length);
+  }
 });
 
 test('territórios e sistemas descobertos não vazam para outra campanha', () => {

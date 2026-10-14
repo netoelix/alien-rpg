@@ -13,16 +13,28 @@ export function createEditorStore(root) {
   async function load() {
     const content = await readFile(archivePath, 'utf8');
     const revision = revisionOf(content);
-    let previousDraftRevision;
-    try {
-      const migration = JSON.parse(
-        await readFile(path.join(root, 'data', 'mission-migration.json'), 'utf8'),
-      );
-      if (migration.toRevision === revision) previousDraftRevision = migration.fromRevision;
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw error;
+    const migrations = [];
+    for (const filename of ['navigation-migration.json', 'mission-migration.json']) {
+      try {
+        migrations.push(JSON.parse(await readFile(path.join(root, 'data', filename), 'utf8')));
+      } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+      }
     }
-    return { archive: JSON.parse(content), revision, previousDraftRevision };
+    const previousDraftRevisions = [];
+    let cursor = revision;
+    for (const migration of migrations) {
+      if (migration.toRevision === cursor) {
+        previousDraftRevisions.push(migration.fromRevision);
+        cursor = migration.fromRevision;
+      }
+    }
+    return {
+      archive: JSON.parse(content),
+      revision,
+      previousDraftRevision: previousDraftRevisions[0],
+      previousDraftRevisions,
+    };
   }
 
   async function save(archive, expectedRevision) {

@@ -1,5 +1,4 @@
 import { lightYearsPerParsec, routeSegments } from '../../data/star-map.js';
-import { mapReference } from '../../data/official-cartography.js';
 
 export const mapViewport = { width: 900, height: 540 };
 
@@ -17,7 +16,7 @@ function drawTerritory(context, territory, center, zoom) {
   context.strokeStyle = territory.color;
   context.lineWidth = 1;
   context.shadowColor = territory.color;
-  context.shadowBlur = 16;
+  context.shadowBlur = 0;
   context.beginPath();
   if (territory.shape === 'circle') {
     const point = screenPoint(territory, center, zoom);
@@ -28,18 +27,27 @@ function drawTerritory(context, territory, center, zoom) {
     gradient.addColorStop(1, territory.color + '00');
     context.fillStyle = gradient;
     context.arc(point.x, point.y, radius, 0, Math.PI * 2);
+    context.fillStyle = '#03130c';
+    context.fill();
+    context.fillStyle = gradient;
     context.fill();
     context.shadowBlur = 0;
     context.globalAlpha = 0.6;
     context.stroke();
   } else {
-    territory.points.forEach((point, index) => {
-      const screen = screenPoint(point, center, zoom);
-      if (index === 0) context.moveTo(screen.x, screen.y);
-      else context.lineTo(screen.x, screen.y);
-    });
-    context.closePath();
-    context.globalAlpha = territory.kind === 'geographic' ? 0.12 : territory.official ? 0.2 : 0.45;
+    for (const ring of [territory.points, ...(territory.islands || [])]) {
+      ring.forEach((point, index) => {
+        const screen = screenPoint(point, center, zoom);
+        if (index === 0) context.moveTo(screen.x, screen.y);
+        else context.lineTo(screen.x, screen.y);
+      });
+      context.closePath();
+    }
+    // Cada domínio substitui a cor abaixo dele, sem misturar governos ou a Fronteira.
+    context.fillStyle = '#03130c';
+    context.fill();
+    context.fillStyle = territory.color;
+    context.globalAlpha = territory.kind === 'geographic' ? 0.12 : territory.official ? 0.25 : 0.45;
     context.fill();
     context.globalAlpha = 0.5;
     context.shadowBlur = 0;
@@ -51,29 +59,21 @@ function drawTerritory(context, territory, center, zoom) {
 
 export function drawStarMap(
   context,
-  { center, zoom, systems, territories, stops, selectedId, referenceImage, polygonPoints, marker },
+  { center, zoom, systems, territories, stops, selectedId, polygonPoints, marker },
 ) {
   context.clearRect(0, 0, 900, 540);
   context.fillStyle = '#03130c';
   context.fillRect(0, 0, 900, 540);
-  if (referenceImage) {
-    const scale = zoom / mapReference.pixelsPerParsec;
-    const origin = screenPoint({ x: 0, y: 0 }, center, zoom);
-    context.drawImage(
-      referenceImage,
-      origin.x - mapReference.originX * scale,
-      origin.y - mapReference.originY * scale,
-      mapReference.width * scale,
-      mapReference.height * scale,
-    );
-  }
   territories.forEach((territory) => drawTerritory(context, territory, center, zoom));
+  context.lineWidth = zoom < 12 ? 0.4 : 0.7;
   context.font = '11px monospace';
   const left = Math.floor(center.x - 450 / zoom);
   const right = Math.ceil(center.x + 450 / zoom);
   const bottom = Math.floor(center.y - 270 / zoom);
   const top = Math.ceil(center.y + 270 / zoom);
-  for (let x = left; x <= right; x++) {
+  const gridStep = zoom >= 2 ? 1 : Math.ceil(10 / zoom);
+  const labelStep = zoom >= 24 ? 1 : zoom >= 12 ? 2 : zoom >= 5 ? 5 : Math.ceil(40 / zoom);
+  for (let x = Math.ceil(left / gridStep) * gridStep; x <= right; x += gridStep) {
     const screen = screenPoint({ x, y: 0 }, center, zoom).x;
     context.strokeStyle = x === 0 ? '#468366' : '#164832';
     context.beginPath();
@@ -81,9 +81,9 @@ export function drawStarMap(
     context.lineTo(screen, 540);
     context.stroke();
     context.fillStyle = '#91b39d';
-    if (zoom >= 24 || x % 2 === 0) context.fillText(String(x), screen + 3, 16);
+    if (x % labelStep === 0) context.fillText(String(x), screen + 3, 16);
   }
-  for (let y = bottom; y <= top; y++) {
+  for (let y = Math.ceil(bottom / gridStep) * gridStep; y <= top; y += gridStep) {
     const screen = screenPoint({ x: 0, y }, center, zoom).y;
     context.strokeStyle = y === 0 ? '#468366' : '#164832';
     context.beginPath();
@@ -91,7 +91,7 @@ export function drawStarMap(
     context.lineTo(900, screen);
     context.stroke();
     context.fillStyle = '#91b39d';
-    if (zoom >= 24 || y % 2 === 0) context.fillText(String(y), 3, screen - 3);
+    if (y % labelStep === 0) context.fillText(String(y), 3, screen - 3);
   }
   if (zoom >= 80) {
     context.strokeStyle = '#16483280';
@@ -143,7 +143,13 @@ export function drawStarMap(
         ? '#7ce5c6'
         : '#cfb1ff';
     context.beginPath();
-    context.arc(point.x, point.y, selected ? 6 : 3.5, 0, Math.PI * 2);
+    context.arc(
+      point.x,
+      point.y,
+      selected ? 6 : visitedIds.has(system.id) ? 3.5 : Math.min(3.5, Math.max(1.2, zoom / 6)),
+      0,
+      Math.PI * 2,
+    );
     context.fill();
     if (selected) {
       context.strokeStyle = '#fff';

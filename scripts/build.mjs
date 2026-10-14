@@ -10,5 +10,24 @@ const errors = validateArchive(data);
 if (errors.length) throw new Error(errors.join('\n'));
 const output = path.resolve(root, 'dist');
 if (path.dirname(output) !== path.resolve(root)) throw new Error('Diretório de saída inválido.');
-await build({ root, build: { outDir: output } });
+await build({
+  root,
+  mode: 'production',
+  plugins: [
+    {
+      name: 'public-build-boundary',
+      generateBundle(_options, bundle) {
+        for (const file of Object.values(bundle)) {
+          if (file.type !== 'chunk') continue;
+          const editorModule = Object.keys(file.modules).find((id) =>
+            id.replaceAll('\\', '/').includes('/src/editor/'),
+          );
+          if (editorModule)
+            this.error('O build público incluiu um módulo do editor: ' + editorModule);
+        }
+      },
+    },
+  ],
+  build: { outDir: output },
+});
 console.log('Build concluído: dist/ (site estático, sem servidor de produção).');

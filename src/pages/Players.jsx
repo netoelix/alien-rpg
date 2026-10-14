@@ -60,6 +60,10 @@ export function PlayerPage({ id }) {
     .filter(({ log }) => playerCharacters.some((character) => relatedTo(log, character)));
   const dateKey = (award) => awardDate(award, id).split('/').reverse().join('');
   const awards = playerAwards(id)
+    .map((award) => ({
+      ...award,
+      stars: globalAwards.find((entry) => entry.id === award.id)?.stars || 1,
+    }))
     .filter((award) => !category || award.category === category)
     .sort((first, second) => dateKey(first).localeCompare(dateKey(second)));
   if (order === 'new') awards.reverse();
@@ -108,8 +112,8 @@ export function PlayerPage({ id }) {
       </div>
       <CollapsibleSection title="Conquistas do jogador" count={awards.length}>
         <p className="muted small-text">
-          As conquistas abaixo pertencem ao jogador. O arquivo anterior não identifica o personagem
-          envolvido em cada concessão.
+          Concessões desta campanha. As estrelas contam campanhas distintas, até três. Personagens
+          recebem somente os feitos atribuídos a eles.
         </p>
         <div className="toolbar">
           <label>
@@ -151,6 +155,10 @@ export function PlayerPage({ id }) {
                     <img src={award.medal} alt={`Medalha ${award.rank}`} loading="lazy" />
                     <div>
                       <h3>{award.name || 'Conquista sem título'}</h3>
+                      <p className="achievement-stars" aria-label={award.stars + ' de 3 estrelas'}>
+                        {'★'.repeat(award.stars)}
+                        {'☆'.repeat(3 - award.stars)}
+                      </p>
                       <p>{award.description}</p>
                       {award.occurrences.map((occurrence) => (
                         <p className="muted small-text" key={occurrence.campaignId}>

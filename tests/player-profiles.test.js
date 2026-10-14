@@ -67,7 +67,11 @@ test('renomear pessoa atualiza campanhas e concessões sem perder personagens ou
     id: award.id,
     character: [{ name: 'Novo nome', date: '01/01/2026' }],
   });
-  assert(validateArchive(archive).some((error) => error.includes('já possui')));
+  assert.deepEqual(validateArchive(archive), []);
+  assert.equal(
+    profileAchievements(archive, original.profileId).find((item) => item.id === award.id).stars,
+    2,
+  );
 });
 
 test('referências a cadastros desconhecidos e cadastros repetidos são recusadas', () => {

@@ -1,54 +1,51 @@
-# Mapa de campanhas ? vers?o 3
+# Mapa de campanhas — versão 3
 
-O mapa-base ? compartilhado entre as campanhas. Os sistemas oficiais n?o podem ser renomeados, reposicionados nem ter suas instala??es alteradas pelo editor. Sistemas descobertos, territ?rios personalizados e rotas ficam dentro da campanha selecionada.
+O mapa-base contém 278 pontos catalogados da imagem *Stars of the Middle Heavens (2183)*, com nomes, instalações e coordenadas. Os sistemas oficiais são compartilhados e somente leitura. Sistemas descobertos, rotas e alterações territoriais pertencem à campanha.
 
-## Consultar o mapa
+## Consultar
 
-Abra **Navega??o** na campanha. Arraste o mapa, use as setas ou os bot?es de deslocamento e ajuste o zoom. A lista de sistemas permite selecionar e centralizar um ponto sem precisar clicar na estrela. A busca inclui nomes de sistemas e instala??es.
+Abra **Navegação**, arraste o mapa ou use as setas e o zoom. A busca inclui nomes e instalações. Selecionar um sistema centraliza sua posição. **Enquadrar percurso** mostra todas as paradas conhecidas, inclusive sistemas distantes como Sea Δ. **Centrar em Sol** restaura a vista inicial.
 
-Cada quadrado mede um parsec. Sol est? em X = 0, Y = 0. Em zoom maior, a grade apresenta subdivis?es de um d?cimo de parsec.
+Sol está em (0, 0). X cresce para a direita e Y para cima. Cada quadrado mede um parsec, com décimos visíveis ao ampliar. Territórios e percurso podem ser ligados e desligados. O seletor **Percurso até** limita a rota sem apagar o histórico.
 
-As camadas **Territ?rios**, **Percurso** e **Refer?ncia oficial** podem ser alternadas. A imagem de refer?ncia mant?m as cores originais; para conferir apenas a configura??o territorial da campanha, deixe essa imagem desligada. A rota tem setas indicando sua dire??o. O seletor **Percurso at?** mostra as paradas at? o ponto escolhido, enquanto o hist?rico mant?m todos os registros.
+## Associar uma missão
 
-## Cadastrar ou editar um sistema exclusivo
+Em **Editor local → Missões**, clique na busca ou em **Escolher sistema**. Role a lista ou escreva parte do nome de um sistema ou instalação. Clique no resultado para vincular a missão. O vínculo é salvo pelo identificador do sistema; o texto de localização continua editável para nomes de bases e operações.
 
-1. Abra **Editor local ? Mapa estelar** e selecione a campanha.
-2. Em **Sistemas da campanha**, escolha um cadastro existente ou deixe **Novo sistema**.
-3. Informe nome, coordenadas e instala??es, uma esta??o ou posto por linha.
-4. Voc? pode informar o quadrado X/Y e a coluna/linha interna de 0 a 9. Tamb?m pode escolher **Posicionar sistema da campanha** na ferramenta do mapa e clicar no ponto desejado.
-5. Aplique o sistema ao rascunho, confira o site e salve os arquivos com backup.
+**Cadastrar sistema nesta campanha** abre nome, coordenadas em parsecs e estações/postos (um por linha). Ao aplicar a missão, o sistema e o vínculo são criados juntos. Coordenadas precisam ser preenchidas; não se atribui posição zero automaticamente. Para posicionar visualmente ou por quadrado/subdivisão, use **Mapa estelar → Sistemas da campanha**.
 
-Exemplo: quadrado X = ?1, coluna 5, quadrado Y = 2, linha 3 resulta em X = ?0,5 e Y = 2,3. Uma coordenada negativa usa o limite inferior de seu quadrado.
+Nomes antigos sem vínculo continuam sendo reconhecidos quando há uma única correspondência. A referência contém duas estrelas denominadas GL514, uma com Kellerat/LB-329 e outra com Feldspar. Elas têm IDs distintos e precisam ser selecionadas explicitamente. Sistemas de outras campanhas não aparecem na lista. Remover um sistema é impedido enquanto uma missão ou parada o referencia.
 
-O sistema permanece exclusivo da campanha. N?o existe transfer?ncia autom?tica para outra campanha. A remo??o ? recusada enquanto houver uma parada manual da rota apontando para ele.
+## Sistemas exclusivos
 
-## Editar territ?rios
+Em **Mapa estelar → Sistemas da campanha**, informe nome, instalações e posição. Você pode usar X/Y, o setor e sua subdivisão de 0 a 9, ou clicar com a ferramenta de posicionamento. Por exemplo: setor X = −1, coluna 5 e setor Y = 2, linha 3 correspondem a (−0,5; 2,3).
 
-Expanda **Territ?rios e regi?es**. Para uma ?rea local, informe nome, cor e tipo: dom?nio pol?tico ou regi?o geogr?fica.
+Os sistemas oficiais não são alterados pelo editor. Não existe transferência automática de descobertas entre campanhas.
 
-- **Raio em torno de um ponto:** escolha um sistema ou informe o centro em parsecs. O raio usa anos-luz; 0,5 ou 1 ano-luz s?o valores aceitos.
-- **Contorno desenhado:** clique em **Desenhar no mapa** e marque pelo menos tr?s v?rtices. Voc? pode ajustar os pontos manualmente. Arrastar desloca a vista e n?o acrescenta um v?rtice.
+## Territórios
 
-A Fronteira ? uma regi?o geogr?fica, separada dos dom?nios de UPP, Imp?rio dos Tr?s Mundos, Am?ricas Unidas e Col?nias Independentes.
+O manto-base distingue Fronteira (geográfica), UPP, Império dos Três Mundos, Américas Unidas e Colônias Independentes. Os contornos foram refinados a partir das áreas coloridas da referência e incluem regiões descontínuas. São aproximações cartográficas.
 
-Em **Regi?es compartilhadas do mapa-base**, a caixa de sele??o mostra ou oculta a regi?o somente nesta campanha. **Personalizar nesta campanha** cria uma c?pia edit?vel e oculta o contorno-base correspondente. Ajuste a cor e os v?rtices dessa c?pia; nenhuma outra campanha ? modificada. Para restaurar o aspecto original, remova a c?pia e marque novamente a regi?o-base.
+Em **Territórios e regiões**, crie um círculo (centro em parsecs e raio em anos-luz) ou um polígono com pelo menos três vértices. Um ano-luz equivale a aproximadamente 0,307 parsec. **Personalizar nesta campanha** copia uma região e oculta seu original nessa campanha. Use **Área do contorno** para editar a área principal ou um enclave; é possível adicionar/remover áreas separadas. Todas as partes conservam a mesma cor e nome.
 
-A configura??o territorial representa o estado definido para a campanha. Ainda n?o h? uma linha do tempo de mudan?as pol?ticas.
+Os vértices podem ser ajustados numericamente ou acrescentados com a ferramenta de desenho. Para restaurar a base, remova a cópia local e reative a região original. Ainda não há cronologia de mudanças territoriais: a configuração vale para a campanha inteira.
 
-## Registrar o percurso
+## Percurso e Fragmentos da Guerra
 
-Expanda **Rota e paradas**. Cada parada tem sistema, chegada no universo, sa?da opcional, observa??o e miss?o opcional. A miss?o pode preencher a data de chegada quando o campo estiver vazio.
+Sem rota manual, as missões determinam a sequência. Em **Rota e paradas**, você pode definir uma sequência própria, com chegada, saída opcional, observação e missão associada. Datas são textos do universo, sem conversão para o calendário real. Retornos ao mesmo sistema são permitidos. Uma parada desconhecida interrompe a linha.
 
-A ordem ? a ordem da lista; use subir/descer para reorganizar. Datas s?o textos do universo do jogo, e n?o datas do calend?rio real. ? poss?vel retornar ao mesmo sistema v?rias vezes.
+As 17 missões de Fragmentos da Guerra estão vinculadas:
 
-Uma rota manual substitui a rota identificada pelos nomes das miss?es. Se todas as paradas manuais forem removidas, o percurso das miss?es volta a aparecer. Locais sem sistema conhecido permanecem no hist?rico e interrompem o tra?ado: o mapa n?o inventa uma conex?o atrav?s deles.
+- **QG Provisorio – AU:** ZKH-341. Seu rótulo e a data censurada foram preservados.
+- **Sea Δ:** (0, −60) pc, aproximadamente conforme orientação do autor.
+- **Acheron Prime:** (10,5; 6,2) pc, estimado da imagem enviada pelo autor; exclusivo de Fragmentos da Guerra, distinto de LV-426/Acheron.
 
-## Cobertura atual e limites
+Os relatos, participantes, datas e ordem originais foram preservados. Os dois sistemas fictícios não entram no catálogo universal.
 
-O cat?logo interativo possui **56 sistemas** transcritos da imagem local *Stars of the Middle Heavens*, incluindo os pontos reconhecidos no percurso de Fragmentos da Guerra. A imagem inteira continua dispon?vel na camada de refer?ncia; os demais sistemas ainda precisam ser transcritos para se tornarem selecion?veis.
+## Referência, precisão e gravação
 
-As coordenadas foram levantadas visualmente dos centros das estrelas na imagem. S?o posi??es cartogr?ficas aproximadas, n?o coordenadas astron?micas tridimensionais. Os contornos territoriais tamb?m s?o simplificados e precisam de refinamento visual posterior.
+A imagem de 8,45 MB foi retirada de `public/assets` e da versão publicada. Uma cópia de trabalho está em `../map-catalog-work/galaxy-map-reference.jpg`, fora do projeto v3; o checkout original também conserva sua referência. O site usa os catálogos JSON e o canvas, sem carregar essa imagem.
 
-Fragmentos da Guerra possui 17 paradas: 14 identificadas e tr?s sem posi??o definida ? **Acheron Prime**, **Sea ?** e **QG Provisorio ? AU**. O conte?do original da campanha permanece preservado; nenhuma posi??o foi inventada para essas tr?s paradas.
+As coordenadas são estimativas bidimensionais levantadas da imagem, não posições astronômicas 3D. Referências direcionais fora da área plotada não recebem coordenadas inventadas. As letras do aglomerado Crestus Prime foram qualificadas com o nome do aglomerado para serem pesquisáveis.
 
-Os formul?rios recuperam campos n?o aplicados na mesma sess?o do navegador. **Aplicar ao rascunho** e **Salvar arquivos com backup** continuam sendo etapas distintas. A pr?via usa uma c?pia do rascunho. A edi??o est? dispon?vel somente no editor local; a publica??o est?tica cont?m apenas a consulta do mapa.
+**Aplicar ao rascunho** e **Salvar arquivos com backup** são etapas distintas. A migração guarda a revisão anterior e recupera rascunhos compatíveis da mesma sessão, preservando alterações já feitas. O editor continua local; a publicação é somente leitura.

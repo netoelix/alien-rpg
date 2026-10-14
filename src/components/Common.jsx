@@ -106,9 +106,15 @@ export function AwardCards({ awards, playerId }) {
       <img src={award.medal} alt={`Medalha ${award.rank}`} loading="lazy" />
       <div>
         <h3>{award.name || 'Conquista sem título'}</h3>
+        {award.stars && (
+          <p aria-label={award.stars + ' de 3 estrelas'} className="achievement-stars">
+            {'★'.repeat(award.stars)}
+            {'☆'.repeat(3 - award.stars)}
+          </p>
+        )}
         <p>{award.description}</p>
         <small>
-          {awardDate(award, playerId)} · {award.category} / {award.rank}
+          {award.date || awardDate(award, playerId)} · {award.category} / {award.rank}
         </small>
       </div>
     </article>

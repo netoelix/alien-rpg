@@ -123,7 +123,7 @@ export function MapRouteEditor({ campaign, onApply, storageKey }) {
         </label>
         <div className="map-form-grid">
           <label>
-            Chegada no universo
+            Data de chegada ao sistema
             <input
               required
               value={form.arrival}
@@ -132,13 +132,17 @@ export function MapRouteEditor({ campaign, onApply, storageKey }) {
             />
           </label>
           <label>
-            Saída no universo (opcional)
+            Data de partida do sistema (opcional)
             <input
               value={form.departure}
               onChange={(event) => change('departure', event.target.value)}
             />
           </label>
         </div>
+        <p className="muted small-text">
+          Datas dentro da história. A partida indica quando o grupo deixou esse sistema; deixe em
+          branco se não houver uma data definida.
+        </p>
         <label>
           Missão associada (opcional)
           <select

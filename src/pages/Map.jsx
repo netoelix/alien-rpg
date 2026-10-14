@@ -19,8 +19,8 @@ export function MapPage() {
       <h1>Mapa de {campaign.title}</h1>
       <p className="map-note">
         Sol é a origem. {officialSystems.length} sistemas da referência estão disponíveis para
-        consulta. A imagem oficial conserva os demais nomes e instalações; a transcrição do catálogo
-        continua em andamento.
+        consulta, com suas instalações. As coordenadas foram transcritas do mapa de 2183; sistemas
+        descobertos pertencem somente à sua campanha.
       </p>
       <p className="muted small-text">
         Os contornos do manto-base são aproximações visuais do mapa de 2183. A campanha pode definir
@@ -62,7 +62,7 @@ export function MapPage() {
         {stops.length > 0 && (
           <p className="muted small-text">
             {stops[0].inferred
-              ? 'Sistemas identificados pelo nome nas missões, seguindo a ordem do arquivo.'
+              ? 'Sistemas vinculados às missões, seguindo a ordem do arquivo.'
               : 'Ordem de paradas definida no editor da campanha.'}
           </p>
         )}

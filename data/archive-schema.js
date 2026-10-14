@@ -1,3 +1,4 @@
+import { validateCharacterRecords } from './character-records.js';
 import { validateNavigation } from './star-map.js';
 import { normalizePlayerProfiles } from './player-profiles.js';
 import { validateCampaign } from './schema.js';
@@ -34,7 +35,6 @@ export function validateArchive(archive) {
   }
   const ids = new Set();
   const errors = [...catalogErrors, ...profileErrors];
-  const earned = new Set();
   for (const campaign of archive.campaigns) {
     if (
       !campaign ||
@@ -82,21 +82,7 @@ export function validateArchive(archive) {
       if (!archive.achievements.some((item) => item.id === grant.id))
         campaignErrors.push('Conquista desconhecida: ' + grant.id);
     }
-    for (const achievement of campaign.achievements) {
-      for (const grant of Array.isArray(achievement?.character) ? achievement.character : []) {
-        const player = campaign.players?.find((member) => member.playerId === grant?.name);
-        if (!player?.profileId || player.mascot) continue;
-        const key = player.profileId + '/' + achievement.id;
-        if (earned.has(key))
-          campaignErrors.push(
-            'Este jogador já possui a conquista em outra campanha: ' +
-              grant.name +
-              '/' +
-              achievement.id,
-          );
-        earned.add(key);
-      }
-    }
+    if (!campaignErrors.length) campaignErrors.push(...validateCharacterRecords(campaign));
     errors.push(...campaignErrors.map((error) => `${campaign.title}: ${error}`));
     if (campaignErrors.length) continue;
     const memberProfiles = new Set();

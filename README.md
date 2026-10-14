@@ -44,11 +44,13 @@ As datas das missões pertencem à cronologia fictícia. As tarjas são efeitos 
 
 O seletor aceita várias campanhas e o editor local permite criar e editar o acervo. A gravação existe somente ao executar o modo editor na sua máquina. Não há autenticação remota, banco de dados ou serviço público de escrita.
 
-O diário guarda rascunhos apenas no navegador e permite baixar o texto; não publica registros nem sincroniza dispositivos. As conquistas continuam sendo as concessões do acervo original: níveis por repetição e conquistas próprias de personagens são etapas futuras.
+O editor permite registrar páginas de diário por personagem, com título, data do universo e texto. A aba Diário na página do personagem serve somente para leitura dessas entradas. Jogadores possuem cadastro universal e conquistas compartilhadas entre campanhas: cada campanha distinta soma uma estrela, até três. Os personagens recebem apenas conquistas explicitamente atribuídas a eles. Concessões antigas conservam o jogador e a data, sem inventar um personagem destinatário.
 
 As relações entre personagens e logs são inferidas por nomes mencionados no texto ou no esquadrão. Menção não significa participação. Campanhas e personagens possuem identificadores permanentes. Os links de jogadores e missões ainda usam a posição dos registros: preserve a ordem ao importar backups. O editor adiciona novos jogadores e missões ao final.
 
 ## Publicação e revisão
+
+O passo a passo está em [Editar, salvar e publicar](docs/editar-e-publicar.md). Execute `npm run verify` para conferir formatação, testes e build em uma única sequência; esse comando não envia nem publica arquivos.
 
 A branch `alien-rpg-3.0` prepara a substituição da interface anterior. O merge para `alien-rpg-page` deve acontecer somente após revisão. Nenhum servidor pago é necessário para leitura do site; a publicação é uma etapa separada da edição local.
 
@@ -69,26 +71,27 @@ npm run editor
 Abra http://127.0.0.1:3841/#/editor. O modo usa a mesma porta da prévia: encerre outro processo do site antes de iniciá-lo. Acesse exatamente 127.0.0.1, e não localhost.
 
 1. Selecione ou crie uma campanha.
-2. Edite a apresentação, jogadores, personagens, missões e conquistas pelos formulários.
+2. Edite a apresentação, jogadores, personagens, missões, registros de sessão, diários e conquistas pelos formulários.
 3. Clique em **Aplicar ao rascunho** para cada registro.
-4. Clique em **Salvar arquivos com backup** para gravar `data/archive.json`.
-5. Abra **Conferir site** em outra aba. Recarregue a prévia depois de uma nova gravação.
+4. Abra **Conferir site** em outra aba para revisar o rascunho. Abra novamente após aplicar outras alterações.
+5. Clique em **Salvar arquivos com backup** para gravar `data/archive.json`.
 6. Para publicar, gere o site e envie os arquivos pela sua rotina de publicação. Salvar no editor não publica no GitHub nem na hospedagem.
 
 A API de gravação só é montada nesse modo, escuta em loopback e exige a origem local na gravação. O build público exclui o editor. Antes de gravar, o conteúdo passa por validação e a versão anterior é copiada para `.editor-backups/` (fora do Git). Uma edição antiga é recusada se o arquivo mudou em disco. Uma falha na criação do backup interrompe a gravação.
 
 **Exportar backup** baixa o rascunho inteiro. **Importar backup** carrega um arquivo JSON validado como rascunho, sem gravar imediatamente. Para restaurar uma cópia automática, escolha um arquivo de `.editor-backups/`, confira e salve. Os rascunhos de formulários e do acervo são recuperados na mesma sessão do navegador, quando a revisão em disco permanece igual. Eles não substituem os backups em arquivo.
 
-Nesta etapa, os retratos e medalhas são escolhidos entre os recursos já presentes em `public/assets/`. Upload de imagens, exclusão de registros, níveis de conquistas e publicação automática ainda não estão disponíveis. Jogadores e concessões são cadastrados por campanha; uma identidade global de jogador entre campanhas será implementada antes da progressão compartilhada. O editor local não permite que outras pessoas editem remotamente.
+Retratos podem ser importados pelo formulário do personagem e são armazenados em `public/assets/`; medalhas são selecionadas entre os recursos existentes. O backup JSON não contém as imagens: preserve também a pasta de recursos. Entradas de diário podem ser removidas pelo editor; a exclusão geral de registros e a publicação automática ainda não estão disponíveis. O editor local não permite que outras pessoas editem remotamente.
 
 ## Campos obrigatórios e opcionais
 
 - Campanha: nome opcional (nome automático Campanha 2, Campanha 3 etc.); resumo, apresentação, período, unidade, divisão e créditos opcionais. Estado inicia como Planejada e pode ser alterado.
 - Jogador: nome obrigatório.
 - Personagem: nome, profissão, biografia, jogador e retrato obrigatórios. Codinome, nomes usados nos logs e situação são opcionais. Situação aceita Vivo, Morto ou Desaparecido e só aparece quando informada. O acervo existente não recebe situações automaticamente.
-- Missão: nome, sistema/localização, data fictícia, equipe e relato obrigatórios.
-- Conquista: nome, descrição, medalha, categoria e grau obrigatórios. Concessões são opcionais; cada concessão selecionada exige data válida.
+- Missão: nome, sistema/localização, data fictícia e equipe. Relatos são cadastrados separadamente em registros de sessão.
+- Diário: personagem, título, data fictícia e texto obrigatórios.
+- Conquista: nome, descrição, medalha, categoria e grau obrigatórios. Concessões são opcionais; novas concessões exigem data válida e personagens pertencentes ao jogador selecionado.
 
 O formulário identifica os campos e mostra mensagens de validação ao aplicar. Um nome de campanha vazio recebe automaticamente um nome numerado, que continua editável.
 
-A cartografia e seu editor est?o descritos em [docs/mapa.md](docs/mapa.md). O cat?logo oficial interativo ainda ? parcial (56 sistemas), e a imagem de refer?ncia conserva o mapa completo.
+A cartografia e seu editor estão descritos em [docs/mapa.md](docs/mapa.md): catálogo com 278 pontos, sistemas vinculados às missões, territórios com áreas separadas e percurso completo de Fragmentos da Guerra. A imagem de referência não integra a publicação.

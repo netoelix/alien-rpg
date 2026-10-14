@@ -1,3 +1,4 @@
+import { characterAchievements } from '../../data/character-records.js';
 import { useState } from 'react';
 import { useCampaign } from '../context/CampaignContext.jsx';
 import {
@@ -5,6 +6,7 @@ import {
   Eyebrow,
   RouteLink,
   CharacterCards,
+  AwardCards,
   MissionFolders,
   Narrative,
   CharacterStatus,
@@ -51,64 +53,26 @@ function Biography({ character }) {
 }
 
 function Diary({ character }) {
-  const { campaign } = useCampaign();
-  // Preserva os rascunhos escritos antes da conversão para React.
-  const storageKey = `alien-rpg-diary-${campaign.id}-${character.id}`;
-  const [draft, setDraft] = useState(() => {
-    try {
-      return (
-        localStorage.getItem(storageKey) ??
-        (campaign.id === 'fragmentos-da-guerra'
-          ? localStorage.getItem(`alien-prototype-diary-${character.id}`)
-          : '') ??
-        ''
-      );
-    } catch {
-      return '';
-    }
-  });
-  const [status, setStatus] = useState('');
-
-  function saveDraft() {
-    try {
-      localStorage.setItem(storageKey, draft);
-      setStatus('Rascunho guardado neste navegador. Não publicado.');
-    } catch {
-      setStatus('Armazenamento local indisponível. Use Baixar texto.');
-    }
-  }
-
-  function downloadDraft() {
-    const url = URL.createObjectURL(new Blob([draft], { type: 'text/plain;charset=utf-8' }));
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `diario-${character.id}.txt`;
-    anchor.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
   return (
     <div className="diary-area">
-      <Eyebrow>Terminal pessoal / Rascunho</Eyebrow>
+      <Eyebrow>Terminal pessoal / Diário</Eyebrow>
       <h2>Diário de {character.characterName}</h2>
-      <p className="muted list-intro">
-        Ainda não há páginas publicadas. Experimente escrever um rascunho pessoal; ele fica apenas
-        neste navegador.
-      </p>
-      <label htmlFor="diary-draft">NOVA PÁGINA</label>
-      <textarea
-        id="diary-draft"
-        placeholder="O que seu personagem quer deixar registrado?"
-        value={draft}
-        onChange={(event) => setDraft(event.target.value)}
-      />
-      <div className="actions">
-        <button onClick={saveDraft}>GUARDAR RASCUNHO LOCAL</button>
-        <button onClick={downloadDraft}>BAIXAR TEXTO</button>
+      {!character.journal?.length && (
+        <p className="muted">Nenhuma página registrada no arquivo da campanha.</p>
+      )}
+      <div className="journal-entries">
+        {(character.journal || []).map((entry) => (
+          <details className="collapsible-section" key={entry.id}>
+            <summary>
+              <h3>{entry.title}</h3>
+              <span>{entry.dateTime}</span>
+            </summary>
+            <div className="collapsible-content">
+              <Narrative text={entry.text} />
+            </div>
+          </details>
+        ))}
       </div>
-      <p className="draft-status" aria-live="polite">
-        {status}
-      </p>
     </div>
   );
 }
@@ -121,7 +85,7 @@ const characterSections = [
 ];
 
 export function CharacterPage({ id }) {
-  const { characters, players, timelines, relatedTo } = useCampaign();
+  const { characters, players, timelines, relatedTo, campaign, achievements } = useCampaign();
   const character = characters.find((character) => character.id === id);
   const [section, setSection] = useState('bio');
   const relatedLogs = timelines
@@ -170,16 +134,15 @@ export function CharacterPage({ id }) {
                 </div>
               </CollapsibleSection>
             ) : null}
-            {section === 'awards' ? (
-              <div className="empty">
-                Ainda não há conquistas atribuídas especificamente a este personagem.
-                <div className="actions centered">
-                  <RouteLink to={`player/${character.playerId}`} className="button">
-                    VER CONQUISTAS DE {players[character.playerId].playerId}
-                  </RouteLink>
-                </div>
+            {section === 'awards' && (
+              <div className="awards">
+                <AwardCards awards={characterAchievements(campaign, achievements, character.id)} />
+                <p className="muted small-text">
+                  Somente feitos atribuídos a este personagem. Concessões antigas sem personagem
+                  identificado permanecem no histórico do jogador.
+                </p>
               </div>
-            ) : null}
+            )}
             {section === 'diary' ? <Diary character={character} /> : null}
           </div>
         </section>

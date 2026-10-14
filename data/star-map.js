@@ -14,7 +14,7 @@ export const normalizeSystemName = (name) =>
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, '');
+    .replace(/[^\p{L}\p{N}]/gu, '');
 
 export function campaignSystems(campaign) {
   return [...officialSystems, ...(campaign.navigation?.systems || [])];
@@ -53,8 +53,7 @@ function validPolygon(points) {
 }
 
 export function validateNavigation(campaign) {
-  const navigation = campaign.navigation;
-  if (navigation === undefined) return [];
+  const navigation = campaign.navigation === undefined ? {} : campaign.navigation;
   if (!navigation || typeof navigation !== 'object' || Array.isArray(navigation))
     return ['Cartografia da campanha inválida.'];
   const systems = navigation.systems === undefined ? [] : navigation.systems;
@@ -99,7 +98,11 @@ export function validateNavigation(campaign) {
           !Number.isFinite(territory.radiusLy) ||
           territory.radiusLy <= 0 ||
           territory.radiusLy > 10000)) ||
-      (territory.shape === 'polygon' && !validPolygon(territory.points))
+      (territory.shape === 'polygon' &&
+        (!validPolygon(territory.points) ||
+          (territory.islands !== undefined &&
+            (!Array.isArray(territory.islands) ||
+              territory.islands.some((ring) => !validPolygon(ring))))))
     ) {
       errors.push('Território inválido: confira nome, cor e contorno.');
     }
@@ -111,6 +114,10 @@ export function validateNavigation(campaign) {
   )
     errors.push('Região-base desconhecida ou repetida.');
   const stopIds = new Set();
+  for (const mission of campaign.timelines || []) {
+    if (mission.systemId !== undefined && mission.systemId !== '' && !ids.has(mission.systemId))
+      errors.push('Sistema da missão não existe nesta campanha.');
+  }
   for (const stop of route) {
     if (
       !stop ||
@@ -142,15 +149,24 @@ export function campaignRoute(campaign) {
     return campaign.navigation.route.map((stop) => ({ ...stop, system: byId.get(stop.systemId) }));
   return (campaign.timelines || []).map((mission, index) => ({
     id: 'mission-' + index,
-    system: systems.find(
-      (entry) => normalizeSystemName(entry.name) === normalizeSystemName(mission.location),
-    ),
+    system:
+      mission.systemId === undefined
+        ? systemForLocation(systems, mission.location)
+        : byId.get(mission.systemId),
     arrival: mission.dateTime,
     departure: '',
     missionIndex: index,
     note: mission.location,
     inferred: true,
   }));
+}
+
+// Designações repetidas na própria referência exigem seleção explícita por ID.
+export function systemForLocation(systems, location = '') {
+  const matches = systems.filter(
+    (entry) => normalizeSystemName(entry.name) === normalizeSystemName(location),
+  );
+  return matches.length === 1 ? matches[0] : undefined;
 }
 
 export function routeSegments(stops) {

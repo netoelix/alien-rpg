@@ -67,9 +67,18 @@ export function profileAchievements(archive, profileId) {
         .find((item) => item.id === definition.id)
         ?.character.find((item) => item.name === member.playerId);
       return grant
-        ? [{ campaignId: campaign.id, campaignTitle: campaign.title, date: grant.date }]
+        ? [
+            {
+              campaignId: campaign.id,
+              campaignTitle: campaign.title,
+              date: grant.date,
+              characterIds: grant.characterIds || [],
+            },
+          ]
         : [];
     });
-    return occurrences.length ? [{ ...definition, occurrences }] : [];
+    return occurrences.length
+      ? [{ ...definition, occurrences, stars: Math.min(3, occurrences.length) }]
+      : [];
   });
 }

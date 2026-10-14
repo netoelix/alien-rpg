@@ -4,7 +4,7 @@ import { useMapDraft } from './useMapDraft.js';
 
 const initialSystem = { selected: '', name: '', installations: '', x: 0, y: 0 };
 
-export function MapSystemsEditor({ campaign, onApply, pick, storageKey }) {
+export function MapSystemsEditor({ campaign, onApply, pick, storageKey, onPick }) {
   const [form, setForm] = useMapDraft(storageKey, initialSystem);
   const systems = campaign.navigation?.systems || [];
   const sector = positionInSector(form.x, form.y);
@@ -86,6 +86,9 @@ export function MapSystemsEditor({ campaign, onApply, pick, storageKey }) {
         </select>
       </label>
       <form onSubmit={submit} className="map-editor-form">
+        <button type="button" onClick={onPick}>
+          ESCOLHER POSIÇÃO NO MAPA
+        </button>
         <label>
           Nome do sistema
           <input

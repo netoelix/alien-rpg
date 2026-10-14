@@ -58,3 +58,10 @@ Conquistas, acervo entre campanhas e missões do perfil do jogador começam reco
 - Navegador: sistema local com duas instala??es; quadrado ?1/2 com coluna 5/linha 3; c?rculo de 0,5 ano-luz; contorno com v?rtice marcado no Canvas; duas paradas reordenadas; pr?via com ?reas e rota; sistema ausente na outra campanha; remo??o de sistema usado na rota recusada.
 - P?gina m?vel conferida a 390 px; seletor de percurso limitado ? largura da ?rea de leitura. R?tulos do Canvas evitam sobreposi??o, priorizando sele??o e percurso.
 - Nenhum dado de teste foi salvo no arquivo real da campanha. Detalhes operacionais e limites est?o em docs/mapa.md.
+# Verificação da cartografia e dos vínculos de missão — 12/10/2026
+
+- 36 testes passaram: catálogo imutável, isolamento entre campanhas, vínculo por ID, nomes ambíguos, recuperação de rascunhos anteriores, polígonos com áreas separadas, gravação e backups.
+- Os 17 relatos mantêm seus fingerprints originais. As 17 missões agora têm sistemas conhecidos; Sea Δ e Acheron Prime pertencem somente a Fragmentos da Guerra.
+- No navegador, uma missão de teste selecionou Sol pela busca, recebeu um rótulo de base e conservou seu vínculo após aplicar/reabrir. O mesmo formulário criou um sistema local em (−2,5; 3,2), com instalação, e conservou o vínculo ao reabrir. O teste permaneceu em rascunho de aba temporária, sem gravar no acervo.
+- O mapa exibiu a rota completa até Sea Δ e os contornos refinados na vista padrão. Console sem erros nas duas telas verificadas.
+- Build estático concluído sem referência à imagem pesada; `dist/assets/galaxy-map.jpg` ausente. Formatação verificada com Prettier.
