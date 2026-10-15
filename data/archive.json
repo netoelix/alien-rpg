@@ -3,7 +3,7 @@
   "playerProfiles": [
     {
       "id": "0",
-      "name": "André",
+      "name": "André Luiz",
       "biography": ""
     },
     {
@@ -943,7 +943,7 @@
       "players": [
         {
           "id": "0",
-          "playerId": "André",
+          "playerId": "André Luiz",
           "profileId": "0",
           "mascot": false,
           "characters": [
@@ -1072,7 +1072,7 @@
           "id": "stress_01",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "16/06/2024"
             },
             {
@@ -1093,7 +1093,7 @@
           "id": "stress_02",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "22/06/2024"
             },
             {
@@ -1114,7 +1114,7 @@
           "id": "stress_03",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "25/08/2024"
             },
             {
@@ -1131,7 +1131,7 @@
           "id": "stress_04",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "25/08/2024"
             },
             {
@@ -1148,7 +1148,7 @@
           "id": "stress_05",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "28/09/2024"
             },
             {
@@ -1165,7 +1165,7 @@
           "id": "stress_06",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "22/06/2024"
             },
             {
@@ -1186,7 +1186,7 @@
           "id": "stress_07",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "22/06/2024"
             },
             {
@@ -1203,7 +1203,7 @@
           "id": "stress_08",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "29/06/2024"
             },
             {
@@ -1220,7 +1220,7 @@
           "id": "stress_09",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "29/06/2024"
             },
             {
@@ -1237,7 +1237,7 @@
           "id": "stress_10",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "22/06/2024"
             },
             {
@@ -1254,7 +1254,7 @@
           "id": "stress_11",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "25/08/2024"
             },
             {
@@ -1271,7 +1271,7 @@
           "id": "stress_12",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "06/10/2024"
             },
             {
@@ -1284,7 +1284,7 @@
           "id": "stress_13",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "25/08/2024"
             }
           ]
@@ -1293,7 +1293,7 @@
           "id": "stress_14",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "06/10/2024"
             },
             {
@@ -1306,7 +1306,7 @@
           "id": "stress_15",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "06/10/2024"
             },
             {
@@ -1323,7 +1323,7 @@
           "id": "stress_16",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "06/07/2024"
             },
             {
@@ -1336,7 +1336,7 @@
           "id": "stress_17",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "06/07/2024"
             },
             {
@@ -1349,7 +1349,7 @@
           "id": "stress_18",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "06/07/2024"
             },
             {
@@ -1366,7 +1366,7 @@
           "id": "eliminations_01",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "16/06/2024"
             },
             {
@@ -1383,7 +1383,7 @@
           "id": "eliminations_02",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "22/06/2024"
             },
             {
@@ -1439,7 +1439,7 @@
           "id": "eliminations_09",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "07/09/2024"
             }
           ]
@@ -1490,7 +1490,7 @@
           "id": "eliminations_local_fauna_01",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "29/06/2024"
             },
             {
@@ -1511,7 +1511,7 @@
           "id": "eliminations_local_fauna_02",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "03/08/2024"
             },
             {
@@ -1568,7 +1568,7 @@
           "id": "exploration_01",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "29/06/2024"
             },
             {
@@ -1589,7 +1589,7 @@
           "id": "exploration_02",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "28/07/2024"
             },
             {
@@ -1610,7 +1610,7 @@
           "id": "exploration_03",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "12/10/2024"
             },
             {
@@ -1631,7 +1631,7 @@
           "id": "exploration_star_systems_01",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "16/06/2024"
             },
             {
@@ -1652,7 +1652,7 @@
           "id": "exploration_star_systems_02",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "12/10/2024"
             },
             {
@@ -1681,7 +1681,7 @@
           "id": "exploration_planets_01",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "16/06/2024"
             },
             {
@@ -1702,7 +1702,7 @@
           "id": "exploration_planets_02",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "12/10/2024"
             },
             {
@@ -1731,7 +1731,7 @@
           "id": "special_exploration_01",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "16/08/2025"
             },
             {
@@ -1868,7 +1868,7 @@
               "date": "10/08/2025"
             },
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "10/08/2025"
             }
           ]
@@ -1877,7 +1877,7 @@
           "id": "other_dangerous_17",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "10/08/2025"
             },
             {
@@ -1906,7 +1906,7 @@
               "date": "10/05/2025"
             },
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "10/05/2025"
             }
           ]
@@ -1919,7 +1919,7 @@
           "id": "other_group_05",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "16/08/2025"
             }
           ]
@@ -1958,7 +1958,7 @@
           "id": "other_group_11",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "28/09/2024"
             }
           ]
@@ -1971,7 +1971,7 @@
           "id": "other_group_13",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "16/08/2025"
             }
           ]
@@ -1988,7 +1988,7 @@
           "id": "other_group_16",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "22/06/2024"
             },
             {
@@ -2005,7 +2005,7 @@
           "id": "other_group_17",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "25/08/2024"
             },
             {
@@ -2031,7 +2031,7 @@
           "id": "other_group_19-legacy-2",
           "character": [
             {
-              "name": "André",
+              "name": "André Luiz",
               "date": "06/10/2024"
             },
             {
@@ -2521,15 +2521,34 @@
       "unit": "",
       "division": "Weyland Yutani",
       "period": "2142",
-      "summary": "",
+      "summary": "A definir",
       "description": "",
       "players": [
         {
           "id": "909729d9-d1cf-40a0-b5d4-834d99abf3c8",
-          "playerId": "André",
+          "playerId": "André Luiz",
           "profileId": "0",
           "mascot": false,
-          "characters": []
+          "characters": [
+            {
+              "id": "1d1493c1-a115-4159-9a3c-0d7036190cd8",
+              "characterName": "Lucy",
+              "codname": "Lucifer",
+              "profession": "A definir",
+              "about": "A definir",
+              "images": "assets/default-portrait.svg",
+              "aliases": [],
+              "lifeStatus": "vivo",
+              "journal": [
+                {
+                  "id": "16f9fda8-b50f-4684-a87d-79513d8e8980",
+                  "title": "Prólogo - Acho que tirei a sorte grande dessa vez",
+                  "dateTime": "A definir",
+                  "text": "Noite passada foi incrível! Eu estava lá na boate como de costume, dançando, me exibindo pros poucos clientes que já tinham chegado aquele horário, afinal, dia de semana, não é todo mundo que pode se dar ao luxo... o que quer dizer que quem estava ali tinha grana e estava disposto a gastar.\nAlguns \"colegas\" já estavam dando atenção aos seus regulares, outros tentavam fisgar os que ainda não tinham escolhido suas companhias pra noite: um grupo de três adolescentes que chegaram juntas, que eu tenho minhas dúvidas se tinham idade suficiente pra estar lá, um coroa sentado no canto admirando uma das dançarinas no palco e um rapaz que estava sentado junto ao balcão, aparentemente mais interessado na bebida do que nas atrações... talvez o brinquedo predileto dele já estivesse sendo usado por outra pessoa, sei lá.\nDo mais absoluto nada, entra um casal, ou pelo menos eu acho que sejam um casal, já que chegaram de mãos dadas e tudo, e se sentam junto a uma das mesas perto do palco. Ela, lindíssima, cabelo longo, ruivo, olhos verdes. Ele, loiro, alto, músculos marcando a camisa, e um sorriso... ahh que sorriso!\nÓbvio que eu queria sair dali com eles, não só pela grana, eu estava real com tesão naqueles dois! Só faltou eu me jogar na mesa deles, fiz de tudo pra chamar a atenção, até que eu finalmente consegui que eles olhassem só pra mim.\nDei meu show, e no final, debruçado sobre a mesa deles, sussurrei entre uma troca de olhares e outra: \"Esse foi só o primeiro ato, se quiserem o resto do show, a gente vai ter que subir pra um dos quartos privados\". Foi quando ela, com um sorrisinho de canto de boca, olhou pra ele como quem dizia \"porquê não, né?. Ele, entendendo o recado, me puxou pra perto e sussurrou no meu ouvido: \"Eu tenho uma ideia melhor: nós temos um quarto reservado num hotel não muito longe daqui... e é melhor que esse show dure mais do que algumas horas...\"\nImediatamente eu pensei: ou eu tirei a sorte grande, ou vão encontrar o meu corpo de manhã em alguma vala por ai. Minha mãe sempre dizia: quando a esmola é demais, o santo desconfia... mas, como eu nunca fui santo, eu dei um beijinho na bochecha dele, uma piscadinha pra ela, e me entreguei de vez dizendo: \"Lucifer. Se é isso que desejam, eu serei só de vocês pelo resto da noite\".\nChega ser deprimente ter que voltar pra rotina depois de uma noite dessas, mas pelo menos eles parecem ter ficado bastante satisfeitos. Espero que eles apareçam lá no clube de novo essa noite."
+                }
+              ]
+            }
+          ]
         }
       ],
       "achievements": [],
