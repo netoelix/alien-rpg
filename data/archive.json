@@ -957,7 +957,8 @@
               "aliases": [
                 "Trisha",
                 "Trisha M."
-              ]
+              ],
+              "lifeStatus": "morto"
             },
             {
               "id": "1",
@@ -968,7 +969,8 @@
               "images": "assets/TakeoIchinoda.png",
               "aliases": [
                 "Takeo"
-              ]
+              ],
+              "lifeStatus": "desaparecido"
             }
           ]
         },
@@ -987,7 +989,8 @@
               "images": "assets/HarperJammer.png",
               "aliases": [
                 "Harper"
-              ]
+              ],
+              "lifeStatus": "desaparecido"
             },
             {
               "id": "3",
@@ -999,7 +1002,8 @@
               "aliases": [
                 "C.R.I.S.",
                 "CRIS"
-              ]
+              ],
+              "lifeStatus": "desaparecido"
             }
           ]
         },
@@ -1018,7 +1022,8 @@
               "images": "assets/SeanBean.png",
               "aliases": [
                 "Sean"
-              ]
+              ],
+              "lifeStatus": "desaparecido"
             }
           ]
         },
@@ -1037,7 +1042,8 @@
               "images": "assets/CarlaRodriguez.png",
               "aliases": [
                 "Carla"
-              ]
+              ],
+              "lifeStatus": "desaparecido"
             }
           ]
         },
@@ -1055,7 +1061,8 @@
               "images": "assets/Minsk.png",
               "aliases": [
                 "Minsk"
-              ]
+              ],
+              "lifeStatus": "desaparecido"
             }
           ]
         }
@@ -2509,11 +2516,11 @@
       "id": "campanha-e210e0e5-b8e7-4c13-a20a-2b876d366674",
       "title": "Fronteira Esquecida",
       "status": "planejada",
-      "author": "",
-      "medalArtist": "",
+      "author": "Elix Merlino Neto",
+      "medalArtist": "André Luiz Brandão",
       "unit": "",
-      "division": "",
-      "period": "",
+      "division": "Weyland Yutani",
+      "period": "2142",
       "summary": "",
       "description": "",
       "players": [
@@ -2526,7 +2533,21 @@
         }
       ],
       "achievements": [],
-      "timelines": []
+      "timelines": [],
+      "navigation": {
+        "systems": [
+          {
+            "id": "5f8025b6-640c-4b0a-83a0-cdc7a5d79884",
+            "name": "NN39456",
+            "x": 3.1,
+            "y": -15.8,
+            "installations": []
+          }
+        ],
+        "territories": [],
+        "hiddenTerritories": [],
+        "route": []
+      }
     }
   ]
 }
