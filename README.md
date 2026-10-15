@@ -42,7 +42,7 @@ As datas das missões pertencem à cronologia fictícia. As tarjas são efeitos 
 
 ## Limites desta primeira integração
 
-O seletor aceita várias campanhas e o editor local permite criar e editar o acervo. A gravação existe somente ao executar o modo editor na sua máquina. Não há autenticação remota, banco de dados ou serviço público de escrita.
+O seletor aceita várias campanhas. O editor local grava na máquina; o editor online usa Discord para autenticar o administrador, Supabase para rascunhos privados e GitHub para publicar o acervo estático. Consulte a configuração ao final deste documento.
 
 O editor permite registrar páginas de diário por personagem, com título, data do universo e texto. A aba Diário na página do personagem serve somente para leitura dessas entradas. Jogadores possuem cadastro universal e conquistas compartilhadas entre campanhas: cada campanha distinta soma uma estrela, até três. Os personagens recebem apenas conquistas explicitamente atribuídas a eles. Concessões antigas conservam o jogador e a data, sem inventar um personagem destinatário.
 
@@ -77,11 +77,11 @@ Abra http://127.0.0.1:3841/#/editor. O modo usa a mesma porta da prévia: encerr
 5. Clique em **Salvar arquivos com backup** para gravar `data/archive.json`.
 6. Para publicar, gere o site e envie os arquivos pela sua rotina de publicação. Salvar no editor não publica no GitHub nem na hospedagem.
 
-A API de gravação só é montada nesse modo, escuta em loopback e exige a origem local na gravação. O build público exclui o editor. Antes de gravar, o conteúdo passa por validação e a versão anterior é copiada para `.editor-backups/` (fora do Git). Uma edição antiga é recusada se o arquivo mudou em disco. Uma falha na criação do backup interrompe a gravação.
+A API de gravação só é montada nesse modo, escuta em loopback e exige a origem local na gravação. O editor online é carregado separadamente e suas operações exigem autorização na API; segredos ficam somente no servidor. Antes de gravar, o conteúdo passa por validação e a versão anterior é copiada para `.editor-backups/` (fora do Git). Uma edição antiga é recusada se o arquivo mudou em disco. Uma falha na criação do backup interrompe a gravação.
 
 **Exportar backup** baixa o rascunho inteiro. **Importar backup** carrega um arquivo JSON validado como rascunho, sem gravar imediatamente. Para restaurar uma cópia automática, escolha um arquivo de `.editor-backups/`, confira e salve. Os rascunhos de formulários e do acervo são recuperados na mesma sessão do navegador, quando a revisão em disco permanece igual. Eles não substituem os backups em arquivo.
 
-Retratos podem ser importados pelo formulário do personagem e são armazenados em `public/assets/`; medalhas são selecionadas entre os recursos existentes. O backup JSON não contém as imagens: preserve também a pasta de recursos. A publicação automática pelo editor ainda não está disponível. O editor local não permite que outras pessoas editem remotamente.
+No modo local, retratos importados são armazenados em `public/assets/`; medalhas são selecionadas entre os recursos existentes. O backup JSON não contém as imagens: preserve também a pasta de recursos. O editor local não permite edição remota. No modo online, novos retratos ficam privados no banco até a publicação explícita pelo administrador.
 
 ### Exclusão e restauração
 
@@ -111,3 +111,7 @@ O nome do sistema nos cartões, detalhes e relatos da missão abre o mapa centra
 O formulário identifica os campos e mostra mensagens de validação ao aplicar. Um nome de campanha vazio recebe automaticamente um nome numerado, que continua editável.
 
 A cartografia e seu editor estão descritos em [docs/mapa.md](docs/mapa.md): catálogo com 278 pontos, sistemas vinculados às missões, territórios com áreas separadas e percurso completo de Fragmentos da Guerra. A imagem de referência não integra a publicação.
+
+## Editor online em configuração
+
+A estrutura de edição autenticada pelo Discord está documentada em [Configurar editor online](docs/editor-online.md). É necessário configurar Supabase, a conta administrativa, as credenciais de publicação e validar o login real antes de usar. O site público permanece estático. Jogadores usam Google Forms, sem cadastro, e o mestre inclui manualmente os textos aprovados.

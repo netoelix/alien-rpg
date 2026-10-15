@@ -14,6 +14,8 @@ const steps = [
       'vite.config.js',
       'scripts',
       'tests',
+      'api',
+      'server',
     ],
   ],
   ['Testes', ['--test']],

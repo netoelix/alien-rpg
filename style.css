@@ -1203,3 +1203,16 @@ button:disabled {
   color: #f4b5a5;
   border-color: #ad6554;
 }
+.admin-login {
+  max-width: 44rem;
+  margin: 3rem auto;
+  padding: 2rem;
+}
+.admin-session {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid currentColor;
+}

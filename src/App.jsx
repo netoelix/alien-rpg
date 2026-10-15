@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { campaignModels as savedModels, modelsForArchive } from '../data/model.js';
 import { CampaignContext, ArchiveContext, useCampaign } from './context/CampaignContext.jsx';
-const Editor = import.meta.env.MODE === 'editor' ? lazy(() => import('./editor/Editor.jsx')) : null;
+const Editor = lazy(() => import('./editor/Editor.jsx'));
 import { RouteLink, MissingPage } from './components/Common.jsx';
 import { HomePage, CampaignPage } from './pages/Home.jsx';
 import { MissionsPage, MissionPage, LogPage } from './pages/Missions.jsx';
@@ -25,7 +25,7 @@ function RoutePage({ route, idText, recordText }) {
   switch (route) {
     case 'editor':
       return Editor ? (
-        <Suspense fallback={<p>Carregando editor local…</p>}>
+        <Suspense fallback={<p>Carregando editor…</p>}>
           <Editor />
         </Suspense>
       ) : (
@@ -77,7 +77,7 @@ function RoutePage({ route, idText, recordText }) {
 
 export default function App() {
   const [preview] = useState(() => {
-    if (import.meta.env.MODE !== 'editor') return { models: savedModels };
+    if (!new URLSearchParams(window.location.search).has('draft')) return { models: savedModels };
     try {
       const archive = readDraftPreview(window.location.search, window.localStorage);
       return { models: archive ? modelsForArchive(archive) : savedModels, draft: Boolean(archive) };
@@ -143,7 +143,9 @@ export default function App() {
             <span>REGISTROS DISPONÍVEIS · LEITURA</span>
           </div>
           <nav aria-label="Navegação principal">
-            {Editor ? <RouteLink to="editor">EDITOR LOCAL</RouteLink> : null}
+            <RouteLink to="editor">
+              {import.meta.env.MODE === 'editor' ? 'EDITOR LOCAL' : 'EDITOR'}
+            </RouteLink>
             {route && route !== 'editor'
               ? navigation.map((item) => (
                   <RouteLink
