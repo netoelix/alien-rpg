@@ -2521,8 +2521,8 @@
       "unit": "",
       "division": "Weyland Yutani",
       "period": "2142",
-      "summary": "A definir",
-      "description": "",
+      "summary": "Em uma colônia esquecida pela Weyland-Yutani, uma nova geração luta para construir seu futuro entre a exploração corporativa, a escassez e a decadência.",
+      "description": "No distante sistema NN39456, uma antiga colônia de mineração sobrevive à sombra de sua própria decadência. Abandonados à própria sorte por uma companhia que já não enxerga valor em suas vidas, jovens colonos precisam encontrar seu lugar em uma sociedade marcada pela escassez, pelo crime e pela exploração. Aqui, sobreviver é apenas o começo.",
       "players": [
         {
           "id": "909729d9-d1cf-40a0-b5d4-834d99abf3c8",
@@ -2560,7 +2560,9 @@
             "name": "NN39456",
             "x": 3.1,
             "y": -15.8,
-            "installations": []
+            "installations": [
+              "PROSPECT - Instalação Colonial de Mineração e Manufatura"
+            ]
           }
         ],
         "territories": [],
