@@ -1,3 +1,5 @@
+import { editorRequest, onlineEditor } from './editor-request.js';
+import { PublicationPanel } from './PublicationPanel.jsx';
 import { JournalEditor } from './JournalEditor.jsx';
 import { TrashPanel } from './TrashPanel.jsx';
 import { moveToTrash, restoreFromTrash } from '../../data/trash.js';
@@ -468,6 +470,7 @@ function RecordForm({ section, record, campaign, archive, assets, onApply, stora
 export default function Editor() {
   const [archive, setArchive] = useState(null);
   const [revision, setRevision] = useState('');
+  const [contentSha, setContentSha] = useState(null);
   const [draftRevision, setDraftRevision] = useState('');
   const [assets, setAssets] = useState([]);
   const [campaignId, setCampaignId] = useState('');
@@ -480,7 +483,7 @@ export default function Editor() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/__local-editor/archive', { signal: controller.signal })
+    editorRequest('archive', { signal: controller.signal })
       .then(async (response) => {
         const result = await response.json();
         if (!response.ok) throw new Error(result.error);
@@ -506,6 +509,7 @@ export default function Editor() {
         if (cached) setMessage('Rascunho desta sessão recuperado. Confira antes de salvar.');
         setRevision(result.revision);
         setAssets(result.assets);
+        setContentSha(result.contentSha);
         setCampaignId(result.archive.campaigns[0].id);
       })
       .catch((error) => {
@@ -724,7 +728,7 @@ export default function Editor() {
   async function save() {
     setBusy(true);
     try {
-      const response = await fetch('/__local-editor/archive', {
+      const response = await editorRequest('archive', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ archive, revision }),
@@ -740,7 +744,9 @@ export default function Editor() {
       setRevision(result.revision);
       setDirty(false);
       setMessage(
-        `Arquivos salvos. Backup anterior: ${result.backup}. A publicação ainda não foi alterada.`,
+        onlineEditor
+          ? 'Rascunho salvo com histórico. O site público ainda não foi alterado.'
+          : `Arquivos salvos. Backup anterior: ${result.backup}. A publicação ainda não foi alterada.`,
       );
     } catch (error) {
       setMessage(error.message);
@@ -770,11 +776,12 @@ export default function Editor() {
 
   return (
     <>
-      <Eyebrow>Administração / somente nesta máquina</Eyebrow>
+      <Eyebrow>
+        {onlineEditor ? 'Administração / acesso restrito' : 'Administração / somente nesta máquina'}
+      </Eyebrow>
       <h1>Editor de campanhas</h1>
       <p className="lead">
-        Edite o rascunho, confira e salve os arquivos locais. O site público só muda depois da
-        publicação.
+        Edite o rascunho, confira e salve. O site público só muda depois da publicação.
       </p>
       <p className="editor-status" role="status">
         {message ||
@@ -784,7 +791,7 @@ export default function Editor() {
         <>
           <div className="actions">
             <button disabled={busy || !dirty} onClick={save}>
-              SALVAR ARQUIVOS COM BACKUP
+              {onlineEditor ? 'SALVAR RASCUNHO ONLINE' : 'SALVAR ARQUIVOS COM BACKUP'}
             </button>
             <button onClick={() => downloadArchive(archive)}>EXPORTAR BACKUP</button>
             <label className="button">
@@ -794,7 +801,7 @@ export default function Editor() {
             <a
               className="button"
               href="#"
-              target="_blank"
+              target={onlineEditor ? '_self' : '_blank'}
               rel="noreferrer"
               onClick={(event) => {
                 try {
@@ -820,9 +827,12 @@ export default function Editor() {
           <p className="muted small-text">
             {dirty
               ? 'Há alterações ainda não gravadas. Exporte o rascunho antes de sair.'
-              : 'Os arquivos locais estão salvos.'}{' '}
+              : 'O rascunho está salvo.'}{' '}
             Alterações no formulário precisam ser aplicadas ao rascunho.
           </p>
+          {onlineEditor && (
+            <PublicationPanel revision={revision} contentSha={contentSha} dirty={dirty} />
+          )}
           <div className="toolbar campaign-picker">
             <label>
               Campanha

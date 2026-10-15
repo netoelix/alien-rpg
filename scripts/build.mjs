@@ -20,14 +20,14 @@ await build({
         for (const file of Object.values(bundle)) {
           if (file.type !== 'chunk') continue;
           const editorModule = Object.keys(file.modules).find((id) =>
-            id.replaceAll('\\', '/').includes('/src/editor/'),
+            id.replaceAll('\\', '/').match(/\/(server|api)\//),
           );
           if (editorModule)
-            this.error('O build público incluiu um módulo do editor: ' + editorModule);
+            this.error('O build público incluiu um módulo do servidor: ' + editorModule);
         }
       },
     },
   ],
   build: { outDir: output },
 });
-console.log('Build concluído: dist/ (site estático, sem servidor de produção).');
+console.log('Build concluído: dist/ (site público estático; editor usa API autenticada).');

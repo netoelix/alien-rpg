@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+const AdminGate = lazy(() => import('./editor/AdminGate.jsx'));
 import { createRoot } from 'react-dom/client';
 import App from './App.jsx';
 import '../style.css';
@@ -28,10 +29,37 @@ class ApplicationBoundary extends React.Component {
   }
 }
 
+function Entry() {
+  const [location, setLocation] = useState(window.location.href);
+  useEffect(() => {
+    const change = () => setLocation(window.location.href);
+    window.addEventListener('hashchange', change);
+    return () => window.removeEventListener('hashchange', change);
+  }, []);
+  const url = new URL(location);
+  const segments = url.hash.replace(/^#\/?/, '').split('/');
+  const route = segments[0] === 'c' ? segments[2] : segments[0];
+  const restricted =
+    import.meta.env.MODE !== 'editor' &&
+    (route === 'editor' ||
+      url.searchParams.has('draft') ||
+      url.searchParams.has('admin') ||
+      url.searchParams.has('code'));
+  return restricted ? (
+    <Suspense fallback={<p>Conferindo acesso…</p>}>
+      <AdminGate>
+        <App />
+      </AdminGate>
+    </Suspense>
+  ) : (
+    <App />
+  );
+}
+
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ApplicationBoundary>
-      <App />
+      <Entry />
     </ApplicationBoundary>
   </React.StrictMode>,
 );

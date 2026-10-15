@@ -12,15 +12,17 @@
     "preview": "vite preview",
     "test": "node --test",
     "verify": "node scripts/verify.mjs",
-    "check": "prettier --check src data/*.js style.css vite.config.js scripts tests",
-    "format": "prettier --write src data/*.js style.css vite.config.js scripts tests",
+    "check": "prettier --check src data/*.js style.css vite.config.js scripts tests api server",
+    "format": "prettier --write src data/*.js style.css vite.config.js scripts tests api server",
     "editor": "vite --mode editor"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
     "prettier": "^3.9.10",
     "vite": "^8.3.4"
   }

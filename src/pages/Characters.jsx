@@ -1,4 +1,6 @@
 import { characterAchievements } from '../../data/character-records.js';
+import { ArchiveImage } from '../components/ArchiveImage.jsx';
+import { JournalSubmission } from '../components/JournalSubmission.jsx';
 import { useState } from 'react';
 import { useCampaign } from '../context/CampaignContext.jsx';
 import {
@@ -57,6 +59,7 @@ function Diary({ character }) {
     <div className="diary-area">
       <Eyebrow>Terminal pessoal / Diário</Eyebrow>
       <h2>Diário de {character.characterName}</h2>
+      <JournalSubmission />
       {!character.journal?.length && (
         <p className="muted">Nenhuma página registrada no arquivo da campanha.</p>
       )}
@@ -97,7 +100,7 @@ export function CharacterPage({ id }) {
       <Breadcrumbs>{character.characterName}</Breadcrumbs>
       <div className="split character-layout">
         <aside className="sidepanel character-sidebar">
-          <img className="portrait" src={character.images} alt={character.characterName} />
+          <ArchiveImage className="portrait" src={character.images} alt={character.characterName} />
           <Eyebrow>
             Dossiê{' '}
             {String(characters.findIndex((character) => character.id === id) + 1).padStart(3, '0')}

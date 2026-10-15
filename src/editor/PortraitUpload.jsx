@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { editorRequest, onlineEditor } from './editor-request.js';
 
 export function PortraitUpload({ onUpload }) {
   const [busy, setBusy] = useState(false);
@@ -24,10 +25,18 @@ export function PortraitUpload({ onUpload }) {
       const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!blob || blob.size > 2 * 1024 * 1024)
         throw new Error('Imagem muito detalhada. Escolha uma imagem menor.');
-      const response = await fetch('/__local-editor/portrait', {
+      const content = onlineEditor
+        ? await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result).split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          })
+        : null;
+      const response = await editorRequest('portrait', {
         method: 'POST',
-        headers: { 'Content-Type': 'image/png' },
-        body: blob,
+        headers: { 'Content-Type': onlineEditor ? 'application/json' : 'image/png' },
+        body: onlineEditor ? JSON.stringify({ content }) : blob,
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error);

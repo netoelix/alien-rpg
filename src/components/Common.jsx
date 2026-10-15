@@ -1,3 +1,4 @@
+import { ArchiveImage } from './ArchiveImage.jsx';
 import { useCampaign } from '../context/CampaignContext.jsx';
 import { parseNarrative } from '../lib/narrative.js';
 import { characterStates } from '../../data/editor-rules.js';
@@ -105,7 +106,11 @@ export function CharacterCards({ characters }) {
   return characters.map((character) => (
     <RouteLink key={character.id} to={`character/${character.id}`} className="card">
       <div className="person-card">
-        <img src={character.images} alt={`Retrato de ${character.characterName}`} loading="lazy" />
+        <ArchiveImage
+          src={character.images}
+          alt={`Retrato de ${character.characterName}`}
+          loading="lazy"
+        />
         <div>
           {character.codname?.trim() ? <Eyebrow>{character.codname}</Eyebrow> : null}
           <h3>{character.characterName}</h3>
