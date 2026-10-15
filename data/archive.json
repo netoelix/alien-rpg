@@ -1,5 +1,933 @@
 {
-  "version": 1,
+  "version": 2,
+  "playerProfiles": [
+    {
+      "id": "0",
+      "name": "André",
+      "biography": ""
+    },
+    {
+      "id": "1",
+      "name": "Fernando (Gelatto)",
+      "biography": ""
+    },
+    {
+      "id": "2",
+      "name": "Bruno",
+      "biography": ""
+    },
+    {
+      "id": "3",
+      "name": "Raissa",
+      "biography": ""
+    }
+  ],
+  "achievements": [
+    {
+      "id": "stress_01",
+      "name": "Só mais um dia de trabalho...",
+      "description": "Atingir 1 pontos de stress",
+      "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Stress",
+      "rank": "Bronze"
+    },
+    {
+      "id": "stress_02",
+      "name": "Não estão me pagando o suficiente pra isso",
+      "description": "Atingir 5 pontos de stress",
+      "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Stress",
+      "rank": "Silver"
+    },
+    {
+      "id": "stress_03",
+      "name": "Preciso de férias!!!",
+      "description": "Atingir 8 pontos de stress",
+      "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Stress",
+      "rank": "Gold"
+    },
+    {
+      "id": "stress_04",
+      "name": "INFERNOOOOO!!!!!",
+      "description": "Atingir 10+ pontos de stress",
+      "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Stress",
+      "rank": "Platinum"
+    },
+    {
+      "id": "stress_05",
+      "name": "Nervos de aço",
+      "description": "Rolar 3 vezes seguidas um valor de stress entre 1 e 6",
+      "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Stress",
+      "rank": "Platinum"
+    },
+    {
+      "id": "stress_06",
+      "name": "Você me da tique, tique nervoso",
+      "description": "Rolar 7 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Bronze"
+    },
+    {
+      "id": "stress_07",
+      "name": "Parkinson?",
+      "description": "Rolar 8 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Double Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Bronze"
+    },
+    {
+      "id": "stress_08",
+      "name": "Mão de alface",
+      "description": "Rolar 9 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Bronze"
+    },
+    {
+      "id": "stress_09",
+      "name": "Batatinha frita 1, 2, 3",
+      "description": "Rolar 10 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Silver"
+    },
+    {
+      "id": "stress_10",
+      "name": "Não é esse tipo de cobertura, Tábata!",
+      "description": "Rolar 11 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Double Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Silver"
+    },
+    {
+      "id": "stress_11",
+      "name": "AAAAAAAHHHHH!!!",
+      "description": "Rolar 12 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Silver"
+    },
+    {
+      "id": "stress_12",
+      "name": "Run bitch, RUN!!",
+      "description": "Rolar 13 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Gold"
+    },
+    {
+      "id": "stress_13",
+      "name": "Vem tranquilo",
+      "description": "Rolar 14 no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Double Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Gold"
+    },
+    {
+      "id": "stress_14",
+      "name": "Qual o sentido da vida?",
+      "description": "Rolar 15+ no teste de pânico",
+      "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Stress",
+      "rank": "Gold"
+    },
+    {
+      "id": "stress_15",
+      "name": "Ala psiquiátrica",
+      "description": "Adquirir algum Trauma mental permanente",
+      "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Stress",
+      "rank": "Platinum"
+    },
+    {
+      "id": "stress_16",
+      "name": "Nervos de água",
+      "description": "Rolar 2 vezes seguidas um valor de stress entre 1 e 6 e falhar na terceira",
+      "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Stress",
+      "rank": "Platinum"
+    },
+    {
+      "id": "stress_17",
+      "name": "Fora de controle",
+      "description": "Rolar o mesmo resultado de um pânico ativo e ter que subir para o próximo nível.",
+      "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Stress",
+      "rank": "Platinum"
+    },
+    {
+      "id": "stress_18",
+      "name": "for (let stress = 6; stress < 15; stress++)",
+      "description": "Aquirir em uma sessão 2+ pontos de stress decorrente de várias rolagens de pânico.",
+      "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Stress",
+      "rank": "Platinum"
+    },
+    {
+      "id": "eliminations_01",
+      "name": "O primeiro a gente nunca esquece...",
+      "description": "Elimine 1 humano",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Double Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "eliminations_02",
+      "name": "Assassino de aluguel",
+      "description": "Elimine 10 humanos",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Double Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_03",
+      "name": "Serial killer",
+      "description": "Elimine 100 humanos",
+      "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Double Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Gold"
+    },
+    {
+      "id": "eliminations_04",
+      "name": "Genocida",
+      "description": "Elimine 1000 humanos",
+      "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Double Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Platinum"
+    },
+    {
+      "id": "eliminations_05",
+      "name": "3 coelhos com uma cajadada só",
+      "description": "Elimine 3 em um único ataque",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "eliminations_06",
+      "name": "Pentakill!",
+      "description": "Elimine 5 em um único ataque",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_07",
+      "name": "Strike!",
+      "description": "Elimine 10 em um único ataque",
+      "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Gold"
+    },
+    {
+      "id": "eliminations_08",
+      "name": "Tudo friamente calculado",
+      "description": "Elimine 20 em um único ataque",
+      "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Platinum"
+    },
+    {
+      "id": "eliminations_09",
+      "name": "Viúva negra",
+      "description": "Elimine alguém durante um momento intimo",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_xenomorph_01",
+      "name": "Tem certeza que ele morreu?",
+      "description": "Elimine 1 Xenomorfo",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "eliminations_xenomorph_02",
+      "name": "Acho que to pegando o jeito",
+      "description": "Elimine 5 Xenomorfos",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_xenomorph_03",
+      "name": "Agente da Carrocinha",
+      "description": "Elimine 10 Xenomorfos",
+      "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Gold"
+    },
+    {
+      "id": "eliminations_xenomorph_04",
+      "name": "Predador",
+      "description": "Elimine 50 Xenomorfos",
+      "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Platinum"
+    },
+    {
+      "id": "eliminations_neomorph_01",
+      "name": "Bronze",
+      "description": "Elimine 1 Neomorfo",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Double Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "eliminations_neomorph_02",
+      "name": "Prata",
+      "description": "Elimine 5 Neomorfos",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Double Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_neomorph_03",
+      "name": "Ouro",
+      "description": "Elimine 10 Neomorfos",
+      "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Double Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Gold"
+    },
+    {
+      "id": "eliminations_neomorph_04",
+      "name": "Diamante",
+      "description": "Elimine 20 Neomorfos",
+      "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Double Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Platinum"
+    },
+    {
+      "id": "eliminations_local_fauna_01",
+      "name": "Greenhorn",
+      "description": "Elimine 1 animal",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "eliminations_local_fauna_02",
+      "name": "Decorando a parede",
+      "description": "Elimine 10 animais",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_local_fauna_03",
+      "name": "Caçador profissional",
+      "description": "Elimine 100 animais",
+      "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Combat",
+      "rank": "Gold"
+    },
+    {
+      "id": "eliminations_local_fauna_04",
+      "name": "Terror do ibama",
+      "description": "Elimine 1000 animais",
+      "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Combat",
+      "rank": "Platinum"
+    },
+    {
+      "id": "eliminations_mechanical_01",
+      "name": "Catador de latinhas",
+      "description": "Elimine 1 sintético",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "eliminations_mechanical_02",
+      "name": "Detetive Del Spooner",
+      "description": "Elimine 5 sintéticos",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_mechanical_03",
+      "name": "T-800",
+      "description": "Elimine 10 sintéticos",
+      "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Gold"
+    },
+    {
+      "id": "eliminations_mechanical_04",
+      "name": "John Connor",
+      "description": "Elimine 50 sintéticos",
+      "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Platinum"
+    },
+    {
+      "id": "eliminations_innocents_01",
+      "name": "Foi um acidente!",
+      "description": "Elimine 1 inocente",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "eliminations_innocents_02",
+      "name": "Eles ficam entrando na linha de tiro",
+      "description": "Elimine 10 inocentes",
+      "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Silver"
+    },
+    {
+      "id": "eliminations_innocents_03",
+      "name": "Como é que eu vou explicar isso?",
+      "description": "Elimine 100 inocentes",
+      "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Gold"
+    },
+    {
+      "id": "eliminations_innocents_04",
+      "name": "Num estalar de dedos",
+      "description": "Elimine 1000 inocentes",
+      "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Combat",
+      "rank": "Platinum"
+    },
+    {
+      "id": "exploration_01",
+      "name": "Proxima Centauri",
+      "description": "Viajar 1 parsec",
+      "medal": "assets/Type=Exploration, Rank=Bronze, Stripe Count=Single Striped, Color=Green.svg",
+      "category": "Exploration",
+      "rank": "Bronze"
+    },
+    {
+      "id": "exploration_02",
+      "name": "Maia",
+      "description": "Viajar 10 parsecs",
+      "medal": "assets/Type=Exploration, Rank=Silver, Stripe Count=Single Striped, Color=Green.svg",
+      "category": "Exploration",
+      "rank": "Silver"
+    },
+    {
+      "id": "exploration_03",
+      "name": "Colonia",
+      "description": "Viajar 100 parsecs",
+      "medal": "assets/Type=Exploration, Rank=Gold, Stripe Count=Single Striped, Color=Green.svg",
+      "category": "Exploration",
+      "rank": "Gold"
+    },
+    {
+      "id": "exploration_04",
+      "name": "Beagle point",
+      "description": "Viajar 1000 parsecs",
+      "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Single Striped, Color=Green.svg",
+      "category": "Exploration",
+      "rank": "Platinum"
+    },
+    {
+      "id": "exploration_star_systems_01",
+      "name": "Explorador",
+      "description": "Viajar 1 sistema estelar",
+      "medal": "assets/Type=Exploration, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Exploration",
+      "rank": "Bronze"
+    },
+    {
+      "id": "exploration_star_systems_02",
+      "name": "Cartógrafo",
+      "description": "Viajar 10 sistemas estelares",
+      "medal": "assets/Type=Exploration, Rank=Silver, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Exploration",
+      "rank": "Silver"
+    },
+    {
+      "id": "exploration_star_systems_03",
+      "name": "Desbravador",
+      "description": "Viajar 50 sistemas estelares",
+      "medal": "assets/Type=Exploration, Rank=Gold, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Exploration",
+      "rank": "Gold"
+    },
+    {
+      "id": "exploration_star_systems_04",
+      "name": "Pioneiro",
+      "description": "Viajar 150 sistemas estelares",
+      "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Exploration",
+      "rank": "Platinum"
+    },
+    {
+      "id": "exploration_star_systems_05",
+      "name": "Complecionista",
+      "description": "Visitar um de cada tipo de sistema estelar",
+      "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
+      "category": "Exploration",
+      "rank": "Platinum"
+    },
+    {
+      "id": "exploration_planets_01",
+      "name": "Um pequeno passo para o homem...",
+      "description": "Pousar em 1 planeta",
+      "medal": "assets/Type=Exploration, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Exploration",
+      "rank": "Bronze"
+    },
+    {
+      "id": "exploration_planets_02",
+      "name": "Deixando o rastro",
+      "description": "Pousar em 5 planetas",
+      "medal": "assets/Type=Exploration, Rank=Silver, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Exploration",
+      "rank": "Silver"
+    },
+    {
+      "id": "exploration_planets_03",
+      "name": "Plutão não conta",
+      "description": "Pousar em 10 planetas",
+      "medal": "assets/Type=Exploration, Rank=Gold, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Exploration",
+      "rank": "Gold"
+    },
+    {
+      "id": "exploration_planets_04",
+      "name": "Em busca do planeta perfeito",
+      "description": "Pousar em 50 planetas",
+      "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Exploration",
+      "rank": "Platinum"
+    },
+    {
+      "id": "exploration_planets_05",
+      "name": "Até em gigantes gasosos?",
+      "description": "Pousar em um de cada tipo de planeta",
+      "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Exploration",
+      "rank": "Platinum"
+    },
+    {
+      "id": "special_exploration_01",
+      "name": "De frente com o criador",
+      "description": "Encontrar com os Engenheiros",
+      "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Gold"
+    },
+    {
+      "id": "special_exploration_02",
+      "name": "Cinefilo",
+      "description": "Visitar todos os planetas dos filmes",
+      "medal": "assets/Type=Unique, Rank=Silver, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Silver"
+    },
+    {
+      "id": "special_eliminations_01",
+      "name": "Xeque-mate?",
+      "description": "Elimine uma Rainha Alien",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "special_eliminations_02",
+      "name": "Kratos?",
+      "description": "Eliminar um Engenheiro",
+      "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Double Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Gold"
+    },
+    {
+      "id": "special_eliminations_03",
+      "name": "Preenchendo o albúm de figurinhas",
+      "description": "Eliminar um de cada tipo de Xenomorfo",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Double Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "special_eliminations_04",
+      "name": "",
+      "description": "Eliminar um de cada tipo de Neomorfo",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "xenomorph_attacks_01",
+      "name": "Beijo Apaixonado",
+      "description": "Receber um ataque 'Bocada na cabeça'",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "xenomorph_attacks_02",
+      "name": "Conexão de Almas",
+      "description": "Receber um ataque 'Olhar hipnotizante'",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "xenomorph_attacks_03",
+      "name": "Preliminares",
+      "description": "Receber um ataque 'Brincando com a presa'",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "xenomorph_attacks_04",
+      "name": "Dom vs Sub",
+      "description": "Receber um ataque 'Agarrão mortal'",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "xenomorph_attacks_05",
+      "name": "Não é so o tamnho da varinha, mas a habilidade do bruxo",
+      "description": "Receber um ataque 'Ferrão da Cauda'",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "xenomorph_attacks_06",
+      "name": "Ninho de amor",
+      "description": "Receber um ataque 'Capturar para a colmeia'",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "xenomorph_attacks_07",
+      "name": "Não se meche, vou buscar o papel",
+      "description": "Receber um ataque 'Sangue ácido'",
+      "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Combat",
+      "rank": "Bronze"
+    },
+    {
+      "id": "sintetic_01",
+      "name": "Pane no sistema alguém me desconfigurou",
+      "description": "Morra como um sintético",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "sintetic_02",
+      "name": "Caindo aos pedaços",
+      "description": "Perder uma parte do corpo jogando como sintético",
+      "medal": "assets/Type=Survival, Rank=Silver, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Survival",
+      "rank": "Silver"
+    },
+    {
+      "id": "other_dangerous_01",
+      "name": "Último suspiro",
+      "description": "Morrer sufocado",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_02",
+      "name": "Glub Glub Glub",
+      "description": "Morrer afogado",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_03",
+      "name": "Alta exposição",
+      "description": "Morrer por radiação",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_04",
+      "name": "Só uma gripezinha",
+      "description": "Morrer por doença",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_05",
+      "name": "Veneno de cobra",
+      "description": "Morrer por envenenamento",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_06",
+      "name": "Ta pegando fogo bixo!",
+      "description": "Morrer por queimadura",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_07",
+      "name": "Você está por toda parte... literalmente",
+      "description": "Morrer em explosão",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_08",
+      "name": "Há 7 palmos",
+      "description": "Morrer por dano de queda",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_09",
+      "name": "No espaço, ninguém pode te ouvir gritar",
+      "description": "Morrer no vácuo do espaço",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_10",
+      "name": "Tinha espaço na porta",
+      "description": "Morrer pelo status \"congelando\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_11",
+      "name": "Descanso eterno",
+      "description": "Morrer como consequência do status \"exausto\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_12",
+      "name": "Carne seca",
+      "description": "Morrer pelo status \"desidratado\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_13",
+      "name": "Jejum Inter...minavel",
+      "description": "Morrer pelo status \"faminto\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_14",
+      "name": "Leva um casaco!",
+      "description": "Adquirir pelo menos uma vez o status \"congelando\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_15",
+      "name": "Mas ainda é segunda-feira, capitão",
+      "description": "Adquirir pelo menos uma vez o status \"exausto\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_16",
+      "name": "água a 1,5km",
+      "description": "Adquirir pelo menos uma vez o status \"desidratado\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_dangerous_17",
+      "name": "Tábata Pelegrini",
+      "description": "Adquirir pelo menos uma vez o status \"faminto\"",
+      "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
+      "category": "Survival",
+      "rank": "Bronze"
+    },
+    {
+      "id": "other_group_01",
+      "name": "Escapou por um Fio",
+      "description": "Sobreviva a um confronto com um xenomorfo com apenas 1 ponto de vida restante.",
+      "medal": "assets/Type=Survival, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Survival",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_02",
+      "name": "Limpeza Profunda",
+      "description": "Elimine uma colônia inteira de xenomorfos sem sofrer nenhuma baixa.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_03",
+      "name": "Escapadinha Espacial",
+      "description": "Escape de uma nave prestes a explodir.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_04",
+      "name": "Com as vacinas em dia",
+      "description": "Sobreviva a um abraço carinhoso de um Facehugger sem ser infectado.",
+      "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Triple Striped, Color=Yellow.svg",
+      "category": "Unique",
+      "rank": "Gold"
+    },
+    {
+      "id": "other_group_05",
+      "name": "Maré de Azar",
+      "description": "Tenha três lesões críticas consecutivas contra você e sobreviva.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Single Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_06",
+      "name": "Gourmet Intergaláctico",
+      "description": "Experimente carne de Alien e não vomite.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_07",
+      "name": "Espírito de Equipe",
+      "description": "Salve um companheiro de equipe de um ataque alienígena em um momento crítico.",
+      "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Single Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Gold"
+    },
+    {
+      "id": "other_group_08",
+      "name": "Humanidade em Primeiro Lugar",
+      "description": "Priorize salvar civis inocentes em uma missão, mesmo que isso signifique colocar sua própria vida em risco.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_09",
+      "name": "Negociação Diplomática",
+      "description": "Resolva um conflito com uma facção através de negociações pacíficas, evitando um confronto armado.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_10",
+      "name": "É o ciano!!!",
+      "description": "Descubra uma traição entre os próprios fuzileiros, revelando um espião infiltrado ou um conspirador.",
+      "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Unique",
+      "rank": "Gold"
+    },
+    {
+      "id": "other_group_11",
+      "name": "Coração de Ferro",
+      "description": "Execute uma ordem difícil, mas necessária, que vá contra seus princípios morais em prol da sobrevivência da equipe.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_12",
+      "name": "Eu confio no meu taco",
+      "description": "Desative uma armadilha usando apenas habilidades humanas, sem depender de tecnologia avançada.",
+      "medal": "assets/Type=Unique, Rank=Silver, Stripe Count=Double Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Silver"
+    },
+    {
+      "id": "other_group_13",
+      "name": "Bobo da Corte",
+      "description": "Mantenha a sanidade mental após enfrentar horrores cósmicos e sobreviver a um encontro direto com a Rainha Alien.",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_14",
+      "name": "Deixando as diferenças de lado",
+      "description": "Una-se a outras facções para enfrentar uma ameaça maior em uma batalha épica.",
+      "medal": "assets/Type=Unique, Rank=Silver, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Silver"
+    },
+    {
+      "id": "other_group_15",
+      "name": "Dessa vez não!!!!",
+      "description": "Matar um cientista",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_16",
+      "name": "New Chernobyl",
+      "description": "Seja responsável parcial ou integralmente por uma catástrofe nuclear",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_17",
+      "name": "Traga um oscar para esse jogador",
+      "description": "Protagonize uma cena cinematográfica na campanha",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_18",
+      "name": "Traga dois oscar para caso ele perca o primeiro",
+      "description": "Tente protagonizar uma cena cinematográfica na campanha e falhe miseravelmente",
+      "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Platinum"
+    },
+    {
+      "id": "other_group_19",
+      "name": "Entrar e sair, sem casualidades",
+      "description": "Finalize uma missão complexa sem nenhuma baixa oficial",
+      "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Triple Striped, Color=Green.svg",
+      "category": "Unique",
+      "rank": "Gold"
+    },
+    {
+      "id": "other_group_19-legacy-2",
+      "name": "Descanse em paz",
+      "description": "Perca um personagem",
+      "medal": "assets/Type=Unique, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
+      "category": "Unique",
+      "rank": "Bronze"
+    }
+  ],
   "campaigns": [
     {
       "id": "fragmentos-da-guerra",
@@ -14,126 +942,127 @@
       "description": "Presos entre a Weyland-Yutani e a UPP, os sobreviventes de Acheron Prime encontram um novo caminho nas forças especiais das Américas Unidas. Este é o arquivo do esquadrão Wild Weasel.",
       "players": [
         {
+          "id": "0",
           "playerId": "André",
+          "profileId": "0",
+          "mascot": false,
           "characters": [
             {
-              "characterName": "Trisha Monroe - K.I.A.",
-              "profession": "Comtech Marine",
-              "codname": "Grey Weasel",
-              "images": "assets/TrishaMonroe.png",
-              "about": "Nascida no planeta Aerodyne, no sistema GL783B, filha de um chefe de linha de produção e uma engenheira militar, já era de se esperar que Trisha tivesse uma aptidão nata e uma curiosidade insaciável por tecnologia. Seu pai sempre trazia alguma bugiganga que sobrava da fábrica onde ele trabalhava, alguma peça que ele achava que iria atiçar a curiosidade da pequena pra que ela aprendesse a se virar na prática, enquanto sua mãe se mantinha rigorosa com a sua educação formal porque queria que sua filha tivesse um futuro que não dependesse das companhias gananciosas que dominavam o planeta. Pra tristeza de sua mãe, não demorou pra que Trisha fosse seduzida pelas propostas tentadoras que as empresas locais ofereciam. Ela saltou de emprego em emprego, procurando algo que satisfizesse a sua curiosidade, até entrar pra uma empresa de tecnologia militar que fornecia peças pra todo tipo de cliente, TODO TIPO de cliente. Ali ela desenvolveu uma nova fixação: ela cansou de só trabalhar nas armas e equipamentos militares, ela queria vê-los em ação, talvez até operar alguns deles. Através dos contatos da empresa que ela trabalhava, ela foi contratada por um grupo de mercenários independente, onde ela atuava fazendo a manutenção e os ajustes do armamento em campo, além de receber treinamento de combate, infiltração e sobrevivência básico para eventuais emergências. Quando o grupo foi desfeito por \"falta de pessoal\", ela se alistou para uma companhia independente que gerenciava uma instalação no planeta Acheron Prime, onde conheceu Harper, Sean, Song, Christopher e Carla. Depois e sobreviver à aniquilação do planeta onde estavam instalados, Trisha e os outros se se viram no meio de alguns eventos obscuros envolvendo a Wayland-Yutani e as super potencias galácticas, onde ela teve acesso a documentos sigilosos que expunham os envolvidos. De posse desses documentos, e com medo do que poderia acontecer àqueles que soubessem demais, Trisha instigou os demais a se juntarem a ela nos ranques da AU, como uma forma de se proteger de eventuais ameaças. Durante o ano que se seguiu, agora sob a bandeira da AU como parte do esquadrão de operações especiais \"Wild Weasel\", Trisha passou por processos de treinamento e foi enviada em diversas missões, onde ela aperfeiçoou suas habilidades de combate de longa distância, hacking, infiltração e vigilância. Entre uma missão e outra, Trisha tirou um tempo para visitar seu planeta natal e deixar uma mensagem para seus pais, os quais ela não via desde que foi recrutada como mercenária. Enquanto seus pais trabalhavam, ela entrou na casa e deixou seu \"tamagoshi\", presente que seu pai havia lhe dado, na mesa da cozinha, junto com a mensagem escrita num pedaço de papel qualquer: \"Desculpa não ter atendido às expectativas de vocês, mas não se preocupem, eu sou uma soldado de verdade agora. Amo vocês\". Numa das missões mais difíceis que Trisha participou, ela cruzou caminhos com um sintético contrabandista conhecido como \"O Despachante\", que tinha uma vasta rede de contatos pela galáxia, e em troca da sua liberdade, ele propôs ajudar Trisha em caso de emergência. Trisha pediu então que ele guardasse um certo disco em segredo (que continha as cópias dos documentos encontrados na base da Wayland), ameaçando caçar ele até os confins da galáxia se ele a traísse.",
               "id": "0",
+              "characterName": "Trisha Monroe - K.I.A.",
+              "codname": "Grey Weasel",
+              "profession": "Comtech Marine",
+              "about": "Nascida no planeta Aerodyne, no sistema GL783B, filha de um chefe de linha de produção e uma engenheira militar, já era de se esperar que Trisha tivesse uma aptidão nata e uma curiosidade insaciável por tecnologia. Seu pai sempre trazia alguma bugiganga que sobrava da fábrica onde ele trabalhava, alguma peça que ele achava que iria atiçar a curiosidade da pequena pra que ela aprendesse a se virar na prática, enquanto sua mãe se mantinha rigorosa com a sua educação formal porque queria que sua filha tivesse um futuro que não dependesse das companhias gananciosas que dominavam o planeta. Pra tristeza de sua mãe, não demorou pra que Trisha fosse seduzida pelas propostas tentadoras que as empresas locais ofereciam. Ela saltou de emprego em emprego, procurando algo que satisfizesse a sua curiosidade, até entrar pra uma empresa de tecnologia militar que fornecia peças pra todo tipo de cliente, TODO TIPO de cliente. Ali ela desenvolveu uma nova fixação: ela cansou de só trabalhar nas armas e equipamentos militares, ela queria vê-los em ação, talvez até operar alguns deles. Através dos contatos da empresa que ela trabalhava, ela foi contratada por um grupo de mercenários independente, onde ela atuava fazendo a manutenção e os ajustes do armamento em campo, além de receber treinamento de combate, infiltração e sobrevivência básico para eventuais emergências. Quando o grupo foi desfeito por \"falta de pessoal\", ela se alistou para uma companhia independente que gerenciava uma instalação no planeta Acheron Prime, onde conheceu Harper, Sean, Song, Christopher e Carla. Depois e sobreviver à aniquilação do planeta onde estavam instalados, Trisha e os outros se se viram no meio de alguns eventos obscuros envolvendo a Wayland-Yutani e as super potencias galácticas, onde ela teve acesso a documentos sigilosos que expunham os envolvidos. De posse desses documentos, e com medo do que poderia acontecer àqueles que soubessem demais, Trisha instigou os demais a se juntarem a ela nos ranques da AU, como uma forma de se proteger de eventuais ameaças. Durante o ano que se seguiu, agora sob a bandeira da AU como parte do esquadrão de operações especiais \"Wild Weasel\", Trisha passou por processos de treinamento e foi enviada em diversas missões, onde ela aperfeiçoou suas habilidades de combate de longa distância, hacking, infiltração e vigilância. Entre uma missão e outra, Trisha tirou um tempo para visitar seu planeta natal e deixar uma mensagem para seus pais, os quais ela não via desde que foi recrutada como mercenária. Enquanto seus pais trabalhavam, ela entrou na casa e deixou seu \"tamagoshi\", presente que seu pai havia lhe dado, na mesa da cozinha, junto com a mensagem escrita num pedaço de papel qualquer: \"Desculpa não ter atendido às expectativas de vocês, mas não se preocupem, eu sou uma soldado de verdade agora. Amo vocês\". Numa das missões mais difíceis que Trisha participou, ela cruzou caminhos com um sintético contrabandista conhecido como \"O Despachante\", que tinha uma vasta rede de contatos pela galáxia, e em troca da sua liberdade, ele propôs ajudar Trisha em caso de emergência. Trisha pediu então que ele guardasse um certo disco em segredo (que continha as cópias dos documentos encontrados na base da Wayland), ameaçando caçar ele até os confins da galáxia se ele a traísse.",
+              "images": "assets/TrishaMonroe.png",
               "aliases": [
                 "Trisha",
                 "Trisha M."
               ]
             },
             {
-              "characterName": "Takeo \"Kaiju\" Ichinoda",
-              "profession": "Operario - Breacher",
-              "codname": "Green Weasel",
-              "images": "assets/TakeoIchinoda.png",
-              "about": "Takeo Ichinoda é o terceiro filho de uma família pobre que morava na borda do território que viria a compor o Império dos Três Mundos. Nascido em 2084, Takeo tinha uma saúde frágil e acabava sendo um fardo pra sua família que já passava por dificuldades, o que levou seus pais a aceitarem uma proposta indecorosa da companhia farmacêutica Shimada Biotech, \"vendendo\" Takeo, que ainda era uma criança, como cobaia para um novo tratamento revolucionário que eles estavam pesquisando. A companhia farmacêutica era só fachada para uma organização paramilitar chamada Akai Kage Syndicate, que realizava pesquisas ilegais para aprimoramento físico de humanos para a criação dos \"soldados perfeitos\" para aqueles que pudessem pagar. Takeo foi logo introduzido ao procedimento, que mostrou resultados surpreendentes logo no início. Seu corpo respondeu bem e a sua saúde, que inicialmente era frágil, se estabilizou, enquanto seu porte físico aumentava em ritmo acelerado. Combinado aos treinos intensos e práticas questionáveis, o procedimento transformou Takeo em uma máquina de guerra, mas logo os efeitos colaterais começaram a se manifestar: seu sistema respiratório começou a falhar por causa dos medicamentos administrados por vias aéreas, forçando-o a usar uma máscara especial constantemente. A fundação do Império dos Três mundos em 2088, e as novas políticas de regulação de entidades paramilitares que foram implantadas com ela, desencadearam investigações severas sobre as corporações independentes, que trouxeram a tona todas as barbáries cometidas por elas. A corporação para a qual Takeo foi vendido foi uma das expostas nesse escândalo, o que fez seus executivos encerrarem as operações de forma abrupta e desaparecerem para não serem presos. Abandonado e sem propósito, Takeo foi logo absorvido por um grupo de mercenários (onde ganhou o apelido \"Kaiju\" por seu poder destrutivo) que atuava ilegalmente no território das Américas Unidas, sendo posteriormente capturado e preso num ataque do exército da AU à sua base de operações. Takeo só foi mantido vivo por causa dos boatos de que ele era um \"super soldado\" e mais uma vez foi trancado em um laboratório para que os cientistas e médicos da AU pudessem estudá-lo. Com a intensificação dos conflitos entre a AU e a UPP, e o recente golpe duro que eles sofreram com a destruição do Estaleiro Espacial Atlas, e da UAS Defiant, foi oferecida a Takeo a oportunidade de \"comprar\" sua própria liberdade, lutando ao lado de outras unidades especiais contra a ameaça da UPP.",
               "id": "1",
+              "characterName": "Takeo \"Kaiju\" Ichinoda",
+              "codname": "Green Weasel",
+              "profession": "Operario - Breacher",
+              "about": "Takeo Ichinoda é o terceiro filho de uma família pobre que morava na borda do território que viria a compor o Império dos Três Mundos. Nascido em 2084, Takeo tinha uma saúde frágil e acabava sendo um fardo pra sua família que já passava por dificuldades, o que levou seus pais a aceitarem uma proposta indecorosa da companhia farmacêutica Shimada Biotech, \"vendendo\" Takeo, que ainda era uma criança, como cobaia para um novo tratamento revolucionário que eles estavam pesquisando. A companhia farmacêutica era só fachada para uma organização paramilitar chamada Akai Kage Syndicate, que realizava pesquisas ilegais para aprimoramento físico de humanos para a criação dos \"soldados perfeitos\" para aqueles que pudessem pagar. Takeo foi logo introduzido ao procedimento, que mostrou resultados surpreendentes logo no início. Seu corpo respondeu bem e a sua saúde, que inicialmente era frágil, se estabilizou, enquanto seu porte físico aumentava em ritmo acelerado. Combinado aos treinos intensos e práticas questionáveis, o procedimento transformou Takeo em uma máquina de guerra, mas logo os efeitos colaterais começaram a se manifestar: seu sistema respiratório começou a falhar por causa dos medicamentos administrados por vias aéreas, forçando-o a usar uma máscara especial constantemente. A fundação do Império dos Três mundos em 2088, e as novas políticas de regulação de entidades paramilitares que foram implantadas com ela, desencadearam investigações severas sobre as corporações independentes, que trouxeram a tona todas as barbáries cometidas por elas. A corporação para a qual Takeo foi vendido foi uma das expostas nesse escândalo, o que fez seus executivos encerrarem as operações de forma abrupta e desaparecerem para não serem presos. Abandonado e sem propósito, Takeo foi logo absorvido por um grupo de mercenários (onde ganhou o apelido \"Kaiju\" por seu poder destrutivo) que atuava ilegalmente no território das Américas Unidas, sendo posteriormente capturado e preso num ataque do exército da AU à sua base de operações. Takeo só foi mantido vivo por causa dos boatos de que ele era um \"super soldado\" e mais uma vez foi trancado em um laboratório para que os cientistas e médicos da AU pudessem estudá-lo. Com a intensificação dos conflitos entre a AU e a UPP, e o recente golpe duro que eles sofreram com a destruição do Estaleiro Espacial Atlas, e da UAS Defiant, foi oferecida a Takeo a oportunidade de \"comprar\" sua própria liberdade, lutando ao lado de outras unidades especiais contra a ameaça da UPP.",
+              "images": "assets/TakeoIchinoda.png",
               "aliases": [
                 "Takeo"
               ]
             }
-          ],
-          "id": "0",
-          "mascot": false
+          ]
         },
         {
+          "id": "1",
           "playerId": "Fernando (Gelatto)",
+          "profileId": "1",
+          "mascot": false,
           "characters": [
             {
-              "characterName": "Harper \"Offroad\" Jammer - K.I.A.",
-              "profession": "Piloto",
-              "codname": "Green Weasel",
-              "images": "assets/HarperJammer.png",
-              "about": "Harper Jammer nasceu na periferia e se alistou nas Forças Armadas de Acheron Prime, um planeta independente da fronteira em uma instalação militar tranquila. Apesar de exímio piloto, gostava de servir como vigia de guarita, um trabalho tranquilo de checagem de credenciais, controle de entrada e saída de veículos e nunca perguntar o conteúdo das jaulas cobertas que chegavam. Certo dia, sua instalação foi atacada por uma força militar da UPP e, não se sabe como, uma força militar da Wayland-Yutane lutou ao lado do planeta para defendê-lo, até que uma gigantesca espaçonave de classe titan desconhecida mudou o rumo da batalha, causando ao que parece uma explosão solar que atingiu o planeta e, não se sabe seu destino ao certo, uma vez que Harper e um grupo de sobreviventes conseguiram fugir do planeta em um cargueiro através de um salto de emergência cego. Sim, foi um ato de deserção necessário. Saíram do hiperespaço avariados ao responderem um sinal de socorro de um planeta desconhecido, onde  o cargueiro ficou seriamente danificado. Uma instalação de pesquisas da Wayland-Yutane pedia socorro e o grupo atendeu ao chamado, onde descobriram que a instalação emitia um gás estranho que mudava o humor das pessoas, tornando-as descontroladas, raivosas e hostis. Com muito custo, conseguiram reverter os efeitos do gás com o antídoto do mesmo. Após, fizeram um acordo com o responsável, capitão Jackson, de fazerem um serviço de transporte para a Wayland-Yutane até a Terra. Primeira vez que Harper conheceu a Terra e lá era tudo lindo e maravilhoso, totalmente diferente. E lá descobriram que a UPP está atrás deles por algum motivo. De volta ao planeta do capitão Jackson, o mesmo havia sido atacado por naves da UPP, mas uma battleship da UA havia intervido e eliminado a ameaça. No planeta, tiveram que escolher entre se aliar ao capitão Jackson e se tornarem funcionários da Wayland-Yutane; se aliarem ao General Thomaz e se tornarem soldados da UA; ou se tornarem independentes e trabalharem para qualquer um, tendo liberdade de cada um seguir seu caminho. Escolheram se aliar à UA, o que se mostrou a melhor opção, uma vez que o general Thomaz odiava as corporações e suas pesquisas, e ordenou que sua nave liberasse uma pequena ogiva nuclear sobre as instalações no planeta. * * * Um ano se passou, entre se adaptarem ao novo estilo de vida nas naves da UA e seu treinamento militar (Harper não gostou disso e não gosta até hoje, passar de novo por treinamento não era o que tinha em mente). Neste um ano, o relacionamento de Harper com a enfermeira Song Ling, que conhecia desde seu primeiro dia de alistamento em Acheron Prime, avançou para um nível onde acabaram selando uma união estável, mas sem trocar sobrenomes, Harper achava isso trabalhoso demais. O grupo de sobreviventes originais acabou formando uma unidade especial dentro do regimento do general Thomaz, algo que Harper solicitou para se aliaram à UA. Ainda são considerados patente baixa dentro do regimento. Neste um ano viram pouca ação a bordo da UAS Defiant, nave a que foram designados sob o comando do Major John Johnson.",
               "id": "2",
+              "characterName": "Harper \"Offroad\" Jammer - K.I.A.",
+              "codname": "Green Weasel",
+              "profession": "Piloto",
+              "about": "Harper Jammer nasceu na periferia e se alistou nas Forças Armadas de Acheron Prime, um planeta independente da fronteira em uma instalação militar tranquila. Apesar de exímio piloto, gostava de servir como vigia de guarita, um trabalho tranquilo de checagem de credenciais, controle de entrada e saída de veículos e nunca perguntar o conteúdo das jaulas cobertas que chegavam. Certo dia, sua instalação foi atacada por uma força militar da UPP e, não se sabe como, uma força militar da Wayland-Yutane lutou ao lado do planeta para defendê-lo, até que uma gigantesca espaçonave de classe titan desconhecida mudou o rumo da batalha, causando ao que parece uma explosão solar que atingiu o planeta e, não se sabe seu destino ao certo, uma vez que Harper e um grupo de sobreviventes conseguiram fugir do planeta em um cargueiro através de um salto de emergência cego. Sim, foi um ato de deserção necessário. Saíram do hiperespaço avariados ao responderem um sinal de socorro de um planeta desconhecido, onde  o cargueiro ficou seriamente danificado. Uma instalação de pesquisas da Wayland-Yutane pedia socorro e o grupo atendeu ao chamado, onde descobriram que a instalação emitia um gás estranho que mudava o humor das pessoas, tornando-as descontroladas, raivosas e hostis. Com muito custo, conseguiram reverter os efeitos do gás com o antídoto do mesmo. Após, fizeram um acordo com o responsável, capitão Jackson, de fazerem um serviço de transporte para a Wayland-Yutane até a Terra. Primeira vez que Harper conheceu a Terra e lá era tudo lindo e maravilhoso, totalmente diferente. E lá descobriram que a UPP está atrás deles por algum motivo. De volta ao planeta do capitão Jackson, o mesmo havia sido atacado por naves da UPP, mas uma battleship da UA havia intervido e eliminado a ameaça. No planeta, tiveram que escolher entre se aliar ao capitão Jackson e se tornarem funcionários da Wayland-Yutane; se aliarem ao General Thomaz e se tornarem soldados da UA; ou se tornarem independentes e trabalharem para qualquer um, tendo liberdade de cada um seguir seu caminho. Escolheram se aliar à UA, o que se mostrou a melhor opção, uma vez que o general Thomaz odiava as corporações e suas pesquisas, e ordenou que sua nave liberasse uma pequena ogiva nuclear sobre as instalações no planeta. * * * Um ano se passou, entre se adaptarem ao novo estilo de vida nas naves da UA e seu treinamento militar (Harper não gostou disso e não gosta até hoje, passar de novo por treinamento não era o que tinha em mente). Neste um ano, o relacionamento de Harper com a enfermeira Song Ling, que conhecia desde seu primeiro dia de alistamento em Acheron Prime, avançou para um nível onde acabaram selando uma união estável, mas sem trocar sobrenomes, Harper achava isso trabalhoso demais. O grupo de sobreviventes originais acabou formando uma unidade especial dentro do regimento do general Thomaz, algo que Harper solicitou para se aliaram à UA. Ainda são considerados patente baixa dentro do regimento. Neste um ano viram pouca ação a bordo da UAS Defiant, nave a que foram designados sob o comando do Major John Johnson.",
+              "images": "assets/HarperJammer.png",
               "aliases": [
                 "Harper"
               ]
             },
             {
-              "characterName": "C.R.I.S.",
-              "profession": "Protocol Rifleman",
-              "codname": "Carmesin Weasel",
-              "images": "assets/Cris.png",
-              "about": "C.R.I.S. (Combat-Ready Interaction System) é um android militar da Americas Unidas configurado para interações sociais, de protocolo e negociações, inclusive as hostis.",
               "id": "3",
+              "characterName": "C.R.I.S.",
+              "codname": "Carmesin Weasel",
+              "profession": "Protocol Rifleman",
+              "about": "C.R.I.S. (Combat-Ready Interaction System) é um android militar da Americas Unidas configurado para interações sociais, de protocolo e negociações, inclusive as hostis.",
+              "images": "assets/Cris.png",
               "aliases": [
                 "C.R.I.S.",
                 "CRIS"
               ]
             }
-          ],
-          "id": "1",
-          "mascot": false
+          ]
         },
         {
+          "id": "2",
           "playerId": "Bruno",
+          "profileId": "2",
+          "mascot": false,
           "characters": [
             {
-              "characterName": "Sean \"Night Rider\" Bean",
-              "profession": "Fuzileiro",
-              "codname": "Black Weasel",
-              "images": "assets/SeanBean.png",
-              "about": "Sean Bean nasceu em uma colônia mineradora nas fronteiras da galáxia. Filho de um minerador e uma enfermeira, sua infância foi marcada pelas dificuldades da vida em um ambiente hostil, onde aprendeu a importância da resistência e da força física. Aos 18 anos, em busca de aventura e uma vida melhor, Sean se alistou no exército. Demonstrou rapidamente habilidades excepcionais em combate corpo a corpo, mas nunca recebeu uma promoção, permanecendo um soldado dedicado e determinado. Cansado da burocracia militar, Sean deixou o exército e se juntou a uma empresa de mercenários, acreditando que essa vida lhe proporcionaria mais liberdade. Ganhou a reputação de combatente implacável e estrategista astuto. Contratado para uma missão prometendo alta recompensa, Sean foi enviado a um planeta inexplorado, esperando ação e aventura. Ao chegar, descobriu que se tratava de uma expedição de pesquisa científica. Frustrado inicialmente, ele passou a ver o valor do trabalho dos cientistas e se dedicou a protegê-los. Antes que pudesse se adaptar completamente, o planeta foi devastado por uma catástrofe desconhecida. Sean foi um dos poucos sobreviventes, escapando por pouco. Traumatizado, mas determinado a encontrar um novo propósito, ele se alistou no exército das Américas Unidas. Durante o primeiro ano no novo exército, Sean passou por treinamentos rigorosos, aprimorando suas habilidades e adquirindo novas técnicas. Ganhou o apelido de \"Night Rider\" devido à sua eficácia em missões noturnas e de infiltração. Agora, Sean \"Night Rider\" Bean é um fuzileiro naval altamente treinado e resiliente, pronto para enfrentar qualquer desafio. Jovem e determinado, ele encontrou um novo propósito no exército das Américas Unidas, preparado para proteger a humanidade contra todas as ameaças.",
               "id": "4",
+              "characterName": "Sean \"Night Rider\" Bean",
+              "codname": "Black Weasel",
+              "profession": "Fuzileiro",
+              "about": "Sean Bean nasceu em uma colônia mineradora nas fronteiras da galáxia. Filho de um minerador e uma enfermeira, sua infância foi marcada pelas dificuldades da vida em um ambiente hostil, onde aprendeu a importância da resistência e da força física. Aos 18 anos, em busca de aventura e uma vida melhor, Sean se alistou no exército. Demonstrou rapidamente habilidades excepcionais em combate corpo a corpo, mas nunca recebeu uma promoção, permanecendo um soldado dedicado e determinado. Cansado da burocracia militar, Sean deixou o exército e se juntou a uma empresa de mercenários, acreditando que essa vida lhe proporcionaria mais liberdade. Ganhou a reputação de combatente implacável e estrategista astuto. Contratado para uma missão prometendo alta recompensa, Sean foi enviado a um planeta inexplorado, esperando ação e aventura. Ao chegar, descobriu que se tratava de uma expedição de pesquisa científica. Frustrado inicialmente, ele passou a ver o valor do trabalho dos cientistas e se dedicou a protegê-los. Antes que pudesse se adaptar completamente, o planeta foi devastado por uma catástrofe desconhecida. Sean foi um dos poucos sobreviventes, escapando por pouco. Traumatizado, mas determinado a encontrar um novo propósito, ele se alistou no exército das Américas Unidas. Durante o primeiro ano no novo exército, Sean passou por treinamentos rigorosos, aprimorando suas habilidades e adquirindo novas técnicas. Ganhou o apelido de \"Night Rider\" devido à sua eficácia em missões noturnas e de infiltração. Agora, Sean \"Night Rider\" Bean é um fuzileiro naval altamente treinado e resiliente, pronto para enfrentar qualquer desafio. Jovem e determinado, ele encontrou um novo propósito no exército das Américas Unidas, preparado para proteger a humanidade contra todas as ameaças.",
+              "images": "assets/SeanBean.png",
               "aliases": [
                 "Sean"
               ]
             }
-          ],
-          "id": "2",
-          "mascot": false
+          ]
         },
         {
+          "id": "3",
           "playerId": "Raissa",
+          "profileId": "3",
+          "mascot": false,
           "characters": [
             {
-              "characterName": "Carla Rodriguez",
-              "profession": "Dropship Crew Chief",
-              "codname": "Brown Weasel",
-              "images": "assets/CarlaRodriguez.png",
-              "about": "Carla Rodriguez nasceu em uma metrópole imensa e passou sua infância sobrevivendo nas ruas ao lado de outras crianças abandonadas. A vida nas ruas a transformou em uma lutadora feroz e engenhosa, desenvolvendo uma aptidão natural para o combate. Em busca de uma saída, ela se alistou nas Forças Armadas de Acheron Prime, onde suas habilidades adquiridas nas ruas encontraram um novo propósito. Embora sua carreira inicial tenha sido marcada por trabalho em uma pequena empresa com recursos e treinamento limitados, Carla aproveitou ao máximo o que estava disponível, sempre se esforçando para se fortalecer. Ela não é movida por grandes ambições, mas tem um desejo inabalável de aprimorar sua habilidade no combate. Carla é uma pessoa quieta e reservada, frequentemente à espreita, observando e aguardando o momento certo para agir. Sua lealdade é difícil de conquistar, mas uma vez que alguém ganha sua confiança, ela permanece ao lado dessa pessoa com uma dedicação feroz. Sua natureza impulsiva pode ser controlada pelas circunstâncias, permitindo que ela aja com precisão calculada quando necessário. Uma verdadeira guerreira de coração, Carla tem uma intensa fascinação por armas—tanto de fogo quanto brancas—o que a torna uma força formidável em qualquer conflito.",
               "id": "5",
+              "characterName": "Carla Rodriguez",
+              "codname": "Brown Weasel",
+              "profession": "Dropship Crew Chief",
+              "about": "Carla Rodriguez nasceu em uma metrópole imensa e passou sua infância sobrevivendo nas ruas ao lado de outras crianças abandonadas. A vida nas ruas a transformou em uma lutadora feroz e engenhosa, desenvolvendo uma aptidão natural para o combate. Em busca de uma saída, ela se alistou nas Forças Armadas de Acheron Prime, onde suas habilidades adquiridas nas ruas encontraram um novo propósito. Embora sua carreira inicial tenha sido marcada por trabalho em uma pequena empresa com recursos e treinamento limitados, Carla aproveitou ao máximo o que estava disponível, sempre se esforçando para se fortalecer. Ela não é movida por grandes ambições, mas tem um desejo inabalável de aprimorar sua habilidade no combate. Carla é uma pessoa quieta e reservada, frequentemente à espreita, observando e aguardando o momento certo para agir. Sua lealdade é difícil de conquistar, mas uma vez que alguém ganha sua confiança, ela permanece ao lado dessa pessoa com uma dedicação feroz. Sua natureza impulsiva pode ser controlada pelas circunstâncias, permitindo que ela aja com precisão calculada quando necessário. Uma verdadeira guerreira de coração, Carla tem uma intensa fascinação por armas—tanto de fogo quanto brancas—o que a torna uma força formidável em qualquer conflito.",
+              "images": "assets/CarlaRodriguez.png",
               "aliases": [
                 "Carla"
               ]
             }
-          ],
-          "id": "3",
-          "mascot": false
+          ]
         },
         {
+          "id": "4",
           "playerId": "Minsk",
+          "mascot": true,
           "characters": [
             {
-              "characterName": "Minsk",
-              "profession": "Mascote",
-              "codname": "Weasel Prime",
-              "images": "assets/Minsk.png",
-              "about": "Minsk",
               "id": "6",
+              "characterName": "Minsk",
+              "codname": "Weasel Prime",
+              "profession": "Mascote",
+              "about": "Minsk",
+              "images": "assets/Minsk.png",
               "aliases": [
                 "Minsk"
               ]
             }
-          ],
-          "id": "4",
-          "mascot": true
+          ]
         }
       ],
       "achievements": [
         {
           "id": "stress_01",
-          "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Atingir 1 pontos de stress",
-          "name": "Só mais um dia de trabalho...",
           "character": [
             {
               "name": "André",
@@ -151,15 +1080,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "stress_02",
-          "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Atingir 5 pontos de stress",
-          "name": "Não estão me pagando o suficiente pra isso",
           "character": [
             {
               "name": "André",
@@ -177,15 +1101,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "stress_03",
-          "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Atingir 8 pontos de stress",
-          "name": "Preciso de férias!!!",
           "character": [
             {
               "name": "André",
@@ -196,18 +1115,13 @@
               "date": "06/10/2024"
             },
             {
-              "date": "25/08/2024",
-              "name": "Raissa"
+              "name": "Raissa",
+              "date": "25/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "stress_04",
-          "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Atingir 10+ pontos de stress",
-          "name": "INFERNOOOOO!!!!!",
           "character": [
             {
               "name": "André",
@@ -221,15 +1135,10 @@
               "name": "Raissa",
               "date": "06/10/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "stress_05",
-          "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Rolar 3 vezes seguidas um valor de stress entre 1 e 6",
-          "name": "Nervos de aço",
           "character": [
             {
               "name": "André",
@@ -243,15 +1152,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "stress_06",
-          "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Rolar 7 no teste de pânico",
-          "name": "Você me da tique, tique nervoso",
           "character": [
             {
               "name": "André",
@@ -269,15 +1173,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "stress_07",
-          "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Double Striped, Color=Red.svg",
-          "description": "Rolar 8 no teste de pânico",
-          "name": "Parkinson?",
           "character": [
             {
               "name": "André",
@@ -291,15 +1190,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "stress_08",
-          "medal": "assets/Type=Stress, Rank=Bronze, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Rolar 9 no teste de pânico",
-          "name": "Mão de alface",
           "character": [
             {
               "name": "André",
@@ -313,15 +1207,10 @@
               "name": "Bruno",
               "date": "22/06/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "stress_09",
-          "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Rolar 10 no teste de pânico",
-          "name": "Batatinha frita 1, 2, 3",
           "character": [
             {
               "name": "André",
@@ -335,15 +1224,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "stress_10",
-          "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Double Striped, Color=Red.svg",
-          "description": "Rolar 11 no teste de pânico",
-          "name": "Não é esse tipo de cobertura, Tábata!",
           "character": [
             {
               "name": "André",
@@ -357,15 +1241,10 @@
               "name": "Raissa",
               "date": "25/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "stress_11",
-          "medal": "assets/Type=Stress, Rank=Silver, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Rolar 12 no teste de pânico",
-          "name": "AAAAAAAHHHHH!!!",
           "character": [
             {
               "name": "André",
@@ -379,15 +1258,10 @@
               "name": "Raissa",
               "date": "25/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "stress_12",
-          "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Rolar 13 no teste de pânico",
-          "name": "Run bitch, RUN!!",
           "character": [
             {
               "name": "André",
@@ -397,29 +1271,19 @@
               "name": "Bruno",
               "date": "06/10/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "stress_13",
-          "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Double Striped, Color=Red.svg",
-          "description": "Rolar 14 no teste de pânico",
-          "name": "Vem tranquilo",
           "character": [
             {
               "name": "André",
               "date": "25/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "stress_14",
-          "medal": "assets/Type=Stress, Rank=Gold, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Rolar 15+ no teste de pânico",
-          "name": "Qual o sentido da vida?",
           "character": [
             {
               "name": "André",
@@ -429,15 +1293,10 @@
               "name": "Bruno",
               "date": "06/10/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "stress_15",
-          "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Adquirir algum Trauma mental permanente",
-          "name": "Ala psiquiátrica",
           "character": [
             {
               "name": "André",
@@ -451,15 +1310,10 @@
               "name": "Raissa",
               "date": "06/10/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "stress_16",
-          "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Rolar 2 vezes seguidas um valor de stress entre 1 e 6 e falhar na terceira",
-          "name": "Nervos de água",
           "character": [
             {
               "name": "André",
@@ -469,15 +1323,10 @@
               "name": "Bruno",
               "date": "06/07/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "stress_17",
-          "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Rolar o mesmo resultado de um pânico ativo e ter que subir para o próximo nível.",
-          "name": "Fora de controle",
           "character": [
             {
               "name": "André",
@@ -487,15 +1336,10 @@
               "name": "Bruno",
               "date": "06/07/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "stress_18",
-          "medal": "assets/Type=Stress, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Aquirir em uma sessão 2+ pontos de stress decorrente de várias rolagens de pânico.",
-          "name": "for (let stress = 6; stress < 15; stress++)",
           "character": [
             {
               "name": "André",
@@ -509,15 +1353,10 @@
               "name": "Raissa",
               "date": "25/08/2024"
             }
-          ],
-          "category": "Stress",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "eliminations_01",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Double Striped, Color=Red.svg",
-          "description": "Elimine 1 humano",
-          "name": "O primeiro a gente nunca esquece...",
           "character": [
             {
               "name": "André",
@@ -531,15 +1370,10 @@
               "name": "Bruno",
               "date": "22/06/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "eliminations_02",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Double Striped, Color=Red.svg",
-          "description": "Elimine 10 humanos",
-          "name": "Assassino de aluguel",
           "character": [
             {
               "name": "André",
@@ -553,180 +1387,100 @@
               "name": "Bruno",
               "date": "22/06/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "eliminations_03",
-          "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Double Striped, Color=Red.svg",
-          "description": "Elimine 100 humanos",
-          "name": "Serial killer",
-          "character": [],
-          "category": "Combat",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "eliminations_04",
-          "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Double Striped, Color=Red.svg",
-          "description": "Elimine 1000 humanos",
-          "name": "Genocida",
-          "character": [],
-          "category": "Combat",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "eliminations_05",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Elimine 3 em um único ataque",
-          "name": "3 coelhos com uma cajadada só",
           "character": [
             {
               "name": "Fernando (Gelatto)",
               "date": "22/06/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "eliminations_06",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Elimine 5 em um único ataque",
-          "name": "Pentakill!",
           "character": [
             {
               "name": "Fernando (Gelatto)",
               "date": "22/06/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "eliminations_07",
-          "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Elimine 10 em um único ataque",
-          "name": "Strike!",
           "character": [
             {
               "name": "Fernando (Gelatto)",
               "date": "03/08/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "eliminations_08",
-          "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Elimine 20 em um único ataque",
-          "name": "Tudo friamente calculado",
-          "character": [],
-          "category": "Combat",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "eliminations_09",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Elimine alguém durante um momento intimo",
-          "name": "Viúva negra",
           "character": [
             {
               "name": "André",
               "date": "07/09/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "eliminations_xenomorph_01",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Elimine 1 Xenomorfo",
-          "name": "Tem certeza que ele morreu?",
           "character": [
             {
               "name": "Raissa",
               "date": "16/08/2025"
             }
-          ],
-          "category": "Combat",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "eliminations_xenomorph_02",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Elimine 5 Xenomorfos",
-          "name": "Acho que to pegando o jeito",
           "character": [
             {
               "name": "Raissa",
               "date": "16/08/2025"
             }
-          ],
-          "category": "Combat",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "eliminations_xenomorph_03",
-          "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Elimine 10 Xenomorfos",
-          "name": "Agente da Carrocinha",
-          "character": [],
-          "category": "Combat",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "eliminations_xenomorph_04",
-          "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Elimine 50 Xenomorfos",
-          "name": "Predador",
-          "character": [],
-          "category": "Combat",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "eliminations_neomorph_01",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Double Striped, Color=Black.svg",
-          "description": "Elimine 1 Neomorfo",
-          "name": "Bronze",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "eliminations_neomorph_02",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Double Striped, Color=Black.svg",
-          "description": "Elimine 5 Neomorfos",
-          "name": "Prata",
-          "character": [],
-          "category": "Combat",
-          "rank": "Silver"
+          "character": []
         },
         {
           "id": "eliminations_neomorph_03",
-          "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Double Striped, Color=Black.svg",
-          "description": "Elimine 10 Neomorfos",
-          "name": "Ouro",
-          "character": [],
-          "category": "Combat",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "eliminations_neomorph_04",
-          "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Double Striped, Color=Black.svg",
-          "description": "Elimine 20 Neomorfos",
-          "name": "Diamante",
-          "character": [],
-          "category": "Combat",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "eliminations_local_fauna_01",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Elimine 1 animal",
-          "name": "Greenhorn",
           "character": [
             {
               "name": "André",
@@ -744,15 +1498,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "eliminations_local_fauna_02",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Elimine 10 animais",
-          "name": "Decorando a parede",
           "character": [
             {
               "name": "André",
@@ -766,105 +1515,50 @@
               "name": "Bruno",
               "date": "03/08/2024"
             }
-          ],
-          "category": "Combat",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "eliminations_local_fauna_03",
-          "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Elimine 100 animais",
-          "name": "Caçador profissional",
-          "character": [],
-          "category": "Combat",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "eliminations_local_fauna_04",
-          "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Elimine 1000 animais",
-          "name": "Terror do ibama",
-          "character": [],
-          "category": "Combat",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "eliminations_mechanical_01",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Elimine 1 sintético",
-          "name": "Catador de latinhas",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "eliminations_mechanical_02",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Elimine 5 sintéticos",
-          "name": "Detetive Del Spooner",
-          "character": [],
-          "category": "Combat",
-          "rank": "Silver"
+          "character": []
         },
         {
           "id": "eliminations_mechanical_03",
-          "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Elimine 10 sintéticos",
-          "name": "T-800",
-          "character": [],
-          "category": "Combat",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "eliminations_mechanical_04",
-          "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Elimine 50 sintéticos",
-          "name": "John Connor",
-          "character": [],
-          "category": "Combat",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "eliminations_innocents_01",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Elimine 1 inocente",
-          "name": "Foi um acidente!",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "eliminations_innocents_02",
-          "medal": "assets/Type=Combat, Rank=Silver, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Elimine 10 inocentes",
-          "name": "Eles ficam entrando na linha de tiro",
-          "character": [],
-          "category": "Combat",
-          "rank": "Silver"
+          "character": []
         },
         {
           "id": "eliminations_innocents_03",
-          "medal": "assets/Type=Combat, Rank=Gold, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Elimine 100 inocentes",
-          "name": "Como é que eu vou explicar isso?",
-          "character": [],
-          "category": "Combat",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "eliminations_innocents_04",
-          "medal": "assets/Type=Combat, Rank=Platinum, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Elimine 1000 inocentes",
-          "name": "Num estalar de dedos",
-          "character": [],
-          "category": "Combat",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "exploration_01",
-          "medal": "assets/Type=Exploration, Rank=Bronze, Stripe Count=Single Striped, Color=Green.svg",
-          "description": "Viajar 1 parsec",
-          "name": "Proxima Centauri",
           "character": [
             {
               "name": "André",
@@ -882,15 +1576,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Exploration",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "exploration_02",
-          "medal": "assets/Type=Exploration, Rank=Silver, Stripe Count=Single Striped, Color=Green.svg",
-          "description": "Viajar 10 parsecs",
-          "name": "Maia",
           "character": [
             {
               "name": "André",
@@ -908,15 +1597,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Exploration",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "exploration_03",
-          "medal": "assets/Type=Exploration, Rank=Gold, Stripe Count=Single Striped, Color=Green.svg",
-          "description": "Viajar 100 parsecs",
-          "name": "Colonia",
           "character": [
             {
               "name": "André",
@@ -930,24 +1614,14 @@
               "name": "Bruno",
               "date": "12/10/2024"
             }
-          ],
-          "category": "Exploration",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "exploration_04",
-          "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Single Striped, Color=Green.svg",
-          "description": "Viajar 1000 parsecs",
-          "name": "Beagle point",
-          "character": [],
-          "category": "Exploration",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "exploration_star_systems_01",
-          "medal": "assets/Type=Exploration, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Viajar 1 sistema estelar",
-          "name": "Explorador",
           "character": [
             {
               "name": "André",
@@ -965,15 +1639,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Exploration",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "exploration_star_systems_02",
-          "medal": "assets/Type=Exploration, Rank=Silver, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Viajar 10 sistemas estelares",
-          "name": "Cartógrafo",
           "character": [
             {
               "name": "André",
@@ -987,42 +1656,22 @@
               "name": "Fernando (Gelatto)",
               "date": "12/10/2024"
             }
-          ],
-          "category": "Exploration",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "exploration_star_systems_03",
-          "medal": "assets/Type=Exploration, Rank=Gold, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Viajar 50 sistemas estelares",
-          "name": "Desbravador",
-          "character": [],
-          "category": "Exploration",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "exploration_star_systems_04",
-          "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Viajar 150 sistemas estelares",
-          "name": "Pioneiro",
-          "character": [],
-          "category": "Exploration",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "exploration_star_systems_05",
-          "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
-          "description": "Visitar um de cada tipo de sistema estelar",
-          "name": "Complecionista",
-          "character": [],
-          "category": "Exploration",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "exploration_planets_01",
-          "medal": "assets/Type=Exploration, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Pousar em 1 planeta",
-          "name": "Um pequeno passo para o homem...",
           "character": [
             {
               "name": "André",
@@ -1040,15 +1689,10 @@
               "name": "Raissa",
               "date": "17/08/2024"
             }
-          ],
-          "category": "Exploration",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "exploration_planets_02",
-          "medal": "assets/Type=Exploration, Rank=Silver, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Pousar em 5 planetas",
-          "name": "Deixando o rastro",
           "character": [
             {
               "name": "André",
@@ -1062,42 +1706,22 @@
               "name": "Bruno",
               "date": "12/10/2024"
             }
-          ],
-          "category": "Exploration",
-          "rank": "Silver"
+          ]
         },
         {
           "id": "exploration_planets_03",
-          "medal": "assets/Type=Exploration, Rank=Gold, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Pousar em 10 planetas",
-          "name": "Plutão não conta",
-          "character": [],
-          "category": "Exploration",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "exploration_planets_04",
-          "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Pousar em 50 planetas",
-          "name": "Em busca do planeta perfeito",
-          "character": [],
-          "category": "Exploration",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "exploration_planets_05",
-          "medal": "assets/Type=Exploration, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Pousar em um de cada tipo de planeta",
-          "name": "Até em gigantes gasosos?",
-          "character": [],
-          "category": "Exploration",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "special_exploration_01",
-          "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Encontrar com os Engenheiros",
-          "name": "De frente com o criador",
           "character": [
             {
               "name": "André",
@@ -1111,276 +1735,126 @@
               "name": "Fernando (Gelatto)",
               "date": "16/08/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "special_exploration_02",
-          "medal": "assets/Type=Unique, Rank=Silver, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Visitar todos os planetas dos filmes",
-          "name": "Cinefilo",
-          "character": [],
-          "category": "Unique",
-          "rank": "Silver"
+          "character": []
         },
         {
           "id": "special_eliminations_01",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Elimine uma Rainha Alien",
-          "name": "Xeque-mate?",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "special_eliminations_02",
-          "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Double Striped, Color=Black.svg",
-          "description": "Eliminar um Engenheiro",
-          "name": "Kratos?",
-          "character": [],
-          "category": "Unique",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "special_eliminations_03",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Double Striped, Color=Black.svg",
-          "description": "Eliminar um de cada tipo de Xenomorfo",
-          "name": "Preenchendo o albúm de figurinhas",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "special_eliminations_04",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Eliminar um de cada tipo de Neomorfo",
-          "name": "",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "xenomorph_attacks_01",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Receber um ataque 'Bocada na cabeça'",
-          "name": "Beijo Apaixonado",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "xenomorph_attacks_02",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Receber um ataque 'Olhar hipnotizante'",
-          "name": "Conexão de Almas",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "xenomorph_attacks_03",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Receber um ataque 'Brincando com a presa'",
-          "name": "Preliminares",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "xenomorph_attacks_04",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Receber um ataque 'Agarrão mortal'",
-          "name": "Dom vs Sub",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "xenomorph_attacks_05",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Receber um ataque 'Ferrão da Cauda'",
-          "name": "Não é so o tamnho da varinha, mas a habilidade do bruxo",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "xenomorph_attacks_06",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Receber um ataque 'Capturar para a colmeia'",
-          "name": "Ninho de amor",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "xenomorph_attacks_07",
-          "medal": "assets/Type=Combat, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Receber um ataque 'Sangue ácido'",
-          "name": "Não se meche, vou buscar o papel",
-          "character": [],
-          "category": "Combat",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "sintetic_01",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Morra como um sintético",
-          "name": "Pane no sistema alguém me desconfigurou",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "sintetic_02",
-          "medal": "assets/Type=Survival, Rank=Silver, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Perder uma parte do corpo jogando como sintético",
-          "name": "Caindo aos pedaços",
-          "character": [],
-          "category": "Survival",
-          "rank": "Silver"
+          "character": []
         },
         {
           "id": "other_dangerous_01",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer sufocado",
-          "name": "Último suspiro",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_02",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer afogado",
-          "name": "Glub Glub Glub",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_03",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer por radiação",
-          "name": "Alta exposição",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_04",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer por doença",
-          "name": "Só uma gripezinha",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_05",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer por envenenamento",
-          "name": "Veneno de cobra",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_06",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer por queimadura",
-          "name": "Ta pegando fogo bixo!",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_07",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer em explosão",
-          "name": "Você está por toda parte... literalmente",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_08",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer por dano de queda",
-          "name": "Há 7 palmos",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_09",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer no vácuo do espaço",
-          "name": "No espaço, ninguém pode te ouvir gritar",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_10",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer pelo status \"congelando\"",
-          "name": "Tinha espaço na porta",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_11",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer como consequência do status \"exausto\"",
-          "name": "Descanso eterno",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_12",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer pelo status \"desidratado\"",
-          "name": "Carne seca",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_13",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Red.svg",
-          "description": "Morrer pelo status \"faminto\"",
-          "name": "Jejum Inter...minavel",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_14",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Adquirir pelo menos uma vez o status \"congelando\"",
-          "name": "Leva um casaco!",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_15",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Adquirir pelo menos uma vez o status \"exausto\"",
-          "name": "Mas ainda é segunda-feira, capitão",
-          "character": [],
-          "category": "Survival",
-          "rank": "Bronze"
+          "character": []
         },
         {
           "id": "other_dangerous_16",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Adquirir pelo menos uma vez o status \"desidratado\"",
-          "name": "água a 1,5km",
           "character": [
             {
               "name": "Raissa",
@@ -1390,15 +1864,10 @@
               "name": "André",
               "date": "10/08/2025"
             }
-          ],
-          "category": "Survival",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "other_dangerous_17",
-          "medal": "assets/Type=Survival, Rank=Bronze, Stripe Count=Single Striped, Color=Yellow.svg",
-          "description": "Adquirir pelo menos uma vez o status \"faminto\"",
-          "name": "Tábata Pelegrini",
           "character": [
             {
               "name": "André",
@@ -1408,33 +1877,18 @@
               "name": "Raissa",
               "date": "10/08/2025"
             }
-          ],
-          "category": "Survival",
-          "rank": "Bronze"
+          ]
         },
         {
           "id": "other_group_01",
-          "medal": "assets/Type=Survival, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Sobreviva a um confronto com um xenomorfo com apenas 1 ponto de vida restante.",
-          "name": "Escapou por um Fio",
-          "character": [],
-          "category": "Survival",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "other_group_02",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Elimine uma colônia inteira de xenomorfos sem sofrer nenhuma baixa.",
-          "name": "Limpeza Profunda",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "other_group_03",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
-          "description": "Escape de uma nave prestes a explodir.",
-          "name": "Escapadinha Espacial",
           "character": [
             {
               "name": "Raissa",
@@ -1448,148 +1902,83 @@
               "name": "André",
               "date": "10/05/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "other_group_04",
-          "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Triple Striped, Color=Yellow.svg",
-          "description": "Sobreviva a um abraço carinhoso de um Facehugger sem ser infectado.",
-          "name": "Com as vacinas em dia",
-          "character": [],
-          "category": "Unique",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "other_group_05",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Single Striped, Color=Green.svg",
-          "description": "Tenha três lesões críticas consecutivas contra você e sobreviva.",
-          "name": "Maré de Azar",
           "character": [
             {
               "name": "André",
               "date": "16/08/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "other_group_06",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Experimente carne de Alien e não vomite.",
-          "name": "Gourmet Intergaláctico",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "other_group_07",
-          "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Single Striped, Color=Green.svg",
-          "description": "Salve um companheiro de equipe de um ataque alienígena em um momento crítico.",
-          "name": "Espírito de Equipe",
           "character": [
             {
               "name": "Raissa",
               "date": "16/08/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "other_group_08",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Priorize salvar civis inocentes em uma missão, mesmo que isso signifique colocar sua própria vida em risco.",
-          "name": "Humanidade em Primeiro Lugar",
           "character": [
             {
               "name": "Fernando (Gelatto)",
               "date": "24/08/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "other_group_09",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
-          "description": "Resolva um conflito com uma facção através de negociações pacíficas, evitando um confronto armado.",
-          "name": "Negociação Diplomática",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "other_group_10",
-          "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Descubra uma traição entre os próprios fuzileiros, revelando um espião infiltrado ou um conspirador.",
-          "name": "É o ciano!!!",
-          "character": [],
-          "category": "Unique",
-          "rank": "Gold"
+          "character": []
         },
         {
           "id": "other_group_11",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Execute uma ordem difícil, mas necessária, que vá contra seus princípios morais em prol da sobrevivência da equipe.",
-          "name": "Coração de Ferro",
           "character": [
             {
               "name": "André",
               "date": "28/09/2024"
             }
-          ],
-          "category": "Unique",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "other_group_12",
-          "medal": "assets/Type=Unique, Rank=Silver, Stripe Count=Double Striped, Color=Green.svg",
-          "description": "Desative uma armadilha usando apenas habilidades humanas, sem depender de tecnologia avançada.",
-          "name": "Eu confio no meu taco",
-          "character": [],
-          "category": "Unique",
-          "rank": "Silver"
+          "character": []
         },
         {
           "id": "other_group_13",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Yellow.svg",
-          "description": "Mantenha a sanidade mental após enfrentar horrores cósmicos e sobreviver a um encontro direto com a Rainha Alien.",
-          "name": "Bobo da Corte",
           "character": [
             {
               "name": "André",
               "date": "16/08/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "other_group_14",
-          "medal": "assets/Type=Unique, Rank=Silver, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Una-se a outras facções para enfrentar uma ameaça maior em uma batalha épica.",
-          "name": "Deixando as diferenças de lado",
-          "character": [],
-          "category": "Unique",
-          "rank": "Silver"
+          "character": []
         },
         {
           "id": "other_group_15",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Black.svg",
-          "description": "Matar um cientista",
-          "name": "Dessa vez não!!!!",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "other_group_16",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Red.svg",
-          "description": "Seja responsável parcial ou integralmente por uma catástrofe nuclear",
-          "name": "New Chernobyl",
           "character": [
             {
               "name": "André",
@@ -1603,15 +1992,10 @@
               "name": "Bruno",
               "date": "22/06/2024"
             }
-          ],
-          "category": "Unique",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "other_group_17",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Protagonize uma cena cinematográfica na campanha",
-          "name": "Traga um oscar para esse jogador",
           "character": [
             {
               "name": "André",
@@ -1621,38 +2005,23 @@
               "name": "Raissa",
               "date": "16/08/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Platinum"
+          ]
         },
         {
           "id": "other_group_18",
-          "medal": "assets/Type=Unique, Rank=Platinum, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Tente protagonizar uma cena cinematográfica na campanha e falhe miseravelmente",
-          "name": "Traga dois oscar para caso ele perca o primeiro",
-          "character": [],
-          "category": "Unique",
-          "rank": "Platinum"
+          "character": []
         },
         {
           "id": "other_group_19",
-          "medal": "assets/Type=Unique, Rank=Gold, Stripe Count=Triple Striped, Color=Green.svg",
-          "description": "Finalize uma missão complexa sem nenhuma baixa oficial",
-          "name": "Entrar e sair, sem casualidades",
           "character": [
             {
               "name": "Fernando (Gelatto)",
               "date": "07/09/2024"
             }
-          ],
-          "category": "Unique",
-          "rank": "Gold"
+          ]
         },
         {
           "id": "other_group_19-legacy-2",
-          "medal": "assets/Type=Unique, Rank=Bronze, Stripe Count=Single Striped, Color=Black.svg",
-          "description": "Perca um personagem",
-          "name": "Descanse em paz",
           "character": [
             {
               "name": "André",
@@ -1666,16 +2035,16 @@
               "name": "Raissa",
               "date": "24/08/2025"
             }
-          ],
-          "category": "Unique",
-          "rank": "Bronze"
+          ]
         }
       ],
       "timelines": [
         {
-          "dateTime": "04/04/2120",
-          "location": "Acheron Prime",
+          "id": "mission-0",
           "mission": "Sobreviva a guerra",
+          "location": "Acheron Prime",
+          "systemId": "acheron-prime",
+          "dateTime": "04/04/2120",
           "esquad": "Roberto M. - Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
           "logs": [
             {
@@ -1686,13 +2055,14 @@
               "esquad": "Roberto M. - Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
               "descrition": "06:57 O som estridente da sirene ecoou pela base, arrancando-nos do sono. Roberto foi o primeiro a se levantar. O oficial entrou correndo, olhos arregalados de pânico, \"Estamos sob ataque!\" ele gritou. 07:10 Podíamos ver as naves /da UPP/ desembarcando tropas que destruíam tudo em seu caminho. A base estava em chamas. 07:15 /Soldados da Weyland Yutani/ apareceram tentando defender a base, não fazia sentido, eles estavam protegendo algo? 07:19 Estávamos encurralados, Harper tentava encontrar uma rota de escape enquanto Sean preparava nossas armas. As torretas anti-aéreas estavam inativas. 07:30 Nosso oficial caiu, atingido no peito, Roberto gritou uma ordem e corremos em direção à torreta mais próxima, nossa última esperança. 07:40 Vermes subterrâneos emergiram, atacando soldados indiscriminadamente, /A base, construída para estudar essas criaturas, estava agora infestada por elas/. 08:01 Chegamos à torreta, Harper abriu a porta, mas antes que pudéssemos ativá-la, Sean notou uma /nave Titã/ entrando na atmosfera, /Os soldados da Weyland caíram, revelando sua verdadeira natureza: eram todos sintéticos/. 08:13 Sem energia e opções, encontramos um caminho pelo subsolo, buscando abrigo na instalação médica-científica. 08:15 Em meio à confusão, Roberto se separou do grupo e foi morto por /um dos vermes/, a esperança vacilava. 08:37 Encontramos uma saída. Lá fora, a destruição era total, mas uma nave ainda estava operacional. Subimos a bordo e Harper começou a forçar os motores e o reator a ligar. 08:40 Harper sabia dos riscos, mas era nossa única chance. Ele suava enquanto trabalhava nos controles, Trisha mantinha a guarda. 08:50 Conseguimos decolar. Em órbita, demos um salto cego para longe do planeta, momentos antes da nave inimiga /disparar um raio de luz em direção à superfície/. Estávamos feridos, exaustos e com um companheiro a menos, mas vivos."
             }
-          ],
-          "systemId": "acheron-prime"
+          ]
         },
         {
-          "dateTime": "04/04/2120",
-          "location": "ZKH-341",
+          "id": "mission-1",
           "mission": "Sobreviva ao ataque bioquímico",
+          "location": "ZKH-341",
+          "systemId": "zkh-341",
+          "dateTime": "04/04/2120",
           "esquad": "Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
           "logs": [
             {
@@ -1703,13 +2073,14 @@
               "esquad": "Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
               "descrition": "09:23 Durante o salto, a nave sofreu vários danos, Harper lutou para manter a nave estável, mas tivemos que fazer um pouso de emergência em um planetoide no sistema ZKH-341. 12:47 Ao pousarmos no planetoide, começamos a avaliar os danos. Recebemos um pedido de socorro do capitão Jackson, de uma /base científica da Weyland. Algo sombrio havia ocorrido lá,/ O capitão prometeu ajudar a consertar nossa nave se atendêssemos ao chamado. 13:15 Decidimos responder ao pedido de socorro. Trisha, Harper, Sean, Song, Christopher e Carla se prepararam para a missão, carregando o necessário para a investigação. 14:02 Chegamos à /base científica da Weyland, A área estava coberta por uma misteriosa névoa que causava alucinações e agressividade/, Trisha tentou analisar /a névoa/ enquanto o resto do grupo mantinha a guarda. 14:39 Sem os equipamentos necessários para lidar com /a névoa/, decidimos investigar a base em busca de ajuda e sobreviventes, Harper liderou a equipe enquanto Christopher, Song e Carla trabalhavam na comunicação. 15:12 Durante a busca, Trisha encontrou documentos /incriminatórios que revelavam uma sabotagem da UPP contra a Weyland,/ Trisha começou a coletar evidências enquanto Sean e Harper monitoravam a saúde mental do grupo. 15:38 Localizamos /a fonte do gás e, após uma análise rápida, conseguimos neutralizá-la,/ Harper e Sean lideraram a operação, garantindo que não houvesse mais vazamentos, Embora tivéssemos /visto coisas horríveis na base,/ conseguimos resolver a situação sem maiores baixas. 16:33 Com a situação controlada, o capitão Jackson agradeceu e ofereceu um /contrato de trabalho com a Weyland,/ Ele também propôs uma missão para buscar suprimentos no /sistema Sol,/ prometendo reparar nossa nave completamente. \n\nDOIS DIAS DEPOIS\n\n 18:14 Após discutir a proposta, o grupo decidiu realizar a missão de buscar suprimentos no /sistema Sol/ antes de dar uma resposta definitiva sobre o contrato. Usando a nave do Capitão Jackson, preparamo-nos para a próxima etapa de nossa jornada, ainda incertos sobre nosso futuro, mas determinados a seguir em frente."
             }
-          ],
-          "systemId": "zkh-341"
+          ]
         },
         {
-          "dateTime": "27/04/2120",
-          "location": "Sol",
+          "id": "mission-2",
           "mission": "WY - Transporte de suprimentos - EFS-89JH-QK3",
+          "location": "Sol",
+          "systemId": "sol",
+          "dateTime": "27/04/2120",
           "esquad": "Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
           "logs": [
             {
@@ -1720,13 +2091,14 @@
               "esquad": "Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
               "descrition": "06:32 Ao chegarem ao sistema Sol, a equipe foi bem recebidos pelos /agentes da Weyland e encaminhados ao QG de pesquisa científica em Nova Athenas/. 07:05 Lá, foram obrigados a assinar um contrato de confidencialidade de um ano sobre tudo o que viram e poderiam ver. Trisha estava especialmente relutante, mas Harper a convenceu de que era a melhor opção. 07:47 Muitos dos integrantes da equipe nunca haviam pisado na Terra antes e ficaram maravilhados com a estrutura e a natureza, Song e Harper ficaram fascinados com a flora e fauna locais, enquanto Sean documentava tudo. Trisha, por outro lado, mantinha-se alerta, sempre observando as sombras. 08:23 Sem saber, estavam /sendo monitorados de perto por agentes da UPP/. 12:15 Uma abordagem não convencional em um restaurante quase levou a um conflito, Trisha percebeu os agentes primeiro e sinalizou para Carla, que manteve a calma enquanto Harper distraía os agentes com uma conversa descontraída. 14:34 A equipe conseguiu despistar os agentes, /que morreram de causas misteriosas logo depois,/ Trisha e Sean ficaram intrigados com a coincidência, mas não havia tempo para investigar. 15:21 Receosos de decolar com sua nave devido ao medo de sabotagens, a tripulação exigiu /segurança por parte da Weyland/. 16:18 Após muita discussão e garantias de segurança, retornaram à base e decolaram rumo ao /sistema ZKH-341,/ com Harper e Carla coordenando a decolagem enquanto Trisha e Sean mantinham a vigilância."
             }
-          ],
-          "systemId": "sol"
+          ]
         },
         {
-          "dateTime": "18/05/2120",
-          "location": "ZKH-341",
+          "id": "mission-3",
           "mission": "WY - Transporte de suprimentos - EFS-89JH-QK3 (parte 2)",
+          "location": "ZKH-341",
+          "systemId": "zkh-341",
+          "dateTime": "18/05/2120",
           "esquad": "Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
           "logs": [
             {
@@ -1737,13 +2109,14 @@
               "esquad": "Trisha M. - Harper J. - Sean B. - Song L. - Chistopher L. - Carla R.",
               "descrition": "19:12 Ao chegarem ao sistema ZKH-341, a tripulação se deparou /com vários destroços e uma nave classe Costenoga estacionada ao lado do planeta,/ Receberam um comunicado da nave /das Américas Unidas,/ instruindo-os a pousar na base, pois o perigo já havia sido eliminado. 19:37 Ao pousar, encontraram o capitão Jackson e o /Major Thomaz das Américas Unidas,/ Harper manteve-se próximo ao grupo, enquanto Trisha verificava a integridade da nave. 20:05 Receberam novamente uma proposta para trabalhar para a /Weyland,/ além de uma oferta para se unirem /ao corpo de fuzileiros das Américas Unidas,/ o grupo discutia as possibilidades enquanto Song cuidava dos ferimentos restantes. 20:47 Com medo do que a /Weyland poderia fazer devido ao que já sabiam e receosos da perseguição da UPP,/ a tripulação optou por /se unir às Américas Unidas/. 21:30 Mais tarde, essa decisão se revelou acertada, pois assim que deixaram o planeta. /Ele foi bombardeado com armas nucleares,/ Trisha, Harper, Sean, Song, Christopher e Carla, /agora unidos sob a bandeira das Américas Unidas,/ refletiram sobre as consequências de suas escolhas e a nova aliança que haviam formado."
             }
-          ],
-          "systemId": "zkh-341"
+          ]
         },
         {
-          "dateTime": "02/06/2121",
-          "location": "NN3553",
+          "id": "mission-4",
           "mission": "AU - Operação Phantom",
+          "location": "NN3553",
+          "systemId": "nn3553",
+          "dateTime": "02/06/2121",
           "esquad": "Trisha M., Harper J., Sean B., Song L., Chistopher L., Carla R., Gal D.",
           "logs": [
             {
@@ -1754,13 +2127,14 @@
               "esquad": "Trisha M., Harper J., Sean B., Song L., Chistopher L., Carla R., Gal D.",
               "descrition": "Um ano se passou, e o grupo passou por um intenso treinamento, tornando-se /parte do esquadrão especial de infiltração, os Wild Weasel./ Durante esse tempo, descobriram que o /Major Thomaz tinha desavenças com as corporações, pois sua família havia sido afetada por um de seus experimentos desumanos./ Mais tarde, Trisha entregou vários documentos /incriminatórios sobre a Weyland e a UPP ao general./ Até o momento, nada foi feito a respeito. O grupo foi então convocado para sua missão de batismo: /sabotar uma base e capturar o líder de um grupo terrorista em outra,/ Essa missão foi intitulada de Operação Phantom.\n\n20:00 O grupo foi despertado do hipersono, Song estava bastante enjoada e Harper parecia bastante preocupado com ela, os dois haviam se casado. Tenente Gal se apresentou ao pessoal e disse que a partir daquele ponto, iria acompanhá-los, sendo a oficial no comando desse grupo na primeira missão e nas próximas. 20:17 Na sala de comando, o /Major John/ passou as orientações sobre a missão e deixou os detalhes com a Tenente Gal. 03:00 Ao lado de sua dropship, os últimos detalhes foram ajustados. O grupo seria /catapultado como um meteoro em direção ao planeta ainda em velocidade mais rápida que a luz (MRL),/ um desafio e tanto para Harper, piloto no comando.\n\n03:13 Após um pouso relativamente suave, o grupo começou a analisar as informações sobre a /base Owl Marsh, o primeiro alvo da missão, Deveriam desativar as comunicações e resgatar o informante, Logo em seguida, deveriam ir para Bakers Quarter, onde o objetivo final da missão estava: capturar o líder terrorista/. 03:40 /Owl Marsh/ era uma vila bem pequena, dominada pelos terroristas. O grupo, agora escondido em um morro próximo à vila, analisava as opções. Trisha tinha um plano de chamar a atenção dos guardas e eliminá-los à distância. Havia um blindado ali e eles não queriam chamar a atenção desse blindado. Song e Christopher ficaram de apoio em uma região segura, junto com a Tenente Gal, observando pelas câmeras dos trajes e passando informações relevantes para o sucesso da missão. 03:57 Minsk, o mascote do grupo, localizou com a ajuda de Harper o gerador desse vilarejo. Harper então criou um plano para desativá-lo, Após uma análise do local, Harper desativou o gerador, deixando todo o local na maior escuridão. /04:06 O informante foi localizado, gravemente ferido, mas resgatado com sucesso/. 04:20 Harper decidiu destruir a antena de comunicações do vilarejo. Após uma verificação do local, não acharam qualquer morador ou possível inimigo. Todas as armadilhas do local foram desativadas e assim o grupo se direcionou à próxima etapa.\n\n05:00 Após comunicar a nave mãe sobre o sucesso da primeira etapa, a segunda etapa se iniciou, /Um ataque massivo foi iniciado na cidade onde estava o chefe desse grupo terrorista/. 05:17 O grupo chegou à cidade e optou por utilizar o blindado dos terroristas, na tentativa de se passar por um deles. Ao chegar à cidade, foram barrados por uma guarita e logo liberados. 05:19 Um blindado começou a persegui-los, dando início a um jogo de gato e rato, onde eles tentavam a todo custo se esconder. 05:30 Uma casa desmoronada se mostrou um bom local para um esconderijo. Logo atrás havia uma vila interna onde poderiam se esconder por um período até se recuperarem. 05:47 Harper controlou remotamente o blindado, tentando criar uma distração. Aparentemente deu certo, mas o blindado foi destruído no processo. 05:55 Trisha sugeriu que poderiam tentar chegar à localização do terrorista pelas casas, entrando casa por casa e evitando as ruas. 06:37 Após muitas casas e muitos quarteirões, o grupo finalmente encontrou a localização do terrorista. Uma análise ao redor mostrou que a região era bem monitorada /e havia armas nucleares ali/. 06:45 Trisha identificou um alarme silencioso instalado em uma das casas, os terroristas sabiam de sua presença ali. 06:47 Em uma tentativa de concluir a missão o mais rápido possível, uma atitude inesperada tomou conta do grupo. Uma granada foi jogada dentro do local onde o terrorista estava. O local foi parcialmente destruído e o grupo correu em direção ao local na expectativa de que ele não tivesse morrido. 06:50 O terrorista foi enfim capturado, /mas não antes de dar a ordem para que as ogivas fossem lançadas ao espaço./ Sean tentou avisar a nave no espaço para que tomasse alguma defesa. Sem saber o que aconteceu,/ várias explosões foram detectadas/.\n\n07:34 Desesperados para fugir dali, os jogadores se viram em um campo minado, Harper quase perdeu as pernas ao pisar em uma mina, mas foi heroicamente salvo por Sean. Trisha chamou Carla com a dropship e ela correu para resgatá-los. 07:45 Agora no espaço, eles tiveram noção do que aconteceu, /Os sistemas de defesa da nave-mãe destruíram todas as ogivas antes de atingirem a nave e todos os seus ocupantes. Mas a que preço? Agora uma chuva radioativa caía sobre o planeta/. 07:59 O grupo foi recebido /pelo Major John,/ que os questionou sobre o que aconteceu no planeta. Visivelmente abalados, os jogadores não conseguiram responder adequadamente, /o major ordenou que eles fossem presos por 7 dias, até que a corte/ decidisse o que iria acontecer a seguir."
             }
-          ],
-          "systemId": "nn3553"
+          ]
         },
         {
-          "dateTime": "22/06/2121",
-          "location": "ETA LEPORIS",
+          "id": "mission-5",
           "mission": "AU - Operação Phantom (parte 2)",
+          "location": "ETA LEPORIS",
+          "systemId": "eta-leporis",
+          "dateTime": "22/06/2121",
           "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
           "logs": [
             {
@@ -1771,13 +2145,14 @@
               "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
               "descrition": "08:00 O julgamento aconteceu sem atrasos, Sean passou mal e não pôde participar, /o major foi condenado/. 10:35 O general veio até nosso esquadrão, Trisha estava abalada com tudo o que tinha acontecido, mas parecia mais calma agora, Harper estava preocupado com Song e Sean estava se recuperando. O general disse que, apesar de todos os erros, a missão foi um sucesso, mas que teríamos que nos redimir com tudo o que havia acontecido. Uma nova missão foi fornecida: acabar com a última célula líder dos terroristas. 18:00 A nave foi preparada e começamos a nos arrumar para partir. O destino era Eta Leporis, a última localização conhecida do segundo líder terrorista. A viagem duraria 12 dias.\n\n05:04 Chegamos ao sistema, leituras do planeta indicam tecnologia humana na superfície. Encontramos nosso alvo, porém o planeta pode ser um obstáculo; a gravidade dele é 1,5 vezes a da Terra, o que poderia nos trazer algumas consequências. O planeta parecia ter somente dois continentes cercados por grandes oceanos, com florestas verdejantes em seus continentes. 07:14 Chegamos ao planeta, utilizamos nossos fighters para acessar o planeta com maior discrição. Harper notou que a gravidade estava causando um esforço no motor; teríamos que ter cautela. 09:55 Após várias leituras e sondas, localizamos a possível localização do terrorista em meio às florestas densas; seria difícil acessar o local. Harper e Trisha optaram por descer de rapel dos fighters. 10:29 Localizamos a nave caída dos terroristas, parece que a nave foi danificada antes do salto no hiperespaço. Alguns sobreviveram e estão no meio dessa floresta. 10:40 Achamos o primeiro sobrevivente e algo mais /uma criatura estranha, parecendo com um lobo, mas seu corpo parece tecnológico/. /Trisha ficou especialmente curiosa com essa criatura/. /Ela demonstrou ser agressiva e tentou matar o sobrevivente; nós tivemos que matar a criatura para podermos capturar o sobrevivente e interrogá-lo, mas algo na floresta o puxou e levou para dentro da escuridão profunda entre as árvores/. /Estranhamente, não se podia ouvir nenhum som vindo de lá/. /11:00 Encontramos mais um sobrevivente, que demonstrou agressividade/. /Infelizmente, tivemos que matá-lo/. /Logo em seguida, fomos pegos de surpresa por algumas dessas criaturas que estavam aguardando na entrada de uma caverna/. /Tentamos nos esconder, mas uma acabou nos encontrando/. /Lutamos para derrotá-la, outras duas apareceram para ajudá-la/. /Quase morremos nesse combate quando uma dessas criaturas começou a atacar a outra/. /Harper notou que pareciam ser de matilhas diferentes pelas características do pelo/. /Trisha paralisou em pânico e à beira da morte/. /Harper chamou por socorro e foram resgatados e levados de volta à nave para planejar uma nova abordagem/.\n\n/15:00 Após muita discussão, eles decidiram utilizar os fighters como apoio no céu, atirando nos alvos no chão para tentar destruir os lobos/. /Harper ficaria na nave controlando os fighters remotamente, enquanto Trisha e Sean desceriam na superfície próxima à entrada da caverna/. /15:35 Mísseis foram disparados próximos à entrada da caverna/. /Trisha acreditava que os terroristas haviam se escondido lá e que eles deveriam acessar o local/. /Mais tarde, ela perceberia que esse seria seu pior erro/. /Após os mísseis atingirem o alvo, não houve explosão, mas algo estranho aconteceu: as árvores começaram a se fechar sobre o míssil como se estivessem escondendo algo/. /Trisha e Sean desceram para investigar/. /15:54 Houve uma explosão, mas as árvores não foram danificadas/. /Trisha notou que o chão era diferente, parecia que estava vivo na região onde houve a explosão/. /As árvores estavam intactas, mas também tinham a mesma particularidade do chão: sulcos e \"veias\" brilhantes que levavam algum tipo de energia estavam à mostra/.\n\n/16:11 Eles entraram na caverna/. /A caverna parecia ter algum tipo de campo que impedia a luz de entrar; tudo era extremamente escuro, nem a luz das lanternas surtia efeito/. /Trisha usou seu equipamento para visualizar na escuridão, algo a assustou: aquela mesma estrutura do lado de fora existia no interior da caverna, como se tudo estivesse vivo/. /19:00 Outra daquelas criaturas apareceu, mas essa parecia maior, mais magra, mais agressiva/. /Essa criatura se escondia com facilidade na escuridão, até sumia dos aparelhos de Trisha/. /Por pouco Trisha e Sean não foram mortos por ela, mas ela foi derrotada/. /22:35 Um corpo foi encontrado, ou melhor, o que sobrou dele/. /Uma dessas criaturas simplesmente brotou do chão e houve mais uma luta intensa/. /01:45 Corpos e mais corpos foram sendo encontrados/. /Trisha achou uma identificação da Weyland/. /03:59 Sean achou o que parecia ser uma fonte d’água/. /Ali parecia que a escuridão estava se dissipando, a água brilhava em um tom de azul claro/. /06:00 Carla entra em contato via rádio com o grupo, dizendo que terão que retornar para a base para abastecer, pois já estavam há quase 10 horas sobrevoando o local/. /Trisha se espanta, pois para eles passaram somente 1 hora e meia; ninguém havia olhado o relógio/. /07:24 Mais e mais cachorros aparecem/. /Trisha entra em pânico descontrolado, Sean corre tentando buscar um esconderijo e acaba caindo em uma das fontes dessa água/. /Ele se sente bem, recuperado, e volta para ajudar Trisha/. /Sean dá um tiro no cachorro e ele explode instantaneamente/. /Ninguém entende o que aconteceu/. /Trisha se banha nas águas e se sente bem/.\n\n/10:58 Após muitos corredores intermináveis, eles conseguiram encontrar uma saída/. /Parece que os cachorros deram uma trégua/. /Carla dá um sinal de rádio e diz que fará uma extração de emergência/. /Após serem içados para os fighters, eles notam que um dos terroristas estava tentando escapar em um fighter, e começa uma corrida para derrubá-lo/. /11:30 O caça cai, e o esquadrão consegue pegar e prender o terrorista/. /Esse era o cara que estavam procurando/. /Voltando para a nave, ele acaba não resistindo e falece no cockpit/. /12:15 De volta à nave, um relatório é feito à tenente Gal e eles são orientados a retornar à nave-mãe/. /12 dias de viagem mais tarde, o relatório é feito ao general, e mais uma missão foi concluída/.\n\n/04:00 Trisha e Sean começam a ter sonhos estranhos, algo os está chamando para a floresta/. /Eles se sentem livres, assustados, como se fossem animais/. /Eles acordam e percebem que estavam em um sonho/. /Estranhamente, tiveram o mesmo sonho/. /Seria coincidência?/"
             }
-          ],
-          "systemId": "eta-leporis"
+          ]
         },
         {
-          "dateTime": "02/11/2121",
-          "location": "Sea Δ",
+          "id": "mission-6",
           "mission": "WY - Resgate de pessoal autorizado - EFX-12TX-Δ",
+          "location": "Sea Δ",
+          "systemId": "sea-delta",
+          "dateTime": "02/11/2121",
           "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
           "logs": [
             {
@@ -1788,13 +2163,14 @@
               "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
               "descrition": "01:00 Após uma missão bem-sucedida, os Wild Weasel são enviados para resgatar um oficial de ciências da /Weyland-Yutani/. A nave de cruzeiro onde o oficial está localizado está em uma área distante das regiões colonizadas. Ao chegar no sistema, enfrentamos problemas de comunicação e sensores devido a um /sinal desconhecido vindo de uma lua próxima/. 02:15 Encontramos uma nave abandonada e decidimos explorá-la. A nave está completamente desativada, sem sinais de vida. Vários corpos flutuam, e muitas portas exigem um nível específico de acesso. A nave foi severamente avariada, com um grande pedaço da traseira arrancado. 03:30 Trisha explora as ventilações e descobre que estão inundadas. Ela nos encontra e revela que houve um acidente com os tanques de água. Recebemos uma mensagem de aviso da Tenente Gal, alertando sobre inimigos na área. Decidimos avançar pelos andares superiores tentando evitar detecção. 04:45 Harper e Sean encontram /um militar da UPP e o interrogam/. /Descobrimos que o militar também está procurando o cientista/. Encontramos cartões de acesso para o laboratório médico e a área de engenharia. /05:20 Nossa nave é invadida e a Tenente Gal Gadot e Song Lin são raptadas pela UPP/. /Harper tenta escapar para localizar Song, mas é convencido a permanecer na missão/. O major chega e resgata os tripulantes, /mas a nave do major está completamente avariada/. 00:30 Durante uma batalha em outro sistema antes do major vir ao resgate, /o general é sequestrado/. As Américas Unidas declaram guerra à UPP. Nos preparamos para um possível combate contra a UPP."
             }
-          ],
-          "systemId": "sea-delta"
+          ]
         },
         {
-          "dateTime": "04/11/2121",
-          "location": "HR2429",
+          "id": "mission-7",
           "mission": "AU - Operação Blackout",
+          "location": "HR2429",
+          "systemId": "hr2429",
+          "dateTime": "04/11/2121",
           "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
           "logs": [
             {
@@ -1805,13 +2181,14 @@
               "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
               "descrition": "01:00 Assim que chegamos ao sistema HR2429, o Major ordenou um ataque massivo às naves inimigas em órbita. Vários feixes de lasers rasgaram o espaço, destruindo cada nave à nossa frente. O combate havia começado, e não havia mais volta. O Major nos passou as diretrizes da missão: cada esquadrão ficaria responsável por tomar uma cidade. Nós, do Wild Weasel, seríamos responsáveis por /Tlenjos, ao lado das unidades Solid Snake e Lusprel sozinhos/. 02:15 Durante a breve pausa para prepararmos nosso equipamento, /Trisha e Sean compartilharam novamente um sonho conjunto/. /Eles descreveram uma criatura humanoide, algo que parecia saído de um pesadelo, falando sobre algo que devia ser destruído/. /Pela primeira vez, a criatura se dirigiu aos dois diretamente, dizendo que algo estava vindo atrás deles/. /O ser se voltou para Trisha e, com uma voz que parecia pesar, disse que sentia muito por sua perda/. /Trisha, perplexa, não conseguiu entender o significado dessas palavras/. 02:45 Trisha recebeu notícias devastadoras: a equipe de sua amiga /Nina havia sido capturada pela UPP/. O impacto foi visível em seu rosto, mas em vez de se abater, ela usou essa dor como combustível, se preparando com uma determinação renovada. Sua mente estava focada; não havia espaço para erros.\n\n04:00 Embarcamos em nossa dropship, e a invasão começou. Quando nos aproximamos de Tlenjos, fomos recebidos por uma esquadra de caças inimigos e outra dropship em defesa da cidade. /Solid Snake assumiu a liderança contra os caças inimigos/, enquanto os caças de escolta se encarregaram do restante. Com precisão cirúrgica, o Wild Weasel abateu os caças remanescentes, abrindo caminho para /Tlenjos/. /Nosso objetivo: destruir os armazéns que armazenavam peças de reposição e armamentos críticos/. 05:15 /Carla, ao lado de Harper, comandou a dropship em um ataque preciso aos pontos estratégicos em solo,/ garantindo nossa entrada segura. Com o sucesso inicial, desembarcamos e nos movemos para tomar posições. Trisha subiu ao topo de uma estrutura alta, de onde tinha uma visão clara de quase toda a cidade. Seu rifle estava pronto, e ela começou a abater inimigos à distância. /Sean, no blindado, focou em eliminar os alvos maiores em solo, enquanto Harper se infiltrava na estrutura, limpando qualquer resistência/. 06:00 Trisha fez jus à sua reputação, eliminando alvos com precisão, mas seu sucesso chamou a atenção. /Um blindado inimigo a localizou e disparou um feixe de plasma em sua direção/. Ela conseguiu buscar cobertura, mas foi gravemente ferida no processo. /Harper, no interior da instalação, abateu rapidamente os inimigos que encontrou,/ mas foi então que ouviu o som aterrador do teto desabando. Correu em direção à origem do som e encontrou /Trisha inconsciente, ferida, e soterrada sob os escombros/. 06:45 Enquanto /Sean continuava a pulverizar os inimigos com morteiros,/ movia-se em direção a um prédio no centro da cidade, acreditando ser um dos armazéns. /Harper, agora com Trisha segura, começou a plantar explosivos na instalação/. Ao sair, ele armou os explosivos para serem ativados assim que qualquer inimigo entrasse. O plano funcionou perfeitamente; /Sean conseguiu destruir a outra estrutura/ enquanto /Carla nos chamava pelo rádio, instruindo-nos a avançar para o próximo objetivo/.\n\n07:30 No caminho para /Lusprel, Christopher realizou os primeiros socorros em Trisha, trazendo-a de volta à luta/. Agora, mesmo ferida, ela estava pronta para a segunda fase do combate. 08:15 /Lusprel, uma cidade fortificada, se revelou um desafio/. Ao chegarmos, a primeira ordem foi /eliminar todos os veículos em solo, assegurando nossa supremacia aérea/. Desembarcamos próximos à muralha de proteção, que estava destruída em uma seção, e acessamos a cidade com o blindado. O combate foi intenso; /trocamos disparos com blindados inimigos até que nosso veículo foi destruído/. Sem escolha, nos abrigamos em casas próximas, tentando replicar a estratégia anterior. A tempestade de areia que se seguiu nos deu a cobertura que precisávamos para destruir /um dos armazéns restantes, concluindo a segunda etapa da missão com sucesso/.\n\n10:00 O Major nos ordenou a retornar à órbita, pois /a nave Titã havia aparecido, aparentemente danificada/. O Major informou que /os sequestrados haviam sido encontrados — todos, exceto o General/. 11:30 Ao chegar à nave /Titã, Harper localizou Song, e o alívio foi imediato/. No entanto, Trisha estava focada em uma busca desesperada por sua amiga Nina. Quando finalmente encontrou o pod onde Nina deveria estar, foi recebida com a visão de um saco preto. /Nina estava morta/.\n\n13:00 Após algumas horas, o grupo se reuniu novamente. Harper descobriu que /Song estava grávida de gêmeos, uma nova responsabilidade em meio ao caos da guerra/. O Major promoveu o grupo por seus esforços heróicos. Mas o peso do luto era inescapável. Mesmo assim, o Major anunciou que teríamos um breve momento de descanso antes que a guerra nos chamasse de volta. Pensávamos que finalmente poderíamos respirar, mas todos sabíamos que o descanso seria apenas temporário."
             }
-          ],
-          "systemId": "hr2429"
+          ]
         },
         {
-          "dateTime": "29/12/2121",
-          "location": "55 Cancri",
+          "id": "mission-8",
           "mission": "AU - Operação Checkout",
+          "location": "55 Cancri",
+          "systemId": "55-cancri",
+          "dateTime": "29/12/2121",
           "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
           "logs": [
             {
@@ -1822,13 +2199,14 @@
               "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R.",
               "descrition": "CORROMPIDO"
             }
-          ],
-          "systemId": "55-cancri"
+          ]
         },
         {
-          "dateTime": "22/02/2122",
-          "location": "GL259",
+          "id": "mission-9",
           "mission": "AU - Operação Ponto Final",
+          "location": "GL259",
+          "systemId": "gl259",
+          "dateTime": "22/02/2122",
           "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R., Gal D.",
           "logs": [
             {
@@ -1839,13 +2217,14 @@
               "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R., Gal D.",
               "descrition": "00:30 Após um curto descanso, Trisha e Sean foram levados à ala médica para tratamento psiquiátrico junto com o restante do grupo. A última missão não foi fácil para ninguém. Durante o tratamento, Harper descobriu que Song estava prestes a dar à luz. Em meio ao caos, finalmente uma boa notícia: nasceram um menino e uma menina. Todos na nave comemoraram, mas a guerra ainda não acabou.\n\n01:15 O Major informa uma nova missão ao grupo. Eles devem /se infiltrar em uma base secreta da Seegson no território do Império dos Três Mundos/. /Espiões da Weyland localizaram essa base, que está desenvolvendo armas para a UPP/. /Essas armas podem ser decisivas nesta guerra/. 08:45 Os Wild Weasel se preparam para a missão, /com identidades falsas para se infiltrarem como funcionários da Seegson/. Após uma curta viagem em uma nave de passageiros comum, eles desembarcam na base científica. Um Working Joe os recebe junto com um oficial despachante. /Gal suborna o despachante para ignorar algumas cargas que trouxe/. /O oficial aceita de bom grado/. 09:15 O Working Joe os conduz aos seus aposentos. Um oficial da estação os recebe, entrega seus uniformes e designações. Todos trabalharão na cozinha e refeitório. Harper assume o papel de chef, com Gal e Sean como auxiliares. Trisha e Carla ficam responsáveis pelo salão, enquanto Christopher cuida do almoxarifado. Eles mal têm tempo para organizar seus pertences antes de iniciar suas funções. 09:30 O grupo organiza o salão para o almoço. Os trabalhadores começam a chegar: cientistas, operários, fuzileiros e oficiais. Não há médicos humanos, a medicina é automatizada na base. 12:30 Após o almoço, Trisha decide explorar a base. Cada área exige um nível de acesso, e eles possuem o nível mais básico. Trisha encontra uma área verde e descobre um ponto cego das câmeras, onde há um encanamento escondido, grande o suficiente para uma pessoa passar. 20:00 O jantar se aproxima. Harper prepara uma refeição especial para os trabalhadores, que chegam visivelmente exaustos. 23:45 Durante a noite, /Minsk é orientado a explorar os dutos e verificar o que pode ser descoberto sobre a base/.\n\n07:00 /Minsk retorna com parâmetros gravados, mas as gravações estão cheias de ruídos/. Nenhuma informação relevante é extraída. 09:00 O grupo se prepara para o almoço. Trisha descobre que /haverá uma manutenção no Apollo, a IA da estação, no dia seguinte/. Isso poderia representar uma oportunidade. 11:30 Harper sugere aos oficiais uma ideia: incluir uma opção de café da tarde para os trabalhadores, a ser servido diretamente na área de trabalho. Os oficiais dizem que irão considerar. 14:00 O grupo começa a planejar como acessar as áreas restritas para /sabotar o reator da base e destruir tudo, simulando um acidente/. /Trisha sugere dopar um dos operários para roubar seu cartão de acesso/. O plano é aceito e será executado mais tarde. 20:00 Durante o jantar, Trisha implementa o plano. /Carla distrai os fuzileiros, sendo presa no processo, mas Trisha tem sucesso em pegar o cartão de um operário/. /Ao tentar copiar os dados, a criptografia pesada impede o progresso, e o cartão é bloqueado/. /Trisha devolve o cartão sem chamar a atenção/. 23:30 Um oficial avisa que no dia seguinte haverá visitantes e uma refeição especial deve ser preparada.\n\n06:00 Carla é liberada da prisão. Na instalação dos fuzileiros, ela ouve um operário reclamar que seu cartão não funciona e percebe uma menção a algum protocolo de segurança. Ela volta ao dormitório e avisa o grupo. 06:45 Trisha rapidamente pega os equipamentos e os esconde no encanamento da área verde. Ela nota oficiais de segurança entrando em cada habitação, procurando algo. Harper é surpreendido por um fuzileiro que revistava o local com um drone, mas ele não encontra nada. 09:00 O grupo se reúne no refeitório para preparar o almoço. Lá, descobrem que os Working Joe não estão funcionando, provavelmente devido à manutenção no Apollo. Christopher e Harper descobrem um terminal de controle nas costas dos Working Joe, e Trisha sugere tentar acessá-lo. 11:30 /Trisha finge passar mal para buscar os equipamentos escondidos, e Harper lhe dá um soco na barriga para que pareça real/. Trisha vomita e é liberada para voltar ao dormitório. No caminho, ela passa pela área verde e vê um fuzileiro com seu drone, que começa a escanear o local. O drone detecta algo, mas o fuzileiro acredita que seja uma falha no sistema. 15:00 Durante o almoço, /os oficiais recebem visitantes da UPP/. /Um dos oficiais dá a Harper acesso à área restrita para servir refeições aos convidados/. /Harper o acompanha para verificar o local e ouve gritos e ruídos estranhos, que os oficiais ignoram/. 17:00 /Na volta, Harper esbarra em um oficial carregando os equipamentos de Trisha em um saco/. /Aproveitando a distração, Harper consegue pegar um terminal de dados que pode ser útil para reconfigurar os Working Joe/. 20:30 /Harper cria um plano para reconfigurar os Working Joe, integrando um vírus que se espalhará pelo Apollo e causará um colapso na estação/. 22:30 Durante o jantar, Trisha tenta acessar a engenharia com o cartão, mas sem sucesso. Ela decide não chamar a atenção e retorna ao dormitório.\n\n00:00 O Apollo é reconectado. Os Working Joe começam a surtar e se tornam agressivos, destruindo tudo e matando qualquer um armado. Alarmes ecoam pela estação, alertando sobre uma evacuação imediata. O grupo corre em direção à nave dos oficiais para fugir. 00:15 Um alarme de dano ao reator toca. Ele está prestes a explodir. Todos se reúnem na sala de embarque. Trisha hesita em embarcar, pois não encontra Minsk. Harper tenta convencê-la de que não deve se sacrificar, mas Carla a arrasta para a nave. 00:20 A nave decola, e a estação explode. Trisha desaba no chão, em desespero, imaginando o sofrimento de Minsk. No entanto, ao verificar sua bolsa, ouve um grunhido. Minsk havia se escondido ali. 01:00 /Harper traça um plano para levar os sobreviventes como prisioneiros/. /Ele configura sua cápsula de hibernação para despertar antes das outras, reprogramando a nave para se dirigir a um ponto de encontro onde as AU os aguardam/.\n\n04:00 O grupo, de volta à nave Defiant, aguarda as próximas ordens para o próximo passo da guerra."
             }
-          ],
-          "systemId": "gl259"
+          ]
         },
         {
-          "dateTime": "25/02/2122",
-          "location": "Alpha Caeli",
+          "id": "mission-10",
           "mission": "AU - Invasão secreta",
+          "location": "Alpha Caeli",
+          "systemId": "alpha-caeli",
+          "dateTime": "25/02/2122",
           "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R., Gal D., Song L., Lucas V.",
           "logs": [
             {
@@ -1856,13 +2235,14 @@
               "esquad": "Trisha M., Harper J., Sean B., Chistopher L., Carla R., Gal D., Song L., Lucas V.",
               "descrition": "Após a última missão, os Wild Weasel decidiram descansar e aproveitar sua merecida folga. Trisha encontra Jordan e eles resolvem ir até a área de treino para praticar, Sean os acompanha. Lá, Trisha e Sean decidem iniciar uma competição amistosa de luta livre para passar o tempo, com Jordan atuando como juiz, depois de muitos socos, chutes e provocações, Trisha vence Sean. Derek, que foi quem montou o ringue, nota que uma pequena plateia se formou, todo o Wild Weasel estava presente. Jordan se retira para cuidar de seus afazeres diários. Derek convida o grupo para ir até a área verde para relaxar e passar o tempo.\n\nApós alguns minutos de conversa e descanso, Derek é chamado pelo Dr Marcus para ir ao seu posto e ajudá-lo com algo. Logo depois, um oficial de comunicações aparece, intrigado, e comenta com o Wild Weasel que as comunicações da nave estão offline, ele os convida a ir até a ponte de comando para informar o Major, pois a nave estava passando por reparos e alguém poderia ter cometido um erro.\n\nO grupo segue em direção à ponte de comando. No caminho, várias portas não estavam funcionando, e ao subirem um pavimento, todas as luzes se apagam e acendem um minuto depois. Quando finalmente chegam à ponte, toda a energia da nave se apaga, mergulhando-os na escuridão. O Major ordena que os Wild Weasel vão até a engenharia verificar o que está acontecendo. Eles seguem para lá. Ao chegarem, encontram alguns cadáveres e todos os terminais destruídos. Harper decide voltar para seu dormitório para cuidar de seus filhos, pois estava claro que havia alguém tentando sabotar a nave.\n\nO grupo decide retornar à ponte de comando para informar o Major, mas uma explosão sacode a nave, eles identificam que os caças foram sabotados. Logo descobrem que os responsáveis são invasores da UPP, que estão desativando um a um os sistemas de defesa da Defiant. Incapazes de persegui-los, o grupo corre em direção à ponte por um caminho alternativo. No caminho, a Defiant é severamente atacada pela UPP, agora, divididos sobre qual caminho seguir, decidem continuar indo até o Major, que os recebe visivelmente preocupado. Estavam sem defesas, sendo atacados de todos os lados. Trisha se dirige ao terminal geral para tentar recuperar as comunicações. Com muito esforço, ela consegue restabelecê-las.\n\nO Major ordena que todos defendam a nave, diversas naves são lançadas em sua defesa. Durante sua análise, Trisha descobre que há uma nave invasora atracada na Defiant.\n\nA batalha se intensifica, e a Defiant começa a perder. Em desespero, o Major ordena o lançamento de uma bomba nuclear contra a frota da UPP. A explosão destrói todas as naves inimigas e aliadas, salvando a Defiant, ao menos por enquanto. Os invasores, no entanto, roubaram a nave Icarus X e fugiram com os prisioneiros no meio do caos.\n\nO estaleiro onde a Defiant estava sendo reparada foi gravemente danificado. Com a onda de choque da explosão, a Defiant foi empurrada para fora do estaleiro, caindo em direção ao planeta abaixo.\n\nO Major ordena a evacuação imediata, pois a nave não podia ser salva. Todos correm para os pods mais próximos e são lançados em direção ao planeta. A Defiant colide com o solo, causando uma enorme onda de choque que sacode todos os pods, mas, felizmente, todos pousam com segurança.\n\nO planeta é frio, sem atmosfera respirável e com intensas tempestades de partículas de silício. Essas tempestades interferem em comunicações de longa distância. A Defiant transmite um sinal de socorro ininterrupto; seu transmissor de emergência ainda funciona.\n\nTrisha, Sean, Carla e Christopher estão no mesmo pod que o Major. Harper, Song e Gal estão em outro pod, em uma localização desconhecida. Após algumas tentativas, Trisha consegue se comunicar com Harper, eles estão bem, mas seu pod está vazando oxigênio. Eles têm, no máximo, quatro dias. Trisha triangula a localização aproximada do pod de Harper e promete resgatá-los. Logo após o contato, a Defiant emite um comunicado regional informando que seu reator está instável e entrará em colapso em aproximadamente 48 horas. O grupo agora precisa decidir qual caminho seguir.\n\nA tempestade se intensifica, tornando inseguro sair, e seus recursos são escassos. Decidem aguardar até que a tempestade diminua. 24 horas depois, enfim, o momento de partir chega.\n\nEles retiram alguns pedaços do pod que não são essenciais e partem em direção ao pod de Harper, outro grupo é designado para ir à Defiant tentar resolver a situação.\n\nDurante a caminhada pela superfície, o grupo mantém contato com o pod a cada hora e tenta seguir pelo caminho mais plano possível. Em certo momento, Trisha avista uma bola de fogo entrando na atmosfera. Um destroço cai em uma montanha próxima à Defiant, causando um tremor sentido a quilômetros de distância.\n\nO grupo apressa o passo quando uma nova tempestade se aproxima. Agora indefesos no meio da tempestade, decidem buscar abrigo na Defiant, que está próxima. Ao chegar, entendem a dimensão dos danos. A Defiant está quase completamente destruída; vários de seus conveses desabaram, o que restou da nave é pouco.\n\nEles percorrem os corredores até chegar à engenharia, mas são atingidos por uma nova explosão, o grupo corre e, ao chegar à engenharia, percebe que o combustível dos reatores está vazando e reagindo com a atmosfera do planeta, causando um superaquecimento. A nave pode explodir a qualquer momento.\n\nCarla sugere utilizar o sistema de despejo de combustível da nave. Era arriscado, mas a melhor opção. Após alguns ajustes improvisados, conseguem despejar os tanques de combustível na atmosfera. Três tanques são lançados em direções diferentes, causando explosões no céu, visíveis de longe.\n\nA Defiant não corria mais risco, mas a atmosfera agora estava radioativa. Trisha decide que devem resgatar Harper o quanto antes, pois o pod dele está vulnerável à radiação. O grupo avança em direção ao pod de Harper.\n\nO dia começa a amanhecer, e a gigante estrela azul do sistema surge no horizonte, junto com o estaleiro espacial, que cai lentamente em direção ao planeta. Trisha vê a cena e entra em desespero, caindo no chão em estado catatônico. Ela se sente exausta e sem esperança de sobrevivência após tudo o que aconteceu, Sean e Christopher tentam carregá-la, mas no momento em que o estaleiro começa a queimar na atmosfera, Sean também paralisa de medo, entrando em estado catatônico.\n\nCarla, desesperada, encontra um buraco onde poderiam se abrigar, o estaleiro colide com a montanha ao fundo, e um enorme terremoto é sentido por toda a região, a onda de choque avança em todas as direções, Carla agarra Sean e se joga no buraco em busca de proteção. Christopher tenta fazer o mesmo, mas tropeça e cai ao lado de Trisha.\n\nA onda de choque os atinge, e seus corpos são arremessados pela força do impacto. Carla e Sean observam os destroços passarem sobre suas cabeças. O buraco não é muito fundo, mas parece ser suficiente para protegê-los.\n\nAlgum tempo depois, a explosão acaba, e o silêncio toma conta, Carla e Sean saem do buraco e veem a destruição ao redor. As montanhas viraram pó, incandescentes, a Defiant desapareceu, não há mais tempestades, poeira ou som. Eles percebem que estão surdos.\n\nDESAPARECIDOS: Song \"Lifeline\" Ling, Gal Dagot, Lucas \"Ironclad\" Vega, Marcus Caldwell, Corporal Harper \"Offroad\" Jammer e outros 754 tripulantes.\n\nMORTOS: Trisha Monroe, Christopher Lee.\n\nCom pesar, as Américas Unidas decretam luto oficial de sete dias.\n\nFim da transmissão."
             }
-          ],
-          "systemId": "alpha-caeli"
+          ]
         },
         {
-          "dateTime": "14/05/2122",
-          "location": "Sol",
+          "id": "mission-11",
           "mission": "AU - Resgate",
+          "location": "Sol",
+          "systemId": "sol",
+          "dateTime": "14/05/2122",
           "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
           "logs": [
             {
@@ -1873,13 +2253,14 @@
               "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
               "descrition": "CONFIDENCIAL #54B87FG32"
             }
-          ],
-          "systemId": "sol"
+          ]
         },
         {
-          "dateTime": "26/08/2122",
-          "location": "Zeta Herculis",
+          "id": "mission-12",
           "mission": "AU - Infiltração",
+          "location": "Zeta Herculis",
+          "systemId": "zeta-herculis",
+          "dateTime": "26/08/2122",
           "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
           "logs": [
             {
@@ -1890,13 +2271,14 @@
               "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
               "descrition": "Após chegar ao sistema /NN3049/, o grupo Wild Weasel recebeu uma nova missão: recuperar uma base abandonada em /Zeta Herculis/, localizada /dentro do território da UPP/. A AU acredita que retomar essa base, anteriormente /operada pela Weyland-Yutani/, pode mudar os rumos da guerra.\n\nA viagem ocorreu sem incidentes, e ao chegar, os Wild Weasel enfrentaram pouca resistência, /devido ao isolamento do sistema/.\n\nA base, identificada como /Hadleys Hope/, foi localizada rapidamente no planeta. Carla pousou a nave com segurança próximo à instalação, que aparentava estar abandonada há muito tempo.\n\nCRIS e Sean investigaram os arredores enquanto Carla e Takeo exploraram o interior da base. Durante a varredura interna, /encontraram oficiais da UPP recém-chegados/. Após um combate breve, os inimigos foram eliminados e a base foi dominada.\n\nA equipe iniciou os preparativos para reativar a operação da instalação, /marcando a conquista do primeiro sistema da UPP pela missão/."
             }
-          ],
-          "systemId": "zeta-herculis"
+          ]
         },
         {
-          "dateTime": "17/09/2122",
-          "location": "KOI-2311",
+          "id": "mission-13",
           "mission": "AU - Invasão",
+          "location": "KOI-2311",
+          "systemId": "koi-2311",
+          "dateTime": "17/09/2122",
           "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
           "logs": [
             {
@@ -1907,13 +2289,14 @@
               "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
               "descrition": "Poucos dias após a retomada de /Hadleys Hope/, os Wild Weasel receberam uma nova missão: infiltrar-se em um posto avançado da /UPP localizado no sistema KOI-2311/. A ordem da AU era clara: evitar chamar atenção inicialmente, evacuar civis, se possível, e destruir toda a base.\n\n/Utilizando uma nave civil/, o grupo chegou ao sistema sem problemas, /atracando na estação civil de transporte interestelar/. /Optaram por se infiltrar pelo terminal de cargas, disfarçando-se como trabalhadores locais/. /CRIS conseguiu convencer um supervisor civil a contratá-los como temporários, garantindo acesso à área militar/.\n\nSob disfarce, implantaram explosivos em cada estrutura militar, planejando a detonação remota.\n\nDurante a operação, Takeo teve a ideia de criar uma vala para impedir que o combustível da tubulação conectando as áreas militar e civil alcançasse a zona civil, minimizando danos colaterais.\n\n/Apesar de quase serem descobertos durante a última instalação dos explosivos, conseguiram escapar e detonaram toda a área militar/, preservando a segurança da zona civil.\n\nCom a destruição da base militar, as naves de guerra da AU avançaram e /consolidaram o domínio sobre o segundo sistema da UPP/."
             }
-          ],
-          "systemId": "koi-2311"
+          ]
         },
         {
-          "dateTime": "25/10/2122",
-          "location": "KOI-1871",
+          "id": "mission-14",
           "mission": "AU - Desabilitar comunicações",
+          "location": "KOI-1871",
+          "systemId": "koi-1871",
+          "dateTime": "25/10/2122",
           "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
           "logs": [
             {
@@ -1924,13 +2307,14 @@
               "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
               "descrition": "CORROMPIDO"
             }
-          ],
-          "systemId": "koi-1871"
+          ]
         },
         {
-          "dateTime": "26/10/2122",
-          "location": "KEPLER 22B",
+          "id": "mission-15",
           "mission": "AU - Sabotar suprimentos",
+          "location": "KEPLER 22B",
+          "systemId": "kepler-22b",
+          "dateTime": "26/10/2122",
           "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
           "logs": [
             {
@@ -1941,13 +2325,14 @@
               "esquad": "Sean B., Carla R., C.R.I.S., Takeo \"Kaiju\" Ichinoda, Rubber Joe",
               "descrition": "Sem retorno"
             }
-          ],
-          "systemId": "kepler-22b"
+          ]
         },
         {
-          "dateTime": "[REDACTED]",
-          "location": "QG Provisorio – AU",
+          "id": "mission-16",
           "mission": "Alto Comando, Divisao de Operacoes Especiais",
+          "location": "QG Provisorio – AU",
+          "systemId": "zkh-341",
+          "dateTime": "[REDACTED]",
           "esquad": "Wild Weasel",
           "logs": [
             {
@@ -1958,8 +2343,7 @@
               "esquad": "Wild Weasel",
               "descrition": "Após 96 horas sem comunicações válidas, protocolos de contingência foram acionados. Todas as tentativas de reconectar canais criptografados resultaram em silêncio absoluto. Não há registros de tráfego de nave, transmissões de socorro ou indicadores de sobrevivência.\n\nUnidade WILD WEASEL oficialmente designada como: \"ESQUADRÃO DESAPARECIDO\".\n\nIntegrantes listados como KIA (presumidos mortos em combate):\n\nSean B – Líder de esquadrão.\n\nCarla R – Piloto de combate.\n\nCRIS – Unidade de Inteligência Sintética.\n\nTakeo \"Kaiju\" Ichinoda – Artilharia de Assalto.\n\nRubber Joe – Suporte de Campo.\n\nMinsk - Mascote da equipe.\n\nRegistro final anexado ao banco de dados memorial da AU.\n\nStatus: Encerrado.\n\nObservação: Sem corpos. Sem respostas. Apenas silêncio."
             }
-          ],
-          "systemId": "zkh-341"
+          ]
         }
       ],
       "navigation": {
@@ -2120,6 +2504,29 @@
           }
         ]
       }
+    },
+    {
+      "id": "campanha-e210e0e5-b8e7-4c13-a20a-2b876d366674",
+      "title": "Fronteira Esquecida",
+      "status": "planejada",
+      "author": "",
+      "medalArtist": "",
+      "unit": "",
+      "division": "",
+      "period": "",
+      "summary": "",
+      "description": "",
+      "players": [
+        {
+          "id": "909729d9-d1cf-40a0-b5d4-834d99abf3c8",
+          "playerId": "André",
+          "profileId": "0",
+          "mascot": false,
+          "characters": []
+        }
+      ],
+      "achievements": [],
+      "timelines": []
     }
   ]
 }
