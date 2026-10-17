@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { normalizeArchive, newCampaign, validateArchive } from '../data/archive-schema.js';
 import { applyPlayerProfile, profileAchievements } from '../data/player-profiles.js';
-const legacy = JSON.parse(await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'));
+const legacy = JSON.parse(
+  await readFile(new URL('./fixtures/archive-v1.json', import.meta.url), 'utf8'),
+);
 test('cadastro único mantém personagens por campanha e não une homônimos', () => {
   const archive = normalizeArchive(legacy);
   const campaign = newCampaign('Outra campanha');

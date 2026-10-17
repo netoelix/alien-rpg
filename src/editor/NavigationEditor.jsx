@@ -1,11 +1,18 @@
 import { useCallback, useState } from 'react';
 import { StarGrid } from '../components/StarGrid.jsx';
 import { validateNavigation } from '../../data/star-map.js';
+import { OfficialSystemsEditor } from './OfficialSystemsEditor.jsx';
 import { MapSystemsEditor } from './MapSystemsEditor.jsx';
 import { MapTerritoriesEditor } from './MapTerritoriesEditor.jsx';
 import { MapRouteEditor } from './MapRouteEditor.jsx';
 
-export function NavigationEditor({ campaign, onApply, storageKey }) {
+export function NavigationEditor({
+  campaign,
+  onApply,
+  storageKey,
+  systemProfiles,
+  onProfilesApply,
+}) {
   const [tool, setTool] = useState('inspect');
   const [systemPick, setSystemPick] = useState(null);
   const [territoryPick, setTerritoryPick] = useState(null);
@@ -40,7 +47,7 @@ export function NavigationEditor({ campaign, onApply, storageKey }) {
         </select>
       </label>
       <StarGrid
-        campaign={campaign}
+        campaign={{ ...campaign, systemProfiles }}
         polygonPoints={tool === 'territory' ? contour : []}
         marker={tool === 'system' ? systemPick?.point : undefined}
         onPosition={(point) => {
@@ -71,6 +78,14 @@ export function NavigationEditor({ campaign, onApply, storageKey }) {
           }}
           pick={systemPick}
           storageKey={storageKey + ':systems'}
+        />
+      </details>
+      <details className="map-editor-section">
+        <summary>FICHAS DOS SISTEMAS OFICIAIS · TODAS AS CAMPANHAS</summary>
+        <OfficialSystemsEditor
+          profiles={systemProfiles}
+          onApply={onProfilesApply}
+          storageKey={storageKey + ':official-profiles'}
         />
       </details>
       <details className="map-editor-section">

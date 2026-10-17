@@ -5,7 +5,9 @@ import { createHash } from 'node:crypto';
 import { normalizeArchive, validateArchive } from '../data/archive-schema.js';
 import { missionRecords } from '../data/schema.js';
 import { validateEditorRecord } from '../data/editor-rules.js';
-const source = JSON.parse(await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'));
+const source = JSON.parse(
+  await readFile(new URL('./fixtures/archive-v1.json', import.meta.url), 'utf8'),
+);
 const migration = JSON.parse(
   await readFile(new URL('../data/mission-migration.json', import.meta.url), 'utf8'),
 );

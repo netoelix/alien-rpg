@@ -1,4 +1,5 @@
 import { officialSystems, officialTerritories } from './official-cartography.js';
+import { validateLocations } from './system-profiles.js';
 export { officialSystems, officialTerritories } from './official-cartography.js';
 
 export const lightYearsPerParsec = 3.26156;
@@ -17,7 +18,24 @@ export const normalizeSystemName = (name) =>
     .replace(/[^\p{L}\p{N}]/gu, '');
 
 export function campaignSystems(campaign) {
-  return [...officialSystems, ...(campaign.navigation?.systems || [])];
+  return [
+    ...officialSystems.map((system) => ({
+      ...system,
+      locations: campaign.systemProfiles?.[system.id] ?? system.locations,
+    })),
+    ...(campaign.navigation?.systems || []),
+  ];
+}
+
+export function validateSystemProfiles(profiles) {
+  if (profiles === undefined) return [];
+  if (!profiles || typeof profiles !== 'object' || Array.isArray(profiles))
+    return ['Fichas do catálogo oficial inválidas.'];
+  return Object.entries(profiles).flatMap(([id, locations]) =>
+    officialSystems.some((system) => system.id === id)
+      ? validateLocations(locations === undefined ? null : locations)
+      : ['Sistema oficial desconhecido: ' + id],
+  );
 }
 
 export function campaignTerritories(campaign) {
@@ -66,6 +84,7 @@ export function validateNavigation(campaign) {
   const names = new Set(officialSystems.map((system) => normalizeSystemName(system.name)));
   const errors = [];
   for (const system of systems) {
+    errors.push(...validateLocations(system?.locations));
     if (
       !system ||
       !validId(system.id) ||

@@ -926,6 +926,8 @@ export default function Editor() {
             <NavigationEditor
               key={campaignId}
               campaign={campaign}
+              systemProfiles={archive.systemProfiles}
+              onProfilesApply={(systemProfiles) => updateArchive({ ...archive, systemProfiles })}
               storageKey={`alien-map-form:${revision}:${campaignId}`}
               onApply={(navigation) =>
                 updateArchive({

@@ -1,4 +1,5 @@
 import { normalizeArchive, validateArchive } from './archive-schema.js';
+import { publicLocations } from './system-profiles.js';
 
 // Lista explícita: campos privados e extensões futuras não são publicados por acidente.
 const pick = (value, fields) =>
@@ -14,6 +15,16 @@ export function publicArchive(source) {
   const archive = normalizeArchive(source);
   return {
     version: 2,
+    ...(archive.systemProfiles
+      ? {
+          systemProfiles: Object.fromEntries(
+            Object.entries(archive.systemProfiles).map(([id, locations]) => [
+              id,
+              publicLocations(locations),
+            ]),
+          ),
+        }
+      : {}),
     playerProfiles: archive.playerProfiles.map((p) => pick(p, 'id name biography')),
     achievements: archive.achievements.map((a) =>
       pick(a, 'id name description medal category rank'),
@@ -40,9 +51,10 @@ export function publicArchive(source) {
       ...(c.navigation
         ? {
             navigation: {
-              systems: (c.navigation.systems || []).map((s) =>
-                pick(s, 'id name x y installations'),
-              ),
+              systems: (c.navigation.systems || []).map((s) => ({
+                ...pick(s, 'id name x y installations'),
+                ...(s.locations ? { locations: publicLocations(s.locations) } : {}),
+              })),
               territories: (c.navigation.territories || []).map((t) => ({
                 ...pick(t, 'id name kind color shape x y radiusLy'),
                 ...(t.points ? { points: t.points.map((p) => pick(p, 'x y')) } : {}),

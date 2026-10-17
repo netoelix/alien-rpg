@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { positionInSector, positionFromSector, officialSystems } from '../../data/star-map.js';
+import { SystemLocationsEditor } from './SystemLocationsEditor.jsx';
 import { useMapDraft } from './useMapDraft.js';
 
-const initialSystem = { selected: '', name: '', installations: '', x: 0, y: 0 };
+const initialSystem = { selected: '', name: '', installations: '', locations: [], x: 0, y: 0 };
 
 export function MapSystemsEditor({ campaign, onApply, pick, storageKey, onPick }) {
   const [form, setForm] = useMapDraft(storageKey, initialSystem);
@@ -38,6 +39,7 @@ export function MapSystemsEditor({ campaign, onApply, pick, storageKey, onPick }
             selected: id,
             name: system.name,
             installations: system.installations.join('\n'),
+            locations: structuredClone(system.locations || []),
             x: system.x,
             y: system.y,
           }
@@ -56,6 +58,7 @@ export function MapSystemsEditor({ campaign, onApply, pick, storageKey, onPick }
     const system = {
       id: form.selected || crypto.randomUUID(),
       name: form.name.trim(),
+      locations: form.locations || [],
       x: form.x,
       y: form.y,
       installations: form.installations
@@ -167,6 +170,10 @@ export function MapSystemsEditor({ campaign, onApply, pick, storageKey, onPick }
             onChange={(event) => change('installations', event.target.value)}
           />
         </label>
+        <SystemLocationsEditor
+          locations={form.locations}
+          onChange={(locations) => change('locations', locations)}
+        />
         <div className="toolbar">
           <button type="submit">
             {form.selected ? 'APLICAR SISTEMA AO RASCUNHO' : 'ADICIONAR SISTEMA AO RASCUNHO'}

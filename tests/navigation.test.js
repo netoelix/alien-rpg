@@ -23,7 +23,7 @@ import { modelsForArchive } from '../data/model.js';
 import { addFragmentosNavigation } from '../data/fragmentos-navigation.js';
 
 const fixture = JSON.parse(
-  await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'),
+  await readFile(new URL('./fixtures/archive-v1.json', import.meta.url), 'utf8'),
 );
 const circle = {
   id: 'local-area',

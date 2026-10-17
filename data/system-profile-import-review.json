@@ -1,0 +1,180 @@
+{
+  "source": "Cards planet-system do pacote traduzido de Fronteira Esquecida",
+  "sourceFile": "alien-sistemas-referencia-site.json",
+  "importedLocations": 43,
+  "importedSystems": 41,
+  "pending": [
+    {
+      "sourceId": "2I8zr10qK43GyU0S",
+      "name": "Confidencial",
+      "system": "Crestus Prime, A,B,G,D",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "2tYKtgqA9rl9caxQ",
+      "name": "G-435",
+      "system": "ACHILLES SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "iLscy00fOoivXEtT",
+      "name": "Sistema de Guarnição Alpha",
+      "system": "GARRISON SYSTEM ALPHA",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "pB2fKZ4kTQNLRuHW",
+      "name": "Sistema de Guarnição Beta",
+      "system": "GARRISON SYSTEM BETA",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "KVvLh7vlDeGmztfA",
+      "name": "Sistema de Guarnição Prime",
+      "system": "GARRISON SYSTEM PRIME",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "ElErpCXVcpoaZWw0",
+      "name": "GL408",
+      "system": "GL408",
+      "reason": "Nome comum contradiz o catálogo e repete Ross 619."
+    },
+    {
+      "sourceId": "WTiq7ebHWunizg3a",
+      "name": "Gliese 326-3827b",
+      "system": "Gliese 326-3827",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "PrxOw8DPR9ZQ5YXb",
+      "name": "JPG-770.03",
+      "system": "JPG-770",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "fWZWVUz7ZfdyRnd4",
+      "name": "KOI-1404",
+      "system": "KOI-1404 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "50ahSPs7kM4vxLao",
+      "name": "KOI-1430",
+      "system": "KOI-1430 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "8ZTTdDD36Hiav9aO",
+      "name": "KOI-1739",
+      "system": "KOI-1739 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "vRG4sXF3LXDZcFS4",
+      "name": "KOI-1938",
+      "system": "KOI-1938 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "PdrBIZfF01FzOACU",
+      "name": "KOI-2020",
+      "system": "KOI-2020 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "g2khiVhMeSxb0E9B",
+      "name": "KOI-2290",
+      "system": "KOI-2290 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "QwewRuoeCetgmOmh",
+      "name": "KOI-2469",
+      "system": "KOI-2469 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "FXOiXA8irSSxMMwo",
+      "name": "KOI-2650",
+      "system": "KOI-2650 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "v9OcD05HKJARedWR",
+      "name": "KOI-571",
+      "system": "KOI-571",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "4W5RryVsrSPVvQEV",
+      "name": "KOI-610",
+      "system": "KOI-610 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "qdGZmffEMkKXFuHK",
+      "name": "KOI-723",
+      "system": "KOI-723 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "gULeP2Gg3wj2UCGv",
+      "name": "KOI-784",
+      "system": "KOI-784 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "i0EWDhsDP4X0V27W",
+      "name": "KOI-947",
+      "system": "KOI-947 SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "yPfwihzVHxM9NT5a",
+      "name": "NN4374",
+      "system": "NN4374",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "JC1DGXyLDkc7gG7O",
+      "name": "Sistema 26 Draconis",
+      "system": "N/A",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "b6dyH3Tkjfhyiv9v",
+      "name": "Terceira Base",
+      "system": "CLASSIFIED",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    },
+    {
+      "sourceId": "s5jcULKKjfgbrNFl",
+      "name": "UPSILON ANDROMEDAE",
+      "system": "UPSILON ANDROMEDAE SYSTEM",
+      "reason": "Associação ao catálogo ainda não confirmada."
+    }
+  ],
+  "reviewed": [
+    {
+      "sourceId": "JnKmLgZPuzpmvqgo",
+      "field": "affiliation",
+      "reason": "Organizações conflitantes entre afiliação e localização; deixado vazio."
+    },
+    {
+      "sourceId": "DYHel4GvGJ0eLVDT",
+      "field": "population",
+      "reason": "Zero no campo, mas desconhecida no texto; deixado vazio."
+    },
+    {
+      "sourceId": "Du4dTEvLChttOEW1",
+      "field": "atmosphere",
+      "reason": "Texto repete o de Sahara e menciona uma lua; deixado vazio."
+    },
+    {
+      "sourceId": "XVxekmG4mr5KShqw",
+      "field": "population",
+      "reason": "Valores separados por barra sem legenda; deixado vazio."
+    }
+  ]
+}
