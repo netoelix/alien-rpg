@@ -11,7 +11,7 @@ import { createEditorStore } from '../scripts/editor-store.mjs';
 import { isLocalEditorRequest } from '../scripts/editor-plugin.mjs';
 
 const fixture = JSON.parse(
-  await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'),
+  await readFile(new URL('./fixtures/archive-v1.json', import.meta.url), 'utf8'),
 );
 
 test('campanhas novas não herdam conquistas, personagens ou aliases da anterior', () => {

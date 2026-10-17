@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { campaignSystems, campaignTerritories, campaignRoute } from '../../data/star-map.js';
 import { drawStarMap, worldPoint } from '../lib/draw-star-map.js';
+import { SystemLocations } from './SystemLocations.jsx';
 import { RouteLink } from './Common.jsx';
 
 const noPoints = [];
@@ -29,7 +30,17 @@ export function StarGrid({
   const stops = useMemo(() => suppliedStops ?? campaignRoute(campaign), [campaign, suppliedStops]);
   const selected = systems.find((system) => system.id === selectedId);
   const choices = systems.filter((system) =>
-    (system.name + ' ' + system.installations.join(' '))
+    (
+      system.name +
+      ' ' +
+      system.installations.join(' ') +
+      ' ' +
+      (system.locations || [])
+        .map((location) =>
+          [location.name, location.commonName, location.installations].filter(Boolean).join(' '),
+        )
+        .join(' ')
+    )
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -268,6 +279,7 @@ export function StarGrid({
           ) : (
             <p className="muted">Nenhuma instalação indicada neste cadastro.</p>
           )}
+          <SystemLocations locations={selected.locations} />
           {stops
             .filter((stop) => stop.system?.id === selected.id)
             .map((stop) => (
@@ -294,7 +306,7 @@ export function StarGrid({
 function EyebrowText({ official }) {
   return (
     <p className="eyebrow">
-      {official ? 'CATÁLOGO OFICIAL / SOMENTE LEITURA' : 'DESCOBERTA / EXCLUSIVA DESTA CAMPANHA'}
+      {official ? 'CATÁLOGO OFICIAL / CONSULTA' : 'DESCOBERTA / EXCLUSIVA DESTA CAMPANHA'}
     </p>
   );
 }

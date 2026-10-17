@@ -5,7 +5,7 @@ import { normalizeArchive, newCampaign, validateArchive } from '../data/archive-
 import { moveToTrash, restoreFromTrash } from '../data/trash.js';
 import { publicArchivePlugin } from '../scripts/public-archive-plugin.mjs';
 const fixture = normalizeArchive(
-  JSON.parse(await readFile(new URL('../data/archive.json', import.meta.url))),
+  JSON.parse(await readFile(new URL('./fixtures/archive-v1.json', import.meta.url))),
 );
 const campaignId = fixture.campaigns[0].id;
 const restore = (archive) => restoreFromTrash(archive, archive.trash.at(-1).id);

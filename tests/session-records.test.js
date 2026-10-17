@@ -2,8 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { missionRecords, createCampaignModel, validateCampaign } from '../data/schema.js';
-const legacy = JSON.parse(await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'))
-  .campaigns[0];
+const legacy = JSON.parse(
+  await readFile(new URL('./fixtures/archive-v1.json', import.meta.url), 'utf8'),
+).campaigns[0];
 test('missões antigas mantêm exatamente o relato, data, equipe e índices anteriores', () => {
   const before = JSON.stringify(legacy);
   for (const mission of legacy.timelines) {

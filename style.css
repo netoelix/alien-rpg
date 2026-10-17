@@ -1216,3 +1216,40 @@ button:disabled {
   padding: 0.75rem 1.5rem;
   border-bottom: 1px solid currentColor;
 }
+
+.location-card {
+  border: 1px solid var(--line, #24513d);
+  padding: 14px;
+  margin: 12px 0;
+}
+.location-card summary {
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.location-type {
+  display: block;
+  font-size: 0.85em;
+  margin-top: 6px;
+}
+.location-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+}
+.location-facts dt {
+  color: var(--muted, #8fae9d);
+  font-size: 0.8em;
+  margin-bottom: 4px;
+}
+.location-facts dd {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.system-locations-editor {
+  min-width: 0;
+  margin: 20px 0;
+}
+.system-locations-editor textarea {
+  min-height: 64px;
+}

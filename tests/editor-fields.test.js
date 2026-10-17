@@ -5,7 +5,7 @@ import { newCampaign, normalizeArchive, validateArchive } from '../data/archive-
 import { validateEditorRecord } from '../data/editor-rules.js';
 
 const archive = JSON.parse(
-  await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'),
+  await readFile(new URL('./fixtures/archive-v1.json', import.meta.url), 'utf8'),
 );
 
 test('campanha sem nome ganha número editável, sem exigir textos de apresentação', () => {

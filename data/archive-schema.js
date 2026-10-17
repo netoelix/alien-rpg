@@ -1,5 +1,5 @@
 import { validateCharacterRecords } from './character-records.js';
-import { validateNavigation } from './star-map.js';
+import { validateNavigation, validateSystemProfiles } from './star-map.js';
 import { normalizePlayerProfiles } from './player-profiles.js';
 import { validateCampaign } from './schema.js';
 
@@ -47,7 +47,11 @@ export function validateArchive(archive) {
     profileIds.add(profile?.id);
   }
   const ids = new Set();
-  const errors = [...catalogErrors, ...profileErrors];
+  const errors = [
+    ...catalogErrors,
+    ...profileErrors,
+    ...validateSystemProfiles(archive.systemProfiles),
+  ];
   for (const campaign of archive.campaigns) {
     if (
       !campaign ||

@@ -1,5 +1,6 @@
 import catalogue from './official-catalog.json' with { type: 'json' };
 import contours from './territory-contours.json' with { type: 'json' };
+import profiles from './official-system-profiles.json' with { type: 'json' };
 
 // Levantamento da imagem local Stars of the Middle Heavens (2183).
 // Os pixels identificam o centro da estrela, não a posição de seu rótulo.
@@ -28,6 +29,7 @@ export const officialSystems = Object.freeze(
       installations: Object.freeze([...installations]),
       referencePixel: Object.freeze({ x: pixelX, y: pixelY }),
       official: true,
+      locations: Object.freeze((profiles[id] || []).map((location) => Object.freeze(location))),
     }),
   ),
 );

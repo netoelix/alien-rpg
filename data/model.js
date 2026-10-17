@@ -7,7 +7,7 @@ export const archive = normalizeArchive(sourceArchive);
 export function modelsForArchive(archive) {
   return archive.campaigns.map((campaign) => ({
     ...createCampaignModel({ ...campaign, achievements: campaignAchievements(archive, campaign) }),
-    campaign,
+    campaign: { ...campaign, systemProfiles: archive.systemProfiles },
     playerProfile: (index) =>
       archive.playerProfiles.find((profile) => profile.id === campaign.players[index]?.profileId),
     profileAwards: (index) => profileAchievements(archive, campaign.players[index]?.profileId),

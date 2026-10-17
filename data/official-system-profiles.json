@@ -1,0 +1,643 @@
+{
+  "17-phei-phei": [
+    {
+      "id": "reference-HLDhXdDfdU56GQ78",
+      "name": "17 Phei Phei E",
+      "commonName": "Posto Avançado Znoy",
+      "type": "Planetoide terrestre",
+      "population": "0",
+      "installations": "Nenhuma, posto avançado de monitoramento militar",
+      "affiliation": "UPP",
+      "atmosphere": "Sem atmosfera",
+      "temperature": "–173°C à noite a 427°C durante o dia",
+      "terrain": "Rocha estéril com crateras",
+      "resources": "Metais pesados no cinturão de asteroides"
+    }
+  ],
+  "268g-cet": [
+    {
+      "id": "reference-IR5F2Zjn1a1SRPzH",
+      "name": "268G.CET",
+      "commonName": "TRAON",
+      "type": "Planeta terrestre, terraformado",
+      "population": "300",
+      "installations": "Instalação de Mineração Traon",
+      "affiliation": "Kelland e Omni-Tech",
+      "atmosphere": "Fria e rarefeita, mas respirável",
+      "temperature": "16°C",
+      "terrain": "Montanhas de blocos falhados e minas cavernosas",
+      "resources": "Diatomita, caulim, bentonita e barita"
+    }
+  ],
+  "70-ophiuchi-av": [
+    {
+      "id": "reference-JnKmLgZPuzpmvqgo",
+      "name": "70 OPHIUCHI",
+      "commonName": "70 OPHIUCHI A V (COLÔNIA GEORGIA 525 E ESTAÇÃO USCMC CHINOOK 91)",
+      "type": "Planeta terrestre, terraformado",
+      "population": "505,000",
+      "installations": "Colônia Georgia 525; Estação Chinook 91",
+      "affiliation": "",
+      "atmosphere": "Atmosfera respirável, céus azuis",
+      "temperature": "10°C",
+      "terrain": "Desertos vermelhos e mares interiores rasos",
+      "resources": "Gás natural, forças militares"
+    }
+  ],
+  "78-nu-ceti": [
+    {
+      "id": "reference-CgQt0X3wSHrfskoW",
+      "name": "78 NU CETI",
+      "commonName": "MYSSA 340 “MISERY” (ESTAÇÃO USCMC TANBURRO)",
+      "type": "Planeta terrestre",
+      "population": "0",
+      "installations": "Uma, abandonada, e a Estação Tanburro em órbita.",
+      "affiliation": "USCMC",
+      "atmosphere": "Atmosfera densa e tóxica, tempestades com raios",
+      "temperature": "42°C",
+      "terrain": "Campos de lava solidificada, vulcões adormecidos",
+      "resources": "Magnésio, ferro, obsidiana"
+    }
+  ],
+  "8-eta-bootis": [
+    {
+      "id": "reference-wRo4zzathmCz7hyB",
+      "name": "8 Eta Boötis A",
+      "commonName": "Colônia Tientsin",
+      "type": "Planeta terrestre",
+      "population": "500,000",
+      "installations": "Colônia Tientsin, vários pequenos agrupamentos independentes",
+      "affiliation": "Independente",
+      "atmosphere": "Atmosfera respirável, quente e úmida, tempestades de chuva",
+      "temperature": "31°C",
+      "terrain": "Cadeias de ilhas com selvas densas, áreas úmidas e mares alcalinos profundos",
+      "resources": "Bauxita, cromato, promécio, ítrio, manganês e ouro"
+    }
+  ],
+  "ag-4550": [
+    {
+      "id": "reference-r5ue78jH5MQ2s4sl",
+      "name": "AG-4550.02",
+      "commonName": "COLÔNIA ALEXANDRIA",
+      "type": "Planeta terrestre",
+      "population": "30,000,000",
+      "installations": "Uma, com vários assentamentos costeiros e polares",
+      "affiliation": "Colônias Independentes dos Sistemas Centrais, Consórcio Espacial Central, Weyland-Yutani, Seegson e outras grandes corporações e instituições bancárias",
+      "atmosphere": "Atmosfera respirável, quente e seca, terraformada",
+      "temperature": "38°C na maior parte do planeta, mas 30°C nos polos",
+      "terrain": "Deserto com alguns grandes corpos de água",
+      "resources": "Agricultura, água, reservas financeiras, tecnologias"
+    }
+  ],
+  "alpha-bootis": [
+    {
+      "id": "reference-to4mdxTOQIWCHlUP",
+      "name": "ALPHA BOÖTIS",
+      "commonName": "ARCTURUS “ARCTURA” (GRAND KIVAS, ASSENTAMENTO AGRÍCOLA W-Y E ENTREPOSTO COMERCIAL MESA CANYON)",
+      "type": "Planeta terrestre",
+      "population": "252,050",
+      "installations": "Grand Kivas; fazenda e entreposto comercial W-Y; estação USCMC; guarnição Xian Po e estação Li Huan (abandonadas)",
+      "affiliation": "Protetorado das Américas Unidas, Weyland-Yutani e USCMC",
+      "atmosphere": "Atmosfera respirável, auroras, céus limpos e estrelados e crepúsculo quase permanente.",
+      "temperature": "11°C",
+      "terrain": "Chapadas, lagos, cânions e planícies",
+      "resources": "Ferro, metais pesados, fungicultura, produtos farmacêuticos, ciências astronômicas"
+    }
+  ],
+  "alpha-caeli": [
+    {
+      "id": "reference-VMTW8QTsmV93QdRo",
+      "name": "ALPHA CAELI VB-H",
+      "commonName": "The Solomons",
+      "type": "Um gigante gasoso joviano com um sistema de oito luas",
+      "population": "3,000,000",
+      "installations": "Numerosas, incluindo guarnições USCMC",
+      "affiliation": "Interesses corporativos, Américas Unidas",
+      "atmosphere": "Varia de domos pressurizados com clima controlado a atmosferas frias terraformadas",
+      "temperature": "Varia",
+      "terrain": "Não se aplica",
+      "resources": "Nióbio, neodímio, cromo, hélio-3, hematita e platina"
+    }
+  ],
+  "zeta-2-reticuli": [
+    {
+      "id": "reference-UKgZAxQfqoe8q5c1",
+      "name": "Calpamos",
+      "commonName": "",
+      "type": "Gigante gasoso com anéis",
+      "population": "0",
+      "installations": "Uma destruída e uma estação em órbita da lua LV-426",
+      "affiliation": "Weyland-Yutani, Américas Unidas",
+      "atmosphere": "Atmosfera de amônia extremamente fria",
+      "temperature": "–173°C",
+      "terrain": "Não se aplica",
+      "resources": "Não examinado"
+    },
+    {
+      "id": "reference-l1fcv3t35gfyWUfV",
+      "name": "LV-223",
+      "commonName": "",
+      "type": "Lua terrestre",
+      "population": "0",
+      "installations": "Nenhuma",
+      "affiliation": "Sem reivindicação, Américas Unidas",
+      "atmosphere": "Violentas tempestades de sílica e atmosfera venenosa, com ar respirável apenas na região do vale do templo",
+      "temperature": "12°C",
+      "terrain": "Desertos, montanhas gigantescas, vales profundos, vegetação exuberante apenas na região do vale do templo",
+      "resources": "Inexplorado"
+    },
+    {
+      "id": "reference-h9IRzrsrEYyga5Te",
+      "name": "LV-426",
+      "commonName": "ACHERON",
+      "type": "Lua terrestre",
+      "population": "0",
+      "installations": "Estação Odobenus em órbita, antigo local de Hadley's Hope",
+      "affiliation": "Weyland-Yutani, Américas Unidas",
+      "atmosphere": "Atmosfera respirável, parcialmente terraformada, tempestades com ventos de alta velocidade",
+      "temperature": "10°C (por meio de terraformação)",
+      "terrain": "Rocha vulcânica estéril, montanhas",
+      "resources": "Nenhum identificado"
+    }
+  ],
+  "delta-trianguli": [
+    {
+      "id": "reference-bn5cRGBOdrmNX9dw",
+      "name": "DELTA TRIANGULI",
+      "commonName": "NEW ALBION",
+      "type": "Planeta terrestre, terraformado",
+      "population": "50,000",
+      "installations": "Uma com assentamentos menores",
+      "affiliation": "NAPRO, anteriormente 3WE",
+      "atmosphere": "Temperado e sazonal",
+      "temperature": "22°C",
+      "terrain": "Vales arborizados e rios",
+      "resources": "Platina e paládio"
+    }
+  ],
+  "requist": [
+    {
+      "id": "reference-q7wCa6XBOHCqJNT4",
+      "name": "DP-27",
+      "commonName": "Planeta de Detenção 27",
+      "type": "Lua terrestre",
+      "population": "60,000",
+      "installations": "Uma, o Alastre",
+      "affiliation": "Américas Unidas, Seegson",
+      "atmosphere": "Atmosfera respirável, céu encoberto, chuva congelante",
+      "temperature": "5°C",
+      "terrain": "Expansão urbana em planícies com grandes lagos",
+      "resources": "Soldados, metais de terras raras"
+    }
+  ],
+  "fiori-16": [
+    {
+      "id": "reference-r1xsSqzZYBnVBgH2",
+      "name": "Fiorina 161",
+      "commonName": "Fury",
+      "type": "Planeta terrestre",
+      "population": "0",
+      "installations": "Antiga colônia industrial convertida em prisão, agora fechada",
+      "affiliation": "Weyland-Yutani, Império dos Três Mundos",
+      "atmosphere": "Atmosfera respirável, constantemente varrida por ventos uivantes",
+      "temperature": "–20°C a agradáveis 40°C",
+      "terrain": "Desertos planos e oceanos escuros e ácidos",
+      "resources": "Anteriormente mão de obra e metais pesados; atualmente sucata industrial e quinitricetyline"
+    }
+  ],
+  "gj1105": [
+    {
+      "id": "reference-1gh6idVevWI0dNVi",
+      "name": "GJ1105",
+      "commonName": "GJ1105BC “RIM”",
+      "type": "Planeta terrestre, terraformado",
+      "population": "",
+      "installations": "Pype’s Dream (destruída)",
+      "affiliation": "Anteriormente UA e Bionational",
+      "atmosphere": "Tempo chuvoso, atmosfera respirável",
+      "temperature": "0°C",
+      "terrain": "Terras estéreis",
+      "resources": "Petróleo bruto, neodímio"
+    }
+  ],
+  "gj1187": [
+    {
+      "id": "reference-DYHel4GvGJ0eLVDT",
+      "name": "GJ1187 “SHĀNMÉN”",
+      "commonName": "GJ1187.03 “SHĀNMÉN”\nSUEÑOS GRANDES, NEW LUHANSK, POSTO AVANÇADO ROMASHKA, OUTROS ASSENTAMENTOS",
+      "type": "Planeta terrestre",
+      "population": "",
+      "installations": "Cinco colônias e pequenos postos avançados (destruídos)",
+      "affiliation": "UPP, Jùtóu Combine",
+      "atmosphere": "Tropical a temperado, atmosfera respirável",
+      "temperature": "20°C",
+      "terrain": "De selvas exuberantes a florestas tropicais densas, aglomerados de fungos, montanhas rochosas",
+      "resources": "Eitr, pesquisa de macrofauna"
+    }
+  ],
+  "gj1227": [
+    {
+      "id": "reference-fjRW46Oqgz3CwDsn",
+      "name": "GJ1227",
+      "commonName": "GJ1227.02 “KAWLANG”",
+      "type": "Planeta terrestre",
+      "population": "487",
+      "installations": "Uma",
+      "affiliation": "UPP, Norcomm e Corporação Hyperdyne",
+      "atmosphere": "Névoa de poluição e chuvas sulfúricas (RESPINGO DE ÁCIDO 1)",
+      "temperature": "0°C",
+      "terrain": "Terras devastadas pela industrialização excessiva, atravessadas por cortes profundos de minas a céu aberto",
+      "resources": "Fabricação de peças e armas"
+    }
+  ],
+  "gj1230ab": [
+    {
+      "id": "reference-rnvvtZVgfj5tbJ8s",
+      "name": "GJ1230AB",
+      "commonName": "SAHARA (PORTO LIVRE GRANDHI DOMES E COLÔNIA LUNAR, MINA SONDERDATCH)",
+      "type": "Planeta terrestre com lua rochosa",
+      "population": "1,500",
+      "installations": "Porto Livre Grandhi Domes e colônia lunar da Mina Sonderdatch",
+      "affiliation": "Independente, com interesses W-Y e ICSC",
+      "atmosphere": "Planeta — atmosfera respirável e quente, árida, tempestades de areia. Lua — sem ar.",
+      "temperature": "60° C (planeta), –50° C (na lua)",
+      "terrain": "O planeta é formado por dunas de areia intermináveis; a lua é rochosa e tem baixa gravidade.",
+      "resources": "Petróleo bruto (em Sahara), metais de sulfito e estação de serviços (na lua)."
+    }
+  ],
+  "gj1256": [
+    {
+      "id": "reference-9Te22oKG2SnOOMi1",
+      "name": "GJ1256",
+      "commonName": "ALTO VII (ESTAÇÃO DE APOIO STRATUS)",
+      "type": "Planeta terrestre",
+      "population": "40",
+      "installations": "Antiga guarnição; atualmente, apenas a Estação de Apoio Stratus",
+      "affiliation": "Nenhuma, anteriormente CCAF",
+      "atmosphere": "Atmosfera respirável, chuva fria constante e céus encobertos.",
+      "temperature": "13°C",
+      "terrain": "Estepes lamacentas",
+      "resources": "Salvamento, excedentes militares"
+    }
+  ],
+  "gj2005": [
+    {
+      "id": "reference-04OKzOpsS4saNPMr",
+      "name": "GJ2005",
+      "commonName": "TRANSEPT (POSTO AVANÇADO HYPERDYNE AA23 DE SERVIÇOS PARA NAVES E SINTÉTICOS)",
+      "type": "Planeta terrestre",
+      "population": "63",
+      "installations": "Somente um acampamento de expedição. 63 sintéticos",
+      "affiliation": "Hyperdyne",
+      "atmosphere": "Atmosfera rarefeita quase irrespirável, ventos solares",
+      "temperature": "10°C",
+      "terrain": "Estéril e rochoso",
+      "resources": "Baterias de energia solar, estação de serviços, suprimentos"
+    }
+  ],
+  "gl268": [
+    {
+      "id": "reference-h3CGkgNLCbiFgGvl",
+      "name": "GL268",
+      "commonName": "ESTAÇÃO TERMINAL DE SERVIÇOS DS 949",
+      "type": "Estação espacial",
+      "population": "81",
+      "installations": "Uma",
+      "affiliation": "Omni-tech, ECA",
+      "atmosphere": "Atmosfera reciclada, levemente fria",
+      "temperature": "18°C",
+      "terrain": "",
+      "resources": "Reparo de naves"
+    }
+  ],
+  "gl537a": [
+    {
+      "id": "reference-e1ehxKjmSV6HSwr1",
+      "name": "GL537",
+      "commonName": "GL537A “DELOS” (CENTRO DE TRANSPORTE E DISTRIBUIÇÃO SPINWARD WEYLAND-YUTANI)",
+      "type": "Planeta terrestre, terraformado",
+      "population": "2000",
+      "installations": "Instalações de transporte e distribuição na superfície, várias estações de carregamento e abastecimento em órbita",
+      "affiliation": "Weyland-Yutani. Mantém comércio com ICSC, UA e 3WE.",
+      "atmosphere": "Atmosfera rarefeita (–1 em todas as rolagens de RESISTÊNCIA sem equipamento respiratório)",
+      "temperature": "-6°C",
+      "terrain": "Mundo de gelo coberto de geada, com fontes termais profundas e saídas de vapor esporádicas",
+      "resources": "Distribuição de recursos da Fronteira"
+    }
+  ],
+  "gl849": [
+    {
+      "id": "reference-Du4dTEvLChttOEW1",
+      "name": "GL849",
+      "commonName": "PANDORA (COLÔNIA ANESIDORA)",
+      "type": "Planeta terrestre",
+      "population": "4,250,000",
+      "installations": "Colônia Anesidora: ilhas Adagia, Pithos, Gwoemul, Kylix, Lóng e Darwin",
+      "affiliation": "Corporação Jĭngtì Lóng, Hyperdyne Systems, independente",
+      "atmosphere": "",
+      "temperature": "33°C",
+      "terrain": "Vastos oceanos, penhascos de rocha vulcânica sobre vales de floresta tropical e praias subtropicais em cadeias de ilhas vulcânicas ativas.",
+      "resources": "Komatiito, aquicultura, maricultura, exportação de organismos exóticos vivos, pesquisa biológica"
+    }
+  ],
+  "gamma-leporis": [
+    {
+      "id": "reference-1UCvh2qheAjEc6zK",
+      "name": "Gamma Leporis A3",
+      "commonName": "Terraform 3",
+      "type": "Planeta terrestre",
+      "population": "9,000",
+      "installations": "Uma, Steer City",
+      "affiliation": "Américas Unidas, Lasalle Bionational",
+      "atmosphere": "Respirável, terraformada",
+      "temperature": "25°C",
+      "terrain": "Pastagens, lagos e terras agrícolas",
+      "resources": "Agricultura"
+    }
+  ],
+  "iota-persei": [
+    {
+      "id": "reference-SNux6VhU7fHlvaNs",
+      "name": "IOTA PERSEI",
+      "commonName": "IOTA PERSEI III",
+      "type": "Planeta terrestre",
+      "population": "0",
+      "installations": "Nenhuma",
+      "affiliation": "NAPRO",
+      "atmosphere": "Densa, mas respirável, quente e úmida",
+      "temperature": "50°C",
+      "terrain": "Mundo de selva abafada com vegetação amarela",
+      "resources": "Gadolínio, monazita e bastnasita"
+    }
+  ],
+  "iota-piscium": [
+    {
+      "id": "reference-jIQFn2SlyrEXrjXW",
+      "name": "IOTA PISCIUM",
+      "commonName": "ASTEROIDE DE OCKHAM (ÁREA DE MINERAÇÃO B)",
+      "type": "Planeta terrestre, terraformado",
+      "population": "2250",
+      "installations": "Uma, Área de Mineração B (2,000 mineiros, 250 funcionários de apoio)",
+      "affiliation": "UPP, Norcomm e Corporação Hyperdyne",
+      "atmosphere": "Atmosfera fria e rarefeita",
+      "temperature": "0°C",
+      "terrain": "Rocha metamórfica pontuada por crateras, com poços de mineração de dois quilômetros de profundidade",
+      "resources": "Promécio"
+    }
+  ],
+  "jpg973c": [
+    {
+      "id": "reference-qNSpVJ0IknpKnili",
+      "name": "JPG-973",
+      "commonName": "JPG-973C (ESTAÇÃO TARK-WEYLAND)",
+      "type": "Planeta terrestre",
+      "population": "230",
+      "installations": "Estação de pesquisa com vários postos avançados de laboratório",
+      "affiliation": "3WE",
+      "atmosphere": "Úmido",
+      "temperature": "35°C",
+      "terrain": "Áreas alagadas com gás de pântano",
+      "resources": "Pesquisa médica, metano"
+    }
+  ],
+  "zeta-1-reticuli": [
+    {
+      "id": "reference-zsf8sGhmmwcICnoT",
+      "name": "KG-348",
+      "commonName": "",
+      "type": "Gigante gasoso joviano",
+      "population": "0",
+      "installations": "Antigo local da Estação Sevastopol",
+      "affiliation": "Américas Unidas, Seegson",
+      "atmosphere": "Atmosfera de hidrogênio molecular extremamente fria",
+      "temperature": "-145°C",
+      "terrain": "Não se aplica",
+      "resources": "Hélio 3, gases metálicos raros detectados"
+    }
+  ],
+  "gl223-2-khadaji": [
+    {
+      "id": "reference-M13Y8A5Ztfzitezm",
+      "name": "KJ-331B LEBANON II",
+      "commonName": "",
+      "type": "Lua terrestre",
+      "population": "40,000",
+      "installations": "Uma, The Wells",
+      "affiliation": "Américas Unidas, Lasalle Bionational, WeylandYutani",
+      "atmosphere": "Atmosfera respirável, verões quentes e secos, invernos chuvosos",
+      "temperature": "28°C",
+      "terrain": "Uma rede de rios, nascentes e ravinas que atravessa uma planície rochosa estéril",
+      "resources": "Água de nascente, ferro, urânio"
+    }
+  ],
+  "koi-2770": [
+    {
+      "id": "reference-XVxekmG4mr5KShqw",
+      "name": "KOI-2770",
+      "commonName": "KOI-2770.01 POSTO AVANÇADO IZVINITE",
+      "type": "Planeta terrestre, terraformado 2063-2069",
+      "population": "",
+      "installations": "Posto Avançado Izvinite",
+      "affiliation": "Weyland Corp, 3WE",
+      "atmosphere": "Ar parado seguido de furacões de silicatos",
+      "temperature": "10°C",
+      "terrain": "Extensões secas de arenito pontuadas por pedreiras e lagos subterrâneos",
+      "resources": "Paládio, oxigênio e hidrogênio"
+    }
+  ],
+  "lhs-1140": [
+    {
+      "id": "reference-mseZVDy0zswZP6V0",
+      "name": "LHS-1140",
+      "commonName": "LHS-1140B",
+      "type": "Superterra terrestre",
+      "population": "0",
+      "installations": "Nenhuma",
+      "affiliation": "NAPRO",
+      "atmosphere": "Úmida, densa e difícil de respirar",
+      "temperature": "25°C",
+      "terrain": "Vales rasos com mares subterrâneos e florestas baixas de líquens",
+      "resources": "Mercúrio e cério"
+    }
+  ],
+  "gl300-alpha-linna": [
+    {
+      "id": "reference-HBkHROOsd93LK98u",
+      "name": "Linna 349",
+      "commonName": "",
+      "type": "Planeta terrestre",
+      "population": "30,000",
+      "installations": "Duas oficiais e tribos nômades",
+      "affiliation": "Império dos Três Mundos, presença de força de paz de ocupação UA.",
+      "atmosphere": "Atmosfera respirável, úmida e chuvosa",
+      "temperature": "30°C",
+      "terrain": "Florestas e lagos",
+      "resources": "Madeira, lantânio, lutécio e outros metais de terras raras"
+    }
+  ],
+  "mu-herculis-a-iii": [
+    {
+      "id": "reference-cqHVrlrBn6JKXeBw",
+      "name": "Sistema MU HERCULIS A",
+      "commonName": "BERNICE 378 (BASE AEROESPACIAL DOS ESTADOS UNIDOS EM TITHONUS MOUNTAIN)",
+      "type": "Planeta terrestre",
+      "population": "3,000",
+      "installations": "Base militar USCMC e USASF em Tithonus Mountain",
+      "affiliation": "USCMC, USASF, Américas Unidas",
+      "atmosphere": "Atmosfera respirável, ventos fortes",
+      "temperature": "15°C",
+      "terrain": "Planícies e vales com uma única montanha",
+      "resources": "Metais pesados, ítrio, forças militares"
+    }
+  ],
+  "omni-ceti": [
+    {
+      "id": "reference-lpbbKLv5pPgKXU5s",
+      "name": "OMNI CETI",
+      "commonName": "MIRA CETI IV",
+      "type": "Planetoide terrestre, parcialmente terraformado",
+      "population": "",
+      "installations": "Colônia abandonada",
+      "affiliation": "ECA, UA",
+      "atmosphere": "Ar respirável, mas estagnado, sem ventos perceptíveis",
+      "temperature": "8°C",
+      "terrain": "Montanhas estéreis, enormes cânions e pedreiras escancaradas",
+      "resources": "Ítrio e disprósio"
+    }
+  ],
+  "p-pelops": [
+    {
+      "id": "reference-EqvTLIBTG2PapHau",
+      "name": "P PELOPS",
+      "commonName": "PYLOS, DEPÓSITO DE COMBUSTÍVEL E ESTAÇÃO DE APOIO ATOL SPHACTERIA",
+      "type": "Gigante gasoso com estação orbital",
+      "population": "48 trabalhadores e 40 militares UNISC na estação",
+      "installations": "Estação em órbita",
+      "affiliation": "Porto livre UNISC",
+      "atmosphere": "A atmosfera do planeta é tóxica; o ar da estação é reciclado por purificadores antigos e tem gosto de estanho",
+      "temperature": "20°C (estação)",
+      "terrain": "Gases de amônia e metano sob pressão",
+      "resources": "Hidrogênio, hélio e ferro-níquel"
+    }
+  ],
+  "pol-5362": [
+    {
+      "id": "reference-l77qwLmvoYx56sk1",
+      "name": "POL-5362.01",
+      "commonName": "Posto Avançado Aires",
+      "type": "Planeta terrestre",
+      "population": "32",
+      "installations": "Instalação de pesquisa",
+      "affiliation": "Império dos Três Mundos, Weyland-Yutani",
+      "atmosphere": "Atmosfera tóxica, fortes tempestades de chuva de metano",
+      "temperature": "–223°C",
+      "terrain": "Varia entre terras desoladas de metano congelado quando mais distante da estrela e mares profundos de metano quando mais próximo",
+      "resources": "Metano, não catalogado"
+    }
+  ],
+  "pol-6362": [
+    {
+      "id": "reference-TiZPkTsPyUaZvSE1",
+      "name": "POL-6362",
+      "commonName": "POL-6362.04 “JACOB-TELLIS”",
+      "type": "Planeta aquático",
+      "population": "6–48 exploradores e cientistas (presença variável)",
+      "installations": "Colônia abandonada; expedições científicas",
+      "affiliation": "Mundo de pesquisa do 3WE arrendado à Bionational e à Weyland-Yutani",
+      "atmosphere": "Aerossóis nocivos e gases venenosos. Exige respiradores de recirculação simples.",
+      "temperature": "28°C",
+      "terrain": "Mares verdes e ilhas vulcânicas",
+      "resources": "Microfauna e pesquisa"
+    }
+  ],
+  "ross-619": [
+    {
+      "id": "reference-L14pwdVfAbEtSe0Z",
+      "name": "ROSS 619",
+      "commonName": "LV-2412 (INSTALAÇÃO PRISIONAL SKYFIRE DOWN E ESTALEIRO NAVAL ORDF)",
+      "type": "Planeta terrestre, terraformado",
+      "population": "119,700",
+      "installations": "Instalação Prisional Skyfire Down; guarnição USCMC; estação OCM; Estaleiros Navais ORDF",
+      "affiliation": "Américas Unidas, UAAC, ORDF, Lunnar-Welsun e Weyland Yutani",
+      "atmosphere": "Atmosfera respirável, chuvas constantes de meteoritos, noites frias de 20 horas, zonas de radiação.",
+      "temperature": "8°C",
+      "terrain": "Paisagem rochosa sulcada, com enormes abismos e minas profundas",
+      "resources": "Metais pesados, hélio 3, metais de terras raras, trabalhadores, forças militares"
+    }
+  ],
+  "theta-persei": [
+    {
+      "id": "reference-WnJbK9M4pGBKKRFM",
+      "name": "THETA PERSEI",
+      "commonName": "THETA PERSEI AEM LV-139",
+      "type": "Lua terrestre",
+      "population": "0",
+      "installations": "Nenhuma, inexplorado",
+      "affiliation": "Nenhuma",
+      "atmosphere": "Respirável. Tempestades elétricas, seca com inundações repentinas esporádicas",
+      "temperature": "38°C",
+      "terrain": "Desertos de areia vermelha e formações rochosas pontiagudas",
+      "resources": "Disprósio, térbio"
+    }
+  ],
+  "nn3346-tanaka-s-star": [
+    {
+      "id": "reference-PLNfY7oglVXG5q2e",
+      "name": "Tanaka 5",
+      "commonName": "",
+      "type": "Planeta terrestre",
+      "population": "96",
+      "installations": "Nenhuma",
+      "affiliation": "Sem afiliação",
+      "atmosphere": "Atmosfera respirável, árida, dias quentes e noites frescas, tempestades de areia frequentes",
+      "temperature": "45°C",
+      "terrain": "Desertos e cânions extensos",
+      "resources": "Vacinas, possivelmente metais"
+    }
+  ],
+  "epsilon-reticuli": [
+    {
+      "id": "reference-sFXMteYAVDTVItp0",
+      "name": "Thedus",
+      "commonName": "",
+      "type": "Planeta terrestre",
+      "population": "2,000,000",
+      "installations": "Três",
+      "affiliation": "Weyland-Yutani, Império dos Três Mundos, Américas Unidas",
+      "atmosphere": "Atmosfera fria e rarefeita, terraformada",
+      "temperature": "8°C",
+      "terrain": "Montanhas e cânions",
+      "resources": "Ítrio, nióbio, hélio-3, outros metais de terras raras"
+    }
+  ],
+  "gj229a": [
+    {
+      "id": "reference-cxHdP4kaoBR71hdH",
+      "name": "Torin Prime",
+      "commonName": "",
+      "type": "Planeta terrestre",
+      "population": "700,000",
+      "installations": "Três",
+      "affiliation": "Américas Unidas",
+      "atmosphere": "Atmosfera respirável, semiárida, verões chuvosos e invernos secos",
+      "temperature": "18°C",
+      "terrain": "Clareiras montanhosas e picos elevados",
+      "resources": "Cromo, titânio, ósmio, paládio, irídio, metais pesados"
+    }
+  ],
+  "heske-337": [
+    {
+      "id": "reference-WPLvMwMhqfrIPzXy",
+      "name": "Volcus",
+      "commonName": "COLETOR ORBITAL V-23",
+      "type": "Planeta terrestre / lua",
+      "population": "200,000",
+      "installations": "Colônia Web (em Etna)",
+      "affiliation": "Colônias Independentes dos Sistemas Centrais, Consórcio Espacial Central",
+      "atmosphere": "Atmosfera corrosiva, cinzas e fluxos piroclásticos, calor abrasador / vácuo sem ar",
+      "temperature": "400°C em Volcus / –173°C em Etna",
+      "terrain": "Mares de magma e ilhas vulcânicas / lua estéril",
+      "resources": "Energia geotérmica, bauxita, ouro, diamantes, metais básicos e de terras raras"
+    }
+  ]
+}

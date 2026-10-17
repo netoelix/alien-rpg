@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { missionMapLink, resolveMapLink } from '../data/map-links.js';
 import { normalizeArchive } from '../data/archive-schema.js';
 import { moveToTrash } from '../data/trash.js';
-const campaign = JSON.parse(await readFile(new URL('../data/archive.json', import.meta.url)))
+const campaign = JSON.parse(await readFile(new URL('./fixtures/archive-v1.json', import.meta.url)))
   .campaigns[0];
 
 test('link de missão distingue retornos ao mesmo sistema e escalas da mesma missão', () => {

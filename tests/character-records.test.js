@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import source from '../data/archive.json' with { type: 'json' };
+import source from './fixtures/archive-v1.json' with { type: 'json' };
 import { normalizeArchive, validateArchive, newCampaign } from '../data/archive-schema.js';
 import { characterAchievements } from '../data/character-records.js';
 import { profileAchievements } from '../data/player-profiles.js';

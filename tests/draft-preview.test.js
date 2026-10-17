@@ -8,7 +8,9 @@ import {
   validateArchive,
 } from '../data/archive-schema.js';
 import { createDraftPreview, readDraftPreview } from '../src/lib/draft-preview.js';
-const legacy = JSON.parse(await readFile(new URL('../data/archive.json', import.meta.url), 'utf8'));
+const legacy = JSON.parse(
+  await readFile(new URL('./fixtures/archive-v1.json', import.meta.url), 'utf8'),
+);
 test('catálogo universal preserva definições e concessões antigas, sem concedê-las a uma campanha nova', () => {
   const archive = normalizeArchive(legacy);
   assert.equal(archive.achievements.length, 113);
