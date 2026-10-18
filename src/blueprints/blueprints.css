@@ -1,0 +1,190 @@
+.blueprint-heading {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+.blueprint-heading h1 {
+  font-size: clamp(28px, 3vw, 44px);
+  margin: 12px 0;
+}
+.blueprint-filebar,
+.blueprint-canvas-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.blueprint-filebar {
+  padding: 16px 0;
+  border-bottom: 1px solid #275440;
+}
+.blueprint-editor button,
+.blueprint-editor .button {
+  padding: 10px 12px;
+  min-height: 40px;
+  font-size: 12px;
+}
+.blueprint-editor button[aria-pressed='true'] {
+  background: #b2e9c6;
+  color: #07150e;
+}
+.blueprint-layout {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) 230px;
+  gap: 16px;
+  align-items: start;
+}
+.blueprint-layout aside {
+  background: #081b13;
+  border: 1px solid #275440;
+  padding: 12px;
+}
+.blueprint-layout h2 {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+.blueprint-layout label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin: 10px 0;
+}
+.blueprint-layout input:not([type='checkbox']),
+.blueprint-layout select {
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+}
+.blueprint-layout input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+}
+.blueprint-layout summary {
+  cursor: pointer;
+  font-size: 13px;
+  padding: 10px 0;
+}
+.blueprint-layout details {
+  border-top: 1px solid #275440;
+  margin-top: 14px;
+}
+.blueprint-layout p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.blueprint-layout fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.blueprint-tool-grid {
+  display: grid;
+  gap: 6px;
+}
+.blueprint-tool-grid button {
+  text-align: left;
+}
+.blueprint-assets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin: 12px 0;
+}
+.blueprint-assets svg {
+  display: block;
+  width: 35px;
+  height: 35px;
+  margin: 0 auto 6px;
+}
+.blueprint-layer {
+  border-bottom: 1px solid #193d2b;
+  padding: 10px 0;
+}
+.blueprint-layer b {
+  font-size: 12px;
+}
+.blueprint-status {
+  border-left: 3px solid #70e0a2;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.blueprint-workspace {
+  min-width: 0;
+  position: sticky;
+  top: 12px;
+}
+.blueprint-canvas {
+  display: block;
+  width: 100%;
+  height: 65vh;
+  min-height: 400px;
+  max-height: 900px;
+  background: #030c08;
+  border: 1px solid #447b5a;
+  touch-action: none;
+  user-select: none;
+}
+.blueprint-canvas:focus {
+  outline: 2px solid #9bffbb;
+  outline-offset: 2px;
+}
+.blueprint-canvas-toolbar {
+  padding: 10px;
+  background: #10291d;
+}
+.blueprint-hint {
+  min-height: 40px;
+}
+.blueprint-canvas-toolbar label {
+  margin: 0;
+}
+.blueprint-canvas-toolbar span {
+  font-size: 11px;
+}
+@media (min-width: 1500px) {
+  .shell:has(.blueprint-editor) {
+    max-width: 1800px;
+  }
+}
+@media (max-width: 1100px) {
+  .blueprint-layout {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+  .blueprint-settings {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .blueprint-workspace {
+    position: static;
+  }
+}
+@media (max-width: 650px) {
+  .blueprint-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .blueprint-layout aside,
+  .blueprint-workspace {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .blueprint-tool-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .blueprint-settings {
+    display: block;
+  }
+  .blueprint-heading {
+    flex-direction: column;
+    align-items: start;
+  }
+  .blueprint-canvas {
+    height: 55vh;
+    min-height: 320px;
+  }
+}
