@@ -57,3 +57,24 @@ export function publicLocations(locations) {
     ),
   );
 }
+
+// A consulta reúne o cadastro antigo e as fichas sem alterar os dados salvos.
+export function consultationLocations(locations = [], installations = []) {
+  const normalize = (text) =>
+    text
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+  const aliases = (text) => [text, text.replace(/\([^)]*\)/g, '')].map(normalize).filter(Boolean);
+  const known = new Set(
+    locations.flatMap((local) => [local.name, local.commonName || ''].flatMap(aliases)),
+  );
+  const result = [...locations];
+  installations.forEach((name, index) => {
+    if (!name.trim() || aliases(name).some((alias) => known.has(alias))) return;
+    result.push({ id: 'catalog-installation-' + index, name });
+    aliases(name).forEach((alias) => known.add(alias));
+  });
+  return result;
+}

@@ -270,16 +270,7 @@ export function StarGrid({
           <p>
             X {selected.x} / Y {selected.y} pc
           </p>
-          {selected.installations.length ? (
-            <ul>
-              {selected.installations.map((name, index) => (
-                <li key={index}>{name}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="muted">Nenhuma instalação indicada neste cadastro.</p>
-          )}
-          <SystemLocations locations={selected.locations} />
+          <SystemLocations locations={selected.locations} installations={selected.installations} />
           {stops
             .filter((stop) => stop.system?.id === selected.id)
             .map((stop) => (

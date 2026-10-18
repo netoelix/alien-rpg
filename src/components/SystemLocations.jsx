@@ -1,6 +1,7 @@
-import { locationFields } from '../../data/system-profiles.js';
+import { consultationLocations, locationFields } from '../../data/system-profiles.js';
 
-export function SystemLocations({ locations = [] }) {
+export function SystemLocations({ locations = [], installations = [] }) {
+  locations = consultationLocations(locations, installations);
   if (!locations.length) return <p className="muted">Fichas de locais ainda não preenchidas.</p>;
   return (
     <section aria-label="Consulta de planetas, luas e instalações">
@@ -12,6 +13,9 @@ export function SystemLocations({ locations = [] }) {
             {location.commonName ? ' · ' + location.commonName : ''}
             {location.type && <span className="muted location-type">{location.type}</span>}
           </summary>
+          {!locationFields.some(
+            ([key]) => !['name', 'commonName'].includes(key) && location[key]?.trim(),
+          ) && <p className="muted">Informações adicionais ainda não preenchidas.</p>}
           <dl className="location-facts">
             {locationFields
               .filter(([key]) => !['name', 'commonName'].includes(key) && location[key]?.trim())
