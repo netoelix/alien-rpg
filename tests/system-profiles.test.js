@@ -5,7 +5,7 @@ import { normalizeArchive, validateArchive, newCampaign } from '../data/archive-
 import { publicArchive } from '../data/public-archive.js';
 import { modelsForArchive } from '../data/model.js';
 import { officialSystems, campaignSystems, validateSystemProfiles } from '../data/star-map.js';
-import { validateLocations } from '../data/system-profiles.js';
+import { consultationLocations, validateLocations } from '../data/system-profiles.js';
 const fixture = normalizeArchive(
   JSON.parse(await readFile(new URL('./fixtures/archive-v1.json', import.meta.url))),
 );
@@ -111,4 +111,26 @@ test('lista global vazia remove fichas sem restaurar defaults ou alterar a carto
   assert.deepEqual(system.installations, original.installations);
   assert.equal(system.x, original.x);
   assert.equal(system.y, original.y);
+});
+
+test('consulta reúne fichas e instalações antigas sem repetir locais nem alterar o cadastro', () => {
+  const zeta = officialSystems.find((system) => system.id === 'zeta-2-reticuli');
+  const before = JSON.stringify(zeta);
+  const cards = consultationLocations(zeta.locations, zeta.installations);
+  assert.deepEqual(
+    cards.map((card) => card.name),
+    ['Calpamos', 'LV-223', 'LV-426', 'Kathar Station'],
+  );
+  assert.equal(JSON.stringify(zeta), before);
+  const gl609 = officialSystems.find((system) => system.id === 'gl609');
+  assert.deepEqual(
+    consultationLocations(gl609.locations, gl609.installations).map((card) => card.name),
+    ['LV-7324'],
+  );
+  assert.equal(
+    consultationLocations([{ id: 'custom', name: 'LV-7324', population: '0' }], ['LV-7324']).length,
+    1,
+  );
+  assert.equal(consultationLocations([], ['PROSPECT', 'Prospect', '']).length, 1);
+  assert.equal(consultationLocations([{ id: 'one', name: 'LV-42' }], ['LV-426']).length, 2);
 });
