@@ -128,6 +128,49 @@ export function moveElement(element, dx, dy) {
     ? { ...element, points: element.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) }
     : { ...element, x: element.x + dx, y: element.y + dy };
 }
+// A cópia mantém suas próprias portas; nunca compartilha vínculos com a sala original.
+export function duplicateElement(project, id) {
+  const source = project.elements.find((element) => element.id === id);
+  if (!source || source.kind === 'door')
+    throw new Error('Para inserir outra porta, use a ferramenta Porta na parede desejada.');
+  const attachedDoors = project.elements.filter((element) => element.wallId === id);
+  const parts = [source, ...attachedDoors];
+  if (
+    parts.some((element) => {
+      const layer = project.layers.find((item) => item.id === layerFor(element.kind));
+      return !layer?.visible || layer.locked;
+    })
+  )
+    throw new Error('Mostre e desbloqueie as camadas da peça e de suas portas para duplicar.');
+
+  const step = project.grid;
+  // Procura um deslocamento válido perto das bordas, sem alterar o tamanho da planta.
+  for (const [dx, dy] of [
+    [step, step],
+    [-step, -step],
+    [step, 0],
+    [-step, 0],
+    [0, step],
+    [0, -step],
+  ]) {
+    const copy = { ...moveElement(source, dx, dy), id: uid() };
+    const copies = [
+      copy,
+      ...attachedDoors.map((door) => ({ ...door, id: uid(), wallId: copy.id })),
+    ];
+    try {
+      const next = parseProject(
+        JSON.stringify({ ...project, elements: [...project.elements, ...copies] }),
+      );
+      return { project: next, selectedId: copy.id };
+    } catch {
+      // Tenta o próximo deslocamento; a validação também impõe o limite de objetos.
+    }
+  }
+  throw new Error(
+    'Não há espaço para a cópia ou o limite de objetos foi atingido. Amplie a planta ou remova peças.',
+  );
+}
 export function makeModule(type, x, y) {
   const room = { id: uid(), kind: 'room', x, y, w: 10, h: 8 };
   const asset = (asset, xOffset, yOffset, w = 2, h = 1) => ({

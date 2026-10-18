@@ -10,9 +10,52 @@ import {
   removeElement,
   makeModule,
   snap,
+  duplicateElement,
 } from '../src/blueprints/model.js';
 const room = { id: 'room', kind: 'room', x: 10, y: 10, w: 10, h: 8 };
 const door = { id: 'door', kind: 'door', wallId: 'room', segment: 0, t: 0.5, width: 1.5 };
+test('duplicação remapeia portas sem modificar o original e respeita camadas bloqueadas', () => {
+  const original = { ...newProject(), elements: [room, door] };
+  const result = duplicateElement(original, room.id);
+  const copy = result.project.elements.find((element) => element.id === result.selectedId);
+  const copiedDoor = result.project.elements.find((element) => element.wallId === copy.id);
+  assert.equal(copy.x, room.x + original.grid);
+  assert.notEqual(copiedDoor.id, door.id);
+  assert.deepEqual(doorPosition(copiedDoor, result.project.elements), {
+    x: 16,
+    y: 11,
+    rotation: 0,
+  });
+  assert.deepEqual(original.elements, [room, door]);
+  assert.equal(removeElement(result.project, room.id).elements.length, 2);
+  const locked = {
+    ...original,
+    layers: original.layers.map((layer) => ({ ...layer, locked: layer.id === 'doors' })),
+  };
+  assert.throws(() => duplicateElement(locked, room.id), /desbloqueie/);
+  assert.throws(() => duplicateElement(original, door.id), /ferramenta Porta/);
+});
+test('duplicação junto à borda usa deslocamento válido e mantém traçados independentes', () => {
+  const original = { ...newProject(), elements: [{ ...room, x: 70, y: 52 }] };
+  const result = duplicateElement(original, room.id);
+  assert.equal(result.project.elements[1].x, 69);
+  const vent = {
+    id: 'vent',
+    kind: 'vent',
+    width: 1,
+    points: [
+      { x: 1, y: 1 },
+      { x: 5, y: 5 },
+    ],
+  };
+  const copied = duplicateElement({ ...newProject(), elements: [vent] }, vent.id).project
+    .elements[1];
+  assert.deepEqual(copied.points, [
+    { x: 2, y: 2 },
+    { x: 6, y: 6 },
+  ]);
+  assert.deepEqual(vent.points[0], { x: 1, y: 1 });
+});
 test('projeto local preserva medidas, camadas e objetos no ciclo salvar/abrir', () => {
   const p = {
     ...newProject(),

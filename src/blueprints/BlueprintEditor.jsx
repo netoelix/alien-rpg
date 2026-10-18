@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Drawing } from './Drawing.jsx';
 import { AssetSymbol, assetNames } from './Assets.jsx';
 import {
+  duplicateElement,
   exampleProject,
   layerFor,
   makeModule,
@@ -32,7 +33,8 @@ const toolNames = {
   label: 'Texto',
 };
 const hints = {
-  select: 'Clique para selecionar; arraste para mover. Ajuste as medidas no painel.',
+  select:
+    'Arraste para mover. Ctrl+D duplica; R gira equipamentos; setas movem pela grade (Shift: 10 passos).',
   pan: 'Arraste o mapa para deslocar a visão.',
   room: 'Arraste do primeiro ao último canto da sala.',
   ellipse: 'Arraste para definir o tamanho da sala circular ou oval.',
@@ -326,6 +328,34 @@ export default function BlueprintEditor() {
   }
   const selectedElement = project.elements.find((e) => e.id === selected);
   const editable = selectedElement && allowed(selectedElement.kind);
+  function duplicate() {
+    if (!editable || gesture || points.length) return;
+    try {
+      const copy = duplicateElement(project, selected);
+      if (commit(copy.project)) {
+        setSelected(copy.selectedId);
+        setTool('select');
+        setMessage(
+          'Cópia selecionada. Arraste para posicionar; equipamentos internos são peças independentes.',
+        );
+      }
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+  function rotateSelection(delta) {
+    if (selectedElement?.kind === 'asset' && !gesture && !points.length)
+      property('rotation', (((selectedElement.rotation + delta) % 360) + 360) % 360);
+  }
+  function nudge(dx, dy) {
+    if (!editable || selectedElement.kind === 'door' || gesture || points.length) return;
+    commit({
+      ...project,
+      elements: project.elements.map((element) =>
+        element.id === selected ? moveElement(element, dx, dy) : element,
+      ),
+    });
+  }
   function property(key, value) {
     if (editable)
       commit({
@@ -556,6 +586,15 @@ export default function BlueprintEditor() {
                       />
                     </label>
                   )}
+                  {selectedElement.kind !== 'door' && (
+                    <button onClick={duplicate}>DUPLICAR PEÇA</button>
+                  )}
+                  {selectedElement.kind === 'asset' && (
+                    <div className="blueprint-quick-actions">
+                      <button onClick={() => rotateSelection(-90)}>GIRAR −90°</button>
+                      <button onClick={() => rotateSelection(90)}>GIRAR +90°</button>
+                    </div>
+                  )}
                   <button onClick={remove}>REMOVER OBJETO</button>
                 </fieldset>
               </>
@@ -602,6 +641,25 @@ export default function BlueprintEditor() {
             onPointerUp={up}
             onPointerCancel={() => setGesture(null)}
             onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+                e.preventDefault();
+                duplicate();
+              }
+              if (!e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'r') {
+                e.preventDefault();
+                rotateSelection(e.shiftKey ? -90 : 90);
+              }
+              const direction = {
+                ArrowLeft: [-1, 0],
+                ArrowRight: [1, 0],
+                ArrowUp: [0, -1],
+                ArrowDown: [0, 1],
+              }[e.key];
+              if (direction && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                e.preventDefault();
+                const step = project.grid * (e.shiftKey ? 10 : 1);
+                nudge(direction[0] * step, direction[1] * step);
+              }
               if (e.key === 'Enter' && ['corridor', 'vent'].includes(tool)) {
                 e.preventDefault();
                 finish();
