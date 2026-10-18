@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { campaignModels as savedModels, modelsForArchive } from '../data/model.js';
 import { CampaignContext, ArchiveContext, useCampaign } from './context/CampaignContext.jsx';
+const BlueprintEditor = lazy(() => import('./blueprints/BlueprintEditor.jsx'));
 const Editor = lazy(() => import('./editor/Editor.jsx'));
 import { RouteLink, MissingPage } from './components/Common.jsx';
 import { HomePage, CampaignPage } from './pages/Home.jsx';
@@ -23,6 +24,12 @@ function RoutePage({ route, idText, recordText }) {
   const { campaign, characters, players, timelines, missionRecords } = useCampaign();
   const id = /^\d+$/.test(idText || '') ? Number(idText) : -1;
   switch (route) {
+    case 'blueprints':
+      return (
+        <Suspense fallback={<p>Carregando oficina…</p>}>
+          <BlueprintEditor />
+        </Suspense>
+      );
     case 'editor':
       return Editor ? (
         <Suspense fallback={<p>Carregando editor…</p>}>
@@ -146,7 +153,10 @@ export default function App() {
             <RouteLink to="editor">
               {import.meta.env.MODE === 'editor' ? 'EDITOR LOCAL' : 'EDITOR'}
             </RouteLink>
-            {route && route !== 'editor'
+            <a href="#/blueprints" aria-current={route === 'blueprints' ? 'page' : undefined}>
+              CRIAR PLANTA
+            </a>
+            {route && route !== 'editor' && route !== 'blueprints'
               ? navigation.map((item) => (
                   <RouteLink
                     key={item.route}
