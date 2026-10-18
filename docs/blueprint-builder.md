@@ -34,3 +34,10 @@ O carregamento normal do site continua dependendo da hospedagem. Os desenhos nã
 ## Verificação
 
 Testes de escala e serialização, ancoragem e movimento de portas, remoção dependente, módulos independentes, paredes de corredores e elipses e validação de importação. Renderização React estática e rasterização de um SVG de exemplo foram verificadas. Interação por ponteiro, teclado e download real ainda requerem validação em navegador conectado.
+
+## Edição rápida
+
+Selecione uma peça para duplicar (Ctrl+D), mover com as setas na grade ou girar equipamentos com R (Shift+R inverte). Shift+setas move dez passos. Os botões do painel também duplicam e giram. Os atalhos atuam com foco na área de desenho.
+
+Duplicar uma sala ou corredor copia suas portas com vínculos próprios; os equipamentos internos continuam independentes e devem ser duplicados separadamente. Portas avulsas são inseridas pela ferramenta Porta. Camadas ocultas ou bloqueadas impedem a cópia das peças vinculadas. Desfazer reverte a duplicação inteira.
+
