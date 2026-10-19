@@ -34,6 +34,7 @@ export const snap = (n, step) => Math.round(n / step) * step;
 export const layerFor = (kind) =>
   ({
     room: 'structure',
+    polygon: 'structure',
     ellipse: 'structure',
     corridor: 'structure',
     door: 'doors',
@@ -42,6 +43,14 @@ export const layerFor = (kind) =>
     label: 'labels',
   })[kind];
 export function wallSegments(element) {
+  if (element.kind === 'polygon')
+    return element.points.map((point, index) => {
+      const next = element.points[(index + 1) % element.points.length];
+      return [
+        [point.x, point.y],
+        [next.x, next.y],
+      ];
+    });
   if (element.kind === 'room') {
     const { x, y, w, h } = element;
     return [
@@ -246,16 +255,22 @@ export function parseProject(text) {
         t: number(e.t, 0, 1),
         width: number(e.width, 0.25, 20),
       };
-    if (['vent', 'corridor'].includes(e.kind)) {
-      if (!Array.isArray(e.points) || e.points.length < 2 || e.points.length > 500)
+    if (['vent', 'corridor', 'polygon'].includes(e.kind)) {
+      if (
+        !Array.isArray(e.points) ||
+        e.points.length < (e.kind === 'polygon' ? 3 : 2) ||
+        e.points.length > 500
+      )
         throw new Error('Traçado inválido.');
+      const points = e.points.map((p) => ({
+        x: number(p.x, 0, result.width),
+        y: number(p.y, 0, result.height),
+      }));
+      if (e.kind === 'polygon') validatePolygon(points);
       return {
         ...base,
-        width: number(e.width, 0.25, 50),
-        points: e.points.map((p) => ({
-          x: number(p.x, 0, result.width),
-          y: number(p.y, 0, result.height),
-        })),
+        ...(e.kind === 'polygon' ? {} : { width: number(e.width, 0.25, 50) }),
+        points,
       };
     }
     const position = { x: number(e.x, 0, result.width), y: number(e.y, 0, result.height) };
@@ -278,6 +293,38 @@ export function parseProject(text) {
       throw new Error('Objeto ultrapassa o tamanho da planta.');
   }
   return result;
+}
+export function validatePolygon(points) {
+  const cross = (a, b, c) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+  const onSegment = (a, b, p) =>
+    Math.abs(cross(a, b, p)) < 1e-8 &&
+    p.x >= Math.min(a.x, b.x) &&
+    p.x <= Math.max(a.x, b.x) &&
+    p.y >= Math.min(a.y, b.y) &&
+    p.y <= Math.max(a.y, b.y);
+  const intersects = (a, b, c, d) =>
+    (cross(a, b, c) * cross(a, b, d) < 0 && cross(c, d, a) * cross(c, d, b) < 0) ||
+    onSegment(a, b, c) ||
+    onSegment(a, b, d) ||
+    onSegment(c, d, a) ||
+    onSegment(c, d, b);
+  let area = 0;
+  for (let i = 0; i < points.length; i++) {
+    const a = points[i],
+      b = points[(i + 1) % points.length];
+    if (Math.hypot(b.x - a.x, b.y - a.y) < 0.25)
+      throw new Error('Cada parede da sala precisa ter pelo menos 0,25 m.');
+    area += a.x * b.y - b.x * a.y;
+    for (let j = i + 2; j < points.length; j++) {
+      if (i === 0 && j === points.length - 1) continue;
+      if (intersects(a, b, points[j], points[(j + 1) % points.length]))
+        throw new Error(
+          'O contorno da sala não pode cruzar ou tocar a si mesmo. Remova o último ponto e ajuste o traçado.',
+        );
+    }
+  }
+  if (Math.abs(area) < 0.125)
+    throw new Error('A sala precisa fechar uma área de pelo menos 0,0625 m².');
 }
 export function exampleProject() {
   return {

@@ -6,6 +6,16 @@ export const palettes = {
   print: { background: '#ffffff', floor: '#f1f3f4', ink: '#14252c', accent: '#555555' },
 };
 function Shape({ element, outer = false }) {
+  if (element.kind === 'polygon')
+    return (
+      <polygon
+        points={element.points.map((p) => `${p.x},${p.y}`).join(' ')}
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth={outer ? 0.4 : 0}
+        strokeLinejoin="round"
+      />
+    );
   if (element.kind === 'corridor')
     return (
       <polyline
@@ -244,7 +254,9 @@ export function Drawing({
               return e.points ? (
                 <polyline
                   key={e.id}
-                  points={e.points.map((p) => `${p.x},${p.y}`).join(' ')}
+                  points={(e.kind === 'polygon' ? [...e.points, e.points[0]] : e.points)
+                    .map((p) => `${p.x},${p.y}`)
+                    .join(' ')}
                   fill="none"
                   stroke="#fff"
                   strokeWidth=".15"
