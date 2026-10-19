@@ -50,3 +50,11 @@ Escolha Sala por vértices e clique nos cantos em sequência. Enter ou Concluir 
 As próximas etapas ficam locais até autorização para publicar o conjunto. Edição de vértices validada no servidor da porta 3841: arraste de um ponto do corredor e conferência das coordenadas no painel. Verificação automatizada: 79 testes e build aprovados.
 
 A biblioteca de equipamentos permite buscar pelo nome sem diferenciar acentos ou maiúsculas. A busca filtra a lista e mantém a peça selecionada, indicada acima dos resultados.
+
+## Viewport e navegação
+
+As ferramentas ficam em uma barra de ícones dentro da viewport, com nomes acessíveis e dicas ao passar o mouse. Os painéis laterais podem ser ocultados. O modo de foco ocupa a janela e mantém os comandos de arquivo disponíveis.
+
+Na planta: botão do meio ou direito + arraste move a visão sem trocar a ferramenta; Espaço + arraste também move a visão. H ativa a ferramenta de navegação. + e − alteram o zoom; Home enquadra; F alterna o foco; Escape cancela e sai do foco. V seleciona; B desenha sala retangular; P polígono; O sala oval; C corredor; D porta; N ventilação; A equipamento; M módulo; T texto. Ctrl+D, R e as setas conservam os comandos de edição existentes. Os atalhos só atuam quando a planta está focada, preservando a digitação nos campos e a navegação por Tab.
+
+Validação local da viewport: modo de foco, ferramentas por teclado, enquadramento e arraste pela ferramenta H conferidos no navegador. Cliques direito e central não adicionam objetos. O arraste mantendo esses botões e Espaço deve também ser conferido com o mouse físico, pois o controle de navegador utilizado só oferece arraste com o botão esquerdo.
