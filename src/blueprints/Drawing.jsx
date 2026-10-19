@@ -42,6 +42,8 @@ export function Drawing({
   selected,
   preview = [],
   interactive = false,
+  editVertices = false,
+  handleRadius = 0.4,
 }) {
   const palette = palettes[project.theme];
   const elements = [...project.elements, ...preview];
@@ -278,6 +280,30 @@ export function Drawing({
                 />
               );
             })}
+        </g>
+      )}
+      {interactive && editVertices && (
+        <g data-editor-only="true">
+          {elements
+            .filter((element) => element.id === selected && element.points)
+            .flatMap((element) =>
+              element.points.map((point, index) => (
+                <circle
+                  key={`${element.id}-${index}`}
+                  data-vertex={index}
+                  data-object={element.id}
+                  cx={point.x}
+                  cy={point.y}
+                  r={handleRadius}
+                  fill={palette.background}
+                  stroke="#fff"
+                  strokeWidth={handleRadius / 4}
+                  style={{ cursor: 'crosshair' }}
+                >
+                  <title>Vértice {index + 1}: arraste para ajustar</title>
+                </circle>
+              )),
+            )}
         </g>
       )}
     </>

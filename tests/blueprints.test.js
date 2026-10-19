@@ -7,13 +7,134 @@ import {
   nearestWall,
   doorPosition,
   moveElement,
+  moveVertex,
+  changeVertexCount,
   removeElement,
   makeModule,
   snap,
   duplicateElement,
+  moduleNames,
+  assetTypes,
 } from '../src/blueprints/model.js';
 const room = { id: 'room', kind: 'room', x: 10, y: 10, w: 10, h: 8 };
 const door = { id: 'door', kind: 'door', wallId: 'room', segment: 0, t: 0.5, width: 1.5 };
+test('inserir e remover vértice preserva portas e o projeto original', () => {
+  const polygon = {
+    id: 'room',
+    kind: 'polygon',
+    points: [
+      { x: 2, y: 2 },
+      { x: 10, y: 2 },
+      { x: 10, y: 10 },
+      { x: 2, y: 10 },
+    ],
+  };
+  const firstDoor = { ...door, t: 0.75 };
+  const otherDoor = { ...door, id: 'other', segment: 3 };
+  const original = { ...newProject(), elements: [polygon, firstDoor, otherDoor] };
+  const inserted = changeVertexCount(original, polygon.id, 0, 'insert');
+  assert.equal(inserted.elements[0].points.length, 5);
+  assert.equal(inserted.elements[1].segment, 1);
+  assert.equal(inserted.elements[1].t, 0.5);
+  assert.equal(inserted.elements[2].segment, 4);
+  for (let i = 1; i <= 2; i++)
+    assert.deepEqual(
+      doorPosition(inserted.elements[i], inserted.elements),
+      doorPosition(original.elements[i], original.elements),
+    );
+  assert.deepEqual(changeVertexCount(inserted, polygon.id, 1, 'remove'), original);
+  assert.equal(original.elements[0].points.length, 4);
+  const triangle = changeVertexCount(original, polygon.id, 1, 'remove');
+  assert.equal(triangle.elements.length, 3);
+  assert.ok(doorPosition(triangle.elements[1], triangle.elements));
+  assert.throws(() => changeVertexCount(triangle, polygon.id, 0, 'remove'), /3 vértices/);
+  assert.throws(
+    () =>
+      changeVertexCount(
+        {
+          ...original,
+          layers: original.layers.map((layer) => ({ ...layer, locked: layer.id === 'doors' })),
+        },
+        polygon.id,
+        0,
+        'insert',
+      ),
+    /desbloqueie/,
+  );
+});
+test('alteração de pontos em corredor remapeia lados e impede caminhos degenerados', () => {
+  const corridor = {
+    id: 'room',
+    kind: 'corridor',
+    width: 2,
+    points: [
+      { x: 2, y: 2 },
+      { x: 10, y: 2 },
+      { x: 10, y: 10 },
+    ],
+  };
+  const original = {
+    ...newProject(),
+    elements: [corridor, { ...door, segment: 1, t: 0.75 }, { ...door, id: 'after', segment: 2 }],
+  };
+  const inserted = changeVertexCount(original, corridor.id, 0, 'insert');
+  assert.equal(inserted.elements[1].segment, 3);
+  assert.equal(inserted.elements[2].segment, 4);
+  assert.deepEqual(
+    doorPosition(inserted.elements[1], inserted.elements),
+    doorPosition(original.elements[1], original.elements),
+  );
+  assert.deepEqual(changeVertexCount(inserted, corridor.id, 1, 'remove'), original);
+  assert.throws(() => changeVertexCount(original, corridor.id, 2, 'insert'), /último ponto/);
+  const tiny = {
+    ...corridor,
+    points: [
+      { x: 1, y: 1 },
+      { x: 1.25, y: 1 },
+    ],
+  };
+  assert.throws(
+    () => changeVertexCount({ ...newProject(), elements: [tiny] }, tiny.id, 0, 'insert'),
+    /0,25/,
+  );
+});
+test('editar vértice preserva vínculo da porta e recusa colapso do traçado', () => {
+  const polygon = {
+    id: 'room',
+    kind: 'polygon',
+    points: [
+      { x: 2, y: 2 },
+      { x: 10, y: 2 },
+      { x: 10, y: 10 },
+      { x: 2, y: 10 },
+    ],
+  };
+  const changed = moveVertex(polygon, 1, { x: 12, y: 2 });
+  assert.deepEqual(doorPosition(door, [changed]), { x: 7, y: 2, rotation: 0 });
+  assert.deepEqual(polygon.points[1], { x: 10, y: 2 });
+  assert.doesNotThrow(() =>
+    parseProject(JSON.stringify({ ...newProject(), elements: [changed, door] })),
+  );
+  assert.throws(() => moveVertex(polygon, 9, { x: 0, y: 0 }), /Vértice/);
+  const collapsed = moveVertex(polygon, 1, polygon.points[0]);
+  assert.throws(() => parseProject(JSON.stringify({ ...newProject(), elements: [collapsed] })));
+  for (const kind of ['vent', 'corridor']) {
+    const path = {
+      id: 'path',
+      kind,
+      points: [
+        { x: 2, y: 2 },
+        { x: 6, y: 2 },
+      ],
+      width: 2,
+    };
+    assert.throws(() =>
+      parseProject(
+        JSON.stringify({ ...newProject(), elements: [moveVertex(path, 1, path.points[0])] }),
+      ),
+    );
+  }
+});
 test('sala em L mantém contorno fechado, portas e formato ao salvar e duplicar', () => {
   const polygon = {
     id: 'room',
@@ -150,12 +271,26 @@ test('corredores e salas curvas fornecem paredes para portas sem mudar o percurs
   assert.deepEqual(corridor.points[0], { x: 2, y: 2 });
 });
 test('módulos são peças independentes, com IDs próprios e porta válida', () => {
-  for (const kind of ['bridge', 'medical', 'quarters']) {
+  for (const kind of Object.keys(moduleNames)) {
     const parts = [...makeModule(kind, 1, 1), ...makeModule(kind, 20, 20)];
     assert.equal(new Set(parts.map((p) => p.id)).size, parts.length);
     assert.doesNotThrow(() => parseProject(JSON.stringify({ ...newProject(), elements: parts })));
     assert.ok(parts.some((p) => p.kind === 'asset'));
+    for (const part of parts.filter((p) => p.kind === 'asset')) {
+      assert.ok(assetTypes.includes(part.asset));
+      const parent = parts
+        .filter((p) => p.kind === 'room')
+        .find(
+          (p) =>
+            part.x >= p.x &&
+            part.x + part.w <= p.x + p.w &&
+            part.y >= p.y &&
+            part.y + part.h <= p.y + p.h,
+        );
+      assert.ok(parent, 'equipamento precisa caber dentro do módulo');
+    }
   }
+  assert.throws(() => makeModule('unknown', 0, 0), /desconhecido/);
 });
 test('importação rejeita arquivos inválidos e descarta campos externos', () => {
   const p = newProject();
