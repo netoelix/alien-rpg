@@ -24,6 +24,7 @@ const toolNames = {
   select: 'Selecionar / mover',
   pan: 'Mover visão',
   room: 'Sala retangular',
+  polygon: 'Sala por vértices',
   ellipse: 'Sala circular',
   corridor: 'Corredor',
   door: 'Porta',
@@ -37,6 +38,8 @@ const hints = {
     'Arraste para mover. Ctrl+D duplica; R gira equipamentos; setas movem pela grade (Shift: 10 passos).',
   pan: 'Arraste o mapa para deslocar a visão.',
   room: 'Arraste do primeiro ao último canto da sala.',
+  polygon:
+    'Clique nos cantos em ordem. Enter fecha a sala; Backspace remove o último ponto; Escape cancela.',
   ellipse: 'Arraste para definir o tamanho da sala circular ou oval.',
   corridor: 'Clique nos pontos do percurso. Use Concluir traçado ou Enter para terminar.',
   vent: 'Clique nos pontos do duto. Use Concluir traçado ou Enter. Cruzamentos nesta versão são apenas visuais.',
@@ -214,7 +217,7 @@ export default function BlueprintEditor() {
       setGesture({ kind: tool, start: p, end: p });
       return;
     }
-    if (['corridor', 'vent'].includes(tool)) {
+    if (['corridor', 'vent', 'polygon'].includes(tool)) {
       setPoints((old) =>
         old.length && old.at(-1).x === p.x && old.at(-1).y === p.y ? old : [...old, p],
       );
@@ -295,7 +298,7 @@ export default function BlueprintEditor() {
     }
   }
   function finish() {
-    if (points.length < 2) return;
+    if (points.length < (tool === 'polygon' ? 3 : 2)) return;
     if (add([{ id: uid(), kind: tool, points, width: lineWidth }])) setPoints([]);
   }
   function changeTool(next) {
@@ -474,23 +477,31 @@ export default function BlueprintEditor() {
               </button>
             ))}
           </div>
-          {['corridor', 'vent'].includes(tool) && (
+          {['corridor', 'vent', 'polygon'].includes(tool) && (
             <>
-              <label>
-                Largura (m)
-                <input
-                  type="number"
-                  min=".25"
-                  max="50"
-                  step=".25"
-                  value={lineWidth}
-                  onChange={(e) =>
-                    setLineWidth(Math.max(0.25, Math.min(50, Number(e.target.value))))
-                  }
-                />
-              </label>
-              <button disabled={points.length < 2} onClick={finish}>
+              {tool !== 'polygon' && (
+                <label>
+                  Largura (m)
+                  <input
+                    type="number"
+                    min=".25"
+                    max="50"
+                    step=".25"
+                    value={lineWidth}
+                    onChange={(e) =>
+                      setLineWidth(Math.max(0.25, Math.min(50, Number(e.target.value))))
+                    }
+                  />
+                </label>
+              )}
+              <button disabled={points.length < (tool === 'polygon' ? 3 : 2)} onClick={finish}>
                 CONCLUIR TRAÇADO
+              </button>
+              <button
+                disabled={!points.length}
+                onClick={() => setPoints((current) => current.slice(0, -1))}
+              >
+                REMOVER ÚLTIMO PONTO
               </button>
               <button disabled={!points.length} onClick={() => setPoints([])}>
                 CANCELAR TRAÇADO
@@ -660,7 +671,11 @@ export default function BlueprintEditor() {
                 const step = project.grid * (e.shiftKey ? 10 : 1);
                 nudge(direction[0] * step, direction[1] * step);
               }
-              if (e.key === 'Enter' && ['corridor', 'vent'].includes(tool)) {
+              if (e.key === 'Backspace' && points.length) {
+                e.preventDefault();
+                setPoints((current) => current.slice(0, -1));
+              }
+              if (e.key === 'Enter' && ['corridor', 'vent', 'polygon'].includes(tool)) {
                 e.preventDefault();
                 finish();
               }

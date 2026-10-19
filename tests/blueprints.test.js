@@ -14,6 +14,57 @@ import {
 } from '../src/blueprints/model.js';
 const room = { id: 'room', kind: 'room', x: 10, y: 10, w: 10, h: 8 };
 const door = { id: 'door', kind: 'door', wallId: 'room', segment: 0, t: 0.5, width: 1.5 };
+test('sala em L mantém contorno fechado, portas e formato ao salvar e duplicar', () => {
+  const polygon = {
+    id: 'room',
+    kind: 'polygon',
+    points: [
+      { x: 2, y: 2 },
+      { x: 10, y: 2 },
+      { x: 10, y: 5 },
+      { x: 5, y: 5 },
+      { x: 5, y: 10 },
+      { x: 2, y: 10 },
+    ],
+  };
+  const project = { ...newProject(), elements: [polygon, door] };
+  assert.deepEqual(parseProject(JSON.stringify(project)), project);
+  assert.equal(wallSegments(polygon).length, 6);
+  assert.deepEqual(wallSegments(polygon).at(-1), [
+    [2, 10],
+    [2, 2],
+  ]);
+  assert.deepEqual(doorPosition(door, [polygon]), { x: 6, y: 2, rotation: 0 });
+  const result = duplicateElement(project, polygon.id);
+  assert.equal(result.project.elements.length, 4);
+  assert.deepEqual(result.project.elements[2].points[0], { x: 3, y: 3 });
+  for (const points of [
+    [
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+    ],
+    [
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+      { x: 3, y: 3 },
+    ],
+    [
+      { x: 1, y: 1 },
+      { x: 8, y: 8 },
+      { x: 1, y: 8 },
+      { x: 8, y: 1 },
+    ],
+    [
+      { x: 1, y: 1 },
+      { x: 1, y: 1 },
+      { x: 8, y: 1 },
+      { x: 8, y: 8 },
+    ],
+  ])
+    assert.throws(() =>
+      parseProject(JSON.stringify({ ...project, elements: [{ ...polygon, points }] })),
+    );
+});
 test('duplicação remapeia portas sem modificar o original e respeita camadas bloqueadas', () => {
   const original = { ...newProject(), elements: [room, door] };
   const result = duplicateElement(original, room.id);
