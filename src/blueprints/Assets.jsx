@@ -9,6 +9,12 @@ export const assetNames = {
   medical: 'Maca',
   locker: 'Armário',
   hatch: 'Escotilha',
+  engine: 'Motor',
+  tank: 'Tanque',
+  rack: 'Estante de carga',
+  workbench: 'Bancada de manutenção',
+  kitchen: 'Cozinha compacta',
+  sofa: 'Banco estofado',
 };
 export function AssetSymbol({ type }) {
   const frame = <rect x="5" y="5" width="90" height="90" rx="8" />;
@@ -87,6 +93,56 @@ export function AssetSymbol({ type }) {
           <circle cx="50" cy="50" r="30" />
           <path d="M50 20V80 M20 50H80" />
           <circle cx="50" cy="50" r="9" />
+        </>
+      );
+    case 'engine':
+      return (
+        <>
+          <path d="M25 8H75V25L88 38V72L72 88H28L12 72V38L25 25Z M25 25H75 M12 45H88 M12 60H88 M28 88V96 M72 88V96" />
+          <circle cx="50" cy="52" r="16" />
+          <path d="M42 40L58 64 M58 40L42 64" />
+        </>
+      );
+    case 'tank':
+      return (
+        <>
+          <rect x="18" y="10" width="64" height="80" rx="30" />
+          <path d="M20 32H80 M20 68H80 M43 10V3H57V10 M43 90V97H57V90" />
+          <circle cx="50" cy="50" r="8" />
+        </>
+      );
+    case 'rack':
+      return (
+        <>
+          <rect x="6" y="6" width="88" height="88" />
+          <path d="M6 35H94 M6 65H94 M35 6V94 M65 6V94 M13 13L27 27 M42 42L58 58 M73 73L87 87" />
+        </>
+      );
+    case 'workbench':
+      return (
+        <>
+          <rect x="5" y="12" width="90" height="76" />
+          <path d="M5 35H95 M18 18V28 M30 18V28 M42 18V28 M15 75H85 M55 45L75 65 M75 45L55 65" />
+          <circle cx="28" cy="55" r="10" />
+        </>
+      );
+    case 'kitchen':
+      return (
+        <>
+          <rect x="4" y="8" width="92" height="84" />
+          <path d="M50 8V92 M4 70H50" />
+          <rect x="12" y="20" width="28" height="38" rx="5" />
+          <circle cx="65" cy="30" r="8" />
+          <circle cx="83" cy="30" r="8" />
+          <circle cx="65" cy="60" r="8" />
+          <circle cx="83" cy="60" r="8" />
+        </>
+      );
+    case 'sofa':
+      return (
+        <>
+          <rect x="4" y="15" width="92" height="70" rx="12" />
+          <path d="M15 15V72H85V15 M15 32H85 M38 32V72 M62 32V72" />
         </>
       );
     default:

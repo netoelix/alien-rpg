@@ -6,7 +6,10 @@ import {
   exampleProject,
   layerFor,
   makeModule,
+  moduleNames,
   moveElement,
+  moveVertex,
+  changeVertexCount,
   nearestWall,
   newProject,
   parseProject,
@@ -17,6 +20,12 @@ import {
 import { downloadBlob, exportDrawing, projectFilename } from './export.js';
 import './blueprints.css';
 const storageKey = 'alien-blueprint-recovery-v1';
+const normalizeSearch = (text) =>
+  text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR')
+    .trim();
 // Memória desta aba: navegar pelo site não descarta a planta em andamento.
 let sessionProject = null;
 let sessionDirty = false;
@@ -56,6 +65,10 @@ export default function BlueprintEditor() {
     [selected, setSelected] = useState(null);
   const [asset, setAsset] = useState('console'),
     [moduleType, setModuleType] = useState('bridge');
+  const [assetSearch, setAssetSearch] = useState('');
+  const matchingAssets = Object.entries(assetNames).filter(([, name]) =>
+    normalizeSearch(name).includes(normalizeSearch(assetSearch)),
+  );
   const [lineWidth, setLineWidth] = useState(2),
     [doorWidth, setDoorWidth] = useState(1.5),
     [label, setLabel] = useState('PONTE');
@@ -201,6 +214,17 @@ export default function BlueprintEditor() {
       }
       setSelected(id);
       svgRef.current.setPointerCapture(event.pointerId);
+      const vertex = event.target.closest('[data-vertex]');
+      if (vertex && element.points) {
+        setGesture({
+          kind: 'vertex',
+          element,
+          index: Number(vertex.dataset.vertex),
+          start: p,
+          end: p,
+        });
+        return;
+      }
       setGesture({ kind: 'move', element, start: p, end: p });
       return;
     }
@@ -277,6 +301,15 @@ export default function BlueprintEditor() {
       svgRef.current.releasePointerCapture(event.pointerId);
     const g = { ...gesture, end: location(event) };
     setGesture(null);
+    if (g.kind === 'vertex' && (g.end.x !== g.start.x || g.end.y !== g.start.y)) {
+      commit({
+        ...project,
+        elements: project.elements.map((element) =>
+          element.id === g.element.id ? moveVertex(element, g.index, g.end) : element,
+        ),
+      });
+      return;
+    }
     if (['room', 'ellipse'].includes(g.kind)) {
       const e = rectangle(g);
       if (e.w >= 0.25 && e.h >= 0.25) add([{ ...e, id: uid() }]);
@@ -366,6 +399,30 @@ export default function BlueprintEditor() {
         elements: project.elements.map((e) => (e.id === selected ? { ...e, [key]: value } : e)),
       });
   }
+  function vertexProperty(index, axis, value) {
+    if (!editable || gesture) return;
+    const changed = moveVertex(selectedElement, index, {
+      ...selectedElement.points[index],
+      [axis]: value,
+    });
+    commit({
+      ...project,
+      elements: project.elements.map((element) => (element.id === selected ? changed : element)),
+    });
+  }
+  function vertexCount(index, action) {
+    if (!editable || gesture || points.length) return;
+    try {
+      if (commit(changeVertexCount(project, selected, index, action)))
+        setMessage(
+          action === 'insert'
+            ? 'Vértice inserido no meio do segmento. Arraste-o para modelar o contorno.'
+            : 'Vértice removido. Portas em bordas alteradas foram reposicionadas no traçado; confira o resultado.',
+        );
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
   function zoom(factor) {
     setView((v) => {
       const z = Math.max(0.5, Math.min(12, v.zoom * factor));
@@ -378,6 +435,15 @@ export default function BlueprintEditor() {
   }
   let drawn = project,
     preview = [];
+  if (gesture?.kind === 'vertex')
+    drawn = {
+      ...project,
+      elements: project.elements.map((element) =>
+        element.id === gesture.element.id
+          ? moveVertex(element, gesture.index, gesture.end)
+          : element,
+      ),
+    };
   if (gesture && ['room', 'ellipse'].includes(gesture.kind)) preview = [rectangle(gesture)];
   if (points.length)
     preview = [
@@ -522,30 +588,47 @@ export default function BlueprintEditor() {
             </label>
           )}
           {tool === 'asset' && (
-            <div className="blueprint-assets">
-              {Object.entries(assetNames).map(([id, name]) => (
-                <button key={id} aria-pressed={asset === id} onClick={() => setAsset(id)}>
-                  <svg
-                    viewBox="0 0 100 100"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  >
-                    <AssetSymbol type={id} />
-                  </svg>
-                  {name}
-                </button>
-              ))}
-            </div>
+            <>
+              <label>
+                Buscar equipamento
+                <input
+                  type="search"
+                  value={assetSearch}
+                  onChange={(event) => setAssetSearch(event.target.value)}
+                  placeholder="Nome da peça"
+                />
+              </label>
+              <p aria-live="polite">
+                {matchingAssets.length} peça(s) encontrada(s). Selecionada: {assetNames[asset]}.
+              </p>
+              <div className="blueprint-assets">
+                {matchingAssets.map(([id, name]) => (
+                  <button key={id} aria-pressed={asset === id} onClick={() => setAsset(id)}>
+                    <svg
+                      viewBox="0 0 100 100"
+                      aria-hidden="true"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                    >
+                      <AssetSymbol type={id} />
+                    </svg>
+                    {name}
+                  </button>
+                ))}
+              </div>
+              {!matchingAssets.length && <p>Nenhum equipamento encontrado. Tente outro nome.</p>}
+            </>
           )}
           {tool === 'module' && (
             <label>
               Módulo (10 × 8 m)
               <select value={moduleType} onChange={(e) => setModuleType(e.target.value)}>
-                <option value="bridge">Ponte de comando</option>
-                <option value="medical">Enfermaria</option>
-                <option value="quarters">Alojamento</option>
+                {Object.entries(moduleNames).map(([value, name]) => (
+                  <option key={value} value={value}>
+                    {name}
+                  </option>
+                ))}
               </select>
             </label>
           )}
@@ -596,6 +679,63 @@ export default function BlueprintEditor() {
                         onChange={(e) => property('text', e.target.value)}
                       />
                     </label>
+                  )}
+                  {selectedElement.points && (
+                    <details className="blueprint-vertices">
+                      <summary>Vértices ({selectedElement.points.length})</summary>
+                      <p>
+                        Arraste os círculos na planta ou ajuste as coordenadas. As portas acompanham
+                        a borda.
+                      </p>
+                      <div className="blueprint-vertex-list">
+                        {selectedElement.points.map((point, index) => (
+                          <div key={index} className="blueprint-vertex-row">
+                            <span>{index + 1}</span>
+                            {['x', 'y'].map((axis) => (
+                              <label key={axis}>
+                                {axis.toUpperCase()} (m)
+                                <input
+                                  type="number"
+                                  aria-label={`Vértice ${index + 1}, ${axis.toUpperCase()} em metros`}
+                                  min="0"
+                                  max={axis === 'x' ? project.width : project.height}
+                                  step={project.grid}
+                                  value={point[axis]}
+                                  onChange={(event) =>
+                                    vertexProperty(index, axis, Number(event.target.value))
+                                  }
+                                />
+                              </label>
+                            ))}
+                            <div className="blueprint-vertex-actions">
+                              <button
+                                type="button"
+                                aria-label={`Inserir vértice após ${index + 1}`}
+                                disabled={
+                                  selectedElement.points.length >= 500 ||
+                                  (selectedElement.kind !== 'polygon' &&
+                                    index === selectedElement.points.length - 1)
+                                }
+                                onClick={() => vertexCount(index, 'insert')}
+                              >
+                                + PONTO
+                              </button>
+                              <button
+                                type="button"
+                                aria-label={`Remover vértice ${index + 1}`}
+                                disabled={
+                                  selectedElement.points.length <=
+                                  (selectedElement.kind === 'polygon' ? 3 : 2)
+                                }
+                                onClick={() => vertexCount(index, 'remove')}
+                              >
+                                REMOVER
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
                   )}
                   {selectedElement.kind !== 'door' && (
                     <button onClick={duplicate}>DUPLICAR PEÇA</button>
@@ -694,6 +834,8 @@ export default function BlueprintEditor() {
             }}
           >
             <Drawing
+              editVertices={tool === 'select' && !!editable}
+              handleRadius={Math.max(0.15, project.width / view.zoom / 100)}
               project={drawn}
               grid={grid}
               gridStep={gridStep}

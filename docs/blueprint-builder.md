@@ -25,15 +25,15 @@ O carregamento normal do site continua dependendo da hospedagem. Os desenhos nã
 ## Limites desta etapa
 
 - Cinco camadas fixas; um pavimento por arquivo. Pavimentos múltiplos, biblioteca pessoal de módulos e camadas personalizadas ainda não implementados.
-- Retângulos, elipses e corredores por segmentos; curvas livres e polígonos arbitrários ficam para a evolução seguinte.
+- Retângulos, elipses, salas poligonais e corredores por segmentos; curvas livres ficam para uma evolução seguinte.
 - Cruzamentos de dutos são visuais, sem simulação de conectividade ou passagem acima/abaixo.
-- Dez assets SVG originais simples e três módulos (ponte, enfermaria e alojamento). O detalhamento visual será ampliado após feedback.
+- Dezesseis assets SVG originais simples e seis módulos (ponte, enfermaria, alojamento, depósito, engenharia e refeitório). O detalhamento visual será ampliado após feedback.
 - Importação até 5 MB, 3000 objetos e 500 pontos por traçado; planta até 2000 × 2000 m. PNG até 4096 pixels no maior lado.
 - Portas sobre paredes elípticas usam aproximação de 64 segmentos. Portas em quinas e encontros complexos precisam de conferência visual.
 
 ## Verificação
 
-Testes de escala e serialização, ancoragem e movimento de portas, remoção dependente, módulos independentes, paredes de corredores e elipses e validação de importação. Renderização React estática e rasterização de um SVG de exemplo foram verificadas. Interação por ponteiro, teclado e download real ainda requerem validação em navegador conectado.
+Testes de escala e serialização, ancoragem e movimento de portas, remoção dependente, módulos independentes, paredes de corredores e elipses e validação de importação. Renderização React estática e rasterização de um SVG de exemplo foram verificadas. A edição por arraste de vértices foi conferida no navegador local. A biblioteca recuperada também foi conferida na interface: dezesseis equipamentos e seis módulos disponíveis.
 
 ## Edição rápida
 
@@ -41,8 +41,12 @@ Selecione uma peça para duplicar (Ctrl+D), mover com as setas na grade ou girar
 
 Duplicar uma sala ou corredor copia suas portas com vínculos próprios; os equipamentos internos continuam independentes e devem ser duplicados separadamente. Portas avulsas são inseridas pela ferramenta Porta. Camadas ocultas ou bloqueadas impedem a cópia das peças vinculadas. Desfazer reverte a duplicação inteira.
 
-
 ## Salas por vértices
 
-Escolha Sala por vértices e clique nos cantos em sequência. Enter ou Concluir traçado fecha o contorno automaticamente, sem repetir o primeiro ponto. Backspace ou Remover último ponto corrige o traçado; Escape cancela. Salas em L e outros polígonos simples aceitam portas, movimento e duplicação. Contornos cruzados, pontos repetidos e salas sem área são recusados. Vértices de uma sala concluída ainda não podem ser arrastados individualmente.
+Escolha Sala por vértices e clique nos cantos em sequência. Enter ou Concluir traçado fecha o contorno automaticamente, sem repetir o primeiro ponto. Backspace ou Remover último ponto corrige o traçado; Escape cancela. Salas em L e outros polígonos simples aceitam portas, movimento e duplicação. Contornos cruzados, pontos repetidos e salas sem área são recusados. Após concluir, use Selecionar / mover e arraste as alças circulares para ajustar os vértices. O painel Vértices permite editar coordenadas numericamente. Isso também funciona em corredores e ventilação. Portas conservam seu vínculo com a borda; um contorno inválido é recusado ao soltar. No painel, + PONTO insere um vértice no meio do segmento seguinte; REMOVER exclui o vértice escolhido. Salas precisam manter pelo menos três pontos e traçados abertos, dois. Portas em segmentos afetados são reposicionadas na mesma estrutura e devem ser conferidas após a alteração.
 
+## Fluxo de desenvolvimento local
+
+As próximas etapas ficam locais até autorização para publicar o conjunto. Edição de vértices validada no servidor da porta 3841: arraste de um ponto do corredor e conferência das coordenadas no painel. Verificação automatizada: 79 testes e build aprovados.
+
+A biblioteca de equipamentos permite buscar pelo nome sem diferenciar acentos ou maiúsculas. A busca filtra a lista e mantém a peça selecionada, indicada acima dos resultados.

@@ -9,7 +9,21 @@ export const assetTypes = [
   'medical',
   'locker',
   'hatch',
+  'engine',
+  'tank',
+  'rack',
+  'workbench',
+  'kitchen',
+  'sofa',
 ];
+export const moduleNames = {
+  bridge: 'Ponte de comando',
+  medical: 'Enfermaria',
+  quarters: 'Alojamento',
+  cargo: 'Depósito de carga',
+  engineering: 'Engenharia',
+  mess: 'Refeitório',
+};
 export const layers = [
   { id: 'structure', name: 'Estrutura' },
   { id: 'doors', name: 'Portas' },
@@ -137,6 +151,86 @@ export function moveElement(element, dx, dy) {
     ? { ...element, points: element.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) }
     : { ...element, x: element.x + dx, y: element.y + dy };
 }
+export function moveVertex(element, index, point) {
+  if (!element.points || !Number.isInteger(index) || index < 0 || index >= element.points.length)
+    throw new Error('Vértice inválido.');
+  return {
+    ...element,
+    points: element.points.map((current, position) =>
+      position === index ? { ...point } : current,
+    ),
+  };
+}
+// Mudanças na quantidade de pontos renumeram as bordas. Remapeamos as portas
+// pela geometria, preservando as que continuam na mesma parede.
+export function changeVertexCount(project, id, index, action) {
+  const source = project.elements.find((element) => element.id === id);
+  if (!source?.points || !Number.isInteger(index) || index < 0 || index >= source.points.length)
+    throw new Error('Vértice inválido.');
+  if (!['insert', 'remove'].includes(action)) throw new Error('Operação de vértice inválida.');
+  const attachedDoors = project.elements.filter((element) => element.wallId === id);
+  for (const element of [source, ...attachedDoors]) {
+    const layer = project.layers.find((item) => item.id === layerFor(element.kind));
+    if (!layer?.visible || layer.locked)
+      throw new Error(
+        'Mostre e desbloqueie a camada do traçado e de suas portas para alterar os vértices.',
+      );
+  }
+  const points = [...source.points];
+  const minimum = source.kind === 'polygon' ? 3 : 2;
+  if (action === 'remove') {
+    if (points.length <= minimum)
+      throw new Error(`Este traçado precisa manter pelo menos ${minimum} vértices.`);
+    points.splice(index, 1);
+  } else {
+    if (points.length >= 500) throw new Error('Limite de 500 vértices atingido.');
+    if (source.kind !== 'polygon' && index === points.length - 1)
+      throw new Error('Escolha um segmento anterior ao último ponto para inserir um vértice.');
+    const a = points[index],
+      b = points[(index + 1) % points.length];
+    points.splice(index + 1, 0, { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+  }
+  const changed = { ...source, points };
+  const previousSegments = wallSegments(source);
+  const nextSegments = wallSegments(changed);
+  const updatedDoors = new Map(
+    attachedDoors.map((door) => {
+      const previous = previousSegments[door.segment];
+      const sameSegment = nextSegments.findIndex((segment) =>
+        segment.every((point, endpoint) =>
+          point.every((value, axis) => Math.abs(value - previous[endpoint][axis]) < 1e-8),
+        ),
+      );
+      if (sameSegment >= 0) return [door.id, { ...door, segment: sameSegment }];
+      const position = doorPosition(door, project.elements);
+      let nearest = null;
+      // Em corredores, a porta permanece no mesmo lado do percurso.
+      nextSegments.forEach(([a, b], segment) => {
+        if (source.kind === 'corridor' && segment % 2 !== door.segment % 2) return;
+        const dx = b[0] - a[0],
+          dy = b[1] - a[1],
+          lengthSquared = dx * dx + dy * dy;
+        if (!lengthSquared) return;
+        const t = Math.max(
+          0,
+          Math.min(1, ((position.x - a[0]) * dx + (position.y - a[1]) * dy) / lengthSquared),
+        );
+        const distance = Math.hypot(position.x - a[0] - t * dx, position.y - a[1] - t * dy);
+        if (!nearest || distance < nearest.distance) nearest = { segment, t, distance };
+      });
+      if (!nearest) throw new Error('Não foi possível manter uma porta vinculada ao traçado.');
+      return [door.id, { ...door, segment: nearest.segment, t: nearest.t }];
+    }),
+  );
+  return parseProject(
+    JSON.stringify({
+      ...project,
+      elements: project.elements.map((element) =>
+        element.id === id ? changed : updatedDoors.get(element.id) || element,
+      ),
+    }),
+  );
+}
 // A cópia mantém suas próprias portas; nunca compartilha vínculos com a sala original.
 export function duplicateElement(project, id) {
   const source = project.elements.find((element) => element.id === id);
@@ -181,6 +275,7 @@ export function duplicateElement(project, id) {
   );
 }
 export function makeModule(type, x, y) {
+  if (!Object.hasOwn(moduleNames, type)) throw new Error('Módulo desconhecido.');
   const room = { id: uid(), kind: 'room', x, y, w: 10, h: 8 };
   const asset = (asset, xOffset, yOffset, w = 2, h = 1) => ({
     id: uid(),
@@ -192,17 +287,38 @@ export function makeModule(type, x, y) {
     h,
     rotation: 0,
   });
-  const equipment =
-    type === 'medical'
-      ? [asset('medical', 2, 2, 2, 3), asset('medical', 6, 2, 2, 3), asset('console', 7, 6)]
-      : type === 'bridge'
-        ? [asset('console', 1, 1, 8, 2), asset('chair', 3, 4, 1, 1), asset('chair', 6, 4, 1, 1)]
-        : [
-            asset('bed', 1, 1, 2, 3),
-            asset('bed', 7, 1, 2, 3),
-            asset('locker', 1, 6),
-            asset('table', 5, 5, 2, 2),
-          ];
+  const layouts = {
+    medical: () => [
+      asset('medical', 2, 2, 2, 3),
+      asset('medical', 6, 2, 2, 3),
+      asset('console', 7, 6),
+    ],
+    bridge: () => [
+      asset('console', 1, 1, 8, 2),
+      asset('chair', 3, 4, 1, 1),
+      asset('chair', 6, 4, 1, 1),
+    ],
+    quarters: () => [
+      asset('bed', 1, 1, 2, 3),
+      asset('bed', 7, 1, 2, 3),
+      asset('locker', 1, 6),
+      asset('table', 5, 5, 2, 2),
+    ],
+    cargo: () => [asset('rack', 1, 1, 2, 5), asset('rack', 7, 1, 2, 5), asset('crate', 4, 1, 2, 2)],
+    engineering: () => [
+      asset('engine', 4, 1, 2, 3),
+      asset('tank', 1, 1, 2, 3),
+      asset('workbench', 7, 1, 2, 4),
+      asset('console', 1, 6),
+    ],
+    mess: () => [
+      asset('kitchen', 1, 1, 2, 4),
+      asset('table', 5, 3, 3, 2),
+      asset('sofa', 5, 1, 3, 1),
+      asset('sofa', 5, 6, 3, 1),
+    ],
+  };
+  const equipment = layouts[type]();
   return [
     room,
     ...equipment,
@@ -267,6 +383,17 @@ export function parseProject(text) {
         y: number(p.y, 0, result.height),
       }));
       if (e.kind === 'polygon') validatePolygon(points);
+      else if (
+        points
+          .slice(1)
+          .some(
+            (point, index) =>
+              Math.hypot(point.x - points[index].x, point.y - points[index].y) < 0.25,
+          )
+      )
+        throw new Error(
+          'Os pontos consecutivos do traçado precisam estar separados por pelo menos 0,25 m.',
+        );
       return {
         ...base,
         ...(e.kind === 'polygon' ? {} : { width: number(e.width, 0.25, 50) }),
