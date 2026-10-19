@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ToolIcon } from './ToolIcon.jsx';
 import { Drawing } from './Drawing.jsx';
 import { AssetSymbol, assetNames } from './Assets.jsx';
 import {
@@ -42,6 +43,19 @@ const toolNames = {
   module: 'Módulo pronto',
   label: 'Texto',
 };
+const toolKeys = {
+  v: 'select',
+  h: 'pan',
+  b: 'room',
+  p: 'polygon',
+  o: 'ellipse',
+  c: 'corridor',
+  d: 'door',
+  n: 'vent',
+  a: 'asset',
+  m: 'module',
+  t: 'label',
+};
 const hints = {
   select:
     'Arraste para mover. Ctrl+D duplica; R gira equipamentos; setas movem pela grade (Shift: 10 passos).',
@@ -58,6 +72,9 @@ const hints = {
   label: 'Escreva a anotação no painel e clique onde deseja inseri-la.',
 };
 export default function BlueprintEditor() {
+  const [focusMode, setFocusMode] = useState(false);
+  const [spaceHeld, setSpaceHeld] = useState(false);
+  const [panelsOpen, setPanelsOpen] = useState(true);
   const [project, setProject] = useState(() => sessionProject || newProject());
   const [past, setPast] = useState([]),
     [future, setFuture] = useState([]);
@@ -192,11 +209,12 @@ export default function BlueprintEditor() {
     };
   }
   function down(event) {
-    if (event.button !== 0) return;
+    if (![0, 1, 2].includes(event.button) || gesture) return;
+    event.preventDefault();
     svgRef.current.focus({ preventScroll: true });
     const p = location(event);
     setCursor(p);
-    if (tool === 'pan') {
+    if (tool === 'pan' || event.button === 1 || event.button === 2 || spaceHeld) {
       svgRef.current.setPointerCapture(event.pointerId);
       setGesture({ kind: 'pan', clientX: event.clientX, clientY: event.clientY, view });
       return;
@@ -467,7 +485,9 @@ export default function BlueprintEditor() {
   const gridStep =
     project.grid * Math.max(1, Math.ceil(project.width / view.zoom / project.grid / 100));
   return (
-    <div className="blueprint-editor">
+    <div
+      className={`blueprint-editor ${focusMode ? 'blueprint-focus' : ''} ${!panelsOpen ? 'blueprint-panels-hidden' : ''}`}
+    >
       <div className="blueprint-heading">
         <div>
           <div className="eyebrow">OFICINA CARTOGRÁFICA · VERSÃO INICIAL</div>
@@ -535,14 +555,7 @@ export default function BlueprintEditor() {
       </p>
       <div className="blueprint-layout">
         <aside className="blueprint-tools" aria-label="Ferramentas de desenho">
-          <h2>Ferramentas</h2>
-          <div className="blueprint-tool-grid">
-            {Object.entries(toolNames).map(([id, name]) => (
-              <button key={id} aria-pressed={tool === id} onClick={() => changeTool(id)}>
-                {name}
-              </button>
-            ))}
-          </div>
+          <h2>{toolNames[tool]}</h2>
           {['corridor', 'vent', 'polygon'].includes(tool) && (
             <>
               {tool !== 'polygon' && (
@@ -755,7 +768,31 @@ export default function BlueprintEditor() {
           </details>
         </aside>
         <section className="blueprint-workspace" aria-label="Área de desenho">
-          <p className="blueprint-hint">{hints[tool]}</p>
+          <div className="blueprint-tool-grid" role="toolbar" aria-label="Ferramentas da viewport">
+            {Object.entries(toolNames).map(([id, name]) => {
+              const shortcut = Object.keys(toolKeys)
+                .find((key) => toolKeys[key] === id)
+                .toUpperCase();
+              return (
+                <button
+                  key={id}
+                  aria-label={name}
+                  title={name + ' (' + shortcut + ')'}
+                  aria-keyshortcuts={shortcut}
+                  aria-pressed={tool === id}
+                  onClick={() => {
+                    changeTool(id);
+                    svgRef.current?.focus();
+                  }}
+                >
+                  <ToolIcon name={id} />
+                </button>
+              );
+            })}
+          </div>
+          <p className="blueprint-hint">
+            {toolNames[tool]} · {hints[tool]}
+          </p>
           <div className="blueprint-canvas-toolbar">
             <button aria-label="Ampliar planta" onClick={() => zoom(1.5)}>
               +
@@ -763,7 +800,29 @@ export default function BlueprintEditor() {
             <button aria-label="Reduzir planta" onClick={() => zoom(1 / 1.5)}>
               −
             </button>
-            <button onClick={() => setView({ x: 0, y: 0, zoom: 1 })}>ENQUADRAR</button>
+            <button
+              title="Enquadrar (Home)"
+              aria-label="Enquadrar planta"
+              onClick={() => setView({ x: 0, y: 0, zoom: 1 })}
+            >
+              <ToolIcon name="fit" />
+            </button>
+            <button
+              title="Mostrar ou ocultar painéis"
+              aria-label="Mostrar painéis"
+              aria-pressed={panelsOpen}
+              onClick={() => setPanelsOpen((value) => !value)}
+            >
+              ☷
+            </button>
+            <button
+              title="Alternar modo de foco (F)"
+              aria-label="Modo de foco"
+              aria-pressed={focusMode}
+              onClick={() => setFocusMode((value) => !value)}
+            >
+              <ToolIcon name="focus" />
+            </button>
             <label>
               <input type="checkbox" checked={grid} onChange={(e) => setGrid(e.target.checked)} />
               Grade
@@ -782,16 +841,58 @@ export default function BlueprintEditor() {
           </div>
           <svg
             ref={svgRef}
-            className="blueprint-canvas"
+            className={`blueprint-canvas ${gesture?.kind === 'pan' ? 'is-panning' : tool === 'pan' || spaceHeld ? 'can-pan' : ''}`}
             viewBox={`${view.x} ${view.y} ${project.width / view.zoom} ${project.height / view.zoom}`}
             role="application"
             aria-label="Planta editável. Escolha uma ferramenta e desenhe. Enter conclui traçado, Escape cancela, Delete remove seleção."
             tabIndex="0"
+            onContextMenu={(event) => event.preventDefault()}
+            onKeyUp={(event) => {
+              if (event.code === 'Space') setSpaceHeld(false);
+            }}
+            onBlur={() => {
+              setSpaceHeld(false);
+              setGesture(null);
+            }}
             onPointerDown={down}
             onPointerMove={move}
             onPointerUp={up}
             onPointerCancel={() => setGesture(null)}
             onKeyDown={(e) => {
+              if (e.code === 'Space') {
+                e.preventDefault();
+                setSpaceHeld(true);
+                return;
+              }
+              if (!e.ctrlKey && !e.metaKey && !e.altKey && !gesture) {
+                const key = e.key.toLowerCase();
+                if (toolKeys[key]) {
+                  e.preventDefault();
+                  changeTool(toolKeys[key]);
+                  return;
+                }
+                if (key === 'f') {
+                  e.preventDefault();
+                  if (!e.repeat) setFocusMode((value) => !value);
+                  return;
+                }
+                if (key === 'home') {
+                  e.preventDefault();
+                  setView({ x: 0, y: 0, zoom: 1 });
+                  return;
+                }
+                if (key === '+' || key === '=') {
+                  e.preventDefault();
+                  zoom(1.5);
+                  return;
+                }
+                if (key === '-') {
+                  e.preventDefault();
+                  zoom(1 / 1.5);
+                  return;
+                }
+              }
+
               if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
                 e.preventDefault();
                 duplicate();
@@ -820,6 +921,8 @@ export default function BlueprintEditor() {
                 finish();
               }
               if (e.key === 'Escape') {
+                setFocusMode(false);
+                setSpaceHeld(false);
                 setGesture(null);
                 setPoints([]);
               }
@@ -844,7 +947,7 @@ export default function BlueprintEditor() {
               interactive={tool === 'select'}
             />
           </svg>
-          <p className="muted">
+          <p className="blueprint-coordinates muted">
             {project.width} × {project.height} m · encaixe de {project.grid} m ·{' '}
             {cursor
               ? `X ${cursor.x.toFixed(2)} / Y ${cursor.y.toFixed(2)} m`
@@ -852,6 +955,15 @@ export default function BlueprintEditor() {
           </p>
         </section>
         <aside className="blueprint-settings" aria-label="Projeto, camadas e exportação">
+          <details>
+            <summary>Atalhos e navegação</summary>
+            <p>
+              Arraste com o botão do meio ou direito para mover a visão. Espaço + arraste também
+              funciona. + / −: zoom. Home: enquadrar. F: modo de foco. Escape: sair do foco ou
+              cancelar. Passe sobre os ícones para ver os atalhos de ferramentas. Os atalhos
+              funcionam com foco na planta; Tab continua navegando pelos controles.
+            </p>
+          </details>
           <details open>
             <summary>Projeto e escala</summary>
             <label>
