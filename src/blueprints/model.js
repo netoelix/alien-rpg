@@ -1,3 +1,91 @@
+export const wallTypes = {
+  internal: 'Divisória interna',
+  structural: 'Parede estrutural',
+  hull: 'Casco externo',
+  glass: 'Vidro',
+  open: 'Abertura livre',
+};
+export function setWallArc(project, id, start, end, type) {
+  const source = project.elements.find((element) => element.id === id);
+  if (
+    source?.kind !== 'ellipse' ||
+    !Number.isFinite(start) ||
+    !Number.isFinite(end) ||
+    start < 0 ||
+    start >= 360 ||
+    end <= start ||
+    end > start + 360
+  )
+    throw new Error('Informe um arco de até 360°, com fim maior que o início.');
+  let result = project;
+  const step = 360 / 64;
+  for (let index = Math.floor(start / step); index < Math.ceil(end / step); index++) {
+    result = setWallSection(result, id, {
+      segment: index % 64,
+      start: Math.max(0, (start - index * step) / step),
+      end: Math.min(1, (end - index * step) / step),
+      type,
+    });
+  }
+  return result;
+}
+export function wallSections(element) {
+  return (element.walls || [])
+    .map((wall) => {
+      const edge = wallSegments(element)[wall.segment];
+      if (!edge) return null;
+      const [a, b] = edge;
+      const at = (t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+      return { ...wall, a: at(wall.start), b: at(wall.end) };
+    })
+    .filter(Boolean);
+}
+export function setWallSection(project, id, section) {
+  const source = project.elements.find((e) => e.id === id);
+  const layer = project.layers.find((l) => l.id === 'structure');
+  if (!source || !layer?.visible || layer.locked)
+    throw new Error('Mostre e desbloqueie a estrutura para editar paredes.');
+  if (
+    !Number.isInteger(section.segment) ||
+    !wallSegments(source)[section.segment] ||
+    !Number.isFinite(section.start) ||
+    !Number.isFinite(section.end) ||
+    section.start < 0 ||
+    section.end > 1 ||
+    section.end <= section.start ||
+    (section.type !== 'auto' && !Object.hasOwn(wallTypes, section.type))
+  )
+    throw new Error('Trecho de parede inválido.');
+  // Paint only the requested interval, preserving both sides of existing sections.
+  const walls = (source.walls || []).flatMap((wall) => {
+    if (wall.segment !== section.segment || wall.end <= section.start || wall.start >= section.end)
+      return [wall];
+    const remaining = [];
+    if (wall.start < section.start) remaining.push({ ...wall, end: section.start });
+    if (wall.end > section.end) remaining.push({ ...wall, start: section.end });
+    return remaining;
+  });
+  if (section.type !== 'auto') walls.push(section);
+  walls.sort((a, b) => a.segment - b.segment || a.start - b.start);
+  const merged = [];
+  for (const wall of walls) {
+    const previous = merged.at(-1);
+    if (
+      previous?.segment === wall.segment &&
+      previous.type === wall.type &&
+      previous.end === wall.start
+    )
+      previous.end = wall.end;
+    else merged.push({ ...wall });
+  }
+  const next = { ...source };
+  delete next.joinWalls;
+  if (merged.length) next.walls = merged;
+  else delete next.walls;
+  return parseProject(
+    JSON.stringify({ ...project, elements: project.elements.map((e) => (e.id === id ? next : e)) }),
+  );
+}
 export const assetTypes = [
   'console',
   'bed',
@@ -26,7 +114,7 @@ export const moduleNames = {
 };
 export const layers = [
   { id: 'structure', name: 'Estrutura' },
-  { id: 'doors', name: 'Portas' },
+  { id: 'doors', name: 'Portas e janelas' },
   { id: 'equipment', name: 'Equipamentos' },
   { id: 'vents', name: 'Ventilação' },
   { id: 'labels', name: 'Anotações' },
@@ -127,6 +215,26 @@ export function doorPosition(door, elements) {
     rotation: (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI,
   };
 }
+export function fitOpenings(project) {
+  return {
+    ...project,
+    elements: project.elements.map((opening) => {
+      if (opening.kind !== 'door') return opening;
+      const parent = project.elements.find((element) => element.id === opening.wallId);
+      // Ellipse segments approximate a continuous curve, not physical corners.
+      if (parent?.kind === 'ellipse') return opening;
+      const edge = parent && wallSegments(parent)[opening.segment];
+      if (!edge) return opening;
+      const length = Math.hypot(edge[1][0] - edge[0][0], edge[1][1] - edge[0][1]);
+      const margin = (opening.width / 2 + 0.12) / length;
+      if (margin > 0.5)
+        throw new Error(
+          'A porta ou janela não cabe nesta borda. Reduza a largura ou escolha outra parede.',
+        );
+      return { ...opening, t: Math.max(margin, Math.min(1 - margin, opening.t)) };
+    }),
+  };
+}
 export function nearestWall(elements, point, maxDistance = 2) {
   let best = null;
   elements.forEach((wall) =>
@@ -143,6 +251,66 @@ export function nearestWall(elements, point, maxDistance = 2) {
   );
   return best;
 }
+export function openingHasWall(opening, elements) {
+  const parent = elements.find((element) => element.id === opening.wallId);
+  const edge = parent && wallSegments(parent)[opening.segment];
+  if (!edge) return false;
+  const contains = (shape, x, y) => {
+    if (shape.kind === 'room')
+      return x > shape.x && x < shape.x + shape.w && y > shape.y && y < shape.y + shape.h;
+    if (shape.kind === 'ellipse')
+      return (
+        ((x - shape.x - shape.w / 2) / (shape.w / 2)) ** 2 +
+          ((y - shape.y - shape.h / 2) / (shape.h / 2)) ** 2 <
+        1
+      );
+    if (shape.kind === 'polygon') {
+      let inside = false;
+      shape.points.forEach((a, index) => {
+        const b = shape.points[(index + 1) % shape.points.length];
+        if (a.y > y !== b.y > y && x < ((b.x - a.x) * (y - a.y)) / (b.y - a.y) + a.x)
+          inside = !inside;
+      });
+      return inside;
+    }
+    if (shape.kind === 'corridor')
+      return shape.points.slice(1).some((b, index) => {
+        const a = shape.points[index],
+          dx = b.x - a.x,
+          dy = b.y - a.y;
+        const t = ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy);
+        if ((index === 0 && t < 0) || (index === shape.points.length - 2 && t > 1)) return false;
+        const clamped = Math.max(0, Math.min(1, t));
+        return Math.hypot(x - a.x - clamped * dx, y - a.y - clamped * dy) < shape.width / 2;
+      });
+    return false;
+  };
+  const [a, b] = edge,
+    dx = b[0] - a[0],
+    dy = b[1] - a[1],
+    length = Math.hypot(dx, dy);
+  const count = Math.max(2, Math.ceil(opening.width / 0.025));
+  for (let i = 0; i <= count; i++) {
+    const t = opening.t + ((i / count - 0.5) * opening.width) / length;
+    const explicit = parent.walls?.find(
+      (wall) => wall.segment === opening.segment && t >= wall.start && t <= wall.end,
+    );
+    if (explicit?.type === 'open') return false;
+    if (explicit && !parent.joinWalls) continue;
+    const x = a[0] + dx * t,
+      y = a[1] + dy * t;
+    const nx = (-dy / length) * 0.01,
+      ny = (dx / length) * 0.01;
+    if (
+      (elements.some((shape) => shape.id !== parent.id && contains(shape, x + nx, y + ny)) &&
+        elements.some((shape) => contains(shape, x - nx, y - ny))) ||
+      (elements.some((shape) => shape.id !== parent.id && contains(shape, x - nx, y - ny)) &&
+        elements.some((shape) => contains(shape, x + nx, y + ny)))
+    )
+      return false;
+  }
+  return true;
+}
 export function removeElement(project, id) {
   return { ...project, elements: project.elements.filter((e) => e.id !== id && e.wallId !== id) };
 }
@@ -150,6 +318,113 @@ export function moveElement(element, dx, dy) {
   return element.points
     ? { ...element, points: element.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) }
     : { ...element, x: element.x + dx, y: element.y + dy };
+}
+export function duplicateRoomContents(project, id, dx, dy) {
+  if (dx === 0 && dy === 0) throw new Error('Informe um deslocamento para posicionar a cópia.');
+  return transformRoomContents(project, id, dx, dy, true);
+}
+export function moveRoomContents(project, id, dx, dy) {
+  return transformRoomContents(project, id, dx, dy, false);
+}
+export function rotateRoomContents(project, id, direction = 1) {
+  if (direction !== 1 && direction !== -1) throw new Error('Rotação inválida.');
+  return transformRoomContents(project, id, 0, 0, false, direction);
+}
+function transformRoomContents(project, id, dx, dy, duplicate, rotation = 0) {
+  const room = project.elements.find((element) => element.id === id);
+  if (room?.kind !== 'room' || !Number.isFinite(dx) || !Number.isFinite(dy))
+    throw new Error('Selecione uma sala retangular e informe um deslocamento válido.');
+  const inside = (asset) => {
+    const angle = ((asset.rotation || 0) * Math.PI) / 180;
+    const cx = asset.x + asset.w / 2,
+      cy = asset.y + asset.h / 2;
+    return [-1, 1].every((sx) =>
+      [-1, 1].every((sy) => {
+        const x =
+          cx + ((sx * asset.w) / 2) * Math.cos(angle) - ((sy * asset.h) / 2) * Math.sin(angle);
+        const y =
+          cy + ((sx * asset.w) / 2) * Math.sin(angle) + ((sy * asset.h) / 2) * Math.cos(angle);
+        return (
+          x >= room.x - 1e-8 &&
+          x <= room.x + room.w + 1e-8 &&
+          y >= room.y - 1e-8 &&
+          y <= room.y + room.h + 1e-8
+        );
+      }),
+    );
+  };
+  const members = project.elements.filter(
+    (element) =>
+      element.id === id || element.wallId === id || (element.kind === 'asset' && inside(element)),
+  );
+  if (
+    members.some((element) => {
+      const layer = project.layers.find((item) => item.id === layerFor(element.kind));
+      return !layer?.visible || layer.locked;
+    })
+  )
+    throw new Error('Mostre e desbloqueie as camadas da sala, equipamentos e aberturas.');
+  const ids = new Set(members.map((element) => element.id));
+  if (rotation) {
+    const cx = room.x + room.w / 2,
+      cy = room.y + room.h / 2;
+    const segment = (value) => (value + (rotation === 1 ? 1 : 3)) % 4;
+    return parseProject(
+      JSON.stringify({
+        ...project,
+        elements: project.elements.map((element) => {
+          if (!ids.has(element.id)) return element;
+          if (element.kind === 'door') return { ...element, segment: segment(element.segment) };
+          if (element.id === id)
+            return {
+              ...element,
+              x: cx - room.h / 2,
+              y: cy - room.w / 2,
+              w: room.h,
+              h: room.w,
+              ...(element.walls
+                ? {
+                    walls: element.walls.map((wall) => ({
+                      ...wall,
+                      segment: segment(wall.segment),
+                    })),
+                  }
+                : {}),
+            };
+          const ox = element.x + element.w / 2 - cx;
+          const oy = element.y + element.h / 2 - cy;
+          return {
+            ...element,
+            x: cx - rotation * oy - element.w / 2,
+            y: cy + rotation * ox - element.h / 2,
+            rotation: (((element.rotation + rotation * 90) % 360) + 360) % 360,
+          };
+        }),
+      }),
+    );
+  }
+  if (duplicate) {
+    const copiedIds = new Map(members.map((element) => [element.id, uid()]));
+    const copies = members.map((element) =>
+      element.kind === 'door'
+        ? { ...element, id: copiedIds.get(element.id), wallId: copiedIds.get(element.wallId) }
+        : { ...moveElement(element, dx, dy), id: copiedIds.get(element.id) },
+    );
+    return {
+      project: parseProject(
+        JSON.stringify({ ...project, elements: [...project.elements, ...copies] }),
+      ),
+      selectedId: copiedIds.get(id),
+    };
+  }
+  return parseProject(
+    JSON.stringify({
+      ...project,
+      elements: project.elements.map((element) =>
+        ids.has(element.id) && element.kind !== 'door' ? moveElement(element, dx, dy) : element,
+      ),
+    }),
+  );
 }
 export function moveVertex(element, index, point) {
   if (!element.points || !Number.isInteger(index) || index < 0 || index >= element.points.length)
@@ -176,6 +451,10 @@ export function changeVertexCount(project, id, index, action) {
         'Mostre e desbloqueie a camada do traçado e de suas portas para alterar os vértices.',
       );
   }
+  if (source.walls?.length)
+    throw new Error(
+      'Restaure as paredes automáticas antes de adicionar ou remover vértices. Mover vértices continua disponível.',
+    );
   const points = [...source.points];
   const minimum = source.kind === 'polygon' ? 3 : 2;
   if (action === 'remove') {
@@ -363,14 +642,46 @@ export function parseProject(text) {
     if (!id || ids.has(id)) throw new Error('Identificador repetido.');
     ids.add(id);
     const base = { id, kind: e.kind };
-    if (e.kind === 'door')
+    if (layerFor(e.kind) === 'structure' && e.joinWalls === true) base.joinWalls = true;
+    if (e.walls !== undefined) {
+      if (layerFor(e.kind) !== 'structure' || !Array.isArray(e.walls) || e.walls.length > 1000)
+        throw new Error('Trechos de parede inválidos.');
+      base.walls = e.walls.map((wall) => {
+        if (
+          !wall ||
+          !Object.hasOwn(wallTypes, wall.type) ||
+          !Number.isInteger(wall.segment) ||
+          wall.segment < 0
+        )
+          throw new Error('Tipo ou segmento de parede inválido.');
+        const start = number(wall.start, 0, 1),
+          end = number(wall.end, 0, 1);
+        if (end <= start) throw new Error('O fim do trecho deve ser maior que o início.');
+        return { segment: wall.segment, start, end, type: wall.type };
+      });
+      const ordered = [...base.walls].sort((a, b) => a.segment - b.segment || a.start - b.start);
+      if (
+        ordered.some(
+          (wall, index) =>
+            index > 0 &&
+            ordered[index - 1].segment === wall.segment &&
+            ordered[index - 1].end > wall.start,
+        )
+      )
+        throw new Error('Trechos da mesma borda não podem se sobrepor.');
+    }
+    if (e.kind === 'door') {
+      if (e.openingType !== undefined && !['door', 'window'].includes(e.openingType))
+        throw new Error('Tipo de abertura inválido.');
       return {
         ...base,
+        ...(e.openingType ? { openingType: e.openingType } : {}),
         wallId: string(e.wallId, 100),
         segment: number(e.segment, 0, 10000),
         t: number(e.t, 0, 1),
         width: number(e.width, 0.25, 20),
       };
+    }
     if (['vent', 'corridor', 'polygon'].includes(e.kind)) {
       if (
         !Array.isArray(e.points) ||
@@ -414,6 +725,29 @@ export function parseProject(text) {
     };
   });
   for (const e of result.elements) {
+    const segments = wallSegments(e);
+    if (e.walls?.some((wall) => !segments[wall.segment]))
+      throw new Error('Trecho sem borda válida.');
+    if (e.kind === 'door') {
+      const parent = result.elements.find((wall) => wall.id === e.wallId);
+      const edge = parent && wallSegments(parent)[e.segment];
+      if (edge) {
+        const length = Math.hypot(edge[1][0] - edge[0][0], edge[1][1] - edge[0][1]);
+        const half = e.width / (2 * length);
+        if (
+          parent.walls?.some(
+            (wall) =>
+              wall.type === 'open' &&
+              wall.segment === e.segment &&
+              e.t + half > wall.start &&
+              e.t - half < wall.end,
+          )
+        )
+          throw new Error(
+            'Há uma porta neste trecho. Remova ou reposicione a porta antes de criar a abertura livre.',
+          );
+      }
+    }
     if (e.kind === 'door' && (!Number.isInteger(e.segment) || !doorPosition(e, result.elements)))
       throw new Error('Porta sem parede válida.');
     if (e.w && (e.x + e.w > result.width || e.y + e.h > result.height))
