@@ -8,7 +8,7 @@ import {
   wallWidths,
 } from './wall-geometry.js';
 import { AssetSymbol } from './Assets.jsx';
-import { sharedWallStructures } from './shared-walls.js';
+import { sharedWallStructures, persistentWallStructure } from './shared-walls.js';
 import { doorPosition, layerFor, wallSections } from './model.js';
 export const palettes = {
   green: { background: '#04120d', floor: '#102c24', ink: '#78ebae', accent: '#f1c46c' },
@@ -64,7 +64,9 @@ export function Drawing({
   const elements = [...project.elements, ...preview];
   const visible = (id) => project.layers.find((l) => l.id === id)?.visible;
   const opacity = (id) => project.layers.find((l) => l.id === id)?.opacity ?? 1;
-  const structure = elements.filter((e) => layerFor(e.kind) === 'structure');
+  const structure = elements
+    .filter((e) => layerFor(e.kind) === 'structure')
+    .map(persistentWallStructure);
   const sharedStructure = sharedWallStructures(structure);
   const sections = structure.flatMap((element) =>
     wallSections(element).map((wall) => ({ ...wall, id: element.id })),
@@ -262,7 +264,13 @@ export function Drawing({
           <g mask="url(#blueprint-section-cuts)" fill="none" stroke={palette.ink}>
             <g mask="url(#blueprint-junction-outside)" fill={palette.ink} stroke="none">
               {sharedWallJunctions(structure).map((joint, index) => (
-                <circle key={index} cx={joint.x} cy={joint.y} r={joint.radius} />
+                <rect
+                  key={index}
+                  x={joint.x - joint.radius}
+                  y={joint.y - joint.radius}
+                  width={2 * joint.radius}
+                  height={2 * joint.radius}
+                />
               ))}
             </g>
             {sharedStructure.map((element, index) => (
@@ -273,11 +281,12 @@ export function Drawing({
                 strokeLinecap="butt"
               >
                 {wallTransitions(structure[index]).map((joint, jointIndex) => (
-                  <circle
+                  <rect
                     key={`transition-${jointIndex}`}
-                    cx={joint.x}
-                    cy={joint.y}
-                    r={joint.radius}
+                    x={joint.x - joint.radius}
+                    y={joint.y - joint.radius}
+                    width={2 * joint.radius}
+                    height={2 * joint.radius}
                     fill={palette.ink}
                     stroke="none"
                   />
@@ -306,24 +315,22 @@ export function Drawing({
               </g>
             ))}
           </g>
-          {doors
-            .filter((door) => door.openingType !== 'window')
-            .map((door) => {
-              const geometry = openingGeometry(door, elements);
-              if (!geometry) return null;
-              const reach = geometry.depth / 2 + 0.03;
-              return (
-                <rect
-                  key={`threshold-${door.id}`}
-                  transform={position(door)}
-                  x={-door.width / 2}
-                  y={geometry.floorSide > 0 ? 0 : -reach}
-                  width={door.width}
-                  height={reach}
-                  fill={palette.floor}
-                />
-              );
-            })}
+          {doors.map((door) => {
+            const geometry = openingGeometry(door, elements);
+            if (!geometry) return null;
+            const reach = geometry.depth / 2 + 0.03;
+            return (
+              <rect
+                key={`threshold-${door.id}`}
+                transform={position(door)}
+                x={-door.width / 2}
+                y={geometry.floorSide > 0 ? 0 : -reach}
+                width={door.width}
+                height={reach}
+                fill={palette.floor}
+              />
+            );
+          })}
         </g>
       )}
       {interactive && (

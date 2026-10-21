@@ -1,4 +1,5 @@
-import { layerFor, moveElement, parseProject, uid } from './model.js';
+import { layerFor, moveElement, parseProject, uid, openingHasWall, fitOpenings } from './model.js';
+import { selectionBounds } from './selection.js';
 
 function checkLayers(project, elements) {
   if (
@@ -57,11 +58,17 @@ export function pasteBlueprint(project, clipboard, dx, dy) {
   if (!clipboard?.elements.length) throw new Error('Copie uma peça antes de colar.');
   checkLayers(project, clipboard.elements);
   const ids = new Map(clipboard.elements.map((element) => [element.id, uid()]));
+  const groups = new Map(
+    clipboard.elements.filter((e) => e.groupId).map((e) => [e.groupId, uid()]),
+  );
   const copies = clipboard.elements.map((element) =>
     element.kind === 'door'
       ? { ...element, id: ids.get(element.id), wallId: ids.get(element.wallId) }
       : { ...moveElement(element, dx, dy), id: ids.get(element.id) },
   );
+  copies.forEach((element) => {
+    if (element.groupId) element.groupId = groups.get(element.groupId);
+  });
   return {
     project: parseProject(
       JSON.stringify({ ...project, elements: [...project.elements, ...copies] }),
@@ -82,4 +89,76 @@ export function movePastedGroup(project, ids, dx, dy) {
       ids.includes(element.id) && element.kind !== 'door' ? moveElement(element, dx, dy) : element,
     ),
   };
+}
+
+export function removeSelection(project, ids) {
+  const removed = project.elements.filter(
+    (element) => ids.includes(element.id) || ids.includes(element.wallId),
+  );
+  checkLayers(project, removed);
+  const removedIds = new Set(removed.map((element) => element.id));
+  return parseProject(
+    JSON.stringify({
+      ...project,
+      elements: project.elements.filter((element) => !removedIds.has(element.id)),
+    }),
+  );
+}
+
+export function duplicateSelection(project, ids) {
+  // Duplicate exactly the selected pieces plus dependent openings. Unlike copying
+  // a single room, do not silently include unselected equipment inside it.
+  const elements = project.elements.filter(
+    (element) => ids.includes(element.id) || ids.includes(element.wallId),
+  );
+  checkLayers(project, elements);
+  const roots = elements.filter((element) => element.kind !== 'door');
+  if (!roots.length) throw new Error('Selecione uma estrutura ou peça para duplicar.');
+  if (elements.some((element) => element.kind === 'door' && !ids.includes(element.wallId)))
+    throw new Error('Selecione também a estrutura das portas e janelas.');
+  const clipboard = { selectedId: roots[0].id, elements };
+  const step = project.grid;
+  const boxes = roots.map(selectionBounds);
+  const width =
+    Math.ceil(
+      (Math.max(...boxes.map((b) => b.x + b.w)) - Math.min(...boxes.map((b) => b.x))) / step,
+    ) *
+      step +
+    step;
+  const height =
+    Math.ceil(
+      (Math.max(...boxes.map((b) => b.y + b.h)) - Math.min(...boxes.map((b) => b.y))) / step,
+    ) *
+      step +
+    step;
+  for (const [dx, dy] of [
+    [step, step],
+    [-step, -step],
+    [step, 0],
+    [-step, 0],
+    [0, step],
+    [0, -step],
+    [width, 0],
+    [-width, 0],
+    [0, height],
+    [0, -height],
+  ]) {
+    try {
+      const copy = pasteBlueprint(project, clipboard, dx, dy);
+      copy.project = fitOpenings(copy.project);
+      if (
+        copy.project.elements.some(
+          (element) =>
+            copy.ids.includes(element.id) &&
+            element.kind === 'door' &&
+            !openingHasWall(element, copy.project.elements),
+        )
+      )
+        continue;
+      return copy;
+    } catch {
+      /* Try another offset within the map. */
+    }
+  }
+  throw new Error('Não há espaço para duplicar a seleção. Amplie a planta ou remova peças.');
 }

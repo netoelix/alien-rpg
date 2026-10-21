@@ -252,6 +252,26 @@ export function nearestWall(elements, point, maxDistance = 2) {
   return best;
 }
 export function openingHasWall(opening, elements) {
+  if (elements.find((e) => e.id === opening.wallId)?.joinWalls)
+    return joinedOpeningHasWall(opening, elements);
+  const parent = elements.find((element) => element.id === opening.wallId);
+  const edge = parent && wallSegments(parent)[opening.segment];
+  if (!edge) return false;
+  const [a, b] = edge,
+    dx = b[0] - a[0],
+    dy = b[1] - a[1],
+    length = Math.hypot(dx, dy);
+  const count = Math.max(2, Math.ceil(opening.width / 0.025));
+  for (let i = 0; i <= count; i++) {
+    const t = opening.t + ((i / count - 0.5) * opening.width) / length;
+    const explicit = parent.walls?.find(
+      (wall) => wall.segment === opening.segment && t >= wall.start && t <= wall.end,
+    );
+    if (explicit?.type === 'open') return false;
+  }
+  return true;
+}
+function joinedOpeningHasWall(opening, elements) {
   const parent = elements.find((element) => element.id === opening.wallId);
   const edge = parent && wallSegments(parent)[opening.segment];
   if (!edge) return false;
@@ -642,6 +662,10 @@ export function parseProject(text) {
     if (!id || ids.has(id)) throw new Error('Identificador repetido.');
     ids.add(id);
     const base = { id, kind: e.kind };
+    if (e.groupId !== undefined) {
+      base.groupId = string(e.groupId, 100);
+      if (!base.groupId.trim()) throw new Error('Identificador de grupo inválido.');
+    }
     if (layerFor(e.kind) === 'structure' && e.joinWalls === true) base.joinWalls = true;
     if (e.walls !== undefined) {
       if (layerFor(e.kind) !== 'structure' || !Array.isArray(e.walls) || e.walls.length > 1000)

@@ -165,3 +165,33 @@ Na ferramenta Selecionar / mover, arraste em uma área vazia para marcar as peç
 Arrastar uma peça selecionada ou usar as setas move o conjunto. Ctrl+C/Ctrl+V copia o conjunto com vínculos próprios e elimina duplicações de equipamentos já incluídos pela sala. Escape libera o conjunto. Os contornos tracejados e o retângulo de seleção são exclusivos do editor e não entram nas imagens exportadas. Propriedades, redimensionamento e exclusão ainda atuam na peça ativa, não no conjunto inteiro.
 
 Validação: 112 testes, formatação e build aprovados. Conferência de interação no navegador pendente.
+
+## Duplicar e excluir conjuntos
+
+Ctrl+D e Duplicar seleção copiam exatamente as peças selecionadas, incluindo as portas/janelas dependentes. Equipamentos não selecionados não entram automaticamente nesta operação. A cópia fica selecionada e procura uma posição próxima válida, inclusive um deslocamento maior quando a sobreposição remove o suporte das portas. Delete e Remover seleção apagam o conjunto e suas aberturas dependentes. Camadas bloqueadas impedem a operação inteira. Cada ação ocupa uma etapa de Desfazer.
+
+Conferido no navegador local: seleção por retângulo de sala e três equipamentos; duplicação incluindo porta (13 para 18 objetos); remoção do conjunto (18 para 13); Desfazer restaurando os 18 objetos. Agrupamento persistente e rotação de seleção arbitrária permanecem nas próximas etapas.
+
+## Grupos persistentes
+
+Ctrl+G agrupa a seleção; Ctrl+Shift+G desagrupa. Os botões Agrupar seleção e Desagrupar ficam nas propriedades. É necessário selecionar ao menos duas peças além das aberturas dependentes. Clicar em qualquer integrante seleciona o grupo completo; arraste e setas movem o conjunto. Escape libera apenas a seleção, preservando o grupo salvo. Para editar integrantes separadamente, desagrupe primeiro.
+
+Os grupos são salvos por identificador nas peças do arquivo .alien-map, mantendo compatibilidade com projetos sem grupos. Copiar ou duplicar gera identificadores independentes. Agrupar conjuntos já existentes reúne seus integrantes em um grupo único, sem hierarquia aninhada. Camadas ocultas/bloqueadas impedem alterações do grupo. Desfazer reverte agrupamento e desagrupamento. Rotação de grupos arbitrários permanece pendente.
+
+## Rotação de conjuntos
+
+Com uma seleção múltipla ou grupo ativo, R gira +90° e Shift+R gira −90° ao redor do centro da área ocupada pelo conjunto. Os botões Girar ±90° nas propriedades oferecem as mesmas ações. Salas retangulares e ovais trocam largura/altura e remapeiam seus trechos de parede e aberturas; polígonos, corredores e dutos giram seus pontos; equipamentos mantêm as dimensões e atualizam posição/rotação. Anotações mudam de posição, mantendo o texto horizontal.
+
+Camadas ocultas/bloqueadas e posições fora da planta impedem a operação inteira. Cada giro ocupa uma etapa de Desfazer. Os vínculos e identificadores de grupos são preservados. Esta etapa usa giros de 90°; rotação livre por alça continua prevista para o bloco de transformações na viewport.
+
+Validação automatizada: 118 testes e build aprovados, incluindo quatro giros completos, giro inverso, remapeamento de oval e portas, caminhos e limites da planta. Conferência visual fica para a próxima sessão do usuário.
+
+## Paredes preservadas por padrão
+
+Novos ambientes mantêm as paredes mesmo quando encostam ou se sobrepõem. A opção Unir paredes ao encostar ambientes permanece disponível nas propriedades, desativada por padrão; ativá-la restaura a união automática para aquele ambiente. Projetos existentes que já tinham essa opção ativa preservam sua escolha. Abertura livre continua removendo apenas o trecho escolhido; Automática restaura a parede padrão nesse trecho.
+
+O preenchimento de piso até a abertura agora vale tanto para portas quanto para janelas. Arrastar uma abertura mostra sua posição prevista na parede durante o gesto. As peças de preenchimento das junções passaram a usar encontros retos, sem os discos que criavam saliências arredondadas; curvas próprias de salas e corredores permanecem. Conferência visual desses ajustes pendente.
+
+## Regra visual dos comandos
+
+Botões de ação nos painéis usam largura integral, altura mínima de 44 px, espaçamento uniforme e conteúdo alinhado à esquerda. Ações pareadas usam colunas iguais. Ícones vetoriais devem ser reutilizados de ToolIcon; ações de painel mantêm rótulos curtos, enquanto comandos familiares da viewport podem usar somente ícones com nome acessível e dica. Atalhos aparecem nas dicas. Evitar símbolos decorativos ambíguos, texto repetitivo e botões com largura determinada pelo comprimento da legenda. Botões com textos longos podem crescer em altura para não cortar o conteúdo no celular.

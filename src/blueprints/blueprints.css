@@ -420,3 +420,48 @@
   color: #04120d;
   background: #78ebae;
 }
+
+/* Panels share a stable action size; compact rows use equal-width columns. */
+.blueprint-layout aside button {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  margin: 6px 0 0;
+  text-align: left;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.blueprint-layout aside button svg {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+}
+.blueprint-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.blueprint-quick-actions button,
+.blueprint-vertex-actions button {
+  justify-content: center;
+}
+.blueprint-layout aside .blueprint-assets button {
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+.blueprint-layout aside .blueprint-assets svg {
+  flex-basis: auto;
+  width: 35px;
+  height: 35px;
+}
+.blueprint-editor button:focus-visible {
+  outline: 2px solid #b2e9c6;
+  outline-offset: 2px;
+}
