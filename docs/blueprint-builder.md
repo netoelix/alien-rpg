@@ -147,3 +147,21 @@ O painel Sala com equipamentos também oferece rotação de +90° e −90° em t
 ## Opções de criação na viewport
 
 Ao desenhar salas retangulares, ovais, poligonais ou corredores, o seletor flutuante Parede ao desenhar define o acabamento aplicado a todas as bordas da nova estrutura. A opção Automática mantém a união de ambientes. A escolha permanece durante a sessão e não altera estruturas existentes nem módulos prontos. Na ferramenta Portas e janelas, os botões flutuantes compartilham a seleção do painel lateral e conservam a última opção durante a sessão.
+
+## Copiar e colar na viewport
+
+Com foco na planta, Ctrl+C (ou Cmd+C) guarda uma cópia da peça selecionada na memória da aba. Ctrl+V cola com IDs novos e deslocamento de um passo da grade; colagens sucessivas aumentam esse deslocamento. Os botões Copiar seleção e Colar cópia na viewport oferecem as mesmas ações. A cópia não usa a área de transferência do sistema.
+
+Salas retangulares incluem equipamentos totalmente contidos, considerando sua rotação, e portas/janelas vinculadas. Outras estruturas incluem suas aberturas; equipamentos, textos e dutos podem ser copiados individualmente. Portas/janelas avulsas devem ser criadas na parede pela ferramenta própria.
+
+A última cópia forma um conjunto temporário: arrastar a estrutura ou usar as setas move também suas peças copiadas. Escape ou Desfazer desfaz esse agrupamento temporário; as peças continuam independentes no arquivo salvo. Redimensionar continua afetando apenas a estrutura. Não há seleção múltipla por arraste nesta etapa. Camadas ocultas/bloqueadas e limites da planta impedem operações inválidas; cada colagem é uma etapa de Desfazer. A cópia guardada permanece independente de alterações posteriores no original.
+
+Validação: 110 testes e build aprovados. Interação de copiar/colar no navegador ainda pendente de conferência visual.
+
+## Seleção múltipla na viewport
+
+Na ferramenta Selecionar / mover, arraste em uma área vazia para marcar as peças inteiramente contidas no retângulo. Shift+arraste acrescenta à seleção; Shift+clique alterna uma peça. Camadas ocultas ou bloqueadas ficam fora da seleção por área. Portas e janelas acompanham suas estruturas, sem seleção por área independente.
+
+Arrastar uma peça selecionada ou usar as setas move o conjunto. Ctrl+C/Ctrl+V copia o conjunto com vínculos próprios e elimina duplicações de equipamentos já incluídos pela sala. Escape libera o conjunto. Os contornos tracejados e o retângulo de seleção são exclusivos do editor e não entram nas imagens exportadas. Propriedades, redimensionamento e exclusão ainda atuam na peça ativa, não no conjunto inteiro.
+
+Validação: 112 testes, formatação e build aprovados. Conferência de interação no navegador pendente.

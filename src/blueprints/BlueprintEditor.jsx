@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ToolIcon } from './ToolIcon.jsx';
 import { Drawing } from './Drawing.jsx';
+import { selectInBox, selectionBounds } from './selection.js';
+import { copyBlueprint, pasteBlueprint, movePastedGroup } from './clipboard.js';
 import { AssetSymbol, assetNames } from './Assets.jsx';
 import {
   wallTypes,
@@ -70,7 +72,7 @@ const toolKeys = {
 const hints = {
   wall: 'Clique na borda de uma sala ou corredor. Ajuste o trecho e o tipo no painel.',
   select:
-    'Arraste para mover. Ctrl+D duplica; R gira equipamentos; setas movem pela grade (Shift: 10 passos).',
+    'Arraste para mover. Ctrl+C/Ctrl+V copia e cola; Ctrl+D duplica; setas movem (Shift: 10 passos).',
   pan: 'Arraste o mapa para deslocar a visão.',
   room: 'Arraste do primeiro ao último canto da sala.',
   polygon:
@@ -84,6 +86,8 @@ const hints = {
   label: 'Escreva a anotação no painel e clique onde deseja inseri-la.',
 };
 export default function BlueprintEditor() {
+  const clipboard = useRef(null);
+  const [pastedGroup, setPastedGroup] = useState(null);
   const [wallEdge, setWallEdge] = useState(0);
   const [creationWall, setCreationWall] = useState('auto');
   const [arcStart, setArcStart] = useState(0);
@@ -191,6 +195,7 @@ export default function BlueprintEditor() {
     }
   }
   function replace(next) {
+    setPastedGroup(null);
     setProject(next);
     setPast([]);
     setFuture([]);
@@ -201,6 +206,7 @@ export default function BlueprintEditor() {
     setDirty(false);
   }
   function undo() {
+    setPastedGroup(null);
     if (!past.length) return;
     setFuture((f) => [project, ...f]);
     setProject(past.at(-1));
@@ -307,7 +313,8 @@ export default function BlueprintEditor() {
       const id = event.target.closest('[data-object]')?.dataset.object;
       const element = project.elements.find((e) => e.id === id);
       if (!element) {
-        setSelected(null);
+        svgRef.current.setPointerCapture(event.pointerId);
+        setGesture({ kind: 'marquee', start: p, end: p, additive: event.shiftKey });
         return;
       }
       if (!allowed(element.kind)) {
@@ -315,6 +322,21 @@ export default function BlueprintEditor() {
         return;
       }
       setSelected(id);
+      if (event.shiftKey && element.kind !== 'door') {
+        const ids = new Set(pastedGroup?.ids || (selected ? [selected] : []));
+        if (ids.has(id)) ids.delete(id);
+        else ids.add(id);
+        const selectedId =
+          [...ids].find(
+            (key) => project.elements.find((item) => item.id === key)?.kind !== 'door',
+          ) || null;
+        setSelected(selectedId);
+        setPastedGroup(selectedId ? { selectedId, ids: [...ids] } : null);
+        return;
+      }
+      if (pastedGroup?.ids.includes(id) && element.kind !== 'door') {
+        setPastedGroup({ ...pastedGroup, selectedId: id });
+      } else setPastedGroup(null);
       const action = event.target.closest('[data-transform]')?.dataset.transform;
       if (action === 'rotate') {
         if (element.kind === 'room') {
@@ -426,6 +448,20 @@ export default function BlueprintEditor() {
       svgRef.current.releasePointerCapture(event.pointerId);
     const g = { ...gesture, end: location(event) };
     setGesture(null);
+    if (g.kind === 'marquee') {
+      const ids = [
+        ...new Set([
+          ...(g.additive ? pastedGroup?.ids || (selected ? [selected] : []) : []),
+          ...selectInBox(project, g.start, g.end),
+        ]),
+      ];
+      setSelected(ids[0] || null);
+      setPastedGroup(ids.length ? { selectedId: ids[0], ids } : null);
+      setMessage(
+        `${ids.length} peças selecionadas. Arraste uma peça ou use as setas; Ctrl+C copia.`,
+      );
+      return;
+    }
     if (g.kind === 'resize') {
       commit({
         ...project,
@@ -449,6 +485,16 @@ export default function BlueprintEditor() {
       if (e.w >= 0.25 && e.h >= 0.25) add([{ ...e, id: uid() }]);
     }
     if (g.kind === 'move' && (g.end.x !== g.start.x || g.end.y !== g.start.y)) {
+      if (pastedGroup?.selectedId === g.element.id) {
+        try {
+          commit(
+            movePastedGroup(project, pastedGroup.ids, g.end.x - g.start.x, g.end.y - g.start.y),
+          );
+        } catch (error) {
+          setMessage(error.message);
+        }
+        return;
+      }
       let changed;
       if (g.element.kind === 'door') {
         const wall = nearestWall(project.elements, g.end);
@@ -505,6 +551,33 @@ export default function BlueprintEditor() {
   }
   const selectedElement = project.elements.find((e) => e.id === selected);
   const editable = selectedElement && allowed(selectedElement.kind);
+  function copySelection() {
+    if (gesture || points.length) return;
+    try {
+      clipboard.current = { ...copyBlueprint(project, pastedGroup?.ids || selected), count: 0 };
+      setMessage('Cópia guardada nesta aba. Use Ctrl+V na planta para colar.');
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+  function pasteSelection() {
+    if (gesture || points.length) return;
+    try {
+      const offset = project.grid * ((clipboard.current?.count || 0) + 1);
+      const result = pasteBlueprint(project, clipboard.current, offset, offset);
+      if (commit(result.project)) {
+        clipboard.current.count++;
+        setSelected(result.selectedId);
+        setPastedGroup({ selectedId: result.selectedId, ids: result.ids });
+        setTool('select');
+        setMessage(
+          'Cópia selecionada. Arraste a estrutura para mover o conjunto; Escape libera as peças.',
+        );
+      }
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
   function duplicate() {
     if (!editable || gesture || points.length) return;
     try {
@@ -526,6 +599,14 @@ export default function BlueprintEditor() {
   }
   function nudge(dx, dy) {
     if (!editable || selectedElement.kind === 'door' || gesture || points.length) return;
+    if (pastedGroup?.selectedId === selected) {
+      try {
+        commit(movePastedGroup(project, pastedGroup.ids, dx, dy));
+      } catch (error) {
+        setMessage(error.message);
+      }
+      return;
+    }
     commit({
       ...project,
       elements: project.elements.map((element) =>
@@ -599,7 +680,11 @@ export default function BlueprintEditor() {
     drawn = {
       ...project,
       elements: project.elements.map((e) =>
-        e.id === gesture.element.id
+        (
+          pastedGroup?.selectedId === gesture.element.id
+            ? pastedGroup.ids.includes(e.id) && e.kind !== 'door'
+            : e.id === gesture.element.id
+        )
           ? moveElement(e, gesture.end.x - gesture.start.x, gesture.end.y - gesture.start.y)
           : e,
       ),
@@ -1252,6 +1337,22 @@ export default function BlueprintEditor() {
             </div>
           )}
           <div className="blueprint-canvas-toolbar">
+            <button
+              title="Copiar peça ou sala com equipamentos (Ctrl+C)"
+              aria-label="Copiar seleção"
+              disabled={!editable || selectedElement?.kind === 'door'}
+              onClick={copySelection}
+            >
+              ⧉
+            </button>
+            <button
+              title="Colar cópia (Ctrl+V)"
+              aria-label="Colar cópia"
+              disabled={!clipboard.current}
+              onClick={pasteSelection}
+            >
+              ▣
+            </button>
             <button aria-label="Ampliar planta" onClick={() => zoom(1.5)}>
               +
             </button>
@@ -1317,6 +1418,11 @@ export default function BlueprintEditor() {
             onPointerUp={up}
             onPointerCancel={() => setGesture(null)}
             onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && ['c', 'v'].includes(e.key.toLowerCase())) {
+                e.preventDefault();
+                if (!e.repeat) e.key.toLowerCase() === 'c' ? copySelection() : pasteSelection();
+                return;
+              }
               if (e.code === 'Space') {
                 e.preventDefault();
                 setSpaceHeld(true);
@@ -1379,6 +1485,7 @@ export default function BlueprintEditor() {
                 finish();
               }
               if (e.key === 'Escape') {
+                setPastedGroup(null);
                 setFocusMode(false);
                 setSpaceHeld(false);
                 setGesture(null);
@@ -1414,6 +1521,40 @@ export default function BlueprintEditor() {
               preview={preview}
               interactive={tool === 'select'}
             />
+            {tool === 'select' && pastedGroup && (
+              <g
+                data-editor-only="true"
+                pointerEvents="none"
+                fill="none"
+                stroke="white"
+                strokeWidth=".06"
+                strokeDasharray=".2 .15"
+              >
+                {drawn.elements
+                  .filter((element) => pastedGroup.ids.includes(element.id))
+                  .map((element) => {
+                    const box = selectionBounds(element);
+                    return box ? (
+                      <rect key={element.id} x={box.x} y={box.y} width={box.w} height={box.h} />
+                    ) : null;
+                  })}
+              </g>
+            )}
+            {gesture?.kind === 'marquee' && (
+              <rect
+                data-editor-only="true"
+                pointerEvents="none"
+                x={Math.min(gesture.start.x, gesture.end.x)}
+                y={Math.min(gesture.start.y, gesture.end.y)}
+                width={Math.abs(gesture.end.x - gesture.start.x)}
+                height={Math.abs(gesture.end.y - gesture.start.y)}
+                fill="white"
+                fillOpacity=".08"
+                stroke="white"
+                strokeWidth=".08"
+                strokeDasharray=".3 .2"
+              />
+            )}
           </svg>
           <p className="blueprint-coordinates muted">
             {project.width} × {project.height} m · encaixe de {project.grid} m ·{' '}
