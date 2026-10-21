@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { ToolIcon } from './ToolIcon.jsx';
 import { Drawing } from './Drawing.jsx';
+import { expandGroups, setSelectionGroup, rotateGroup } from './groups.js';
 import { selectInBox, selectionBounds } from './selection.js';
-import { copyBlueprint, pasteBlueprint, movePastedGroup } from './clipboard.js';
+import {
+  copyBlueprint,
+  pasteBlueprint,
+  movePastedGroup,
+  removeSelection,
+  duplicateSelection,
+} from './clipboard.js';
 import { AssetSymbol, assetNames } from './Assets.jsx';
 import {
   wallTypes,
@@ -180,7 +187,7 @@ export default function BlueprintEditor() {
           !openingHasWall(opening, valid.elements)
         )
           throw new Error(
-            'Não há parede neste trecho unido. Recrie a divisória em Editar paredes antes de colocar uma porta ou janela.',
+            'Este trecho está aberto. Restaure a parede em Editar paredes antes de colocar uma porta ou janela.',
           );
       }
       setPast((p) => [...p.slice(-49), project]);
@@ -247,7 +254,7 @@ export default function BlueprintEditor() {
     );
     const joined = created.map((element) =>
       ['room', 'ellipse', 'polygon', 'corridor'].includes(tool) && element.walls
-        ? { ...element, joinWalls: true }
+        ? { ...element, joinWalls: false }
         : element,
     );
     const ok = commit({ ...project, elements: [...project.elements, ...joined] });
@@ -322,10 +329,24 @@ export default function BlueprintEditor() {
         return;
       }
       setSelected(id);
+      if (element.groupId && !event.shiftKey) {
+        const ids = expandGroups(project, [id]);
+        const primary =
+          element.kind === 'door'
+            ? project.elements.find((item) => ids.includes(item.id) && item.kind !== 'door') ||
+              element
+            : element;
+        setSelected(primary.id);
+        setPastedGroup({ selectedId: primary.id, ids });
+        svgRef.current.setPointerCapture(event.pointerId);
+        setGesture({ kind: 'move', element: primary, start: p, end: p });
+        return;
+      }
       if (event.shiftKey && element.kind !== 'door') {
         const ids = new Set(pastedGroup?.ids || (selected ? [selected] : []));
-        if (ids.has(id)) ids.delete(id);
-        else ids.add(id);
+        const members = expandGroups(project, [id]);
+        if (ids.has(id)) members.forEach((member) => ids.delete(member));
+        else members.forEach((member) => ids.add(member));
         const selectedId =
           [...ids].find(
             (key) => project.elements.find((item) => item.id === key)?.kind !== 'door',
@@ -455,8 +476,9 @@ export default function BlueprintEditor() {
           ...selectInBox(project, g.start, g.end),
         ]),
       ];
-      setSelected(ids[0] || null);
-      setPastedGroup(ids.length ? { selectedId: ids[0], ids } : null);
+      const expanded = expandGroups(project, ids);
+      setSelected(expanded[0] || null);
+      setPastedGroup(expanded.length ? { selectedId: expanded[0], ids: expanded } : null);
       setMessage(
         `${ids.length} peças selecionadas. Arraste uma peça ou use as setas; Ctrl+C copia.`,
       );
@@ -527,6 +549,19 @@ export default function BlueprintEditor() {
     setGesture(null);
   }
   function remove() {
+    if (gesture || points.length) return;
+    if (pastedGroup?.ids.length) {
+      try {
+        if (commit(removeSelection(project, pastedGroup.ids))) {
+          setSelected(null);
+          setPastedGroup(null);
+          setMessage('Seleção removida. Ctrl+Z restaura o conjunto.');
+        }
+      } catch (error) {
+        setMessage(error.message);
+      }
+      return;
+    }
     if (selected && allowed(selectedElement?.kind)) {
       commit(removeElement(project, selected));
       setSelected(null);
@@ -551,6 +586,22 @@ export default function BlueprintEditor() {
   }
   const selectedElement = project.elements.find((e) => e.id === selected);
   const editable = selectedElement && allowed(selectedElement.kind);
+  function groupSelection(ungroup = false) {
+    if (gesture || points.length) return;
+    try {
+      const ids = expandGroups(project, pastedGroup?.ids || (selected ? [selected] : []));
+      if (commit(setSelectionGroup(project, ids, ungroup))) {
+        setPastedGroup(ids.length ? { selectedId: selected || ids[0], ids } : null);
+        setMessage(
+          ungroup
+            ? 'Grupo desfeito; peças continuam selecionadas.'
+            : 'Grupo criado. Será preservado ao salvar o projeto.',
+        );
+      }
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
   function copySelection() {
     if (gesture || points.length) return;
     try {
@@ -581,12 +632,17 @@ export default function BlueprintEditor() {
   function duplicate() {
     if (!editable || gesture || points.length) return;
     try {
-      const copy = duplicateElement(project, selected);
+      const copy = pastedGroup?.ids.length
+        ? duplicateSelection(project, pastedGroup.ids)
+        : duplicateElement(project, selected);
       if (commit(copy.project)) {
         setSelected(copy.selectedId);
+        setPastedGroup(copy.ids ? { selectedId: copy.selectedId, ids: copy.ids } : null);
         setTool('select');
         setMessage(
-          'Cópia selecionada. Arraste para posicionar; equipamentos internos são peças independentes.',
+          copy.ids
+            ? 'Conjunto duplicado e selecionado. Arraste para posicionar.'
+            : 'Cópia selecionada. Arraste para posicionar; equipamentos internos são peças independentes.',
         );
       }
     } catch (error) {
@@ -594,6 +650,14 @@ export default function BlueprintEditor() {
     }
   }
   function rotateSelection(delta) {
+    if (pastedGroup?.ids.length && !gesture && !points.length) {
+      try {
+        commit(rotateGroup(project, pastedGroup.ids, delta > 0 ? 1 : -1));
+      } catch (error) {
+        setMessage(error.message);
+      }
+      return;
+    }
     if (selectedElement?.kind === 'asset' && !gesture && !points.length)
       property('rotation', (((selectedElement.rotation + delta) % 360) + 360) % 360);
   }
@@ -689,6 +753,18 @@ export default function BlueprintEditor() {
           : e,
       ),
     };
+  if (gesture?.kind === 'move' && gesture.element.kind === 'door') {
+    const wall = nearestWall(project.elements, gesture.end);
+    if (wall)
+      drawn = {
+        ...project,
+        elements: project.elements.map((element) =>
+          element.id === gesture.element.id
+            ? { ...element, wallId: wall.wallId, segment: wall.segment, t: wall.t }
+            : element,
+        ),
+      };
+  }
   // Mantém a grade legível em plantas grandes sem mudar a medida de encaixe.
   if (gesture?.kind === 'resize')
     drawn = {
@@ -1175,7 +1251,9 @@ export default function BlueprintEditor() {
                     </label>
                   )}
                   {selectedElement.kind !== 'door' && (
-                    <button onClick={duplicate}>DUPLICAR PEÇA</button>
+                    <button onClick={duplicate}>
+                      <ToolIcon name="copy" /> Duplicar
+                    </button>
                   )}
                   {wallSegments(selectedElement).length > 0 && (
                     <label>
@@ -1190,10 +1268,12 @@ export default function BlueprintEditor() {
                   {selectedElement.kind === 'room' && (
                     <details>
                       <summary>Sala com equipamentos</summary>
-                      <div className="blueprint-quick-actions">
+                      <div className="blueprint-stacked-actions">
                         {[-1, 1].map((direction) => (
                           <button
                             key={direction}
+                            aria-label={`Girar conjunto ${direction === 1 ? '+90°' : '−90°'}`}
+                            title={`Girar sala e equipamentos ${direction === 1 ? '+90°' : '−90°'}`}
                             onClick={() => {
                               try {
                                 commit(rotateRoomContents(project, selected, direction));
@@ -1202,7 +1282,8 @@ export default function BlueprintEditor() {
                               }
                             }}
                           >
-                            GIRAR {direction === 1 ? '+90°' : '−90°'} CONJUNTO
+                            <ToolIcon name={direction === 1 ? 'rotateRight' : 'rotateLeft'} />
+                            {direction === 1 ? '+90°' : '−90°'} conjunto
                           </button>
                         ))}
                       </div>
@@ -1235,7 +1316,7 @@ export default function BlueprintEditor() {
                           }
                         }}
                       >
-                        MOVER CONJUNTO
+                        <ToolIcon name="pan" /> Mover conjunto
                       </button>
                       <button
                         onClick={() => {
@@ -1255,17 +1336,52 @@ export default function BlueprintEditor() {
                           }
                         }}
                       >
-                        DUPLICAR CONJUNTO
+                        <ToolIcon name="copy" /> Duplicar conjunto
                       </button>
                     </details>
                   )}
-                  {selectedElement.kind === 'asset' && (
+                  {(selectedElement.kind === 'asset' || pastedGroup?.ids.length) && (
                     <div className="blueprint-quick-actions">
-                      <button onClick={() => rotateSelection(-90)}>GIRAR −90°</button>
-                      <button onClick={() => rotateSelection(90)}>GIRAR +90°</button>
+                      <button
+                        onClick={() => rotateSelection(-90)}
+                        aria-label="Girar −90°"
+                        title="Girar −90° (Shift+R)"
+                      >
+                        <ToolIcon name="rotateLeft" /> −90°
+                      </button>
+                      <button
+                        onClick={() => rotateSelection(90)}
+                        aria-label="Girar +90°"
+                        title="Girar +90° (R)"
+                      >
+                        <ToolIcon name="rotateRight" /> +90°
+                      </button>
                     </div>
                   )}
-                  <button onClick={remove}>REMOVER OBJETO</button>
+                  <button
+                    onClick={() => groupSelection(false)}
+                    disabled={!pastedGroup || pastedGroup.ids.length < 2}
+                    title="Agrupar seleção (Ctrl+G)"
+                  >
+                    <ToolIcon name="group" /> Agrupar
+                  </button>
+                  <button
+                    onClick={() => groupSelection(true)}
+                    disabled={!selectedElement.groupId}
+                    title="Desagrupar (Ctrl+Shift+G)"
+                  >
+                    <ToolIcon name="ungroup" /> Desagrupar
+                  </button>
+                  <button
+                    onClick={remove}
+                    title={
+                      pastedGroup?.ids.length
+                        ? 'Remover seleção (Delete)'
+                        : 'Remover objeto (Delete)'
+                    }
+                  >
+                    <ToolIcon name="delete" /> Remover
+                  </button>
                 </fieldset>
               </>
             ) : (
@@ -1418,6 +1534,11 @@ export default function BlueprintEditor() {
             onPointerUp={up}
             onPointerCancel={() => setGesture(null)}
             onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+                e.preventDefault();
+                if (!e.repeat) groupSelection(e.shiftKey);
+                return;
+              }
               if ((e.ctrlKey || e.metaKey) && ['c', 'v'].includes(e.key.toLowerCase())) {
                 e.preventDefault();
                 if (!e.repeat) e.key.toLowerCase() === 'c' ? copySelection() : pasteSelection();
@@ -1573,7 +1694,7 @@ export default function BlueprintEditor() {
               funcionam com foco na planta; Tab continua navegando pelos controles.
             </p>
           </details>
-          <details open>
+          <details>
             <summary>Projeto e escala</summary>
             <label>
               Nome
@@ -1621,7 +1742,7 @@ export default function BlueprintEditor() {
               </select>
             </label>
           </details>
-          <details open>
+          <details>
             <summary>Camadas</summary>
             {project.layers.map((layer) => (
               <div className="blueprint-layer" key={layer.id}>
@@ -1723,7 +1844,7 @@ export default function BlueprintEditor() {
               APAGAR CÓPIA LOCAL
             </button>
           </details>
-          <details open>
+          <details>
             <summary>Exportar imagem</summary>
             <p className="muted">
               A exportação usa toda a planta e mantém o mesmo alinhamento entre camadas. A grade não

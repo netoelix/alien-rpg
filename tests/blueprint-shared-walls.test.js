@@ -64,3 +64,31 @@ test('divisórias coincidentes são renderizadas uma vez, inclusive sobreposiç�
   const moved = sharedWallStructures([a, { ...b, x: 12 }]);
   assert.equal(moved[1].walls[0].end, 1);
 });
+
+test('paredes padrão persistem, união é opt-in e acabamento explícito prevalece', async () => {
+  const { persistentWallStructure } = await import('../src/blueprints/shared-walls.js');
+  const a = { id: 'a', kind: 'room', x: 0, y: 0, w: 10, h: 10 };
+  const b = {
+    id: 'b',
+    kind: 'room',
+    x: 10,
+    y: 0,
+    w: 10,
+    h: 10,
+    walls: [{ segment: 3, start: 0, end: 1, type: 'hull' }],
+  };
+  assert.equal(persistentWallStructure(a).walls.length, 4);
+  assert.equal(persistentWallStructure({ ...a, joinWalls: true }).walls, undefined);
+  const joined = sharedWallStructures([a, b].map(persistentWallStructure));
+  assert.equal(
+    joined[0].walls.some((wall) => wall.segment === 1),
+    false,
+  );
+  assert.equal(joined[1].walls.find((wall) => wall.segment === 3).type, 'hull');
+  const open = persistentWallStructure({
+    ...a,
+    walls: [{ segment: 1, start: 0.2, end: 0.8, type: 'open' }],
+  });
+  assert.equal(open.walls.filter((wall) => wall.segment === 1).length, 3);
+  assert.equal(a.walls, undefined);
+});

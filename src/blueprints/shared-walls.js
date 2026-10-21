@@ -1,5 +1,24 @@
 import { doorPosition, wallSections, wallSegments } from './model.js';
 
+// Every boundary remains a wall until an explicit open interval removes it.
+export function persistentWallStructure(element) {
+  if (element.joinWalls) return element;
+  const walls = [...(element.walls || [])];
+  wallSegments(element).forEach((edge, segment) => {
+    let start = 0;
+    const sections = walls
+      .filter((wall) => wall.segment === segment)
+      .sort((a, b) => a.start - b.start);
+    for (const wall of sections) {
+      if (wall.start > start)
+        walls.push({ segment, start, end: wall.start, type: 'internal', automatic: true });
+      start = Math.max(start, wall.end);
+    }
+    if (start < 1) walls.push({ segment, start, end: 1, type: 'internal', automatic: true });
+  });
+  return { ...element, joinWalls: false, walls };
+}
+
 // Resolve only the visual anchor; saved openings remain attached to their room.
 export function sharedOpeningAnchor(opening, elements) {
   const anchor = doorPosition(opening, elements);
@@ -8,7 +27,7 @@ export function sharedOpeningAnchor(opening, elements) {
     ['room', 'ellipse', 'polygon', 'corridor'].includes(element.kind),
   );
   const angle = (anchor.rotation * Math.PI) / 180;
-  for (const element of sharedWallStructures(structure)) {
+  for (const element of sharedWallStructures(structure.map(persistentWallStructure))) {
     if (element.joinWalls && element.id !== opening.wallId) continue;
     for (const section of wallSections(element)) {
       if (section.type === 'open') continue;
@@ -33,7 +52,11 @@ export function sharedWallStructures(structure) {
   const candidates = structure.flatMap((element) =>
     wallSections(element)
       .filter((wall) => wall.type !== 'open')
-      .map((wall) => ({ ...wall, owner: element.id, manual: !element.joinWalls })),
+      .map((wall) => ({
+        ...wall,
+        owner: element.id,
+        manual: !element.joinWalls && !wall.automatic,
+      })),
   );
   const priority = (a, b) => Number(b.manual) - Number(a.manual) || a.owner.localeCompare(b.owner);
   candidates.sort(priority);

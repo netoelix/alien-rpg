@@ -103,6 +103,14 @@ export default function App() {
     : campaignModels[0];
   const [route = '', idText, recordText] = scoped ? segments.slice(2) : segments;
   const title = model?.campaign.title || 'Arquivo Alien';
+  const pageTitle =
+    route === 'blueprints'
+      ? 'Editor de mapas'
+      : route === 'editor'
+        ? 'Editor de campanhas'
+        : route
+          ? title
+          : 'Arquivo de campanhas';
 
   useEffect(() => {
     function handleNavigation() {
@@ -115,8 +123,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    document.title = `${route ? title : 'Arquivo Alien'} · Terminal de campanhas`;
-  }, [route, title]);
+    document.title = `${route ? pageTitle : 'Arquivo Alien'} · Terminal de campanhas`;
+  }, [route, pageTitle]);
 
   useEffect(() => {
     document.body.classList.toggle('clean', !effects);
@@ -185,7 +193,7 @@ export default function App() {
           </main>
           <footer>
             <span>DESENVOLVIDO POR ELIX MERLINO NETO</span>
-            <span>VERSÃO 3.0 · {route ? title : 'ARQUIVO DE CAMPANHAS'}</span>
+            <span>VERSÃO 3.0 · {pageTitle}</span>
           </footer>
         </div>
       </CampaignContext.Provider>
