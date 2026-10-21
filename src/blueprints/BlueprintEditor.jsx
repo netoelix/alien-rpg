@@ -3,15 +3,24 @@ import { ToolIcon } from './ToolIcon.jsx';
 import { Drawing } from './Drawing.jsx';
 import { AssetSymbol, assetNames } from './Assets.jsx';
 import {
+  wallTypes,
+  wallSegments,
+  setWallSection,
+  setWallArc,
+  fitOpenings,
   duplicateElement,
   exampleProject,
   layerFor,
   makeModule,
   moduleNames,
   moveElement,
+  moveRoomContents,
+  duplicateRoomContents,
+  rotateRoomContents,
   moveVertex,
   changeVertexCount,
   nearestWall,
+  openingHasWall,
   newProject,
   parseProject,
   removeElement,
@@ -31,19 +40,21 @@ const normalizeSearch = (text) =>
 let sessionProject = null;
 let sessionDirty = false;
 const toolNames = {
+  wall: 'Editar paredes',
   select: 'Selecionar / mover',
   pan: 'Mover visão',
   room: 'Sala retangular',
   polygon: 'Sala por vértices',
   ellipse: 'Sala circular',
   corridor: 'Corredor',
-  door: 'Porta',
+  door: 'Portas e janelas',
   vent: 'Ventilação',
   asset: 'Equipamento',
   module: 'Módulo pronto',
   label: 'Texto',
 };
 const toolKeys = {
+  w: 'wall',
   v: 'select',
   h: 'pan',
   b: 'room',
@@ -57,6 +68,7 @@ const toolKeys = {
   t: 'label',
 };
 const hints = {
+  wall: 'Clique na borda de uma sala ou corredor. Ajuste o trecho e o tipo no painel.',
   select:
     'Arraste para mover. Ctrl+D duplica; R gira equipamentos; setas movem pela grade (Shift: 10 passos).',
   pan: 'Arraste o mapa para deslocar a visão.',
@@ -72,6 +84,15 @@ const hints = {
   label: 'Escreva a anotação no painel e clique onde deseja inseri-la.',
 };
 export default function BlueprintEditor() {
+  const [wallEdge, setWallEdge] = useState(0);
+  const [creationWall, setCreationWall] = useState('auto');
+  const [arcStart, setArcStart] = useState(0);
+  const [roomShift, setRoomShift] = useState({ x: 0, y: 0 });
+  const [arcPreview, setArcPreview] = useState(false);
+  const [arcEnd, setArcEnd] = useState(90);
+  const [wallStart, setWallStart] = useState(0);
+  const [wallEnd, setWallEnd] = useState(100);
+  const [wallType, setWallType] = useState('internal');
   const [focusMode, setFocusMode] = useState(false);
   const [spaceHeld, setSpaceHeld] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
@@ -88,6 +109,7 @@ export default function BlueprintEditor() {
   );
   const [lineWidth, setLineWidth] = useState(2),
     [doorWidth, setDoorWidth] = useState(1.5),
+    [openingType, setOpeningType] = useState('door'),
     [label, setLabel] = useState('PONTE');
   const [points, setPoints] = useState([]),
     [gesture, setGesture] = useState(null),
@@ -146,7 +168,17 @@ export default function BlueprintEditor() {
   }, [dirty]);
   function commit(next) {
     try {
-      const valid = parseProject(JSON.stringify(next));
+      const valid = parseProject(JSON.stringify(fitOpenings(next)));
+      for (const opening of valid.elements.filter((element) => element.kind === 'door')) {
+        const previous = project.elements.find((element) => element.id === opening.id);
+        if (
+          JSON.stringify(previous) !== JSON.stringify(opening) &&
+          !openingHasWall(opening, valid.elements)
+        )
+          throw new Error(
+            'Não há parede neste trecho unido. Recrie a divisória em Editar paredes antes de colocar uma porta ou janela.',
+          );
+      }
       setPast((p) => [...p.slice(-49), project]);
       setFuture([]);
       setProject(valid);
@@ -194,7 +226,25 @@ export default function BlueprintEditor() {
       setMessage('Mostre e desbloqueie as camadas usadas por esta ferramenta.');
       return false;
     }
-    const ok = commit({ ...project, elements: [...project.elements, ...elements] });
+    const created = elements.map((element) =>
+      ['room', 'ellipse', 'polygon', 'corridor'].includes(tool) && creationWall !== 'auto'
+        ? {
+            ...element,
+            walls: wallSegments(element).map((_, segment) => ({
+              segment,
+              start: 0,
+              end: 1,
+              type: creationWall,
+            })),
+          }
+        : element,
+    );
+    const joined = created.map((element) =>
+      ['room', 'ellipse', 'polygon', 'corridor'].includes(tool) && element.walls
+        ? { ...element, joinWalls: true }
+        : element,
+    );
+    const ok = commit({ ...project, elements: [...project.elements, ...joined] });
     if (ok) setSelected(elements[0]?.id);
     return ok;
   }
@@ -219,6 +269,40 @@ export default function BlueprintEditor() {
       setGesture({ kind: 'pan', clientX: event.clientX, clientY: event.clientY, view });
       return;
     }
+    if (tool === 'wall') {
+      const hit = nearestWall(
+        project.elements,
+        location(event, false),
+        Math.max(0.75, 2 / view.zoom),
+      );
+      if (!hit) {
+        setMessage('Clique próximo a uma borda.');
+        return;
+      }
+      if (!allowed('room')) {
+        setMessage('Mostre e desbloqueie a estrutura.');
+        return;
+      }
+      setSelected(hit.wallId);
+      setWallEdge(hit.segment);
+      setPanelsOpen(true);
+      const edgeSections = (project.elements.find((e) => e.id === hit.wallId)?.walls || []).filter(
+        (wall) => wall.segment === hit.segment,
+      );
+      const section = edgeSections.find((wall) => hit.t >= wall.start && hit.t <= wall.end);
+      const gapStart = Math.max(
+        0,
+        ...edgeSections.filter((wall) => wall.end <= hit.t).map((wall) => wall.end),
+      );
+      const gapEnd = Math.min(
+        1,
+        ...edgeSections.filter((wall) => wall.start >= hit.t).map((wall) => wall.start),
+      );
+      setWallStart((section?.start ?? gapStart) * 100);
+      setWallEnd((section?.end ?? gapEnd) * 100);
+      setWallType(section?.type ?? 'internal');
+      return;
+    }
     if (tool === 'select') {
       const id = event.target.closest('[data-object]')?.dataset.object;
       const element = project.elements.find((e) => e.id === id);
@@ -231,7 +315,29 @@ export default function BlueprintEditor() {
         return;
       }
       setSelected(id);
+      const action = event.target.closest('[data-transform]')?.dataset.transform;
+      if (action === 'rotate') {
+        if (element.kind === 'room') {
+          try {
+            commit(rotateRoomContents(project, id));
+          } catch (error) {
+            setMessage(error.message);
+          }
+        } else if (element.kind === 'asset') {
+          commit({
+            ...project,
+            elements: project.elements.map((item) =>
+              item.id === id ? { ...item, rotation: (item.rotation + 90) % 360 } : item,
+            ),
+          });
+        }
+        return;
+      }
       svgRef.current.setPointerCapture(event.pointerId);
+      if (action === 'resize') {
+        setGesture({ kind: 'resize', element, start: p, end: p });
+        return;
+      }
       const vertex = event.target.closest('[data-vertex]');
       if (vertex && element.points) {
         setGesture({
@@ -275,6 +381,7 @@ export default function BlueprintEditor() {
         {
           id: uid(),
           kind: 'door',
+          openingType,
           wallId: wall.wallId,
           segment: wall.segment,
           t: wall.t,
@@ -319,6 +426,15 @@ export default function BlueprintEditor() {
       svgRef.current.releasePointerCapture(event.pointerId);
     const g = { ...gesture, end: location(event) };
     setGesture(null);
+    if (g.kind === 'resize') {
+      commit({
+        ...project,
+        elements: project.elements.map((element) =>
+          element.id === g.element.id ? resized(g) : element,
+        ),
+      });
+      return;
+    }
     if (g.kind === 'vertex' && (g.end.x !== g.start.x || g.end.y !== g.start.y)) {
       commit({
         ...project,
@@ -351,6 +467,13 @@ export default function BlueprintEditor() {
   function finish() {
     if (points.length < (tool === 'polygon' ? 3 : 2)) return;
     if (add([{ id: uid(), kind: tool, points, width: lineWidth }])) setPoints([]);
+  }
+  function resized(g) {
+    return {
+      ...g.element,
+      w: Math.max(0.25, g.element.w + g.end.x - g.start.x),
+      h: Math.max(0.25, g.element.h + g.end.y - g.start.y),
+    };
   }
   function changeTool(next) {
     setTool(next);
@@ -482,6 +605,13 @@ export default function BlueprintEditor() {
       ),
     };
   // Mantém a grade legível em plantas grandes sem mudar a medida de encaixe.
+  if (gesture?.kind === 'resize')
+    drawn = {
+      ...project,
+      elements: project.elements.map((element) =>
+        element.id === gesture.element.id ? resized(gesture) : element,
+      ),
+    };
   const gridStep =
     project.grid * Math.max(1, Math.ceil(project.width / view.zoom / project.grid / 100));
   return (
@@ -588,17 +718,31 @@ export default function BlueprintEditor() {
             </>
           )}
           {tool === 'door' && (
-            <label>
-              Largura da porta (m)
-              <input
-                type="number"
-                min=".25"
-                max="20"
-                step=".25"
-                value={doorWidth}
-                onChange={(e) => setDoorWidth(Math.max(0.25, Math.min(20, Number(e.target.value))))}
-              />
-            </label>
+            <>
+              <label>
+                Tipo de abertura
+                <select
+                  value={openingType}
+                  onChange={(event) => setOpeningType(event.target.value)}
+                >
+                  <option value="door">Porta</option>
+                  <option value="window">Janela</option>
+                </select>
+              </label>
+              <label>
+                Largura da abertura (m)
+                <input
+                  type="number"
+                  min=".25"
+                  max="20"
+                  step=".25"
+                  value={doorWidth}
+                  onChange={(e) =>
+                    setDoorWidth(Math.max(0.25, Math.min(20, Number(e.target.value))))
+                  }
+                />
+              </label>
+            </>
           )}
           {tool === 'asset' && (
             <>
@@ -645,6 +789,185 @@ export default function BlueprintEditor() {
               </select>
             </label>
           )}
+          {tool === 'wall' && selectedElement && wallSegments(selectedElement).length > 0 && (
+            <fieldset disabled={!editable}>
+              <label>
+                Borda
+                <select
+                  value={wallEdge}
+                  onChange={(event) => {
+                    const index = Number(event.target.value);
+                    setWallEdge(index);
+                    const section = selectedElement.walls?.find((wall) => wall.segment === index);
+                    setWallStart((section?.start ?? 0) * 100);
+                    setWallEnd((section?.end ?? 1) * 100);
+                    setWallType(section?.type ?? 'internal');
+                  }}
+                >
+                  {wallSegments(selectedElement).map((_, index) => (
+                    <option key={index} value={index}>
+                      Borda {index + 1}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <details className="blueprint-wall-intervals">
+                <summary>Trechos desta borda</summary>
+                {(selectedElement.walls || [])
+                  .filter((wall) => wall.segment === wallEdge)
+                  .map((wall) => (
+                    <button
+                      key={wall.start}
+                      onClick={() => {
+                        setWallStart(wall.start * 100);
+                        setWallEnd(wall.end * 100);
+                        setWallType(wall.type);
+                      }}
+                    >
+                      {Math.round(wall.start * 100)}–{Math.round(wall.end * 100)}% ·{' '}
+                      {wallTypes[wall.type]}
+                    </button>
+                  ))}
+                <button
+                  onClick={() => {
+                    setWallStart(0);
+                    setWallEnd(100);
+                  }}
+                >
+                  SELECIONAR BORDA INTEIRA
+                </button>
+              </details>
+              <label>
+                Tipo de parede
+                <select value={wallType} onChange={(event) => setWallType(event.target.value)}>
+                  <option value="auto">Automática (unir ambientes)</option>
+                  {Object.entries(wallTypes).map(([value, name]) => (
+                    <option key={value} value={value}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Início do trecho (%)
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={wallStart}
+                  onChange={(event) => setWallStart(Number(event.target.value))}
+                />
+              </label>
+              <label>
+                Fim do trecho (%)
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={wallEnd}
+                  onChange={(event) => setWallEnd(Number(event.target.value))}
+                />
+              </label>
+              <button
+                onClick={() => {
+                  try {
+                    commit(
+                      setWallSection(project, selected, {
+                        segment: wallEdge,
+                        start: wallStart / 100,
+                        end: wallEnd / 100,
+                        type: wallType,
+                      }),
+                    );
+                  } catch (error) {
+                    setMessage(error.message);
+                  }
+                }}
+              >
+                APLICAR TRECHO
+              </button>
+              <p>
+                Aplicar altera somente o intervalo escolhido, preservando os demais trechos.
+                Automática restaura a união dos ambientes apenas nesse intervalo. Portas e janelas
+                recortam a parede; remova a peça antes de transformar seu trecho em abertura livre.
+              </p>
+              {selectedElement.kind === 'ellipse' && (
+                <details onToggle={(event) => setArcPreview(event.currentTarget.open)}>
+                  <summary>Editar arco contínuo</summary>
+                  <div className="blueprint-quick-actions">
+                    {[90, 180, 360].map((angle) => (
+                      <button key={angle} onClick={() => setArcEnd(arcStart + angle)}>
+                        {angle === 360 ? 'CONTORNO INTEIRO' : `${angle}°`}
+                      </button>
+                    ))}
+                  </div>
+                  <p>
+                    O tracejado branco mostra o arco antes de aplicar e não aparece na exportação.
+                  </p>
+                  <p>0° à direita; sentido horário. Para cruzar 0°, use um fim acima de 360°.</p>
+                  <label>
+                    Início do arco (°)
+                    <input
+                      type="number"
+                      min="0"
+                      max="359.99"
+                      value={arcStart}
+                      onChange={(event) => setArcStart(Number(event.target.value))}
+                    />
+                  </label>
+                  <label>
+                    Fim do arco (°)
+                    <input
+                      type="number"
+                      min="0"
+                      max="720"
+                      value={arcEnd}
+                      onChange={(event) => setArcEnd(Number(event.target.value))}
+                    />
+                  </label>
+                  <button
+                    onClick={() => {
+                      try {
+                        commit(setWallArc(project, selected, arcStart, arcEnd, wallType));
+                      } catch (error) {
+                        setMessage(error.message);
+                      }
+                    }}
+                  >
+                    APLICAR TIPO AO ARCO
+                  </button>
+                  <p>Usa o tipo de parede selecionado acima. Desfazer reverte o arco inteiro.</p>
+                </details>
+              )}
+              <details>
+                <summary>Padrões para este ambiente</summary>
+                <p>Substitui todos os trechos deste ambiente. Espessura apenas visual.</p>
+                {[
+                  ['internal', 'Divisórias de nave'],
+                  ['hull', 'Casco de nave / estação'],
+                  ['structural', 'Instalação planetária'],
+                ].map(([type, name]) => (
+                  <button
+                    key={type}
+                    onClick={() =>
+                      property(
+                        'walls',
+                        wallSegments(selectedElement).map((_, segment) => ({
+                          segment,
+                          start: 0,
+                          end: 1,
+                          type,
+                        })),
+                      )
+                    }
+                  >
+                    {name}
+                  </button>
+                ))}
+                <button onClick={() => property('walls', [])}>RESTAURAR PAREDES AUTOMÁTICAS</button>
+              </details>
+            </fieldset>
+          )}
           {tool === 'label' && (
             <label>
               Anotação
@@ -656,7 +979,11 @@ export default function BlueprintEditor() {
             {selectedElement ? (
               <>
                 <p>
-                  {toolNames[selectedElement.kind]}{' '}
+                  {selectedElement.kind === 'door'
+                    ? selectedElement.openingType === 'window'
+                      ? 'Janela'
+                      : 'Porta'
+                    : toolNames[selectedElement.kind]}{' '}
                   {selectedElement.asset && '· ' + assetNames[selectedElement.asset]}
                 </p>
                 <fieldset disabled={!editable}>
@@ -750,8 +1077,102 @@ export default function BlueprintEditor() {
                       </div>
                     </details>
                   )}
+                  {selectedElement.kind === 'door' && (
+                    <label>
+                      Tipo da abertura selecionada
+                      <select
+                        value={selectedElement.openingType || 'door'}
+                        onChange={(event) => property('openingType', event.target.value)}
+                      >
+                        <option value="door">Porta</option>
+                        <option value="window">Janela</option>
+                      </select>
+                    </label>
+                  )}
                   {selectedElement.kind !== 'door' && (
                     <button onClick={duplicate}>DUPLICAR PEÇA</button>
+                  )}
+                  {wallSegments(selectedElement).length > 0 && (
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={selectedElement.joinWalls === true}
+                        onChange={(event) => property('joinWalls', event.target.checked)}
+                      />
+                      Unir paredes ao encostar ambientes
+                    </label>
+                  )}
+                  {selectedElement.kind === 'room' && (
+                    <details>
+                      <summary>Sala com equipamentos</summary>
+                      <div className="blueprint-quick-actions">
+                        {[-1, 1].map((direction) => (
+                          <button
+                            key={direction}
+                            onClick={() => {
+                              try {
+                                commit(rotateRoomContents(project, selected, direction));
+                              } catch (error) {
+                                setMessage(error.message);
+                              }
+                            }}
+                          >
+                            GIRAR {direction === 1 ? '+90°' : '−90°'} CONJUNTO
+                          </button>
+                        ))}
+                      </div>
+                      <p>
+                        Inclui equipamentos inteiramente dentro da sala e suas portas/janelas.
+                        Corredores e dutos permanecem no lugar.
+                      </p>
+                      {['x', 'y'].map((axis) => (
+                        <label key={axis}>
+                          Deslocamento {axis.toUpperCase()} (m)
+                          <input
+                            type="number"
+                            step={project.grid}
+                            value={roomShift[axis]}
+                            onChange={(event) =>
+                              setRoomShift({ ...roomShift, [axis]: Number(event.target.value) })
+                            }
+                          />
+                        </label>
+                      ))}
+                      <button
+                        onClick={() => {
+                          try {
+                            if (
+                              commit(moveRoomContents(project, selected, roomShift.x, roomShift.y))
+                            )
+                              setRoomShift({ x: 0, y: 0 });
+                          } catch (error) {
+                            setMessage(error.message);
+                          }
+                        }}
+                      >
+                        MOVER CONJUNTO
+                      </button>
+                      <button
+                        onClick={() => {
+                          try {
+                            const copy = duplicateRoomContents(
+                              project,
+                              selected,
+                              roomShift.x,
+                              roomShift.y,
+                            );
+                            if (commit(copy.project)) {
+                              setSelected(copy.selectedId);
+                              setRoomShift({ x: 0, y: 0 });
+                            }
+                          } catch (error) {
+                            setMessage(error.message);
+                          }
+                        }}
+                      >
+                        DUPLICAR CONJUNTO
+                      </button>
+                    </details>
                   )}
                   {selectedElement.kind === 'asset' && (
                     <div className="blueprint-quick-actions">
@@ -793,6 +1214,43 @@ export default function BlueprintEditor() {
           <p className="blueprint-hint">
             {toolNames[tool]} · {hints[tool]}
           </p>
+          {(['room', 'ellipse', 'polygon', 'corridor'].includes(tool) || tool === 'door') && (
+            <div className="blueprint-context-tools" aria-label="Opções da ferramenta">
+              {tool === 'door' ? (
+                <>
+                  <button
+                    aria-pressed={openingType === 'door'}
+                    onClick={() => setOpeningType('door')}
+                  >
+                    Porta
+                  </button>
+                  <button
+                    aria-pressed={openingType === 'window'}
+                    onClick={() => setOpeningType('window')}
+                  >
+                    Janela
+                  </button>
+                </>
+              ) : (
+                <label>
+                  Parede ao desenhar
+                  <select
+                    value={creationWall}
+                    onChange={(event) => setCreationWall(event.target.value)}
+                  >
+                    <option value="auto">Automática</option>
+                    {Object.entries(wallTypes)
+                      .filter(([type]) => type !== 'open')
+                      .map(([type, name]) => (
+                        <option key={type} value={type}>
+                          {name}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+              )}
+            </div>
+          )}
           <div className="blueprint-canvas-toolbar">
             <button aria-label="Ampliar planta" onClick={() => zoom(1.5)}>
               +
@@ -937,6 +1395,16 @@ export default function BlueprintEditor() {
             }}
           >
             <Drawing
+              arcSelection={
+                tool === 'wall' && arcPreview && selectedElement?.kind === 'ellipse'
+                  ? { id: selected, start: arcStart, end: arcEnd }
+                  : null
+              }
+              wallSelection={
+                tool === 'wall'
+                  ? { id: selected, segment: wallEdge, start: wallStart / 100, end: wallEnd / 100 }
+                  : null
+              }
               editVertices={tool === 'select' && !!editable}
               handleRadius={Math.max(0.15, project.width / view.zoom / 100)}
               project={drawn}

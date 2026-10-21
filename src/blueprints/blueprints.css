@@ -389,3 +389,34 @@
   font-size: 11px;
   pointer-events: none;
 }
+.blueprint-wall-intervals button {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  text-align: left;
+}
+.blueprint-context-tools {
+  position: absolute;
+  z-index: 3;
+  top: 64px;
+  right: 12px;
+  max-width: calc(100% - 90px);
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #356849;
+  border-radius: 6px;
+  background: #081b13ed;
+}
+.blueprint-context-tools label {
+  margin: 0;
+  font-size: 11px;
+}
+.blueprint-context-tools select {
+  max-width: 210px;
+  margin-top: 4px;
+}
+.blueprint-context-tools button[aria-pressed='true'] {
+  color: #04120d;
+  background: #78ebae;
+}
