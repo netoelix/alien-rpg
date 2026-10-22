@@ -465,3 +465,57 @@
   outline: 2px solid #b2e9c6;
   outline-offset: 2px;
 }
+
+.blueprint-transform-feedback {
+  display: block;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid currentColor;
+  font-size: 0.8rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.blueprint-selection-toolbar {
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+  bottom: 52px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: calc(100% - 80px);
+  padding: 5px;
+  border: 1px solid #356849;
+  border-radius: 6px;
+  background: #081b13ed;
+}
+.blueprint-selection-toolbar button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  min-height: 40px;
+  padding: 6px;
+}
+
+.blueprint-angle-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+}
+.blueprint-angle-control input {
+  width: 70px;
+  min-height: 40px;
+  padding: 5px;
+}
+
+.blueprint-angle-control button {
+  width: auto;
+  white-space: nowrap;
+  padding-inline: 10px;
+}
+
+.blueprint-selection-toolbar .blueprint-pivot-reset {
+  width: auto;
+  padding-inline: 10px;
+}

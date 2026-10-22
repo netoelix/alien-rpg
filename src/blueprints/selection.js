@@ -16,8 +16,14 @@ export function selectionBounds(element) {
   const w = element.w || 0,
     h = element.h || 0;
   const angle = ((element.rotation || 0) * Math.PI) / 180;
-  const width = Math.abs(w * Math.cos(angle)) + Math.abs(h * Math.sin(angle));
-  const height = Math.abs(w * Math.sin(angle)) + Math.abs(h * Math.cos(angle));
+  const width =
+    element.kind === 'ellipse'
+      ? Math.hypot(w * Math.cos(angle), h * Math.sin(angle))
+      : Math.abs(w * Math.cos(angle)) + Math.abs(h * Math.sin(angle));
+  const height =
+    element.kind === 'ellipse'
+      ? Math.hypot(w * Math.sin(angle), h * Math.cos(angle))
+      : Math.abs(w * Math.sin(angle)) + Math.abs(h * Math.cos(angle));
   return { x: element.x + (w - width) / 2, y: element.y + (h - height) / 2, w: width, h: height };
 }
 

@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { ToolIcon } from './ToolIcon.jsx';
 import { Drawing } from './Drawing.jsx';
-import { expandGroups, setSelectionGroup, rotateGroup } from './groups.js';
+import { resizeElement, rotateAsset } from './resize.js';
+import {
+  expandGroups,
+  setSelectionGroup,
+  rotateGroup,
+  freeRotationFrame,
+  rotationDragAngle,
+  convertRoomsToPolygons,
+} from './groups.js';
 import { selectInBox, selectionBounds } from './selection.js';
 import {
   copyBlueprint,
@@ -115,6 +123,8 @@ export default function BlueprintEditor() {
   const [asset, setAsset] = useState('console'),
     [moduleType, setModuleType] = useState('bridge');
   const [assetSearch, setAssetSearch] = useState('');
+  const [selectionAngle, setSelectionAngle] = useState(15);
+  const [rotationPivot, setRotationPivot] = useState(null);
   const matchingAssets = Object.entries(assetNames).filter(([, name]) =>
     normalizeSearch(name).includes(normalizeSearch(assetSearch)),
   );
@@ -213,6 +223,8 @@ export default function BlueprintEditor() {
     setDirty(false);
   }
   function undo() {
+    setGesture(null);
+    setRotationPivot(null);
     setPastedGroup(null);
     if (!past.length) return;
     setFuture((f) => [project, ...f]);
@@ -223,6 +235,10 @@ export default function BlueprintEditor() {
     setDirty(true);
   }
   function redo() {
+    setGesture(null);
+    setPastedGroup(null);
+    setRotationPivot(null);
+    setPoints([]);
     if (!future.length) return;
     setPast((p) => [...p, project]);
     setProject(future[0]);
@@ -280,6 +296,23 @@ export default function BlueprintEditor() {
     if (tool === 'pan' || event.button === 1 || event.button === 2 || spaceHeld) {
       svgRef.current.setPointerCapture(event.pointerId);
       setGesture({ kind: 'pan', clientX: event.clientX, clientY: event.clientY, view });
+      return;
+    }
+    if (tool === 'select' && event.target.closest('[data-rotation-pivot]') && rotationFrame) {
+      svgRef.current.setPointerCapture(event.pointerId);
+      setGesture({ kind: 'rotationPivot', start: p, end: p, key: rotationKey });
+      return;
+    }
+    if (tool === 'select' && event.target.closest('[data-rotate-group]') && rotationFrame) {
+      const point = location(event, false);
+      svgRef.current.setPointerCapture(event.pointerId);
+      setGesture({
+        kind: 'rotateGroup',
+        frame: rotationFrame,
+        start: point,
+        end: point,
+        step: event.shiftKey ? 15 : 1,
+      });
       return;
     }
     if (tool === 'wall') {
@@ -360,25 +393,27 @@ export default function BlueprintEditor() {
       } else setPastedGroup(null);
       const action = event.target.closest('[data-transform]')?.dataset.transform;
       if (action === 'rotate') {
-        if (element.kind === 'room') {
-          try {
-            commit(rotateRoomContents(project, id));
-          } catch (error) {
-            setMessage(error.message);
-          }
-        } else if (element.kind === 'asset') {
-          commit({
-            ...project,
-            elements: project.elements.map((item) =>
-              item.id === id ? { ...item, rotation: (item.rotation + 90) % 360 } : item,
-            ),
-          });
-        }
+        const point = location(event, false);
+        svgRef.current.setPointerCapture(event.pointerId);
+        setGesture({
+          kind: 'rotate',
+          element,
+          start: point,
+          end: point,
+          step: event.shiftKey ? 15 : 1,
+        });
         return;
       }
       svgRef.current.setPointerCapture(event.pointerId);
       if (action === 'resize') {
-        setGesture({ kind: 'resize', element, start: p, end: p });
+        setGesture({
+          kind: 'resize',
+          element,
+          handle: event.target.closest('[data-resize-handle]')?.dataset.resizeHandle || 'se',
+          proportional: event.shiftKey,
+          start: p,
+          end: p,
+        });
         return;
       }
       const vertex = event.target.closest('[data-vertex]');
@@ -451,7 +486,12 @@ export default function BlueprintEditor() {
       });
       return;
     }
-    setGesture({ ...gesture, end: p });
+    setGesture({
+      ...gesture,
+      end: ['rotate', 'rotateGroup'].includes(gesture.kind) ? location(event, false) : p,
+      step: event.shiftKey ? 15 : 1,
+      proportional: event.shiftKey,
+    });
   }
   function rectangle(g) {
     return {
@@ -467,8 +507,26 @@ export default function BlueprintEditor() {
     if (!gesture) return;
     if (svgRef.current.hasPointerCapture(event.pointerId))
       svgRef.current.releasePointerCapture(event.pointerId);
-    const g = { ...gesture, end: location(event) };
+    const g = {
+      ...gesture,
+      end: location(event, !['rotate', 'rotateGroup'].includes(gesture.kind)),
+      step: event.shiftKey ? 15 : 1,
+      proportional: event.shiftKey,
+    };
     setGesture(null);
+    if (g.kind === 'rotationPivot') {
+      setRotationPivot({ key: g.key, cx: g.end.x, cy: g.end.y });
+      return;
+    }
+    if (g.kind === 'rotateGroup') {
+      try {
+        const angle = rotationDragAngle(g.frame, g.start, g.end, g.step);
+        if (angle !== 0) commit(rotateGroup(project, g.frame.ids, 1, angle, g.frame));
+      } catch (error) {
+        setMessage(error.message);
+      }
+      return;
+    }
     if (g.kind === 'marquee') {
       const ids = [
         ...new Set([
@@ -484,7 +542,7 @@ export default function BlueprintEditor() {
       );
       return;
     }
-    if (g.kind === 'resize') {
+    if (g.kind === 'resize' || g.kind === 'rotate') {
       commit({
         ...project,
         elements: project.elements.map((element) =>
@@ -537,11 +595,15 @@ export default function BlueprintEditor() {
     if (add([{ id: uid(), kind: tool, points, width: lineWidth }])) setPoints([]);
   }
   function resized(g) {
-    return {
-      ...g.element,
-      w: Math.max(0.25, g.element.w + g.end.x - g.start.x),
-      h: Math.max(0.25, g.element.h + g.end.y - g.start.y),
-    };
+    if (g.kind === 'rotate') return rotateAsset(g.element, g.start, g.end, project, g.step);
+    return resizeElement(
+      g.element,
+      g.handle,
+      g.end.x - g.start.x,
+      g.end.y - g.start.y,
+      project,
+      g.proportional,
+    );
   }
   function changeTool(next) {
     setTool(next);
@@ -649,6 +711,28 @@ export default function BlueprintEditor() {
       setMessage(error.message);
     }
   }
+  function convertSelectedRooms() {
+    if (!editable || gesture || points.length) return;
+    try {
+      if (commit(convertRoomsToPolygons(project, pastedGroup?.ids || [selected]))) {
+        setMessage(
+          'Sala convertida em vértices. Paredes e aberturas preservadas; Ctrl+Z restaura o retângulo.',
+        );
+      }
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+  function rotateFreely() {
+    if (!editable || gesture || points.length) return;
+    try {
+      const ids = pastedGroup?.ids || [selected];
+      commit(rotateGroup(project, ids, 1, Number(selectionAngle), rotationFrame));
+    } catch (error) {
+      setMessage(error.message);
+    }
+    svgRef.current?.focus();
+  }
   function rotateSelection(delta) {
     if (pastedGroup?.ids.length && !gesture && !points.length) {
       try {
@@ -658,8 +742,18 @@ export default function BlueprintEditor() {
       }
       return;
     }
-    if (selectedElement?.kind === 'asset' && !gesture && !points.length)
+    if (selectedElement && selectedElement.kind !== 'door' && !gesture && !points.length) {
+      if (selectedElement.kind !== 'asset') {
+        try {
+          commit(rotateGroup(project, [selected], delta > 0 ? 1 : -1));
+        } catch (error) {
+          setMessage(error.message);
+        }
+        return;
+      }
+
       property('rotation', (((selectedElement.rotation + delta) % 360) + 360) % 360);
+    }
   }
   function nudge(dx, dy) {
     if (!editable || selectedElement.kind === 'door' || gesture || points.length) return;
@@ -766,13 +860,38 @@ export default function BlueprintEditor() {
       };
   }
   // Mantém a grade legível em plantas grandes sem mudar a medida de encaixe.
-  if (gesture?.kind === 'resize')
+  if (gesture?.kind === 'resize' || gesture?.kind === 'rotate')
     drawn = {
       ...project,
       elements: project.elements.map((element) =>
         element.id === gesture.element.id ? resized(gesture) : element,
       ),
     };
+  const baseRotationFrame = freeRotationFrame(
+    project,
+    pastedGroup?.ids || (selected ? [selected] : []),
+  );
+  const rotationKey = JSON.stringify(baseRotationFrame?.ids.slice().sort() || []);
+  const customPivot =
+    gesture?.kind === 'rotationPivot'
+      ? { cx: gesture.end.x, cy: gesture.end.y }
+      : rotationPivot?.key === rotationKey
+        ? rotationPivot
+        : null;
+  const rotationFrame = baseRotationFrame ? { ...baseRotationFrame, ...customPivot } : null;
+  const groupHandleRadius = Math.max(0.2, project.width / view.zoom / 90);
+  let groupRotationError = '';
+  const groupAngle =
+    gesture?.kind === 'rotateGroup'
+      ? rotationDragAngle(gesture.frame, gesture.start, gesture.end, gesture.step)
+      : 0;
+  if (gesture?.kind === 'rotateGroup') {
+    try {
+      drawn = rotateGroup(project, gesture.frame.ids, 1, groupAngle, gesture.frame);
+    } catch (error) {
+      groupRotationError = error.message;
+    }
+  }
   const gridStep =
     project.grid * Math.max(1, Math.ceil(project.width / view.zoom / project.grid / 100));
   return (
@@ -1340,6 +1459,18 @@ export default function BlueprintEditor() {
                       </button>
                     </details>
                   )}
+                  {project.elements.some(
+                    (e) => (pastedGroup?.ids || [selected]).includes(e.id) && e.kind === 'room',
+                  ) && (
+                    <button
+                      type="button"
+                      onClick={convertSelectedRooms}
+                      disabled={!!gesture}
+                      title="Converte as salas retangulares em polígonos para editar os cantos individualmente. Ctrl+Z desfaz."
+                    >
+                      <ToolIcon name="polygon" /> Converter salas em vértices
+                    </button>
+                  )}
                   {(selectedElement.kind === 'asset' || pastedGroup?.ids.length) && (
                     <div className="blueprint-quick-actions">
                       <button
@@ -1454,6 +1585,30 @@ export default function BlueprintEditor() {
           )}
           <div className="blueprint-canvas-toolbar">
             <button
+              type="button"
+              title="Desfazer (Ctrl+Z)"
+              aria-label="Desfazer"
+              disabled={!past.length || !!gesture || !!points.length}
+              onClick={() => {
+                undo();
+                svgRef.current?.focus();
+              }}
+            >
+              <ToolIcon name="undo" />
+            </button>
+            <button
+              type="button"
+              title="Refazer (Ctrl+Shift+Z)"
+              aria-label="Refazer"
+              disabled={!future.length || !!gesture || !!points.length}
+              onClick={() => {
+                redo();
+                svgRef.current?.focus();
+              }}
+            >
+              <ToolIcon name="redo" />
+            </button>
+            <button
               title="Copiar peça ou sala com equipamentos (Ctrl+C)"
               aria-label="Copiar seleção"
               disabled={!editable || selectedElement?.kind === 'door'}
@@ -1514,6 +1669,100 @@ export default function BlueprintEditor() {
               {Math.round(view.zoom * 100)}% · grade visível {gridStep} m
             </span>
           </div>
+          {tool === 'select' && selectedElement && (
+            <div className="blueprint-selection-toolbar" role="group" aria-label="Ações da seleção">
+              {selectedElement.kind !== 'door' && (
+                <form
+                  className="blueprint-angle-control"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    rotateFreely();
+                  }}
+                >
+                  <input
+                    type="number"
+                    min="-360"
+                    max="360"
+                    step="1"
+                    required
+                    aria-label="Ângulo de rotação da seleção em graus"
+                    title="Girar a seleção por este ângulo"
+                    value={selectionAngle}
+                    onChange={(event) => setSelectionAngle(event.target.value)}
+                  />
+                  <button
+                    type="submit"
+                    aria-label="Aplicar rotação da seleção"
+                    title="Aplicar ângulo à seleção"
+                    disabled={!editable || !!gesture || !!points.length}
+                  >
+                    Aplicar ângulo
+                  </button>
+                </form>
+              )}
+              {rotationFrame && (
+                <button
+                  type="button"
+                  className="blueprint-pivot-reset"
+                  title="Restaurar o centro da seleção como pivô"
+                  disabled={!!gesture}
+                  onClick={() => {
+                    setRotationPivot(null);
+                    svgRef.current?.focus();
+                  }}
+                >
+                  Centralizar pivô
+                </button>
+              )}
+              {[
+                {
+                  icon: 'rotateLeft',
+                  label: 'Girar −90° (Shift+R)',
+                  action: () => rotateSelection(-90),
+                  disabled: selectedElement.kind === 'door',
+                },
+                {
+                  icon: 'rotateRight',
+                  label: 'Girar +90° (R)',
+                  action: () => rotateSelection(90),
+                  disabled: selectedElement.kind === 'door',
+                },
+                {
+                  icon: 'copy',
+                  label: 'Duplicar seleção (Ctrl+D)',
+                  action: duplicate,
+                  disabled: selectedElement.kind === 'door',
+                },
+                {
+                  icon: 'group',
+                  label: 'Agrupar seleção (Ctrl+G)',
+                  action: () => groupSelection(false),
+                  disabled: !pastedGroup || pastedGroup.ids.length < 2,
+                },
+                {
+                  icon: 'ungroup',
+                  label: 'Desagrupar (Ctrl+Shift+G)',
+                  action: () => groupSelection(true),
+                  disabled: !selectedElement.groupId,
+                },
+                { icon: 'delete', label: 'Remover seleção (Delete)', action: remove },
+              ].map(({ icon, label, action, disabled }) => (
+                <button
+                  key={icon}
+                  type="button"
+                  title={label}
+                  aria-label={label}
+                  disabled={!editable || !!gesture || !!points.length || disabled}
+                  onClick={() => {
+                    action();
+                    svgRef.current?.focus();
+                  }}
+                >
+                  <ToolIcon name={icon} />
+                </button>
+              ))}
+            </div>
+          )}
           <svg
             ref={svgRef}
             className={`blueprint-canvas ${gesture?.kind === 'pan' ? 'is-panning' : tool === 'pan' || spaceHeld ? 'can-pan' : ''}`}
@@ -1633,7 +1882,9 @@ export default function BlueprintEditor() {
                   ? { id: selected, segment: wallEdge, start: wallStart / 100, end: wallEnd / 100 }
                   : null
               }
-              editVertices={tool === 'select' && !!editable}
+              editVertices={
+                tool === 'select' && !!editable && (!rotationFrame || rotationFrame.rootCount === 1)
+              }
               handleRadius={Math.max(0.15, project.width / view.zoom / 100)}
               project={drawn}
               grid={grid}
@@ -1661,6 +1912,47 @@ export default function BlueprintEditor() {
                   })}
               </g>
             )}
+            {tool === 'select' && rotationFrame && (
+              <g data-editor-only="true">
+                <g data-rotation-pivot="true" style={{ cursor: 'move' }}>
+                  <circle
+                    cx={rotationFrame.cx}
+                    cy={rotationFrame.cy}
+                    r={groupHandleRadius}
+                    fill="#081b13"
+                    stroke="#fff"
+                    strokeWidth=".1"
+                  />
+                  <path
+                    d={`M ${rotationFrame.cx - groupHandleRadius} ${rotationFrame.cy} h ${groupHandleRadius * 2} M ${rotationFrame.cx} ${rotationFrame.cy - groupHandleRadius} v ${groupHandleRadius * 2}`}
+                    stroke="#fff"
+                    strokeWidth=".1"
+                  />
+                  <title>Arraste o pivô para escolher o centro de rotação. Escape cancela.</title>
+                </g>
+                <g data-rotate-group="true" style={{ cursor: 'grab' }}>
+                  <circle
+                    cx={rotationFrame.cx}
+                    cy={Math.max(groupHandleRadius * 2, rotationFrame.top - groupHandleRadius * 4)}
+                    r={groupHandleRadius * 1.5}
+                    fill="#081b13"
+                    stroke="#e6c668"
+                    strokeWidth=".1"
+                  />
+                  <text
+                    x={rotationFrame.cx}
+                    y={Math.max(groupHandleRadius * 2, rotationFrame.top - groupHandleRadius * 4)}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill="#e6c668"
+                    fontSize={groupHandleRadius * 2}
+                  >
+                    ↻
+                  </text>
+                  <title>Arraste para girar a seleção. Shift: passos de 15°. Escape cancela.</title>
+                </g>
+              </g>
+            )}
             {gesture?.kind === 'marquee' && (
               <rect
                 data-editor-only="true"
@@ -1677,6 +1969,23 @@ export default function BlueprintEditor() {
               />
             )}
           </svg>
+          {gesture?.kind === 'rotateGroup' && (
+            <output className="blueprint-transform-feedback">
+              {groupRotationError || `Rotação da seleção: ${groupAngle}° · Shift: passos de 15°`} ·
+              Escape cancela
+            </output>
+          )}
+          {['resize', 'rotate'].includes(gesture?.kind) && (
+            <output className="blueprint-transform-feedback" aria-live="off">
+              {gesture.kind === 'rotate'
+                ? `Rotação: ${resized(gesture).rotation}° · Shift: passos de 15°`
+                : `${resized(gesture).w.toFixed(2)} × ${resized(gesture).h.toFixed(2)} m`}
+              {gesture.kind === 'resize' &&
+                gesture.handle.length === 2 &&
+                (gesture.proportional ? ' · Proporção mantida' : ' · Shift: manter proporção')}
+              {' · Escape cancela'}
+            </output>
+          )}
           <p className="blueprint-coordinates muted">
             {project.width} × {project.height} m · encaixe de {project.grid} m ·{' '}
             {cursor

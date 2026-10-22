@@ -195,3 +195,67 @@ O preenchimento de piso até a abertura agora vale tanto para portas quanto para
 ## Regra visual dos comandos
 
 Botões de ação nos painéis usam largura integral, altura mínima de 44 px, espaçamento uniforme e conteúdo alinhado à esquerda. Ações pareadas usam colunas iguais. Ícones vetoriais devem ser reutilizados de ToolIcon; ações de painel mantêm rótulos curtos, enquanto comandos familiares da viewport podem usar somente ícones com nome acessível e dica. Atalhos aparecem nas dicas. Evitar símbolos decorativos ambíguos, texto repetitivo e botões com largura determinada pelo comprimento da legenda. Botões com textos longos podem crescer em altura para não cortar o conteúdo no celular.
+
+## Alças de redimensionamento na viewport
+
+Salas retangulares, ovais e equipamentos sem rotação exibem oito alças: quatro cantos e quatro lados. Os cantos ajustam largura e altura; os lados ajustam apenas uma dimensão. A borda oposta permanece fixa. O arraste conserva o deslocamento inicial do clique, respeita os limites da planta e o tamanho mínimo de 0,25 m, sem inverter a peça.
+
+A prévia acompanha o gesto; soltar aplica uma etapa de Desfazer e Escape cancela. Redimensionar uma sala altera somente sua estrutura, mantendo equipamentos nas posições e medidas originais; portas e janelas conservam o vínculo com as bordas e passam pela validação de aberturas existente. O painel continua disponível para ajustes numéricos. Polígonos e traçados mantêm edição por vértices. Equipamentos rotacionados e escala de grupos inteiros ficam para uma etapa posterior.
+
+Próximos passos: conferir as oito alças com mouse no editor local; evoluir controles de rotação na viewport e redimensionamento de equipamentos rotacionados. Publicação deste bloco depende de autorização.
+
+## Rotação por arraste e equipamentos girados
+
+A alça circular dos equipamentos agora permite girar por arraste ao redor do centro, com prévia e precisão de um grau. Escape cancela; soltar registra uma etapa de Desfazer. As oito alças de tamanho acompanham a orientação do equipamento e alteram suas dimensões locais mantendo a borda oposta fixa. Transformações que ultrapassam a planta são recusadas. Os ajustes numéricos e atalhos de 90° continuam disponíveis.
+
+Salas e grupos conservam rotação de 90°; rotação livre de estruturas depende de ampliar a representação geométrica e preservar os vínculos de paredes e aberturas. Conferência visual deste bloco ainda pendente.
+
+### Feedback das transformações
+
+Durante o arraste, o editor exibe largura/altura ou ângulo atual. Shift durante a rotação encaixa o ângulo em múltiplos de 15°. A rotação usa coordenadas contínuas do ponteiro, independente do magnetismo da grade; o redimensionamento mantém o encaixe existente. O indicador é exclusivo da interface e não entra na exportação. Validação: 126 testes, formatação e build; conferência visual pendente.
+
+## Ações contextuais na viewport
+
+Na ferramenta Selecionar, uma barra compacta aparece no canto inferior direito quando há uma peça ativa. Oferece girar equipamentos/conjuntos em ±90°, duplicar, agrupar, desagrupar e remover. Os botões usam ícones com nomes acessíveis e dicas dos atalhos; ações incompatíveis ficam desativadas. Após uma ação, o foco volta à planta para continuar usando os atalhos. Reutiliza as operações existentes, incluindo validação de camadas e Desfazer. A barra não entra nas exportações. Validação: 126 testes, formatação e build aprovados; avaliação visual pendente.
+
+### Redimensionamento proporcional
+
+Shift + arraste de um canto mantém a proporção original em salas retangulares, ovais e equipamentos, inclusive girados. O canto oposto permanece fixo. Nas alças laterais, Shift não altera o comportamento de uma dimensão. O indicador informa quando a proporção está ativa. A proporção tem prioridade sobre o encaixe individual de cada dimensão na grade. O tamanho mínimo e os limites da planta são respeitados sem deformar a peça; equipamentos internos continuam independentes. Validação: 128 testes, formatação e build aprovados; conferência visual pendente.
+
+### Alça única nos equipamentos
+
+Equipamentos exibem somente a alça de tamanho do canto inferior direito local, que acompanha a rotação do objeto. Isso reduz a sobreposição dos controles em peças pequenas. O controle de rotação permanece separado e Shift mantém a proporção durante o redimensionamento. Salas retangulares e ovais continuam com oito alças.
+
+## Rotação livre de seleções — primeiro bloco
+
+O campo de ângulo na barra contextual da viewport aplica giros de −360° a 360° em equipamentos, salas poligonais, corredores, dutos e anotações, individualmente ou em conjunto. O pivô é o centro dos limites da seleção. Portas/janelas dependentes conservam os segmentos e acompanham a geometria; textos permanecem horizontais. A operação preserva grupos, respeita limites e camadas bloqueadas e ocupa uma etapa de Desfazer.
+
+O campo fica oculto em seleções contendo salas retangulares ou ovais: elas permanecem em giros de 90°, sem conversão silenciosa para polígonos. Rotação livre dessas estruturas e alça de arraste para conjuntos continuam pendentes. Conferência visual pendente; 130 testes, formatação e build aprovados. Desenvolvimento mantido local.
+
+### Alça de rotação de conjuntos
+
+Seleções com ao menos duas peças compatíveis exibem uma alça circular acima do conjunto. Arraste para girar com prévia; Shift encaixa em 15°, Escape cancela e soltar registra uma etapa de Desfazer. O pivô permanece no centro dos limites originais durante todo o gesto. Os controles individuais ficam ocultos enquanto a alça coletiva está disponível. Seleções contendo salas retangulares/ovais ou camadas ocultas/bloqueadas não oferecem essa alça. Transformações inválidas mostram o motivo e não são aplicadas. O campo Aplicar ângulo continua disponível. Validação: 131 testes, formatação e build aprovados; conferência visual pendente, sem publicação.
+
+### Pivô ajustável do conjunto
+
+Nas seleções compatíveis com a alça coletiva, o marcador em cruz permite arrastar o centro da rotação, com encaixe na grade quando ativo. A alça e Aplicar ângulo usam esse ponto. Centralizar pivô restaura o centro automático. Escape cancela o arraste do marcador. O pivô é um controle temporário do editor, não é salvo nem exportado; a transformação das peças continua persistida normalmente e pode ser desfeita. Os atalhos de giro rápido de 90° mantêm o comportamento anterior pelo centro da seleção. Validação: 132 testes, formatação e build; conferência visual pendente, sem publicação.
+
+### Conversão explícita de retângulos
+
+Converter salas em vértices, nas propriedades da seleção, transforma os retângulos selecionados em polígonos com quatro pontos na mesma ordem das paredes. Conserva IDs, grupos, trechos e vínculos de portas/janelas. Equipamentos permanecem independentes; selecione-os junto para girar o conjunto. Após converter, a sala usa edição por vértices em vez das oito alças retangulares e aceita Aplicar ângulo. Ctrl+Z restaura o retângulo. Salas ovais não são convertidas. Validação: 133 testes, formatação e build aprovados; conferência visual pendente, mantido local.
+
+### Rotação individual de estruturas por pontos
+
+Salas por vértices (incluindo retângulos convertidos), corredores e dutos agora exibem alça de rotação e pivô mesmo selecionados individualmente. Seus vértices continuam disponíveis; ao selecionar um conjunto, os controles individuais ficam ocultos. Aberturas acompanham a estrutura. Equipamentos mantêm seu controle individual anterior. Validação: 134 testes, formatação e build aprovados; conferência visual pendente, sem publicação.
+
+### Histórico na viewport
+
+A barra superior oferece Desfazer e Refazer com ícones próprios e dicas de teclado. Os botões ficam desativados quando não há histórico ou durante um gesto/traçado. Após clicar, o foco volta à planta. Restaurar o histórico limpa gestos e pivô temporários para evitar aplicar uma transformação iniciada sobre outro estado. Validação: 134 testes, formatação e build aprovados; conferência visual pendente.
+
+## Bloco consolidado — rotação nativa de salas
+
+Retângulos e ovais agora armazenam sua própria orientação e giram livremente sem conversão em polígonos. A alça individual gira somente a estrutura e suas aberturas; para levar equipamentos, selecione o conjunto. A rotação coletiva aceita esses ambientes, incluindo pivô personalizado e Aplicar ângulo. Dimensões permanecem locais à sala, as alças acompanham sua orientação e Shift mantém proporções. Em salas pequenas, alças intermediárias são ocultadas conforme o espaço disponível; equipamentos mantêm uma única alça.
+
+Os índices de paredes permanecem estáveis nos giros livres. Portas/janelas, espessuras, arcos de ovais, máscaras de piso, cópia com equipamentos e arquivos salvos consideram a orientação. A seleção tracejada acompanha o objeto. Converter em vértices permanece opcional para editar cantos, sem ser necessário para girar.
+
+Verificação: 140 testes e build aprovados; SVG renderizado com retângulo/oval girados e aberturas. No navegador local, conferidos giro de retângulo e oval por arraste, Desfazer/Refazer, salvar e reabrir com os ângulos preservados e download PNG. Captura: outputs/blueprint-native-rotation-verified.png. Desenvolvimento mantido local, sem GitHub/Vercel.

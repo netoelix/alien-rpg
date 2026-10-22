@@ -1,3 +1,5 @@
+import { shapeTransform } from './orientation.js';
+import { resizeHandles } from './resize.js';
 import {
   corridorCorners,
   openingGeometry,
@@ -41,7 +43,12 @@ function Shape({ element, outer = false, seamOverlap = false }) {
       />
     );
   const { x, y, w, h } = element;
-  const common = { fill: 'currentColor', stroke: 'currentColor', strokeWidth: outline };
+  const common = {
+    transform: shapeTransform(element),
+    fill: 'currentColor',
+    stroke: 'currentColor',
+    strokeWidth: outline,
+  };
   return element.kind === 'ellipse' ? (
     <ellipse cx={x + w / 2} cy={y + h / 2} rx={w / 2} ry={h / 2} {...common} />
   ) : (
@@ -470,6 +477,9 @@ export function Drawing({
               ) : (
                 <rect
                   key={e.id}
+                  transform={
+                    ['room', 'ellipse', 'asset'].includes(e.kind) ? shapeTransform(e) : undefined
+                  }
                   x={p.x - 0.3}
                   y={p.y - 0.3}
                   width={(e.w || 1) + 0.6}
@@ -509,6 +519,7 @@ export function Drawing({
             <path
               data-editor-only="true"
               d={`M ${at(start)} ${arc(middle)} ${arc(end)}`}
+              transform={shapeTransform(element)}
               fill="none"
               stroke="#fff"
               strokeWidth=".18"
@@ -566,25 +577,42 @@ export function Drawing({
               element.id === selected && ['room', 'ellipse', 'asset'].includes(element.kind),
           )
           .map((element) => (
-            <g key={`handles-${element.id}`} data-editor-only="true" data-object={element.id}>
-              {(element.kind !== 'asset' || element.rotation % 360 === 0) && (
-                <rect
-                  data-transform="resize"
-                  x={element.x + element.w - handleRadius}
-                  y={element.y + element.h - handleRadius}
-                  width={handleRadius * 2}
-                  height={handleRadius * 2}
-                  fill={palette.accent}
-                  stroke={palette.background}
-                  strokeWidth=".1"
-                  style={{ cursor: 'nwse-resize' }}
-                >
-                  <title>
-                    Arraste para redimensionar. Equipamentos internos mantêm suas medidas.
-                  </title>
-                </rect>
-              )}
-              {element.kind !== 'ellipse' && (
+            <g
+              key={`handles-${element.id}`}
+              data-editor-only="true"
+              data-object={element.id}
+              transform={shapeTransform(element)}
+            >
+              {resizeHandles
+                .filter((handle) => {
+                  if (element.kind === 'asset' || Math.min(element.w, element.h) < handleRadius * 4)
+                    return handle.id === 'se';
+                  if (handle.id.length === 2) return true;
+                  return (
+                    (['n', 's'].includes(handle.id) ? element.w : element.h) >= handleRadius * 8
+                  );
+                })
+                .map((handle) => (
+                  <rect
+                    key={handle.id}
+                    data-transform="resize"
+                    data-resize-handle={handle.id}
+                    x={element.x + element.w * handle.x - handleRadius}
+                    y={element.y + element.h * handle.y - handleRadius}
+                    width={handleRadius * 2}
+                    height={handleRadius * 2}
+                    fill={palette.accent}
+                    stroke={palette.background}
+                    strokeWidth=".1"
+                    style={{ cursor: handle.cursor }}
+                  >
+                    <title>
+                      {handle.label}: arraste para redimensionar. Shift nos cantos mantém a
+                      proporção. Equipamentos internos mantêm suas medidas e posições.
+                    </title>
+                  </rect>
+                ))}
+              {true && (
                 <g data-transform="rotate" style={{ cursor: 'pointer' }}>
                   <circle
                     cx={element.x + element.w / 2}
@@ -604,7 +632,7 @@ export function Drawing({
                   >
                     ↻
                   </text>
-                  <title>Girar 90°</title>
+                  <title>{'Arraste para girar; Shift: passos de 15°. Escape cancela.'}</title>
                 </g>
               )}
             </g>
