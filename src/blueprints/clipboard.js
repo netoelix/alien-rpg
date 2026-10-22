@@ -1,3 +1,4 @@
+import { rotatePoint } from './orientation.js';
 import { layerFor, moveElement, parseProject, uid, openingHasWall, fitOpenings } from './model.js';
 import { selectionBounds } from './selection.js';
 
@@ -41,8 +42,12 @@ export function copyBlueprint(project, selectedId) {
           element.h / 2 +
           ((sx * element.w) / 2) * Math.sin(angle) +
           ((sy * element.h) / 2) * Math.cos(angle);
+        const p = rotatePoint(source, x, y, true);
         return (
-          x >= source.x && x <= source.x + source.w && y >= source.y && y <= source.y + source.h
+          p.x >= source.x - 1e-8 &&
+          p.x <= source.x + source.w + 1e-8 &&
+          p.y >= source.y - 1e-8 &&
+          p.y <= source.y + source.h + 1e-8
         );
       }),
     );

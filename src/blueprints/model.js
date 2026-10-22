@@ -1,3 +1,5 @@
+import { rotatePoint } from './orientation.js';
+import { selectionBounds } from './selection.js';
 export const wallTypes = {
   internal: 'Divisória interna',
   structural: 'Parede estrutural',
@@ -145,6 +147,14 @@ export const layerFor = (kind) =>
     label: 'labels',
   })[kind];
 export function wallSegments(element) {
+  if (['room', 'ellipse'].includes(element.kind) && element.rotation) {
+    return wallSegments({ ...element, rotation: 0 }).map((edge) =>
+      edge.map(([x, y]) => {
+        const p = rotatePoint(element, x, y);
+        return [p.x, p.y];
+      }),
+    );
+  }
   if (element.kind === 'polygon')
     return element.points.map((point, index) => {
       const next = element.points[(index + 1) % element.points.length];
@@ -276,6 +286,11 @@ function joinedOpeningHasWall(opening, elements) {
   const edge = parent && wallSegments(parent)[opening.segment];
   if (!edge) return false;
   const contains = (shape, x, y) => {
+    if (['room', 'ellipse'].includes(shape.kind) && shape.rotation) {
+      const p = rotatePoint(shape, x, y, true);
+      x = p.x;
+      y = p.y;
+    }
     if (shape.kind === 'room')
       return x > shape.x && x < shape.x + shape.w && y > shape.y && y < shape.y + shape.h;
     if (shape.kind === 'ellipse')
@@ -364,11 +379,12 @@ function transformRoomContents(project, id, dx, dy, duplicate, rotation = 0) {
           cx + ((sx * asset.w) / 2) * Math.cos(angle) - ((sy * asset.h) / 2) * Math.sin(angle);
         const y =
           cy + ((sx * asset.w) / 2) * Math.sin(angle) + ((sy * asset.h) / 2) * Math.cos(angle);
+        const local = rotatePoint(room, x, y, true);
         return (
-          x >= room.x - 1e-8 &&
-          x <= room.x + room.w + 1e-8 &&
-          y >= room.y - 1e-8 &&
-          y <= room.y + room.h + 1e-8
+          local.x >= room.x - 1e-8 &&
+          local.x <= room.x + room.w + 1e-8 &&
+          local.y >= room.y - 1e-8 &&
+          local.y <= room.y + room.h + 1e-8
         );
       }),
     );
@@ -746,6 +762,9 @@ export function parseProject(text) {
       w: number(e.w, 0.25, 2000),
       h: number(e.h, 0.25, 2000),
       ...(e.kind === 'asset' ? { asset: e.asset, rotation: number(e.rotation, -360, 360) } : {}),
+      ...(['room', 'ellipse'].includes(e.kind) && e.rotation !== undefined
+        ? { rotation: number(e.rotation, -360, 360) }
+        : {}),
     };
   });
   for (const e of result.elements) {
@@ -774,6 +793,16 @@ export function parseProject(text) {
     }
     if (e.kind === 'door' && (!Number.isInteger(e.segment) || !doorPosition(e, result.elements)))
       throw new Error('Porta sem parede válida.');
+    if (['room', 'ellipse'].includes(e.kind) && e.rotation) {
+      const box = selectionBounds(e);
+      if (
+        box.x < -1e-8 ||
+        box.y < -1e-8 ||
+        box.x + box.w > result.width + 1e-8 ||
+        box.y + box.h > result.height + 1e-8
+      )
+        throw new Error('Objeto girado ultrapassa o tamanho da planta.');
+    }
     if (e.w && (e.x + e.w > result.width || e.y + e.h > result.height))
       throw new Error('Objeto ultrapassa o tamanho da planta.');
   }
