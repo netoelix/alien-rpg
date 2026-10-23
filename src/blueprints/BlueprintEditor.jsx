@@ -1,3 +1,8 @@
+import { ObjectsPanel } from './ObjectsPanel.jsx';
+import { objectEditable, assertObjectChanges } from './objects.js';
+import { pruneConnections, addConnections } from './connections.js';
+import { DeckReference, DeckConnections } from './DeckConnections.jsx';
+import { FloorControls } from './FloorControls.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { ToolIcon } from './ToolIcon.jsx';
 import { Drawing } from './Drawing.jsx';
@@ -116,6 +121,9 @@ export default function BlueprintEditor() {
   const [spaceHeld, setSpaceHeld] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [project, setProject] = useState(() => sessionProject || newProject());
+  const [referenceFloor, setReferenceFloor] = useState('');
+  const [connectionPlacement, setConnectionPlacement] = useState(null);
+  const [referenceOpacity, setReferenceOpacity] = useState(0.25);
   const [past, setPast] = useState([]),
     [future, setFuture] = useState([]);
   const [tool, setTool] = useState('room'),
@@ -189,7 +197,8 @@ export default function BlueprintEditor() {
   }, [dirty]);
   function commit(next) {
     try {
-      const valid = parseProject(JSON.stringify(fitOpenings(next)));
+      const valid = parseProject(JSON.stringify(pruneConnections(fitOpenings(next))));
+      assertObjectChanges(project, valid);
       for (const opening of valid.elements.filter((element) => element.kind === 'door')) {
         const previous = project.elements.find((element) => element.id === opening.id);
         if (
@@ -212,6 +221,7 @@ export default function BlueprintEditor() {
     }
   }
   function replace(next) {
+    setConnectionPlacement(null);
     setPastedGroup(null);
     setProject(next);
     setPast([]);
@@ -223,6 +233,7 @@ export default function BlueprintEditor() {
     setDirty(false);
   }
   function undo() {
+    setConnectionPlacement(null);
     setGesture(null);
     setRotationPivot(null);
     setPastedGroup(null);
@@ -235,6 +246,7 @@ export default function BlueprintEditor() {
     setDirty(true);
   }
   function redo() {
+    setConnectionPlacement(null);
     setGesture(null);
     setPastedGroup(null);
     setRotationPivot(null);
@@ -298,6 +310,27 @@ export default function BlueprintEditor() {
       setGesture({ kind: 'pan', clientX: event.clientX, clientY: event.clientY, view });
       return;
     }
+    if (connectionPlacement) {
+      try {
+        if (
+          commit(
+            addConnections(
+              project,
+              connectionPlacement.targetIds,
+              connectionPlacement.type,
+              p.x,
+              p.y,
+            ),
+          )
+        ) {
+          setConnectionPlacement(null);
+          setMessage('Conexão criada nos pavimentos selecionados.');
+        }
+      } catch (error) {
+        setMessage(error.message);
+      }
+      return;
+    }
     if (tool === 'select' && event.target.closest('[data-rotation-pivot]') && rotationFrame) {
       svgRef.current.setPointerCapture(event.pointerId);
       setGesture({ kind: 'rotationPivot', start: p, end: p, key: rotationKey });
@@ -317,7 +350,7 @@ export default function BlueprintEditor() {
     }
     if (tool === 'wall') {
       const hit = nearestWall(
-        project.elements,
+        project.elements.filter((item) => objectEditable(project, item)),
         location(event, false),
         Math.max(0.75, 2 / view.zoom),
       );
@@ -325,7 +358,13 @@ export default function BlueprintEditor() {
         setMessage('Clique próximo a uma borda.');
         return;
       }
-      if (!allowed('room')) {
+      if (
+        !allowed('room') ||
+        !objectEditable(
+          project,
+          project.elements.find((item) => item.id === hit.wallId),
+        )
+      ) {
         setMessage('Mostre e desbloqueie a estrutura.');
         return;
       }
@@ -357,7 +396,7 @@ export default function BlueprintEditor() {
         setGesture({ kind: 'marquee', start: p, end: p, additive: event.shiftKey });
         return;
       }
-      if (!allowed(element.kind)) {
+      if (!objectEditable(project, element)) {
         setMessage('Esta camada está bloqueada.');
         return;
       }
@@ -450,7 +489,11 @@ export default function BlueprintEditor() {
       return;
     }
     if (tool === 'door') {
-      const wall = nearestWall(project.elements, p, Math.max(0.75, 2 / view.zoom));
+      const wall = nearestWall(
+        project.elements.filter((item) => objectEditable(project, item)),
+        p,
+        Math.max(0.75, 2 / view.zoom),
+      );
       if (!wall) {
         setMessage('Clique mais perto de uma parede.');
         return;
@@ -606,6 +649,7 @@ export default function BlueprintEditor() {
     );
   }
   function changeTool(next) {
+    setConnectionPlacement(null);
     setTool(next);
     setPoints([]);
     setGesture(null);
@@ -647,7 +691,7 @@ export default function BlueprintEditor() {
     }
   }
   const selectedElement = project.elements.find((e) => e.id === selected);
-  const editable = selectedElement && allowed(selectedElement.kind);
+  const editable = selectedElement && objectEditable(project, selectedElement);
   function groupSelection(ungroup = false) {
     if (gesture || points.length) return;
     try {
@@ -960,6 +1004,47 @@ export default function BlueprintEditor() {
           {project.elements.length} objetos · {dirty ? 'alterações nesta sessão' : 'projeto pronto'}
         </span>
       </div>
+      <FloorControls
+        project={project}
+        disabled={!!gesture || !!points.length || exporting}
+        onError={setMessage}
+        onChange={(next) => {
+          if (commit(next)) {
+            setConnectionPlacement(null);
+            setSelected(null);
+            setPastedGroup(null);
+            setRotationPivot(null);
+            setCursor(null);
+          }
+        }}
+      />
+      <DeckConnections
+        placing={!!connectionPlacement}
+        onCancelPlacement={() => setConnectionPlacement(null)}
+        onPlace={(placement) => {
+          setConnectionPlacement(placement);
+          setTool('select');
+          setSelected(null);
+          setPastedGroup(null);
+          setCursor(null);
+          setMessage('Clique no mapa para posicionar a conexão. Escape cancela.');
+          svgRef.current?.focus({ preventScroll: true });
+        }}
+        project={project}
+        disabled={!!gesture || !!points.length || exporting}
+        referenceFloor={referenceFloor}
+        setReferenceFloor={setReferenceFloor}
+        opacity={referenceOpacity}
+        setOpacity={setReferenceOpacity}
+        onError={setMessage}
+        onChange={(next) => {
+          if (commit(next)) {
+            setSelected(null);
+            setPastedGroup(null);
+            setRotationPivot(null);
+          }
+        }}
+      />
       <p role="status" className="blueprint-status">
         {message}
       </p>
@@ -1855,6 +1940,7 @@ export default function BlueprintEditor() {
                 finish();
               }
               if (e.key === 'Escape') {
+                setConnectionPlacement(null);
                 setPastedGroup(null);
                 setFocusMode(false);
                 setSpaceHeld(false);
@@ -1889,10 +1975,26 @@ export default function BlueprintEditor() {
               project={drawn}
               grid={grid}
               gridStep={gridStep}
-              selected={selected}
+              selected={editable ? selected : null}
               preview={preview}
               interactive={tool === 'select'}
             />
+            {connectionPlacement && cursor && (
+              <g data-editor-only="true" pointerEvents="none">
+                <rect
+                  x={cursor.x}
+                  y={cursor.y}
+                  width="2"
+                  height="2"
+                  fill="#f1c46c"
+                  fillOpacity=".2"
+                  stroke="#f1c46c"
+                  strokeWidth=".12"
+                  strokeDasharray=".2 .1"
+                />
+              </g>
+            )}
+            <DeckReference project={project} floorId={referenceFloor} opacity={referenceOpacity} />
             {tool === 'select' && pastedGroup && (
               <g
                 data-editor-only="true"
@@ -1994,6 +2096,25 @@ export default function BlueprintEditor() {
           </p>
         </section>
         <aside className="blueprint-settings" aria-label="Projeto, camadas e exportação">
+          <ObjectsPanel
+            project={project}
+            selected={selected}
+            disabled={!!gesture || !!points.length || !!connectionPlacement}
+            onChange={(next) => {
+              if (commit(next)) {
+                setSelected(null);
+                setPastedGroup(null);
+                setRotationPivot(null);
+              }
+            }}
+            onSelect={(id) => {
+              setTool('select');
+              setSelected(id);
+              setPastedGroup(null);
+              setRotationPivot(null);
+              setPanelsOpen(true);
+            }}
+          />
           <details>
             <summary>Atalhos e navegação</summary>
             <p>
@@ -2156,8 +2277,8 @@ export default function BlueprintEditor() {
           <details>
             <summary>Exportar imagem</summary>
             <p className="muted">
-              A exportação usa toda a planta e mantém o mesmo alinhamento entre camadas. A grade não
-              é exportada.
+              A exportação usa somente o pavimento ativo e mantém o mesmo alinhamento entre camadas.
+              A grade não é exportada.
             </p>
             {project.layers.map((l) => (
               <label key={l.id}>

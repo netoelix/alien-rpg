@@ -1,3 +1,4 @@
+import { validEndpoint } from './connections.js';
 import { rotatePoint } from './orientation.js';
 import { selectionBounds } from './selection.js';
 export const wallTypes = {
@@ -89,6 +90,8 @@ export function setWallSection(project, id, section) {
   );
 }
 export const assetTypes = [
+  'stairs',
+  'elevator',
   'console',
   'bed',
   'cryo',
@@ -678,6 +681,13 @@ export function parseProject(text) {
     if (!id || ids.has(id)) throw new Error('Identificador repetido.');
     ids.add(id);
     const base = { id, kind: e.kind };
+    for (const flag of ['hidden', 'locked']) {
+      if (e[flag] !== undefined) {
+        if (typeof e[flag] !== 'boolean') throw new Error('Estado de objeto inválido.');
+        base[flag] = e[flag];
+      }
+    }
+    if (e.name !== undefined) base.name = string(e.name, 80);
     if (e.groupId !== undefined) {
       base.groupId = string(e.groupId, 100);
       if (!base.groupId.trim()) throw new Error('Identificador de grupo inválido.');
@@ -805,6 +815,42 @@ export function parseProject(text) {
     }
     if (e.w && (e.x + e.w > result.width || e.y + e.h > result.height))
       throw new Error('Objeto ultrapassa o tamanho da planta.');
+  }
+  if (raw.floors !== undefined) {
+    if (!Array.isArray(raw.floors) || !raw.floors.length || raw.floors.length > 20)
+      throw new Error('Lista de pavimentos inválida (máximo 20).');
+    const floorIds = new Set();
+    result.activeFloor = string(raw.activeFloor || raw.floors[0]?.id, 100);
+    result.floors = raw.floors.map((floor) => {
+      const id = string(floor?.id, 100);
+      const name = string(floor?.name, 80).trim();
+      if (!id || !name || floorIds.has(id)) throw new Error('Pavimento inválido ou repetido.');
+      floorIds.add(id);
+      if (id === result.activeFloor) return { id, name };
+      const { floors, activeFloor, connections, ...base } = raw;
+      const parsed = parseProject(JSON.stringify({ ...base, elements: floor.elements || [] }));
+      return { id, name, elements: parsed.elements };
+    });
+    if (!floorIds.has(result.activeFloor)) throw new Error('Pavimento ativo não encontrado.');
+  }
+  if (raw.connections !== undefined) {
+    if (!Array.isArray(raw.connections) || raw.connections.length > 3000)
+      throw new Error('Conexões inválidas.');
+    const linkIds = new Set();
+    result.connections = raw.connections.map((link) => {
+      const id = string(link?.id, 100);
+      if (!id || linkIds.has(id)) throw new Error('Conexão repetida.');
+      linkIds.add(id);
+      const endpoint = (value) => ({
+        floorId: string(value?.floorId, 100),
+        elementId: string(value?.elementId, 100),
+      });
+      const from = endpoint(link.from),
+        to = endpoint(link.to);
+      if (from.floorId === to.floorId || !validEndpoint(result, from) || !validEndpoint(result, to))
+        throw new Error('Conexão sem destino válido.');
+      return { id, from, to };
+    });
   }
   return result;
 }
