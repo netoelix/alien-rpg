@@ -259,3 +259,25 @@ Retângulos e ovais agora armazenam sua própria orientação e giram livremente
 Os índices de paredes permanecem estáveis nos giros livres. Portas/janelas, espessuras, arcos de ovais, máscaras de piso, cópia com equipamentos e arquivos salvos consideram a orientação. A seleção tracejada acompanha o objeto. Converter em vértices permanece opcional para editar cantos, sem ser necessário para girar.
 
 Verificação: 140 testes e build aprovados; SVG renderizado com retângulo/oval girados e aberturas. No navegador local, conferidos giro de retângulo e oval por arraste, Desfazer/Refazer, salvar e reabrir com os ângulos preservados e download PNG. Captura: outputs/blueprint-native-rotation-verified.png. Desenvolvimento mantido local, sem GitHub/Vercel.
+
+
+## Pavimentos — primeiro bloco
+
+O seletor acima da viewport permite criar, renomear, duplicar e excluir pavimentos (até 20). Excluir exige confirmação e pode ser desfeito. Cada pavimento tem objetos independentes; duplicar remapeia IDs, grupos e vínculos de portas/janelas. Escala, dimensões e configurações de camadas são comuns ao projeto. Alterações de dimensões validam também os andares inativos. Mapas antigos continuam compatíveis e aparecem como Pavimento 1.
+
+Salvar e recuperação local preservam todos os pavimentos; PNG/SVG exportam apenas o ativo com seu nome no arquivo. Operações de pavimento entram no histórico e ficam bloqueadas durante desenhos/gestos. Próximos blocos: referência visual de outro pavimento e conexões verticais (escadas/elevadores).
+
+
+### Referência e conexões verticais
+
+O painel recolhível Referência e conexões entre pavimentos permite sobrepor contornos de outro andar, com opacidade ajustável. A referência ignora seleção e é removida das exportações. Escadas e elevadores criam dois equipamentos de 2 × 2 m nas coordenadas indicadas, um em cada andar, ligados por IDs persistentes. Cada ponta admite transformações independentes. Ir para navega ao destino; Desvincular mantém os equipamentos. Excluir uma ponta/pavimento elimina o vínculo, preservando a outra peça. Duplicar pavimentos copia as peças sem duplicar vínculos verticais. Tudo fica no arquivo local e no histórico.
+
+
+### Posicionamento de conexões na viewport
+
+Selecione os destinos e use Posicionar no mapa: a prévia de 2 × 2 m acompanha o cursor e o clique define seu canto superior esquerdo, com encaixe na grade. Escape cancela; botões central/direito continuam movendo a visão. Coordenadas manuais permanecem disponíveis. Escadas ligam dois andares; elevadores aceitam vários destinos, com uma peça por parada e navegação entre todos eles. Excluir uma parada preserva as conexões entre as restantes. A criação completa ocupa uma etapa do histórico.
+
+
+## Organização dos objetos
+
+Objetos do pavimento, no painel direito, oferece busca, filtro por camada, seleção e controles individuais de ocultar/bloquear. Ocultos não entram na imagem exportada; ocultar uma sala esconde suas aberturas. Bloqueados permanecem visíveis e suas alterações/remoções são recusadas, inclusive em operações coletivas. Os estados são salvos, copiados e recuperados pelo histórico; arquivos antigos continuam visíveis e desbloqueados.

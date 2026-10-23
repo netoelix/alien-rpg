@@ -10,7 +10,7 @@ export function rotateGroup(project, ids, direction = 1, freeAngle = null, pivot
   if (
     selected.some((e) => {
       const layer = project.layers.find((l) => l.id === layerFor(e.kind));
-      return !layer?.visible || layer.locked;
+      return e.hidden || e.locked || !layer?.visible || layer.locked;
     })
   )
     throw new Error('Mostre e desbloqueie todas as camadas do conjunto.');
@@ -138,7 +138,13 @@ export function freeRotationFrame(project, ids) {
     (roots.length === 1 && !['polygon', 'corridor', 'vent'].includes(roots[0].kind)) ||
     selected.some((e) => {
       const layer = project.layers.find((l) => l.id === layerFor(e.kind));
-      return !layer?.visible || layer.locked || (e.kind === 'door' && !members.has(e.wallId));
+      return (
+        e.hidden ||
+        e.locked ||
+        !layer?.visible ||
+        layer.locked ||
+        (e.kind === 'door' && !members.has(e.wallId))
+      );
     })
   )
     return null;

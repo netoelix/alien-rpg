@@ -6,7 +6,7 @@ function checkLayers(project, elements) {
   if (
     elements.some((element) => {
       const layer = project.layers.find((item) => item.id === layerFor(element.kind));
-      return !layer?.visible || layer.locked;
+      return element.hidden || element.locked || !layer?.visible || layer.locked;
     })
   )
     throw new Error('Mostre e desbloqueie as camadas das peças copiadas.');

@@ -1,4 +1,6 @@
 export const assetNames = {
+  stairs: 'Escada',
+  elevator: 'Elevador',
   console: 'Console',
   bed: 'Beliche',
   cryo: 'Cápsula criogênica',
@@ -19,6 +21,20 @@ export const assetNames = {
 export function AssetSymbol({ type }) {
   const frame = <rect x="5" y="5" width="90" height="90" rx="8" />;
   switch (type) {
+    case 'stairs':
+      return (
+        <>
+          {frame}
+          <path d="M15 20H85 M15 32H85 M15 44H85 M15 56H85 M15 68H85 M15 80H85 M50 85V15 M40 25L50 15L60 25" />
+        </>
+      );
+    case 'elevator':
+      return (
+        <>
+          {frame}
+          <path d="M50 8V92 M18 40L30 25L42 40 M30 25V70 M58 60L70 75L82 60 M70 30V75" />
+        </>
+      );
     case 'console':
       return (
         <>

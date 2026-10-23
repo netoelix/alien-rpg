@@ -1,3 +1,4 @@
+import { objectVisible } from './objects.js';
 import { shapeTransform } from './orientation.js';
 import { resizeHandles } from './resize.js';
 import {
@@ -68,7 +69,9 @@ export function Drawing({
   handleRadius = 0.4,
 }) {
   const palette = palettes[project.theme];
-  const elements = [...project.elements, ...preview];
+  const elements = [...project.elements, ...preview].filter((element) =>
+    objectVisible(project, element),
+  );
   const visible = (id) => project.layers.find((l) => l.id === id)?.visible;
   const opacity = (id) => project.layers.find((l) => l.id === id)?.opacity ?? 1;
   const structure = elements

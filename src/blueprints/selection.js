@@ -1,3 +1,4 @@
+import { objectEditable } from './objects.js';
 import { layerFor } from './model.js';
 
 export function selectionBounds(element) {
@@ -38,6 +39,7 @@ export function selectInBox(project, start, end) {
       const layer = project.layers.find((item) => item.id === layerFor(element.kind));
       const box = selectionBounds(element);
       return (
+        objectEditable(project, element) &&
         layer?.visible &&
         !layer.locked &&
         box &&

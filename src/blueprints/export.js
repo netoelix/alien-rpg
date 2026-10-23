@@ -34,7 +34,8 @@ export async function exportDrawing(svg, project, { format, transparent, layers,
   const blob = new Blob([new XMLSerializer().serializeToString(copy)], {
     type: 'image/svg+xml;charset=utf-8',
   });
-  const name = projectFilename(project.name);
+  const floor = project.floors?.find((item) => item.id === project.activeFloor);
+  const name = projectFilename(project.name + (floor ? ' - ' + floor.name : ''));
   if (format === 'svg') {
     downloadBlob(blob, name + '.svg');
     return;
