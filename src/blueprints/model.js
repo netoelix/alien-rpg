@@ -90,6 +90,85 @@ export function setWallSection(project, id, section) {
   );
 }
 export const assetTypes = [
+  'surveillanceCamera',
+  'crtStation',
+  'communicationsRadio',
+  'reportPrinter',
+  'dataTapeCabinet',
+  'pottedPalm',
+  'broadleafPot',
+  'roundShrub',
+  'gardenTree',
+  'longPlanter',
+  'roundPlanter',
+  'hydroponicBed',
+  'gardenRocks',
+  'gardenPond',
+  'parkBench',
+  'picnicTable',
+  'sunParasol',
+  'safetyBollard',
+  'floodlightStand',
+  'outdoorCabinet',
+  'solarPanelArray',
+  'dishAntenna',
+  'concreteBarrier',
+  'drainGrate',
+  'wovenRug',
+  'floorLamp',
+  'displayPlinth',
+  'displayCase',
+  'aquariumTank',
+  'labIncubator',
+  'sampleFreezer',
+  'tubeRack',
+  'securityMonitor',
+  'securitySafe',
+  'protectionShield',
+  'weaponLocker',
+  'gearStand',
+  'inspectionBench',
+  'labCentrifuge',
+  'labMicroscope',
+  'sampleAnalyzer',
+  'dissectionTable',
+  'loungeSofa',
+  'loungeArmchair',
+  'sideTable',
+  'lowCabinet',
+  'labSinkBench',
+  'sampleFridge',
+  'analysisCabinet',
+  'securityLocker',
+  'cargoContainer',
+  'reinforcedCrate',
+  'horizontalTank',
+  'airCompressor',
+  'cryoPodPlan',
+  'surgeryTable',
+  'medicalTrolley',
+  'serverCabinet',
+  'briefingTable',
+  'sanitaryToilet',
+  'washBasin',
+  'showerTray',
+  'galleySink',
+  'galleyHob',
+  'powerUnit',
+  'pumpUnit',
+  'verticalTank',
+  'serviceBench',
+  'cargoPallet',
+  'storageShelf',
+  'crewBed',
+  'wallLocker',
+  'crewBench',
+  'diningTable',
+  'examBed',
+  'medicalCabinet',
+  'commandBench',
+  'deskTerminal',
+  'operatorSeat',
   'stairs',
   'elevator',
   'console',
@@ -776,6 +855,14 @@ export function parseProject(text) {
         e.points.length > 500
       )
         throw new Error('Traçado inválido.');
+      if (
+        e.kind === 'vent' &&
+        e.accesses !== undefined &&
+        (!Array.isArray(e.accesses) ||
+          e.accesses.length !== 2 ||
+          e.accesses.some((t) => !['auto', 'grille', 'hatch', 'open', 'cap'].includes(t)))
+      )
+        throw new Error('Acessos de ventilação inválidos.');
       const points = e.points.map((p) => ({
         x: number(p.x, 0, result.width),
         y: number(p.y, 0, result.height),
@@ -794,6 +881,7 @@ export function parseProject(text) {
         );
       return {
         ...base,
+        ...(e.kind === 'vent' && e.accesses ? { accesses: [...e.accesses] } : {}),
         ...(e.kind === 'corridor'
           ? {
               ...(e.closedStart === true ? { closedStart: true } : {}),

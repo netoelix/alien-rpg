@@ -117,8 +117,8 @@ export function partitionEndCaps(element, structure) {
 
 // Keep the saved anchor on the floor boundary. Only the rendered opening moves
 // outward, to the middle of the wall band. Doors and windows share this rule.
-export function openingGeometry(opening, elements) {
-  opening = sharedOpeningAnchor(opening, elements);
+export function openingGeometry(opening, elements, resolvedStructure) {
+  opening = sharedOpeningAnchor(opening, elements, resolvedStructure);
   const anchor = doorPosition(opening, elements);
   if (!anchor) return null;
   const parent = elements.find((element) => element.id === opening.wallId);

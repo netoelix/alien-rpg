@@ -31,3 +31,7 @@ Verificação: 37 testes aprovados, build concluído e fluxos de preenchimento/i
 ### Criador de mapas — validação pendente
 
 Antes de encerrar o bloco de módulos, seguir [a checklist de validação visual](validacao-pendente-blueprints.md). Conferência adiada pelo usuário em 23/10/2026; desenvolvimento local autorizado a continuar. Próxima frente: anotações e medidas do mapa.
+
+## Consolidação — 25/10/2026
+
+Concluídos localmente: expansão do catálogo físico (incluindo 24 peças de ambientes), categorias recolhidas, prévia de inserção, otimização da viewport e revisão da ventilação. Dutos têm acessos configuráveis, junções por extremidade e acompanhamento geométrico das paredes. Conexões de ventilação entre pavimentos ficam para uma etapa futura. Publicação deste conjunto em preparação.

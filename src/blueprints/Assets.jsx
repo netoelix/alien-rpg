@@ -1,4 +1,7 @@
+import { Furniture } from './Furniture.jsx';
+import { furniture } from './furniture.js';
 export const assetNames = {
+  ...Object.fromEntries(Object.entries(furniture).map(([k, v]) => [k, v.name])),
   stairs: 'Escada',
   elevator: 'Elevador',
   console: 'Console',
@@ -19,6 +22,14 @@ export const assetNames = {
   sofa: 'Banco estofado',
 };
 export function AssetSymbol({ type }) {
+  if (furniture[type]) {
+    const { w, h } = furniture[type];
+    return (
+      <svg viewBox={`0 0 ${w} ${h}`} width="100" height="100" overflow="visible">
+        <Furniture type={type} />
+      </svg>
+    );
+  }
   const frame = <rect x="5" y="5" width="90" height="90" rx="8" />;
   switch (type) {
     case 'stairs':

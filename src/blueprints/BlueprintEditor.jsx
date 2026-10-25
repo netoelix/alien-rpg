@@ -1,3 +1,9 @@
+import { ventAccessTypes, followVentWalls } from './ventilation.js';
+import { PlacementPreview } from './PlacementPreview.jsx';
+import { openingCandidate } from './placement.js';
+import { AssetCatalog } from './AssetCatalog.jsx';
+import { assetFootprint, furniture } from './furniture.js';
+import { snapToObjects } from './snapping.js';
 import { setCorridorEnd } from './corridor-ends.js';
 import { DimensionControls } from './DimensionControls.jsx';
 import { dimensionOffset } from './dimensions.js';
@@ -61,6 +67,7 @@ import {
 } from './model.js';
 import { downloadBlob, exportDrawing, projectFilename } from './export.js';
 import './blueprints.css';
+const emptyDrawingPreview = [];
 const storageKey = 'alien-blueprint-recovery-v1';
 const normalizeSearch = (text) =>
   text
@@ -119,6 +126,9 @@ const hints = {
 };
 export default function BlueprintEditor() {
   const clipboard = useRef(null);
+  const [objectSnap, setObjectSnap] = useState(true);
+  const [snapGuides, setSnapGuides] = useState([]);
+  const pendingGuides = useRef([]);
   const [pastedGroup, setPastedGroup] = useState(null);
   const [manualWall, setManualWall] = useState(false);
   const [wallEdge, setWallEdge] = useState(0);
@@ -218,7 +228,9 @@ export default function BlueprintEditor() {
   }, [dirty]);
   function commit(next) {
     try {
-      const valid = parseProject(JSON.stringify(pruneConnections(fitOpenings(next))));
+      const valid = parseProject(
+        JSON.stringify(pruneConnections(fitOpenings(followVentWalls(project, next)))),
+      );
       assertObjectChanges(project, valid);
       for (const opening of valid.elements.filter((element) => element.kind === 'door')) {
         const previous = project.elements.find((element) => element.id === opening.id);
@@ -319,9 +331,46 @@ export default function BlueprintEditor() {
     point.x = event.clientX;
     point.y = event.clientY;
     const p = point.matrixTransform(svgRef.current.getScreenCTM().inverse());
+    const enabled = align && !event.altKey;
+    const raw = {
+      x: Math.max(0, Math.min(project.width, p.x)),
+      y: Math.max(0, Math.min(project.height, p.y)),
+    };
+    const result = {
+      x: enabled && magnet ? snap(raw.x, project.grid) : raw.x,
+      y: enabled && magnet ? snap(raw.y, project.grid) : raw.y,
+    };
+    pendingGuides.current = [];
+    const eligible = gesture
+      ? ['move', 'vertex', 'room', 'ellipse'].includes(gesture.kind)
+      : [
+          'room',
+          'ellipse',
+          'polygon',
+          'corridor',
+          'wall',
+          'dimension',
+          'asset',
+          'label',
+          'vent',
+        ].includes(tool);
+    if (enabled && objectSnap && eligible && !spaceHeld) {
+      const excluded = gesture?.element ? pastedGroup?.ids || [gesture.element.id] : [];
+      const moving =
+        gesture?.kind === 'move' ? project.elements.filter((e) => excluded.includes(e.id)) : [];
+      const scale = Math.hypot(svgRef.current.getScreenCTM().a, svgRef.current.getScreenCTM().b);
+      const match = snapToObjects(project, raw, {
+        threshold: 8 / scale,
+        excluded,
+        moving,
+        start: gesture?.start || raw,
+      });
+      for (const guide of match.guides) result[guide.axis] = match[guide.axis];
+      pendingGuides.current = match.guides;
+    }
     return {
-      x: Math.max(0, Math.min(project.width, align && magnet ? snap(p.x, project.grid) : p.x)),
-      y: Math.max(0, Math.min(project.height, align && magnet ? snap(p.y, project.grid) : p.y)),
+      x: Math.max(0, Math.min(project.width, result.x)),
+      y: Math.max(0, Math.min(project.height, result.y)),
     };
   }
   function down(event) {
@@ -569,35 +618,30 @@ export default function BlueprintEditor() {
       return;
     }
     if (tool === 'door') {
-      const wall = nearestWall(
-        project.elements.filter((item) => objectEditable(project, item)),
+      const candidate = openingCandidate(
+        project,
         p,
+        doorWidth,
+        openingType,
         Math.max(0.75, 2 / view.zoom),
       );
-      if (!wall) {
-        setMessage('Clique mais perto de uma parede.');
+      if (candidate.error) {
+        setMessage(candidate.error);
         return;
       }
-      add([
-        {
-          id: uid(),
-          kind: 'door',
-          openingType,
-          wallId: wall.wallId,
-          segment: wall.segment,
-          t: wall.t,
-          width: doorWidth,
-        },
-      ]);
+      add([{ ...candidate.element, id: uid() }]);
       return;
     }
     if (tool === 'asset')
-      add([{ id: uid(), kind: 'asset', asset, x: p.x, y: p.y, w: 2, h: 2, rotation: 0 }]);
+      add([
+        { id: uid(), kind: 'asset', asset, x: p.x, y: p.y, ...assetFootprint(asset), rotation: 0 },
+      ]);
     if (tool === 'label' && label.trim())
       add([{ id: uid(), kind: 'label', x: p.x, y: p.y, text: label, ...labelStyle }]);
   }
   function move(event) {
     const p = location(event);
+    setSnapGuides(pendingGuides.current);
     setCursor(p);
     if (!gesture) return;
     if (gesture.kind === 'pan') {
@@ -627,6 +671,7 @@ export default function BlueprintEditor() {
     };
   }
   function up(event) {
+    setSnapGuides([]);
     if (!gesture) return;
     if (svgRef.current.hasPointerCapture(event.pointerId))
       svgRef.current.releasePointerCapture(event.pointerId);
@@ -738,6 +783,8 @@ export default function BlueprintEditor() {
     );
   }
   function changeTool(next) {
+    setCursor(null);
+    setSnapGuides([]);
     setConnectionPlacement(null);
     setModulePlacement(null);
     setTool(next);
@@ -957,7 +1004,7 @@ export default function BlueprintEditor() {
     });
   }
   let drawn = project,
-    preview = [];
+    preview = emptyDrawingPreview;
   if (gesture?.kind === 'dimensionOffset')
     drawn = {
       ...project,
@@ -1042,6 +1089,7 @@ export default function BlueprintEditor() {
       groupRotationError = error.message;
     }
   }
+  drawn = followVentWalls(project, drawn);
   const gridStep =
     project.grid * Math.max(1, Math.ceil(project.width / view.zoom / project.grid / 100));
   return (
@@ -1227,24 +1275,16 @@ export default function BlueprintEditor() {
                 />
               </label>
               <p aria-live="polite">
-                {matchingAssets.length} peça(s) encontrada(s). Selecionada: {assetNames[asset]}.
+                {matchingAssets.length} peça(s) encontrada(s). Selecionada: {assetNames[asset]}.{' '}
+                {furniture[asset] &&
+                  `${furniture[asset].w} × ${furniture[asset].h} m · Peça física em vista superior.`}
               </p>
-              <div className="blueprint-assets">
-                {matchingAssets.map(([id, name]) => (
-                  <button key={id} aria-pressed={asset === id} onClick={() => setAsset(id)}>
-                    <svg
-                      viewBox="0 0 100 100"
-                      aria-hidden="true"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                    >
-                      <AssetSymbol type={id} />
-                    </svg>
-                    {name}
-                  </button>
-                ))}
-              </div>
+              <AssetCatalog
+                items={matchingAssets}
+                search={assetSearch}
+                selected={asset}
+                onSelect={setAsset}
+              />
               {!matchingAssets.length && <p>Nenhum equipamento encontrado. Tente outro nome.</p>}
             </>
           )}
@@ -1576,6 +1616,35 @@ export default function BlueprintEditor() {
                       ))}
                     </fieldset>
                   )}
+                  {selectedElement.kind === 'vent' && (
+                    <fieldset>
+                      <legend>Acessos do duto</legend>
+                      {[0, 1].map((i) => (
+                        <label key={i}>
+                          {i ? 'Fim' : 'Início'}
+                          <select
+                            value={selectedElement.accesses?.[i] || 'auto'}
+                            onChange={(e) => {
+                              const values = [...(selectedElement.accesses || ['auto', 'auto'])];
+                              values[i] = e.target.value;
+                              property('accesses', values);
+                            }}
+                          >
+                            {Object.entries(ventAccessTypes).map(([k, v]) => (
+                              <option key={k} value={k}>
+                                {v}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ))}
+                      <small>
+                        Automático conecta pontas a outros dutos, sugere grelha nas paredes e
+                        escotilha dentro de salas. Escolha outro acesso para manter a ponta
+                        independente.
+                      </small>
+                    </fieldset>
+                  )}
                   {selectedElement.kind === 'label' && (
                     <TextControls {...selectedElement} onChange={property} />
                   )}
@@ -1904,6 +1973,7 @@ export default function BlueprintEditor() {
             >
               ▣
             </button>
+
             <button aria-label="Ampliar planta" onClick={() => zoom(1.5)}>
               +
             </button>
@@ -1936,6 +2006,17 @@ export default function BlueprintEditor() {
             <label>
               <input type="checkbox" checked={grid} onChange={(e) => setGrid(e.target.checked)} />
               Grade
+            </label>
+            <label title="Alinha quinas, centros e extremidades. Alt suspende os encaixes.">
+              <input
+                type="checkbox"
+                checked={objectSnap}
+                onChange={(e) => {
+                  setObjectSnap(e.target.checked);
+                  setSnapGuides([]);
+                }}
+              />
+              Guias
             </label>
             <label>
               <input
@@ -2168,6 +2249,9 @@ export default function BlueprintEditor() {
             role="application"
             aria-label="Planta editável. Escolha uma ferramenta e desenhe. Enter conclui traçado, Escape cancela, Delete remove seleção."
             tabIndex="0"
+            onPointerLeave={() => {
+              if (!gesture) setCursor(null);
+            }}
             onContextMenu={(event) => event.preventDefault()}
             onKeyUp={(event) => {
               if (event.code === 'Space') setSpaceHeld(false);
@@ -2312,6 +2396,40 @@ export default function BlueprintEditor() {
                 <Dimension element={{ points: [points[0], cursor], ...dimensionStyle }} />
               </g>
             )}
+            {!!snapGuides.length && (
+              <g
+                data-editor-only="true"
+                pointerEvents="none"
+                stroke="#f1c46c"
+                strokeWidth=".06"
+                strokeDasharray=".25 .2"
+              >
+                {snapGuides.map((g) => (
+                  <line
+                    key={g.axis}
+                    x1={g.axis === 'x' ? g.value : 0}
+                    x2={g.axis === 'x' ? g.value : project.width}
+                    y1={g.axis === 'y' ? g.value : 0}
+                    y2={g.axis === 'y' ? g.value : project.height}
+                  />
+                ))}
+              </g>
+            )}
+            {cursor &&
+              !gesture &&
+              !modulePlacement &&
+              !connectionPlacement &&
+              ['asset', 'door'].includes(tool) && (
+                <PlacementPreview
+                  project={project}
+                  point={cursor}
+                  tool={tool}
+                  asset={asset}
+                  width={doorWidth}
+                  openingType={openingType}
+                  zoom={view.zoom}
+                />
+              )}
             {modulePlacement && cursor && (
               <ModulePlacementPreview
                 module={modulePlacement}
