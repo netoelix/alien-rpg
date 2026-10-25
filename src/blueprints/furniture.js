@@ -1,6 +1,16 @@
+import { vehicleAssets } from './vehicle-assets.js';
+import { colonyAssets } from './colony-assets.js';
+import { levelAssets } from './level-assets.js';
+import { floorMarkings } from './floor-markings.js';
 import { environmentAssets } from './environment-assets.js';
 // Footprints in metres; legacy schematic assets retain their original defaults.
 export const furniture = {
+  ...vehicleAssets,
+  ...colonyAssets,
+  stairs: { name: 'Escada entre pavimentos', w: 2, h: 2 },
+  elevator: { name: 'Cabine de elevador', w: 2, h: 2 },
+  ...levelAssets,
+  ...floorMarkings,
   ...environmentAssets,
   surveillanceCamera: { name: 'Câmera de vigilância retro · vista superior', w: 0.35, h: 0.65 },
   crtStation: { name: 'Terminal CRT retro · vista superior', w: 0.65, h: 0.7 },

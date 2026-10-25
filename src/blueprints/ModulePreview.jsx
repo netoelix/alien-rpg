@@ -1,3 +1,5 @@
+import { assetOrder } from './asset-order.js';
+import { FloorFinish } from './FloorFinish.jsx';
 import { VentilationNetwork } from './Ventilation.jsx';
 import { Furniture } from './Furniture.jsx';
 import { furniture } from './furniture.js';
@@ -12,55 +14,75 @@ import { shapeTransform } from './orientation.js';
 export function ModuleSketch({ module }) {
   return (
     <g fill="none" stroke="currentColor" strokeWidth=".12" strokeLinejoin="round">
-      {module.elements.map((element) => {
-        if (element.kind === 'asset')
-          return (
-            <g key={element.id} transform={shapeTransform(element)}>
-              <svg
-                x={element.x}
-                y={element.y}
-                width={element.w}
-                height={element.h}
-                viewBox={furniture[element.asset] ? `0 0 ${element.w} ${element.h}` : '0 0 100 100'}
-                strokeWidth="3"
+      {[...module.elements]
+        .sort(
+          (a, b) =>
+            (a.kind === 'asset' ? assetOrder(a) + 1 : 0) -
+            (b.kind === 'asset' ? assetOrder(b) + 1 : 0),
+        )
+        .map((element) => {
+          if (element.kind === 'asset')
+            return (
+              <g key={element.id} transform={shapeTransform(element)}>
+                <svg
+                  x={element.x}
+                  y={element.y}
+                  width={element.w}
+                  height={element.h}
+                  viewBox={
+                    furniture[element.asset] ? `0 0 ${element.w} ${element.h}` : '0 0 100 100'
+                  }
+                  strokeWidth="3"
+                >
+                  {furniture[element.asset] ? (
+                    <Furniture type={element.asset} w={element.w} h={element.h} />
+                  ) : (
+                    <AssetSymbol type={element.asset} />
+                  )}
+                </svg>
+              </g>
+            );
+          if (element.kind === 'door') {
+            const position = doorPosition(element, module.elements);
+            if (!position) return null;
+            return (
+              <g
+                key={element.id}
+                transform={
+                  'translate(' +
+                  position.x +
+                  ' ' +
+                  position.y +
+                  ') rotate(' +
+                  position.rotation +
+                  ')'
+                }
               >
-                {furniture[element.asset] ? (
-                  <Furniture type={element.asset} w={element.w} h={element.h} />
-                ) : (
-                  <AssetSymbol type={element.asset} />
-                )}
-              </svg>
-            </g>
-          );
-        if (element.kind === 'door') {
-          const position = doorPosition(element, module.elements);
-          if (!position) return null;
+                <path
+                  strokeWidth=".2"
+                  d={'M ' + -element.width / 2 + ' 0 H ' + element.width / 2}
+                />
+                <path
+                  d={'M ' + -element.width / 2 + ' -.3 V .3 M ' + element.width / 2 + ' -.3 V .3'}
+                />
+              </g>
+            );
+          }
+          if (element.kind === 'vent') return null;
+          if (element.kind === 'dimension') return <Dimension key={element.id} element={element} />;
+          if (element.kind === 'label')
+            return (
+              <LabelText key={element.id} element={element} fill="currentColor" stroke="none" />
+            );
           return (
-            <g
-              key={element.id}
-              transform={
-                'translate(' + position.x + ' ' + position.y + ') rotate(' + position.rotation + ')'
-              }
-            >
-              <path strokeWidth=".2" d={'M ' + -element.width / 2 + ' 0 H ' + element.width / 2} />
-              <path
-                d={'M ' + -element.width / 2 + ' -.3 V .3 M ' + element.width / 2 + ' -.3 V .3'}
-              />
+            <g key={element.id}>
+              <FloorFinish element={element} />
+              {wallSegments(element).map(([a, b], index) => (
+                <line key={index} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} />
+              ))}
             </g>
           );
-        }
-        if (element.kind === 'vent') return null;
-        if (element.kind === 'dimension') return <Dimension key={element.id} element={element} />;
-        if (element.kind === 'label')
-          return <LabelText key={element.id} element={element} fill="currentColor" stroke="none" />;
-        return (
-          <g key={element.id}>
-            {wallSegments(element).map(([a, b], index) => (
-              <line key={index} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} />
-            ))}
-          </g>
-        );
-      })}
+        })}
       <VentilationNetwork elements={module.elements} />
     </g>
   );

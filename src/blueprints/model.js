@@ -1,3 +1,6 @@
+import { vehicleAssets } from './vehicle-assets.js';
+import { colonyAssets } from './colony-assets.js';
+import { floorKinds, normalizeFloorFinish } from './floor-finishes.js';
 import { validEndpoint } from './connections.js';
 import { rotatePoint } from './orientation.js';
 import { selectionBounds } from './selection.js';
@@ -95,6 +98,18 @@ export const assetTypes = [
   'communicationsRadio',
   'reportPrinter',
   'dataTapeCabinet',
+  ...Object.keys(colonyAssets),
+  ...Object.keys(vehicleAssets),
+  'raisedPlatform',
+  'gratedPlatform',
+  'shortSteps',
+  'stairFlight',
+  'accessRamp',
+  'levelEdge',
+  'hazardStripe',
+  'floorArrow',
+  'loadingZone',
+  'walkwayMark',
   'pottedPalm',
   'broadleafPot',
   'roundShrub',
@@ -774,12 +789,38 @@ export function parseProject(text) {
         base[flag] = e[flag];
       }
     }
+    if (e.stackOrder !== undefined) {
+      if (e.kind !== 'asset') throw new Error('Ordem de sobreposição inválida.');
+      base.stackOrder = number(e.stackOrder, -1000000, 1000000);
+    }
+    if (e.connectionLabel !== undefined) {
+      const label = e.connectionLabel;
+      if (
+        e.kind !== 'asset' ||
+        e.asset !== 'stairs' ||
+        !label ||
+        typeof label !== 'object' ||
+        (label.hidden !== undefined && typeof label.hidden !== 'boolean') ||
+        (label.export !== undefined && typeof label.export !== 'boolean')
+      )
+        throw new Error('Legenda de conexão inválida.');
+      base.connectionLabel = {
+        dx: number(label.dx ?? 0, -2000, 2000),
+        dy: number(label.dy ?? 0, -2000, 2000),
+        hidden: label.hidden === true,
+        export: label.export !== false,
+      };
+    }
     if (e.name !== undefined) base.name = string(e.name, 80);
     if (e.groupId !== undefined) {
       base.groupId = string(e.groupId, 100);
       if (!base.groupId.trim()) throw new Error('Identificador de grupo inválido.');
     }
     if (layerFor(e.kind) === 'structure' && e.joinWalls === true) base.joinWalls = true;
+    if (e.floorFinish !== undefined) {
+      if (!floorKinds.includes(e.kind)) throw new Error('Este objeto não possui piso.');
+      base.floorFinish = normalizeFloorFinish(e.floorFinish);
+    }
     if (e.walls !== undefined) {
       if (layerFor(e.kind) !== 'structure' || !Array.isArray(e.walls) || e.walls.length > 1000)
         throw new Error('Trechos de parede inválidos.');

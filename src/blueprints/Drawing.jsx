@@ -1,3 +1,8 @@
+import { StairDestinationLabels } from './StairDestinationLabels.jsx';
+import { assetOrder } from './asset-order.js';
+import { floorMarkings } from './floor-markings.js';
+import { Shape } from './FloorShape.jsx';
+import { FloorFinish } from './FloorFinish.jsx';
 import { VentilationNetwork } from './Ventilation.jsx';
 import { memo, useMemo } from 'react';
 const emptyPreview = [];
@@ -26,56 +31,6 @@ export const palettes = {
   blue: { background: '#071421', floor: '#102c40', ink: '#71d9f4', accent: '#f5cd7c' },
   print: { background: '#ffffff', floor: '#f1f3f4', ink: '#14252c', accent: '#555555' },
 };
-function Shape({ element, outer = false, seamOverlap = false }) {
-  // Tiny rendering overlap closes antialiasing seams at coincident boundaries.
-  // Geometry, snapping and saved dimensions remain unchanged.
-  const outline = outer ? 0.4 : seamOverlap ? 0.06 : 0;
-  if (element.kind === 'partition') return null;
-  if (element.kind === 'polygon')
-    return (
-      <polygon
-        points={element.points.map((p) => `${p.x},${p.y}`).join(' ')}
-        fill="currentColor"
-        stroke="currentColor"
-        strokeWidth={outline}
-        strokeLinejoin="round"
-      />
-    );
-  if (element.kind === 'corridor')
-    return (
-      <polyline
-        points={element.points
-          .map((p, i, pts) => {
-            if (!seamOverlap || (i !== 0 && i !== pts.length - 1)) return p.x + ',' + p.y;
-            const closed = i === 0 ? element.closedStart : element.closedEnd;
-            const other = i === 0 ? pts[1] : pts.at(-2),
-              len = Math.hypot(p.x - other.x, p.y - other.y);
-            const extra = closed ? 0 : element.width / 2;
-            return (
-              p.x + ((p.x - other.x) / len) * extra + ',' + (p.y + ((p.y - other.y) / len) * extra)
-            );
-          })
-          .join(' ')}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={element.width + outline}
-        strokeLinejoin="round"
-        strokeLinecap="butt"
-      />
-    );
-  const { x, y, w, h } = element;
-  const common = {
-    transform: shapeTransform(element),
-    fill: 'currentColor',
-    stroke: 'currentColor',
-    strokeWidth: outline,
-  };
-  return element.kind === 'ellipse' ? (
-    <ellipse cx={x + w / 2} cy={y + h / 2} rx={w / 2} ry={h / 2} {...common} />
-  ) : (
-    <rect x={x} y={y} width={w} height={h} {...common} />
-  );
-}
 export const Drawing = memo(function Drawing({
   project,
   grid = false,
@@ -211,7 +166,10 @@ export const Drawing = memo(function Drawing({
           </g>
           <g color="black">
             {structure.map((e) => (
-              <Shape key={e.id} element={e} seamOverlap />
+              <g key={e.id}>
+                <Shape element={e} seamOverlap />
+                <FloorFinish element={e} ink={palette.ink} />
+              </g>
             ))}
           </g>
           {doors.map(
@@ -430,6 +388,7 @@ export const Drawing = memo(function Drawing({
         <g data-layer="equipment" opacity={opacity('equipment')}>
           {elements
             .filter((e) => e.kind === 'asset')
+            .sort((a, b) => assetOrder(a) - assetOrder(b))
             .map((e) => (
               <g
                 key={e.id}
@@ -443,7 +402,7 @@ export const Drawing = memo(function Drawing({
                     viewBox={`0 0 ${e.w} ${e.h}`}
                     overflow="visible"
                     fill={palette.floor}
-                    stroke={palette.ink}
+                    stroke={floorMarkings[e.asset] ? palette.accent : palette.ink}
                   >
                     <Furniture type={e.asset} w={e.w} h={e.h} />
                   </svg>
@@ -463,6 +422,16 @@ export const Drawing = memo(function Drawing({
                 )}
               </g>
             ))}
+        </g>
+      )}
+      {visible('equipment') && (
+        <g data-layer="equipment" opacity={opacity('equipment')}>
+          <StairDestinationLabels
+            project={project}
+            elements={elements}
+            ink={palette.accent}
+            background={palette.background}
+          />
         </g>
       )}
       {visible('vents') && (
