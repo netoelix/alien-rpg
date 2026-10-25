@@ -741,3 +741,128 @@
 .blueprint-object-list button[aria-pressed='true'] {
   background: #234a36;
 }
+
+.blueprint-object-list li {
+  grid-template-columns: minmax(0, 1fr);
+  padding: 6px;
+  border: 1px solid #28503e;
+}
+.blueprint-object-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.blueprint-object-rename {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.blueprint-object-rename input {
+  width: 100%;
+  min-width: 0;
+}
+.blueprint-object-rename button {
+  flex: 1;
+}
+.blueprint-arrange-control {
+  display: flex;
+  gap: 6px;
+  max-width: 100%;
+}
+.blueprint-arrange-control select {
+  min-width: 0;
+  max-width: 200px;
+}
+.blueprint-arrange-control button {
+  width: auto;
+}
+
+.deck-reference-list {
+  margin-block: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.blueprint-module-library form {
+  margin-block: 12px;
+}
+.blueprint-module-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.blueprint-module-library > button {
+  margin-block: 12px;
+}
+
+.blueprint-module-thumbnail {
+  display: block;
+  width: 100%;
+  height: 130px;
+  margin-bottom: 12px;
+  background: #04120d;
+  color: #78ebae;
+  border: 1px solid #28503e;
+}
+
+.blueprint-repeat-module {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.blueprint-repeat-module input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  margin: 0;
+}
+
+.blueprint-module-grid {
+  position: relative;
+}
+.blueprint-module-grid summary {
+  cursor: pointer;
+  padding: 8px;
+}
+.blueprint-module-grid > div {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background: #081b13;
+  border: 1px solid #28503e;
+  padding: 12px;
+  width: 230px;
+  display: grid;
+  gap: 8px;
+}
+.blueprint-module-grid label {
+  display: grid;
+  gap: 4px;
+}
+.blueprint-module-grid input {
+  width: 100%;
+  box-sizing: border-box;
+}
+.blueprint-module-grid button {
+  width: auto;
+}
+
+.blueprint-text-controls textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font: inherit;
+  color: inherit;
+  background: #04120d;
+  border: 1px solid #28503e;
+  padding: 8px;
+}
+
+/* Expanded settings participate in page scrolling so every export control remains reachable. */
+.blueprint-layout aside.blueprint-settings,
+.blueprint-focus .blueprint-layout aside.blueprint-settings {
+  max-height: none;
+  overflow: visible;
+  min-height: 0;
+}

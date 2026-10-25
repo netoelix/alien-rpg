@@ -4,6 +4,7 @@ import { ToolIcon } from './ToolIcon.jsx';
 import { layerFor } from './model.js';
 import { objectVisible, setObjectFlag } from './objects.js';
 const names = {
+  partition: 'Parede independente',
   room: 'Sala retangular',
   ellipse: 'Sala oval',
   polygon: 'Sala por vértices',
@@ -11,14 +12,17 @@ const names = {
   door: 'Porta',
   vent: 'Duto',
   label: 'Anotação',
+  dimension: 'Cota de distância',
 };
 const searchable = (text) =>
   text
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
-export function ObjectsPanel({ project, selected, disabled, onChange, onSelect }) {
+export function ObjectsPanel({ project, selected, disabled, onChange, onSelect, onLocate }) {
   const [search, setSearch] = useState('');
+  const [renaming, setRenaming] = useState(null);
+  const [name, setName] = useState('');
   const [layer, setLayer] = useState('');
   const items = project.elements.map((element, index) => ({
     element,
@@ -78,28 +82,76 @@ export function ObjectsPanel({ project, selected, disabled, onChange, onSelect }
               >
                 {title}
               </button>
-              <button
-                disabled={disabled}
-                title={element.hidden ? 'Mostrar objeto' : 'Ocultar objeto'}
-                aria-label={(element.hidden ? 'Mostrar ' : 'Ocultar ') + title}
-                aria-pressed={!!element.hidden}
-                onClick={() =>
-                  onChange(setObjectFlag(project, element.id, 'hidden', !element.hidden))
-                }
-              >
-                <ToolIcon name={element.hidden ? 'eyeOff' : 'eye'} />
-              </button>
-              <button
-                disabled={disabled}
-                title={element.locked ? 'Desbloquear objeto' : 'Bloquear objeto'}
-                aria-label={(element.locked ? 'Desbloquear ' : 'Bloquear ') + title}
-                aria-pressed={!!element.locked}
-                onClick={() =>
-                  onChange(setObjectFlag(project, element.id, 'locked', !element.locked))
-                }
-              >
-                <ToolIcon name={element.locked ? 'lock' : 'unlock'} />
-              </button>
+              <div className="blueprint-object-actions">
+                <button
+                  disabled={disabled || !visible || !layerVisible}
+                  title="Localizar na viewport"
+                  aria-label={'Localizar ' + title}
+                  onClick={() => onLocate(element.id)}
+                >
+                  <ToolIcon name="fit" />
+                </button>
+                <button
+                  disabled={disabled}
+                  title="Renomear objeto"
+                  aria-label={'Renomear ' + title}
+                  onClick={() => {
+                    setRenaming(element.id);
+                    setName(element.name || '');
+                  }}
+                >
+                  <ToolIcon name="rename" />
+                </button>
+                <button
+                  disabled={disabled}
+                  title={element.hidden ? 'Mostrar objeto' : 'Ocultar objeto'}
+                  aria-label={(element.hidden ? 'Mostrar ' : 'Ocultar ') + title}
+                  aria-pressed={!!element.hidden}
+                  onClick={() =>
+                    onChange(setObjectFlag(project, element.id, 'hidden', !element.hidden))
+                  }
+                >
+                  <ToolIcon name={element.hidden ? 'eyeOff' : 'eye'} />
+                </button>
+                <button
+                  disabled={disabled}
+                  title={element.locked ? 'Desbloquear objeto' : 'Bloquear objeto'}
+                  aria-label={(element.locked ? 'Desbloquear ' : 'Bloquear ') + title}
+                  aria-pressed={!!element.locked}
+                  onClick={() =>
+                    onChange(setObjectFlag(project, element.id, 'locked', !element.locked))
+                  }
+                >
+                  <ToolIcon name={element.locked ? 'lock' : 'unlock'} />
+                </button>
+              </div>
+              {renaming === element.id && (
+                <form
+                  className="blueprint-object-rename"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    onChange({
+                      ...project,
+                      elements: project.elements.map((item) =>
+                        item.id === element.id ? { ...item, name: name.trim() } : item,
+                      ),
+                    });
+                    setRenaming(null);
+                  }}
+                >
+                  <input
+                    aria-label="Nome do objeto"
+                    maxLength={80}
+                    value={name}
+                    placeholder={title}
+                    onChange={(event) => setName(event.target.value)}
+                  />
+                  <button disabled={disabled}>Salvar</button>
+                  <button type="button" onClick={() => setRenaming(null)}>
+                    Cancelar
+                  </button>
+                </form>
+              )}
             </li>
           );
         })}

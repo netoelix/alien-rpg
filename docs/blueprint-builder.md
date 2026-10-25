@@ -281,3 +281,52 @@ Selecione os destinos e use Posicionar no mapa: a prévia de 2 × 2 m acompanha 
 ## Organização dos objetos
 
 Objetos do pavimento, no painel direito, oferece busca, filtro por camada, seleção e controles individuais de ocultar/bloquear. Ocultos não entram na imagem exportada; ocultar uma sala esconde suas aberturas. Bloqueados permanecem visíveis e suas alterações/remoções são recusadas, inclusive em operações coletivas. Os estados são salvos, copiados e recuperados pelo histórico; arquivos antigos continuam visíveis e desbloqueados.
+
+
+### Nomes, localização e alinhamento
+
+Na lista de objetos, o lápis abre a edição do nome (até 80 caracteres; vazio restaura o nome automático) e o enquadramento centraliza a peça na viewport. Nomes persistem no projeto e participam da busca. Equipamentos selecionados em conjunto oferecem alinhamento por borda/centro nos dois eixos; três ou mais oferecem espaçamento uniforme entre limites visuais, incluindo rotação, mantendo as extremidades. Grupos parciais, peças bloqueadas/ocultas e distribuição sem espaço suficiente são recusados. Cada aplicação é uma etapa do histórico; medidas e ângulos permanecem intactos.
+
+
+### Referências combinadas e módulos próprios
+
+Referências agora usam checkboxes independentes; o pavimento ativo é excluído da sobreposição. A opacidade por andar é 0,35 / raiz quadrada da quantidade visível. Guias continuam fora da exportação. Meus módulos guarda seleções na sessão, com download/importação .alien-module. Inserção por clique remapeia IDs e vínculos de aberturas, preserva medidas e deixa a cópia selecionada. A biblioteca não é enviada ao servidor e deve ser baixada antes de fechar a sessão. Conexões entre pavimentos não são copiadas para módulos.
+
+
+### Gestão da biblioteca de módulos
+
+A biblioteca permite buscar por nome (ignorando acentos), renomear e conferir dimensões antes de inserir. Baixar biblioteca inteira gera .alien-library; importar aceita bibliotecas ou módulos individuais e acrescenta ao acervo da sessão, ignorando cópias exatamente iguais. Nomes iguais com conteúdo diferente são preservados. O limite é de 100 módulos e 20 MB por biblioteca; arquivo inválido é recusado por inteiro. Nenhuma publicação ou armazenamento remoto.
+
+
+### Prévias dos módulos
+
+Os cards mostram miniaturas esquemáticas das estruturas, aberturas e equipamentos. Ao inserir, o desenho acompanha o cursor e o contorno fica vermelho se ultrapassar a planta. A prévia não entra na exportação; espessuras e acabamentos finais continuam sendo calculados ao inserir.
+
+
+### Giro antes da inserção
+
+Durante o posicionamento, a barra da viewport oferece ±90° e Cancelar. R/Shift+R giram a cópia pendente; Escape cancela. A prévia acompanha a orientação, os vínculos de portas/janelas são remapeados e o módulo original da biblioteca permanece intacto. Somente a inserção entra no histórico do mapa.
+
+
+### Inserção repetida
+
+Inserção contínua na barra do módulo mantém a prévia após cada clique. Shift+clique faz o mesmo pontualmente. Cada cópia recebe IDs próprios e ocupa uma etapa do histórico. A orientação pendente permanece para as próximas cópias. Escape/Cancelar encerram a ferramenta sem remover o que já foi inserido. A lista de objetos fica desativada durante o posicionamento para evitar seleções conflitantes.
+
+
+### Repetição em grade
+
+Durante o posicionamento, Repetir em grade permite de 1 a 10 linhas/colunas e espaço entre bordas de 0 a 100 m. O clique insere o lote inteiro em uma etapa do histórico, com IDs independentes. Limites da planta e 3000 objetos são verificados antes de qualquer inserção. Acima de 500 peças previstas, a prévia usa contornos simplificados para reduzir o custo de desenho. Uma cópia restaura a inserção simples; selecionar outro módulo também reinicia a grade.
+
+
+## Validação adiada pelo usuário — 23/10/2026
+
+Checklist central: [validação pendente do criador de mapas](validacao-pendente-blueprints.md). O usuário está sem computador; a conferência visual fica para depois. Desenvolvimento local pode continuar. Última verificação automática: 164 testes, formatação e build aprovados. Não confundir esses resultados com aprovação visual ou autorização de publicação. Próxima frente: anotações e medidas.
+
+
+### Anotações com formatação
+
+A ferramenta Texto permite até 1000 caracteres, múltiplas linhas, tamanho de 0,25 a 20 m, alinhamento esquerda/centro/direita e negrito. Os mesmos controles aparecem nas propriedades. SVG usa linhas separadas com espaçamento de 1,25 vezes o tamanho; os estilos persistem em projetos e módulos. Arquivos antigos continuam compatíveis. Cotas de distância ficam para o próximo bloco.
+
+### Cotas de distância
+
+A ferramenta Cota de distância usa dois cliques e mostra a distância real entre os pontos em metros, inclusive na diagonal. As cotas pertencem à camada Anotações e são exportadas com ela. No modo Selecionar, arraste a linha para mover ou as extremidades para recalcular a medida. São objetos independentes: mover uma sala não desloca automaticamente uma cota fora do grupo selecionado.

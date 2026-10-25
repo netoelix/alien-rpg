@@ -24,7 +24,7 @@ export function sharedOpeningAnchor(opening, elements) {
   const anchor = doorPosition(opening, elements);
   if (!anchor) return opening;
   const structure = elements.filter((element) =>
-    ['room', 'ellipse', 'polygon', 'corridor'].includes(element.kind),
+    ['partition', 'room', 'ellipse', 'polygon', 'corridor'].includes(element.kind),
   );
   const angle = (anchor.rotation * Math.PI) / 180;
   for (const element of sharedWallStructures(structure.map(persistentWallStructure))) {

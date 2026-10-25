@@ -1,3 +1,13 @@
+import { setCorridorEnd } from './corridor-ends.js';
+import { DimensionControls } from './DimensionControls.jsx';
+import { dimensionOffset } from './dimensions.js';
+import { Dimension } from './Dimension.jsx';
+import { TextControls } from './TextControls.jsx';
+import { ModulePlacementPreview } from './ModulePreview.jsx';
+import { ModuleLibrary } from './ModuleLibrary.jsx';
+import { placeModuleGrid, rotateModule } from './modules.js';
+import { arrangements, arrangeEquipment, objectView } from './arrange.js';
+import { activeFloor, floorList } from './floors.js';
 import { ObjectsPanel } from './ObjectsPanel.jsx';
 import { objectEditable, assertObjectChanges } from './objects.js';
 import { pruneConnections, addConnections } from './connections.js';
@@ -74,6 +84,7 @@ const toolNames = {
   asset: 'Equipamento',
   module: 'Módulo pronto',
   label: 'Texto',
+  dimension: 'Cota de distância',
 };
 const toolKeys = {
   w: 'wall',
@@ -103,11 +114,13 @@ const hints = {
   door: 'Clique próximo à parede de uma sala ou corredor. A abertura acompanha a parede.',
   asset: 'Escolha uma peça e clique na planta. Medidas e rotação podem ser ajustadas depois.',
   module: 'Clique para inserir um módulo de 10 × 8 m. Cada peça pode ser editada separadamente.',
+  dimension: 'Clique no início e no fim da medida. Arraste os pontos para ajustar; Escape cancela.',
   label: 'Escreva a anotação no painel e clique onde deseja inseri-la.',
 };
 export default function BlueprintEditor() {
   const clipboard = useRef(null);
   const [pastedGroup, setPastedGroup] = useState(null);
+  const [manualWall, setManualWall] = useState(false);
   const [wallEdge, setWallEdge] = useState(0);
   const [creationWall, setCreationWall] = useState('auto');
   const [arcStart, setArcStart] = useState(0);
@@ -121,9 +134,14 @@ export default function BlueprintEditor() {
   const [spaceHeld, setSpaceHeld] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [project, setProject] = useState(() => sessionProject || newProject());
-  const [referenceFloor, setReferenceFloor] = useState('');
+  const [referenceFloors, setReferenceFloors] = useState([]);
   const [connectionPlacement, setConnectionPlacement] = useState(null);
-  const [referenceOpacity, setReferenceOpacity] = useState(0.25);
+  const [modulePlacement, setModulePlacement] = useState(null);
+  const [repeatModule, setRepeatModule] = useState(false);
+  const [moduleGridOptions, setModuleGridOptions] = useState({ rows: 1, columns: 1, gap: 0 });
+  const visibleReferences = floorList(project).filter(
+    (floor) => floor.id !== activeFloor(project) && referenceFloors.includes(floor.id),
+  );
   const [past, setPast] = useState([]),
     [future, setFuture] = useState([]);
   const [tool, setTool] = useState('room'),
@@ -131,7 +149,10 @@ export default function BlueprintEditor() {
   const [asset, setAsset] = useState('console'),
     [moduleType, setModuleType] = useState('bridge');
   const [assetSearch, setAssetSearch] = useState('');
+  const [dimensionStyle, setDimensionStyle] = useState({ mode: 'direct', offset: 0 });
+  const [labelStyle, setLabelStyle] = useState({ size: 1, align: 'start', bold: false });
   const [selectionAngle, setSelectionAngle] = useState(15);
+  const [arrangement, setArrangement] = useState('left');
   const [rotationPivot, setRotationPivot] = useState(null);
   const matchingAssets = Object.entries(assetNames).filter(([, name]) =>
     normalizeSearch(name).includes(normalizeSearch(assetSearch)),
@@ -221,7 +242,9 @@ export default function BlueprintEditor() {
     }
   }
   function replace(next) {
+    setReferenceFloors([]);
     setConnectionPlacement(null);
+    setModulePlacement(null);
     setPastedGroup(null);
     setProject(next);
     setPast([]);
@@ -234,6 +257,7 @@ export default function BlueprintEditor() {
   }
   function undo() {
     setConnectionPlacement(null);
+    setModulePlacement(null);
     setGesture(null);
     setRotationPivot(null);
     setPastedGroup(null);
@@ -247,6 +271,7 @@ export default function BlueprintEditor() {
   }
   function redo() {
     setConnectionPlacement(null);
+    setModulePlacement(null);
     setGesture(null);
     setPastedGroup(null);
     setRotationPivot(null);
@@ -310,6 +335,25 @@ export default function BlueprintEditor() {
       setGesture({ kind: 'pan', clientX: event.clientX, clientY: event.clientY, view });
       return;
     }
+    if (modulePlacement) {
+      try {
+        const result = placeModuleGrid(project, modulePlacement, p.x, p.y, moduleGridOptions);
+        if (commit(result.project)) {
+          const keepPlacing = repeatModule || event.shiftKey;
+          setSelected(keepPlacing ? null : result.selectedId);
+          setPastedGroup(keepPlacing ? null : { selectedId: result.selectedId, ids: result.ids });
+          if (!keepPlacing) setModulePlacement(null);
+          setMessage(
+            keepPlacing
+              ? 'Cópia inserida. Clique para inserir outra; Escape encerra.'
+              : 'Módulo inserido. As peças continuam selecionadas para mover o conjunto.',
+          );
+        }
+      } catch (error) {
+        setMessage(error.message);
+      }
+      return;
+    }
     if (connectionPlacement) {
       try {
         if (
@@ -324,6 +368,7 @@ export default function BlueprintEditor() {
           )
         ) {
           setConnectionPlacement(null);
+          setModulePlacement(null);
           setMessage('Conexão criada nos pavimentos selecionados.');
         }
       } catch (error) {
@@ -346,6 +391,29 @@ export default function BlueprintEditor() {
         end: point,
         step: event.shiftKey ? 15 : 1,
       });
+      return;
+    }
+    if (tool === 'wall' && manualWall) {
+      if (!allowed('partition')) {
+        setMessage('Mostre e desbloqueie a estrutura.');
+        return;
+      }
+      if (!points.length) setPoints([p]);
+      else if (Math.hypot(p.x - points[0].x, p.y - points[0].y) >= 0.25) {
+        if (
+          add([
+            {
+              id: uid(),
+              kind: 'partition',
+              points: [points[0], p],
+              walls: [
+                { segment: 0, start: 0, end: 1, type: wallType === 'open' ? 'internal' : wallType },
+              ],
+            },
+          ])
+        )
+          setPoints([]);
+      }
       return;
     }
     if (tool === 'wall') {
@@ -455,6 +523,10 @@ export default function BlueprintEditor() {
         });
         return;
       }
+      if (element.kind === 'dimension' && event.target.closest('[data-dimension-offset]')) {
+        setGesture({ kind: 'dimensionOffset', element, start: p, end: p });
+        return;
+      }
       const vertex = event.target.closest('[data-vertex]');
       if (vertex && element.points) {
         setGesture({
@@ -480,6 +552,14 @@ export default function BlueprintEditor() {
     if (['room', 'ellipse'].includes(tool)) {
       svgRef.current.setPointerCapture(event.pointerId);
       setGesture({ kind: tool, start: p, end: p });
+      return;
+    }
+    if (tool === 'dimension') {
+      if (!points.length) setPoints([p]);
+      else if (Math.hypot(p.x - points[0].x, p.y - points[0].y) >= 0.25) {
+        add([{ id: uid(), kind: 'dimension', points: [points[0], p], ...dimensionStyle }]);
+        setPoints([]);
+      }
       return;
     }
     if (['corridor', 'vent', 'polygon'].includes(tool)) {
@@ -514,7 +594,7 @@ export default function BlueprintEditor() {
     if (tool === 'asset')
       add([{ id: uid(), kind: 'asset', asset, x: p.x, y: p.y, w: 2, h: 2, rotation: 0 }]);
     if (tool === 'label' && label.trim())
-      add([{ id: uid(), kind: 'label', x: p.x, y: p.y, text: label, size: 1 }]);
+      add([{ id: uid(), kind: 'label', x: p.x, y: p.y, text: label, ...labelStyle }]);
   }
   function move(event) {
     const p = location(event);
@@ -557,6 +637,15 @@ export default function BlueprintEditor() {
       proportional: event.shiftKey,
     };
     setGesture(null);
+    if (g.kind === 'dimensionOffset') {
+      commit({
+        ...project,
+        elements: project.elements.map((e) =>
+          e.id === g.element.id ? { ...e, offset: dimensionOffset(e, g.end) } : e,
+        ),
+      });
+      return;
+    }
     if (g.kind === 'rotationPivot') {
       setRotationPivot({ key: g.key, cx: g.end.x, cy: g.end.y });
       return;
@@ -650,6 +739,7 @@ export default function BlueprintEditor() {
   }
   function changeTool(next) {
     setConnectionPlacement(null);
+    setModulePlacement(null);
     setTool(next);
     setPoints([]);
     setGesture(null);
@@ -777,6 +867,15 @@ export default function BlueprintEditor() {
     }
     svgRef.current?.focus();
   }
+  function rotatePendingModule(direction) {
+    if (!modulePlacement || gesture) return;
+    try {
+      setModulePlacement(rotateModule(modulePlacement, direction));
+    } catch (error) {
+      setMessage(error.message);
+    }
+    svgRef.current?.focus({ preventScroll: true });
+  }
   function rotateSelection(delta) {
     if (pastedGroup?.ids.length && !gesture && !points.length) {
       try {
@@ -859,6 +958,13 @@ export default function BlueprintEditor() {
   }
   let drawn = project,
     preview = [];
+  if (gesture?.kind === 'dimensionOffset')
+    drawn = {
+      ...project,
+      elements: project.elements.map((e) =>
+        e.id === gesture.element.id ? { ...e, offset: dimensionOffset(e, gesture.end) } : e,
+      ),
+    };
   if (gesture?.kind === 'vertex')
     drawn = {
       ...project,
@@ -869,7 +975,7 @@ export default function BlueprintEditor() {
       ),
     };
   if (gesture && ['room', 'ellipse'].includes(gesture.kind)) preview = [rectangle(gesture)];
-  if (points.length)
+  if (points.length && !['dimension', 'wall'].includes(tool))
     preview = [
       {
         id: 'preview',
@@ -1011,6 +1117,7 @@ export default function BlueprintEditor() {
         onChange={(next) => {
           if (commit(next)) {
             setConnectionPlacement(null);
+            setModulePlacement(null);
             setSelected(null);
             setPastedGroup(null);
             setRotationPivot(null);
@@ -1022,6 +1129,7 @@ export default function BlueprintEditor() {
         placing={!!connectionPlacement}
         onCancelPlacement={() => setConnectionPlacement(null)}
         onPlace={(placement) => {
+          setModulePlacement(null);
           setConnectionPlacement(placement);
           setTool('select');
           setSelected(null);
@@ -1032,10 +1140,8 @@ export default function BlueprintEditor() {
         }}
         project={project}
         disabled={!!gesture || !!points.length || exporting}
-        referenceFloor={referenceFloor}
-        setReferenceFloor={setReferenceFloor}
-        opacity={referenceOpacity}
-        setOpacity={setReferenceOpacity}
+        referenceFloors={referenceFloors}
+        setReferenceFloors={setReferenceFloors}
         onError={setMessage}
         onChange={(next) => {
           if (commit(next)) {
@@ -1154,190 +1260,244 @@ export default function BlueprintEditor() {
               </select>
             </label>
           )}
-          {tool === 'wall' && selectedElement && wallSegments(selectedElement).length > 0 && (
-            <fieldset disabled={!editable}>
+          {tool === 'wall' && (
+            <div>
               <label>
-                Borda
+                Modo
                 <select
-                  value={wallEdge}
-                  onChange={(event) => {
-                    const index = Number(event.target.value);
-                    setWallEdge(index);
-                    const section = selectedElement.walls?.find((wall) => wall.segment === index);
-                    setWallStart((section?.start ?? 0) * 100);
-                    setWallEnd((section?.end ?? 1) * 100);
-                    setWallType(section?.type ?? 'internal');
+                  value={manualWall ? 'draw' : 'edit'}
+                  onChange={(e) => {
+                    setManualWall(e.target.value === 'draw');
+                    setPoints([]);
                   }}
                 >
-                  {wallSegments(selectedElement).map((_, index) => (
-                    <option key={index} value={index}>
-                      Borda {index + 1}
-                    </option>
-                  ))}
+                  <option value="edit">Editar parede existente</option>
+                  <option value="draw">Desenhar parede independente</option>
                 </select>
               </label>
-              <details className="blueprint-wall-intervals">
-                <summary>Trechos desta borda</summary>
-                {(selectedElement.walls || [])
-                  .filter((wall) => wall.segment === wallEdge)
-                  .map((wall) => (
-                    <button
-                      key={wall.start}
-                      onClick={() => {
-                        setWallStart(wall.start * 100);
-                        setWallEnd(wall.end * 100);
-                        setWallType(wall.type);
-                      }}
+              {manualWall && (
+                <>
+                  <label>
+                    Tipo
+                    <select
+                      value={wallType === 'open' ? 'internal' : wallType}
+                      onChange={(e) => setWallType(e.target.value)}
                     >
-                      {Math.round(wall.start * 100)}–{Math.round(wall.end * 100)}% ·{' '}
-                      {wallTypes[wall.type]}
-                    </button>
-                  ))}
-                <button
-                  onClick={() => {
-                    setWallStart(0);
-                    setWallEnd(100);
-                  }}
-                >
-                  SELECIONAR BORDA INTEIRA
-                </button>
-              </details>
-              <label>
-                Tipo de parede
-                <select value={wallType} onChange={(event) => setWallType(event.target.value)}>
-                  <option value="auto">Automática (unir ambientes)</option>
-                  {Object.entries(wallTypes).map(([value, name]) => (
-                    <option key={value} value={value}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Início do trecho (%)
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={wallStart}
-                  onChange={(event) => setWallStart(Number(event.target.value))}
-                />
-              </label>
-              <label>
-                Fim do trecho (%)
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={wallEnd}
-                  onChange={(event) => setWallEnd(Number(event.target.value))}
-                />
-              </label>
-              <button
-                onClick={() => {
-                  try {
-                    commit(
-                      setWallSection(project, selected, {
-                        segment: wallEdge,
-                        start: wallStart / 100,
-                        end: wallEnd / 100,
-                        type: wallType,
-                      }),
-                    );
-                  } catch (error) {
-                    setMessage(error.message);
-                  }
-                }}
-              >
-                APLICAR TRECHO
-              </button>
-              <p>
-                Aplicar altera somente o intervalo escolhido, preservando os demais trechos.
-                Automática restaura a união dos ambientes apenas nesse intervalo. Portas e janelas
-                recortam a parede; remova a peça antes de transformar seu trecho em abertura livre.
-              </p>
-              {selectedElement.kind === 'ellipse' && (
-                <details onToggle={(event) => setArcPreview(event.currentTarget.open)}>
-                  <summary>Editar arco contínuo</summary>
-                  <div className="blueprint-quick-actions">
-                    {[90, 180, 360].map((angle) => (
-                      <button key={angle} onClick={() => setArcEnd(arcStart + angle)}>
-                        {angle === 360 ? 'CONTORNO INTEIRO' : `${angle}°`}
-                      </button>
-                    ))}
-                  </div>
-                  <p>
-                    O tracejado branco mostra o arco antes de aplicar e não aparece na exportação.
-                  </p>
-                  <p>0° à direita; sentido horário. Para cruzar 0°, use um fim acima de 360°.</p>
-                  <label>
-                    Início do arco (°)
-                    <input
-                      type="number"
-                      min="0"
-                      max="359.99"
-                      value={arcStart}
-                      onChange={(event) => setArcStart(Number(event.target.value))}
-                    />
+                      {Object.entries(wallTypes)
+                        .filter(([k]) => k !== 'open')
+                        .map(([k, v]) => (
+                          <option key={k} value={k}>
+                            {v}
+                          </option>
+                        ))}
+                    </select>
                   </label>
-                  <label>
-                    Fim do arco (°)
-                    <input
-                      type="number"
-                      min="0"
-                      max="720"
-                      value={arcEnd}
-                      onChange={(event) => setArcEnd(Number(event.target.value))}
-                    />
-                  </label>
-                  <button
-                    onClick={() => {
-                      try {
-                        commit(setWallArc(project, selected, arcStart, arcEnd, wallType));
-                      } catch (error) {
-                        setMessage(error.message);
-                      }
+                  <p>Clique no início e no fim. Escape cancela.</p>
+                </>
+              )}
+            </div>
+          )}
+          {tool === 'wall' &&
+            !manualWall &&
+            selectedElement &&
+            wallSegments(selectedElement).length > 0 && (
+              <fieldset disabled={!editable}>
+                <label>
+                  Borda
+                  <select
+                    value={wallEdge}
+                    onChange={(event) => {
+                      const index = Number(event.target.value);
+                      setWallEdge(index);
+                      const section = selectedElement.walls?.find((wall) => wall.segment === index);
+                      setWallStart((section?.start ?? 0) * 100);
+                      setWallEnd((section?.end ?? 1) * 100);
+                      setWallType(section?.type ?? 'internal');
                     }}
                   >
-                    APLICAR TIPO AO ARCO
-                  </button>
-                  <p>Usa o tipo de parede selecionado acima. Desfazer reverte o arco inteiro.</p>
-                </details>
-              )}
-              <details>
-                <summary>Padrões para este ambiente</summary>
-                <p>Substitui todos os trechos deste ambiente. Espessura apenas visual.</p>
-                {[
-                  ['internal', 'Divisórias de nave'],
-                  ['hull', 'Casco de nave / estação'],
-                  ['structural', 'Instalação planetária'],
-                ].map(([type, name]) => (
+                    {wallSegments(selectedElement).map((_, index) => (
+                      <option key={index} value={index}>
+                        Borda {index + 1}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <details className="blueprint-wall-intervals">
+                  <summary>Trechos desta borda</summary>
+                  {(selectedElement.walls || [])
+                    .filter((wall) => wall.segment === wallEdge)
+                    .map((wall) => (
+                      <button
+                        key={wall.start}
+                        onClick={() => {
+                          setWallStart(wall.start * 100);
+                          setWallEnd(wall.end * 100);
+                          setWallType(wall.type);
+                        }}
+                      >
+                        {Math.round(wall.start * 100)}–{Math.round(wall.end * 100)}% ·{' '}
+                        {wallTypes[wall.type]}
+                      </button>
+                    ))}
                   <button
-                    key={type}
-                    onClick={() =>
-                      property(
-                        'walls',
-                        wallSegments(selectedElement).map((_, segment) => ({
-                          segment,
-                          start: 0,
-                          end: 1,
-                          type,
-                        })),
-                      )
-                    }
+                    onClick={() => {
+                      setWallStart(0);
+                      setWallEnd(100);
+                    }}
                   >
-                    {name}
+                    SELECIONAR BORDA INTEIRA
                   </button>
-                ))}
-                <button onClick={() => property('walls', [])}>RESTAURAR PAREDES AUTOMÁTICAS</button>
-              </details>
-            </fieldset>
+                </details>
+                <label>
+                  Tipo de parede
+                  <select value={wallType} onChange={(event) => setWallType(event.target.value)}>
+                    <option value="auto">Automática (unir ambientes)</option>
+                    {Object.entries(wallTypes).map(([value, name]) => (
+                      <option key={value} value={value}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Início do trecho (%)
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={wallStart}
+                    onChange={(event) => setWallStart(Number(event.target.value))}
+                  />
+                </label>
+                <label>
+                  Fim do trecho (%)
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={wallEnd}
+                    onChange={(event) => setWallEnd(Number(event.target.value))}
+                  />
+                </label>
+                <button
+                  onClick={() => {
+                    try {
+                      commit(
+                        setWallSection(project, selected, {
+                          segment: wallEdge,
+                          start: wallStart / 100,
+                          end: wallEnd / 100,
+                          type: wallType,
+                        }),
+                      );
+                    } catch (error) {
+                      setMessage(error.message);
+                    }
+                  }}
+                >
+                  APLICAR TRECHO
+                </button>
+                <p>
+                  Aplicar altera somente o intervalo escolhido, preservando os demais trechos.
+                  Automática restaura a união dos ambientes apenas nesse intervalo. Portas e janelas
+                  recortam a parede; remova a peça antes de transformar seu trecho em abertura
+                  livre.
+                </p>
+                {selectedElement.kind === 'ellipse' && (
+                  <details onToggle={(event) => setArcPreview(event.currentTarget.open)}>
+                    <summary>Editar arco contínuo</summary>
+                    <div className="blueprint-quick-actions">
+                      {[90, 180, 360].map((angle) => (
+                        <button key={angle} onClick={() => setArcEnd(arcStart + angle)}>
+                          {angle === 360 ? 'CONTORNO INTEIRO' : `${angle}°`}
+                        </button>
+                      ))}
+                    </div>
+                    <p>
+                      O tracejado branco mostra o arco antes de aplicar e não aparece na exportação.
+                    </p>
+                    <p>0° à direita; sentido horário. Para cruzar 0°, use um fim acima de 360°.</p>
+                    <label>
+                      Início do arco (°)
+                      <input
+                        type="number"
+                        min="0"
+                        max="359.99"
+                        value={arcStart}
+                        onChange={(event) => setArcStart(Number(event.target.value))}
+                      />
+                    </label>
+                    <label>
+                      Fim do arco (°)
+                      <input
+                        type="number"
+                        min="0"
+                        max="720"
+                        value={arcEnd}
+                        onChange={(event) => setArcEnd(Number(event.target.value))}
+                      />
+                    </label>
+                    <button
+                      onClick={() => {
+                        try {
+                          commit(setWallArc(project, selected, arcStart, arcEnd, wallType));
+                        } catch (error) {
+                          setMessage(error.message);
+                        }
+                      }}
+                    >
+                      APLICAR TIPO AO ARCO
+                    </button>
+                    <p>Usa o tipo de parede selecionado acima. Desfazer reverte o arco inteiro.</p>
+                  </details>
+                )}
+                <details>
+                  <summary>Padrões para este ambiente</summary>
+                  <p>Substitui todos os trechos deste ambiente. Espessura apenas visual.</p>
+                  {[
+                    ['internal', 'Divisórias de nave'],
+                    ['hull', 'Casco de nave / estação'],
+                    ['structural', 'Instalação planetária'],
+                  ].map(([type, name]) => (
+                    <button
+                      key={type}
+                      onClick={() =>
+                        property(
+                          'walls',
+                          wallSegments(selectedElement).map((_, segment) => ({
+                            segment,
+                            start: 0,
+                            end: 1,
+                            type,
+                          })),
+                        )
+                      }
+                    >
+                      {name}
+                    </button>
+                  ))}
+                  <button onClick={() => property('walls', [])}>
+                    RESTAURAR PAREDES AUTOMÁTICAS
+                  </button>
+                </details>
+              </fieldset>
+            )}
+          {tool === 'dimension' && (
+            <DimensionControls
+              {...dimensionStyle}
+              onChange={(key, value) => setDimensionStyle({ ...dimensionStyle, [key]: value })}
+            />
           )}
           {tool === 'label' && (
-            <label>
-              Anotação
-              <input value={label} maxLength="200" onChange={(e) => setLabel(e.target.value)} />
-            </label>
+            <TextControls
+              text={label}
+              {...labelStyle}
+              onChange={(key, value) =>
+                key === 'text'
+                  ? setLabel(value)
+                  : setLabelStyle((style) => ({ ...style, [key]: value }))
+              }
+            />
           )}
           <details open>
             <summary>Propriedades da seleção</summary>
@@ -1375,15 +1535,49 @@ export default function BlueprintEditor() {
                         />
                       </label>
                     ))}
+                  {selectedElement.kind === 'dimension' && (
+                    <DimensionControls {...selectedElement} onChange={property} />
+                  )}
+                  {selectedElement.kind === 'corridor' && (
+                    <fieldset>
+                      <legend>Extremidades</legend>
+                      {[
+                        ['closedStart', 'Fechar início'],
+                        ['closedEnd', 'Fechar fim'],
+                      ].map(([key, title]) => (
+                        <label key={key}>
+                          <input
+                            type="checkbox"
+                            checked={!!selectedElement[key]}
+                            onChange={(e) => {
+                              const next = setCorridorEnd(
+                                project,
+                                selectedElement.id,
+                                key,
+                                e.target.checked,
+                              );
+                              const removed =
+                                project.elements.filter((x) => x.kind === 'door').length -
+                                next.elements.filter((x) => x.kind === 'door').length;
+                              if (
+                                removed &&
+                                !window.confirm(
+                                  'Reabrir esta extremidade removerá ' +
+                                    removed +
+                                    ' porta(s)/janela(s). Continuar?',
+                                )
+                              )
+                                return;
+                              commit(next);
+                            }}
+                          />
+                          {title}
+                        </label>
+                      ))}
+                    </fieldset>
+                  )}
                   {selectedElement.kind === 'label' && (
-                    <label>
-                      Texto
-                      <input
-                        value={selectedElement.text}
-                        maxLength="200"
-                        onChange={(e) => property('text', e.target.value)}
-                      />
-                    </label>
+                    <TextControls {...selectedElement} onChange={property} />
                   )}
                   {selectedElement.points && (
                     <details className="blueprint-vertices">
@@ -1417,6 +1611,7 @@ export default function BlueprintEditor() {
                                 type="button"
                                 aria-label={`Inserir vértice após ${index + 1}`}
                                 disabled={
+                                  ['dimension', 'partition'].includes(selectedElement.kind) ||
                                   selectedElement.points.length >= 500 ||
                                   (selectedElement.kind !== 'polygon' &&
                                     index === selectedElement.points.length - 1)
@@ -1610,12 +1805,12 @@ export default function BlueprintEditor() {
             {Object.entries(toolNames).map(([id, name]) => {
               const shortcut = Object.keys(toolKeys)
                 .find((key) => toolKeys[key] === id)
-                .toUpperCase();
+                ?.toUpperCase();
               return (
                 <button
                   key={id}
                   aria-label={name}
-                  title={name + ' (' + shortcut + ')'}
+                  title={shortcut ? name + ' (' + shortcut + ')' : name}
                   aria-keyshortcuts={shortcut}
                   aria-pressed={tool === id}
                   onClick={() => {
@@ -1754,6 +1949,88 @@ export default function BlueprintEditor() {
               {Math.round(view.zoom * 100)}% · grade visível {gridStep} m
             </span>
           </div>
+          {modulePlacement && (
+            <div
+              className="blueprint-selection-toolbar blueprint-module-placement"
+              role="group"
+              aria-label="Posicionamento do módulo"
+            >
+              <span>{modulePlacement.name}</span>
+              <button
+                disabled={!!gesture}
+                title="Girar módulo −90° (Shift+R)"
+                aria-label="Girar módulo −90°"
+                onClick={() => rotatePendingModule(-1)}
+              >
+                <ToolIcon name="rotateLeft" />
+              </button>
+              <button
+                disabled={!!gesture}
+                title="Girar módulo +90° (R)"
+                aria-label="Girar módulo +90°"
+                onClick={() => rotatePendingModule(1)}
+              >
+                <ToolIcon name="rotateRight" />
+              </button>
+              <button
+                className="blueprint-pivot-reset"
+                onClick={() => {
+                  setModulePlacement(null);
+                  svgRef.current?.focus();
+                }}
+              >
+                Cancelar
+              </button>
+              <details className="blueprint-module-grid">
+                <summary>
+                  Repetir em grade ({moduleGridOptions.rows * moduleGridOptions.columns})
+                </summary>
+                <div>
+                  {[
+                    ['rows', 'Linhas'],
+                    ['columns', 'Colunas'],
+                    ['gap', 'Espaço entre módulos (m)'],
+                  ].map(([key, label]) => (
+                    <label key={key}>
+                      {label}
+                      <input
+                        type="number"
+                        min={key === 'gap' ? 0 : 1}
+                        max={key === 'gap' ? 100 : 10}
+                        step={key === 'gap' ? 0.25 : 1}
+                        value={moduleGridOptions[key]}
+                        onChange={(event) => {
+                          const value = event.target.valueAsNumber;
+                          if (
+                            Number.isFinite(value) &&
+                            value >= (key === 'gap' ? 0 : 1) &&
+                            value <= (key === 'gap' ? 100 : 10) &&
+                            (key === 'gap' || Number.isInteger(value))
+                          )
+                            setModuleGridOptions((options) => ({ ...options, [key]: value }));
+                        }}
+                      />
+                    </label>
+                  ))}
+                  <button onClick={() => setModuleGridOptions({ rows: 1, columns: 1, gap: 0 })}>
+                    Uma cópia
+                  </button>
+                </div>
+              </details>
+              <label className="blueprint-repeat-module">
+                <input
+                  type="checkbox"
+                  checked={repeatModule}
+                  onChange={(event) => {
+                    setRepeatModule(event.target.checked);
+                    svgRef.current?.focus({ preventScroll: true });
+                  }}
+                />
+                Inserção contínua
+              </label>
+              <small>Shift+clique repete · Esc encerra</small>
+            </div>
+          )}
           {tool === 'select' && selectedElement && (
             <div className="blueprint-selection-toolbar" role="group" aria-label="Ações da seleção">
               {selectedElement.kind !== 'door' && (
@@ -1785,6 +2062,42 @@ export default function BlueprintEditor() {
                   </button>
                 </form>
               )}
+              {pastedGroup?.ids.length >= 2 &&
+                pastedGroup.ids.every(
+                  (id) => project.elements.find((item) => item.id === id)?.kind === 'asset',
+                ) && (
+                  <form
+                    className="blueprint-arrange-control"
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      try {
+                        if (commit(arrangeEquipment(project, pastedGroup.ids, arrangement))) {
+                          setRotationPivot(null);
+                          svgRef.current?.focus();
+                        }
+                      } catch (error) {
+                        setMessage(error.message);
+                      }
+                    }}
+                  >
+                    <select
+                      aria-label="Alinhamento dos equipamentos"
+                      value={arrangement}
+                      onChange={(event) => setArrangement(event.target.value)}
+                    >
+                      {Object.entries(arrangements).map(([value, title]) => (
+                        <option
+                          key={value}
+                          value={value}
+                          disabled={value.startsWith('distribute') && pastedGroup.ids.length < 3}
+                        >
+                          {title}
+                        </option>
+                      ))}
+                    </select>
+                    <button disabled={!!gesture || !!points.length}>Alinhar</button>
+                  </form>
+                )}
               {rotationFrame && (
                 <button
                   type="button"
@@ -1918,7 +2231,9 @@ export default function BlueprintEditor() {
               }
               if (!e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 'r') {
                 e.preventDefault();
-                rotateSelection(e.shiftKey ? -90 : 90);
+                if (modulePlacement) {
+                  if (!e.repeat) rotatePendingModule(e.shiftKey ? -1 : 1);
+                } else rotateSelection(e.shiftKey ? -90 : 90);
               }
               const direction = {
                 ArrowLeft: [-1, 0],
@@ -1941,6 +2256,7 @@ export default function BlueprintEditor() {
               }
               if (e.key === 'Escape') {
                 setConnectionPlacement(null);
+                setModulePlacement(null);
                 setPastedGroup(null);
                 setFocusMode(false);
                 setSpaceHeld(false);
@@ -1979,6 +2295,31 @@ export default function BlueprintEditor() {
               preview={preview}
               interactive={tool === 'select'}
             />
+            {tool === 'wall' && manualWall && points.length === 1 && cursor && (
+              <line
+                data-editor-only="true"
+                pointerEvents="none"
+                x1={points[0].x}
+                y1={points[0].y}
+                x2={cursor.x}
+                y2={cursor.y}
+                stroke="#f1c46c"
+                strokeWidth=".2"
+              />
+            )}
+            {tool === 'dimension' && points.length === 1 && cursor && (
+              <g data-editor-only="true" pointerEvents="none" color="#f1c46c">
+                <Dimension element={{ points: [points[0], cursor], ...dimensionStyle }} />
+              </g>
+            )}
+            {modulePlacement && cursor && (
+              <ModulePlacementPreview
+                module={modulePlacement}
+                point={cursor}
+                project={project}
+                options={moduleGridOptions}
+              />
+            )}
             {connectionPlacement && cursor && (
               <g data-editor-only="true" pointerEvents="none">
                 <rect
@@ -1994,7 +2335,14 @@ export default function BlueprintEditor() {
                 />
               </g>
             )}
-            <DeckReference project={project} floorId={referenceFloor} opacity={referenceOpacity} />
+            {visibleReferences.map((floor) => (
+              <DeckReference
+                key={floor.id}
+                project={project}
+                floorId={floor.id}
+                opacity={0.35 / Math.sqrt(visibleReferences.length)}
+              />
+            ))}
             {tool === 'select' && pastedGroup && (
               <g
                 data-editor-only="true"
@@ -2096,15 +2444,46 @@ export default function BlueprintEditor() {
           </p>
         </section>
         <aside className="blueprint-settings" aria-label="Projeto, camadas e exportação">
+          <ModuleLibrary
+            project={project}
+            ids={pastedGroup?.ids || (selected ? [selected] : [])}
+            disabled={!!gesture || !!points.length || !!connectionPlacement || !!modulePlacement}
+            onError={setMessage}
+            onPlace={(module) => {
+              setModuleGridOptions({ rows: 1, columns: 1, gap: 0 });
+              setModulePlacement(module);
+              setConnectionPlacement(null);
+              setTool('select');
+              setSelected(null);
+              setPastedGroup(null);
+              setRotationPivot(null);
+              setCursor(null);
+              setMessage('Clique no mapa para posicionar o módulo. Escape cancela.');
+              svgRef.current?.focus({ preventScroll: true });
+            }}
+          />
           <ObjectsPanel
             project={project}
             selected={selected}
-            disabled={!!gesture || !!points.length || !!connectionPlacement}
+            disabled={!!gesture || !!points.length || !!connectionPlacement || !!modulePlacement}
             onChange={(next) => {
               if (commit(next)) {
                 setSelected(null);
                 setPastedGroup(null);
                 setRotationPivot(null);
+              }
+            }}
+            onLocate={(id) => {
+              try {
+                setView(objectView(project, id));
+                setTool('select');
+                setSelected(id);
+                setPastedGroup(null);
+                setRotationPivot(null);
+                svgRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                svgRef.current?.focus({ preventScroll: true });
+              } catch (error) {
+                setMessage(error.message);
               }
             }}
             onSelect={(id) => {

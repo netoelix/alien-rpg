@@ -136,7 +136,10 @@ export function openingGeometry(opening, elements) {
     ...sections.map((section) => wallWidths[section.type] ?? 0),
   );
   let side = -1;
-  if (parent.kind === 'corridor') side = opening.segment % 2 === 0 ? 1 : -1;
+  if (parent.kind === 'partition') side = 0;
+  if (parent.kind === 'corridor')
+    side =
+      opening.segment >= (parent.points.length - 1) * 2 ? 1 : opening.segment % 2 === 0 ? 1 : -1;
   if (parent.kind === 'polygon') {
     const area = parent.points.reduce((sum, point, index, points) => {
       const next = points[(index + 1) % points.length];
@@ -195,6 +198,7 @@ export function wallRuns(element) {
     for (const before of remaining) {
       const after = remaining.find(
         (wall) =>
+          wall.segment < (element.points.length - 1) * 2 &&
           wall.segment === before.segment + 2 &&
           wall.start === 0 &&
           before.end === 1 &&
@@ -226,17 +230,23 @@ export function wallRuns(element) {
     while (changed) {
       changed = false;
       const after = remaining.findIndex(
-        (wall) => wall.type === first.type && samePoint(points.at(-1), wall.a),
+        (wall) =>
+          wall.type === first.type &&
+          (samePoint(points.at(-1), wall.a) || samePoint(points.at(-1), wall.b)),
       );
       if (after >= 0) {
-        points.push(remaining.splice(after, 1)[0].b);
+        const edge = remaining.splice(after, 1)[0];
+        points.push(samePoint(points.at(-1), edge.a) ? edge.b : edge.a);
         changed = true;
       }
       const before = remaining.findIndex(
-        (wall) => wall.type === first.type && samePoint(wall.b, points[0]),
+        (wall) =>
+          wall.type === first.type &&
+          (samePoint(wall.b, points[0]) || samePoint(wall.a, points[0])),
       );
       if (before >= 0) {
-        points.unshift(remaining.splice(before, 1)[0].a);
+        const edge = remaining.splice(before, 1)[0];
+        points.unshift(samePoint(edge.b, points[0]) ? edge.a : edge.b);
         changed = true;
       }
     }

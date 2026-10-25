@@ -26,3 +26,8 @@ Fluxo previsto: editar localmente, salvar com backup, revisar mudanças, enviar 
 - Importação de retratos para recursos locais, com conversão e redução no navegador, limite de tamanho e nome gerado no servidor local.
 
 Verificação: 37 testes aprovados, build concluído e fluxos de preenchimento/importação verificados no navegador. Retrato de teste removido após validação.
+
+
+### Criador de mapas — validação pendente
+
+Antes de encerrar o bloco de módulos, seguir [a checklist de validação visual](validacao-pendente-blueprints.md). Conferência adiada pelo usuário em 23/10/2026; desenvolvimento local autorizado a continuar. Próxima frente: anotações e medidas do mapa.
