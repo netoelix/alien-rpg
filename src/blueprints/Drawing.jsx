@@ -1,3 +1,6 @@
+import { labelBounds } from './label-bounds.js';
+import { Dimension } from './Dimension.jsx';
+import { LabelText } from './LabelText.jsx';
 import { objectVisible } from './objects.js';
 import { shapeTransform } from './orientation.js';
 import { resizeHandles } from './resize.js';
@@ -22,6 +25,7 @@ function Shape({ element, outer = false, seamOverlap = false }) {
   // Tiny rendering overlap closes antialiasing seams at coincident boundaries.
   // Geometry, snapping and saved dimensions remain unchanged.
   const outline = outer ? 0.4 : seamOverlap ? 0.06 : 0;
+  if (element.kind === 'partition') return null;
   if (element.kind === 'polygon')
     return (
       <polygon
@@ -35,12 +39,23 @@ function Shape({ element, outer = false, seamOverlap = false }) {
   if (element.kind === 'corridor')
     return (
       <polyline
-        points={element.points.map((p) => `${p.x},${p.y}`).join(' ')}
+        points={element.points
+          .map((p, i, pts) => {
+            if (!seamOverlap || (i !== 0 && i !== pts.length - 1)) return p.x + ',' + p.y;
+            const closed = i === 0 ? element.closedStart : element.closedEnd;
+            const other = i === 0 ? pts[1] : pts.at(-2),
+              len = Math.hypot(p.x - other.x, p.y - other.y);
+            const extra = closed ? 0 : element.width / 2;
+            return (
+              p.x + ((p.x - other.x) / len) * extra + ',' + (p.y + ((p.y - other.y) / len) * extra)
+            );
+          })
+          .join(' ')}
         fill="none"
         stroke="currentColor"
         strokeWidth={element.width + outline}
         strokeLinejoin="round"
-        strokeLinecap={seamOverlap ? 'square' : 'butt'}
+        strokeLinecap="butt"
       />
     );
   const { x, y, w, h } = element;
@@ -348,7 +363,16 @@ export function Drawing({
           {visible('structure') &&
             structure.map((e) => (
               <g key={e.id} data-object={e.id} opacity="0" color="white">
-                <Shape element={e} />
+                {e.kind === 'partition' ? (
+                  <polyline
+                    points={e.points.map((p) => p.x + ',' + p.y).join(' ')}
+                    fill="none"
+                    stroke="white"
+                    strokeWidth=".8"
+                  />
+                ) : (
+                  <Shape element={e} />
+                )}
               </g>
             ))}
         </g>
@@ -450,11 +474,20 @@ export function Drawing({
           fontFamily="monospace"
         >
           {elements
+            .filter((e) => e.kind === 'dimension')
+            .map((e) => (
+              <Dimension
+                key={e.id}
+                element={e}
+                editable={interactive && e.id === selected}
+                data-object={e.id}
+                color={palette.ink}
+              />
+            ))}
+          {elements
             .filter((e) => e.kind === 'label')
             .map((e) => (
-              <text key={e.id} data-object={e.id} x={e.x} y={e.y} fontSize={e.size}>
-                {e.text}
-              </text>
+              <LabelText key={e.id} data-object={e.id} element={e} />
             ))}
         </g>
       )}
@@ -463,7 +496,12 @@ export function Drawing({
           {elements
             .filter((e) => e.id === selected)
             .map((e) => {
-              const p = e.kind === 'door' ? openingGeometry(e, elements) : e;
+              const p =
+                e.kind === 'door'
+                  ? openingGeometry(e, elements)
+                  : e.kind === 'label'
+                    ? labelBounds(e)
+                    : e;
               if (!p) return null;
               return e.points ? (
                 <polyline
@@ -485,8 +523,8 @@ export function Drawing({
                   }
                   x={p.x - 0.3}
                   y={p.y - 0.3}
-                  width={(e.w || 1) + 0.6}
-                  height={(e.h || 1) + 0.6}
+                  width={(p.w || 1) + 0.6}
+                  height={(p.h || 1) + 0.6}
                   fill="none"
                   stroke="#fff"
                   strokeWidth=".12"

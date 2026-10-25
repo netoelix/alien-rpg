@@ -57,10 +57,8 @@ export function DeckReference({ project, floorId, opacity }) {
 export function DeckConnections({
   project,
   disabled,
-  referenceFloor,
-  setReferenceFloor,
-  opacity,
-  setOpacity,
+  referenceFloors,
+  setReferenceFloors,
   onChange,
   onError,
   onPlace,
@@ -91,35 +89,27 @@ export function DeckConnections({
     <div className="blueprint-deck-panels">
       <details className="blueprint-deck-options">
         <summary>
-          Referência visual <small>Sobrepor outro andar</small>
+          Referência visual <small>Sobrepor pavimentos</small>
         </summary>
-        <div className="deck-reference-fields">
-          <label>
-            Mostrar contorno de
-            <select
-              value={others.some((floor) => floor.id === referenceFloor) ? referenceFloor : ''}
-              onChange={(event) => setReferenceFloor(event.target.value)}
-            >
-              <option value="">Nenhum pavimento</option>
-              {others.map((floor) => (
-                <option key={floor.id} value={floor.id}>
-                  {floor.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Intensidade · {Math.round(opacity * 100)}%
-            <input
-              type="range"
-              min="0.1"
-              max="0.7"
-              step="0.05"
-              value={opacity}
-              onChange={(event) => setOpacity(Number(event.target.value))}
-            />
-          </label>
-        </div>
+        <fieldset className="deck-destinations deck-reference-list">
+          <legend>Pavimentos visíveis como referência</legend>
+          {!others.length && <p>Crie outro pavimento para usar como referência.</p>}
+          {others.map((floor) => (
+            <label className="deck-floor-choice" key={floor.id}>
+              <input
+                type="checkbox"
+                checked={referenceFloors.includes(floor.id)}
+                onChange={(event) =>
+                  setReferenceFloors((ids) =>
+                    event.target.checked ? [...ids, floor.id] : ids.filter((id) => id !== floor.id),
+                  )
+                }
+              />
+              <span>{floor.name}</span>
+            </label>
+          ))}
+        </fieldset>
+        <small>Transparência automática conforme a quantidade de referências visíveis. </small>
         <small>Guia de alinhamento. Não aparece na exportação.</small>
       </details>
       <details className="blueprint-deck-options">

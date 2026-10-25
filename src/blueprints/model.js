@@ -140,6 +140,7 @@ export function newProject() {
 export const snap = (n, step) => Math.round(n / step) * step;
 export const layerFor = (kind) =>
   ({
+    partition: 'structure',
     room: 'structure',
     polygon: 'structure',
     ellipse: 'structure',
@@ -148,8 +149,11 @@ export const layerFor = (kind) =>
     asset: 'equipment',
     vent: 'vents',
     label: 'labels',
+    dimension: 'labels',
   })[kind];
 export function wallSegments(element) {
+  if (element.kind === 'partition')
+    return [[element.points[0], element.points[1]].map((p) => [p.x, p.y])];
   if (['room', 'ellipse'].includes(element.kind) && element.rotation) {
     return wallSegments({ ...element, rotation: 0 }).map((edge) =>
       edge.map(([x, y]) => {
@@ -188,7 +192,7 @@ export function wallSegments(element) {
     ];
   }
   if (element.kind === 'corridor') {
-    return element.points.slice(1).flatMap((b, i) => {
+    const sides = element.points.slice(1).flatMap((b, i) => {
       const a = element.points[i],
         length = Math.hypot(b.x - a.x, b.y - a.y);
       if (!length) return [];
@@ -205,6 +209,10 @@ export function wallSegments(element) {
         ],
       ];
     });
+    const ends = [];
+    if (element.closedStart) ends.push([sides[1][0], sides[0][0]]);
+    if (element.closedEnd) ends.push([sides.at(-2)[1], sides.at(-1)[1]]);
+    return [...sides, ...ends];
   }
   // Paredes curvas são aproximadas por segmentos para ancoragem das portas.
   if (element.kind === 'ellipse') {
@@ -732,6 +740,35 @@ export function parseProject(text) {
         width: number(e.width, 0.25, 20),
       };
     }
+    if (e.kind === 'partition') {
+      if (!Array.isArray(e.points) || e.points.length !== 2)
+        throw new Error('A parede precisa de duas extremidades.');
+      const points = e.points.map((p) => ({
+        x: number(p.x, 0, result.width),
+        y: number(p.y, 0, result.height),
+      }));
+      if (Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y) < 0.25)
+        throw new Error('Parede muito curta.');
+      return { ...base, points };
+    }
+    if (e.kind === 'dimension') {
+      if (!Array.isArray(e.points) || e.points.length !== 2)
+        throw new Error('A cota precisa de dois pontos.');
+      const points = e.points.map((p) => ({
+        x: number(p.x, 0, result.width),
+        y: number(p.y, 0, result.height),
+      }));
+      if (Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y) < 0.25)
+        throw new Error('A cota precisa medir pelo menos 0,25 m.');
+      if (e.mode !== undefined && !['direct', 'horizontal', 'vertical'].includes(e.mode))
+        throw new Error('Tipo de cota inválido.');
+      return {
+        ...base,
+        points,
+        ...(e.mode ? { mode: e.mode } : {}),
+        ...(e.offset !== undefined ? { offset: number(e.offset, -2000, 2000) } : {}),
+      };
+    }
     if (['vent', 'corridor', 'polygon'].includes(e.kind)) {
       if (
         !Array.isArray(e.points) ||
@@ -757,13 +794,30 @@ export function parseProject(text) {
         );
       return {
         ...base,
+        ...(e.kind === 'corridor'
+          ? {
+              ...(e.closedStart === true ? { closedStart: true } : {}),
+              ...(e.closedEnd === true ? { closedEnd: true } : {}),
+            }
+          : {}),
         ...(e.kind === 'polygon' ? {} : { width: number(e.width, 0.25, 50) }),
         points,
       };
     }
     const position = { x: number(e.x, 0, result.width), y: number(e.y, 0, result.height) };
-    if (e.kind === 'label')
-      return { ...base, ...position, text: string(e.text, 200), size: number(e.size, 0.25, 20) };
+    if (e.kind === 'label') {
+      if (e.align !== undefined && !['start', 'middle', 'end'].includes(e.align))
+        throw new Error('Alinhamento inválido.');
+      if (e.bold !== undefined && typeof e.bold !== 'boolean') throw new Error('Estilo inválido.');
+      return {
+        ...base,
+        ...position,
+        text: string(e.text, 1000),
+        size: number(e.size, 0.25, 20),
+        ...(e.align ? { align: e.align } : {}),
+        ...(e.bold !== undefined ? { bold: e.bold } : {}),
+      };
+    }
     if (e.kind === 'asset' && !assetTypes.includes(e.asset))
       throw new Error('Equipamento desconhecido.');
     return {
