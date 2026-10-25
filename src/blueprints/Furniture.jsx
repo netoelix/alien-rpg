@@ -1,7 +1,19 @@
+import { vehicleAssets } from './vehicle-assets.js';
+import { ColonyFurniture } from './ColonyFurniture.jsx';
+import { colonyAssets } from './colony-assets.js';
+import { AccessFurniture } from './AccessFurniture.jsx';
+import { LevelFurniture } from './LevelFurniture.jsx';
+import { levelAssets } from './level-assets.js';
+import { FloorMarking } from './FloorMarking.jsx';
+import { floorMarkings } from './floor-markings.js';
 import { EnvironmentFurniture } from './EnvironmentFurniture.jsx';
 import { environmentAssets } from './environment-assets.js';
 import { furniture } from './furniture.js';
 export function Furniture({ type, w = furniture[type]?.w, h = furniture[type]?.h }) {
+  if (colonyAssets[type] || vehicleAssets[type]) return <ColonyFurniture type={type} w={w} h={h} />;
+  if (['stairs', 'elevator'].includes(type)) return <AccessFurniture type={type} w={w} h={h} />;
+  if (levelAssets[type]) return <LevelFurniture type={type} w={w} h={h} />;
+  if (floorMarkings[type]) return <FloorMarking type={type} w={w} h={h} />;
   if (environmentAssets[type]) return <EnvironmentFurniture type={type} w={w} h={h} />;
   const edge = Math.min(0.035, w / 15, h / 15),
     inset = Math.min(0.08, w / 8, h / 8);

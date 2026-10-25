@@ -141,3 +141,18 @@ Usuário confirmou os demais itens funcionando. Duas exceções reportadas: impo
 - Salvar/reabrir e repetir; duplicar sala e duto juntos e mover a sala copiada.
 - Mover o próprio duto tem prioridade; escotilhas permanecem livres. Excluir a sala mantém o duto no lugar.
 - A ligação é reconhecida pela geometria (proximidade até 0,3 m), sem IDs extras no arquivo. Não rearranja automaticamente o restante do trajeto.
+
+## Acabamentos internos — conferir localmente
+
+- Selecionar sala e abrir Acabamento do piso: comparar os quatro estilos, escala e intensidade.
+- Redimensionar/rotacionar, testar sala circular, polígono e corredor; conferir contornos e paredes.
+- Inserir sinalização de piso e depois equipamentos; as marcações devem ficar abaixo deles.
+- Salvar/reabrir, copiar e inserir como módulo.
+- Exportar PNG/SVG com Estrutura (pisos) e Equipamentos (sinalização), incluindo paletas azul e impressão.
+
+## Plataformas e desníveis
+- Inserir as seis peças da categoria Plataformas e desníveis; redimensionar e girar.
+- Conferir seta de subida e lado baixo da borda.
+- Inserir uma plataforma depois de um móvel e confirmar que fica abaixo dele.
+- Agrupar plataforma e móveis para mover juntos.
+- Salvar/reabrir, biblioteca de módulos e exportação PNG/SVG.

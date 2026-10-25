@@ -13,14 +13,19 @@ test('physical furniture retains footprints through project and module round tri
     rotation: 0,
     ...assetFootprint(asset),
   }));
-  const p = parseProject(JSON.stringify({ ...newProject(), elements }));
+  const testProject = {
+    ...newProject(),
+    width: 120,
+    height: Math.max(100, 50 + Math.ceil(elements.length / 8) * 4),
+  };
+  const p = parseProject(JSON.stringify({ ...testProject, elements }));
   assert.deepEqual(p.elements, elements);
   const module = createModule(
     p,
     elements.map((e) => e.id),
     'Posto de comando',
   );
-  const copy = placeModule(newProject(), module, 20, 20);
+  const copy = placeModule(testProject, module, 20, 20);
   assert.deepEqual(
     copy.project.elements.map((e) => [e.asset, e.w, e.h]),
     elements.map((e) => [e.asset, e.w, e.h]),

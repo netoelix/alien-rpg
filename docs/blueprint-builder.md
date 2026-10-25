@@ -340,3 +340,47 @@ O catálogo de equipamentos está organizado em categorias recolhíveis: Comando
 ## Biblioteca de ambientes — 25/10/2026
 
 24 peças físicas em vista superior, organizadas em Jardim e vegetação, Área externa e Decoração interna. Inclui vasos, árvore, canteiros, hidroponia, pedras, espelho d’água, bancos, mesa externa, ombrelone, proteção, iluminação, gabinete técnico, painel solar, antena, drenagem, tapete, vitrine e aquário. Os desenhos são SVG leves e determinísticos, sem imagens externas. As peças usam as ferramentas existentes de escala, rotação, agrupamento, módulos e exportação.
+
+## Roadmap futuro — terrenos e colônias (25/10/2026)
+
+**Status: planejado, implementação adiada por decisão do usuário.** Existem outras frentes a trabalhar antes desta expansão. Este registro não altera as prioridades atuais nem autoriza começar as ferramentas ou publicar mudanças.
+
+Ordem sugerida, a confirmar quando esta frente for retomada:
+
+1. **Água:** lagos por contorno editável com curvas; rios por caminho com largura ajustável; piscinas com bordas retas ou arredondadas. Aproveitar a linguagem visual do asset de espelho d’água.
+2. **Circulação externa:** caminhos, calçadas e ruas por trajetos com largura, acabamento e conexões ajustáveis. Permitir compor acessos entre edifícios, praças e jardins.
+3. **Relevo:** ribanceiras e penhascos por linha de borda com escolha do lado da queda; cânions com duas margens. Comunicar desníveis com traços discretos, sem exigir geometria 3D.
+4. **Terreno e vegetação:** áreas rochosas, jardins e canteiros por contorno, com detalhes leves e distribuição de pedras ou plantas.
+
+Diretrizes para todos os blocos:
+
+- Manter a estética de blueprint: contornos claros, detalhes internos econômicos e padrões discretos, sem depender de texturas pesadas.
+- Usar camadas próprias com visibilidade e exportação separadas; desenhar terreno abaixo das construções e dos equipamentos.
+- Reaproveitar alças e vértices para editar contornos e trajetos.
+- Limitar a densidade dos detalhes e avaliar desempenho em mapas grandes.
+- Água e relevo são inicialmente visuais. Bloqueios e outras propriedades para Foundry ficam para uma etapa específica.
+- Preservar o fluxo local de projetos e downloads, sem armazenar mapas criados no servidor.
+
+Não há data ou compromisso de implementação definido.
+
+## Acabamentos internos — primeiro bloco (25/10/2026)
+
+Selecionar sala retangular, circular, por vértices ou corredor e expandir **Acabamento do piso** nas propriedades. Opções: liso, chapas metálicas, placas modulares e gradeado. O módulo varia de 0,25 a 10 m e a intensidade de 0 a 60%. Redimensionar o ambiente repete o padrão sem esticar as placas; o acabamento pertence à estrutura e segue sua visibilidade/exportação. Arquivos antigos continuam com piso liso.
+
+Em Equipamentos → **Sinalização de piso**, inserir faixa de segurança, seta de circulação, delimitação de carga ou faixa de circulação. São peças livres, dimensionáveis e rotacionáveis; desenhadas antes dos demais equipamentos e exportadas na camada Equipamentos. Não bloqueiam movimento nem abrem paredes; posicionamento é manual.
+
+Padrões usam SVG pattern com quantidade constante de elementos gráficos por ambiente. Salvar/reabrir, copiar e biblioteca de módulos preservam os acabamentos. Ainda não há desenho de uma região de piso independente, plataformas ou desníveis: são os próximos blocos internos. A expansão para terrenos e colônias permanece adiada.
+
+## Plataformas e desníveis visuais — 25/10/2026
+
+Categoria Plataformas e desníveis: plataforma elevada, plataforma gradeada, degraus de acesso, lance de escada, rampa e borda de desnível. São peças físicas com escala, rotação, cópia e módulos. Setas apontam subida; traços na borda indicam o lado baixo. Plataformas são desenhadas antes da sinalização e dos equipamentos, independentemente da ordem de inserção. Mover a plataforma não move objetos apoiados nela automaticamente; usar seleção em grupo.
+
+Esta representação é visual e não conecta pavimentos nem atribui alturas ou colisões. Conexões entre pavimentos continuam na ferramenta existente. Degraus se repetem conforme o comprimento, limitados a 40 traços para manter o desenho leve; em comprimentos extremos são esquemáticos.
+
+## Expansão de mobiliário e infraestrutura — 25/10/2026
+
+Adicionadas 40 peças grandes em 12 categorias, com três categorias novas: Feira e comércio, Oficina e Estação e transporte. Lista e dimensões em [assets adicionais](assets-ambientes-adicionais.md). Renderização SVG determinística e sem filtros de brilho, imagens remotas ou micro-objetos. Nenhuma ferramenta de terreno foi implementada neste bloco.
+
+## Veículos — 25/10/2026
+
+18 peças em Veículos · ferroviários, Veículos · industriais e Veículos · rodoviários. Catálogo em [veículos](assets-veiculos.md). Desenhos externos, com linhas em unidades físicas para preservar a legibilidade nos vagões longos. Compatíveis com posicionamento, rotação, redimensionamento, sobreposição, cópia, módulos e exportação.

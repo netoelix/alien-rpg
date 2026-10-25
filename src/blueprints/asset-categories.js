@@ -1,4 +1,29 @@
+import { vehicleAssets } from './vehicle-assets.js';
+import { colonyAssets } from './colony-assets.js';
 export const assetCategories = [
+  { id: 'rail-vehicles', name: 'Veículos · ferroviários', items: [] },
+  { id: 'industrial-vehicles', name: 'Veículos · industriais', items: [] },
+  { id: 'road-vehicles', name: 'Veículos · rodoviários', items: [] },
+  { id: 'market', name: 'Feira e comércio', items: [] },
+  { id: 'workshop', name: 'Oficina', items: [] },
+  { id: 'transit', name: 'Estação e transporte', items: [] },
+  {
+    id: 'levels',
+    name: 'Plataformas e desníveis',
+    items: [
+      'raisedPlatform',
+      'gratedPlatform',
+      'shortSteps',
+      'stairFlight',
+      'accessRamp',
+      'levelEdge',
+    ],
+  },
+  {
+    id: 'floor-signage',
+    name: 'Sinalização de piso',
+    items: ['hazardStripe', 'floorArrow', 'loadingZone', 'walkwayMark'],
+  },
   {
     id: 'garden',
     name: 'Jardim e vegetação',
@@ -137,4 +162,12 @@ export const assetCategories = [
     items: ['cargoContainer', 'reinforcedCrate', 'cargoPallet', 'storageShelf', 'crate', 'rack'],
   },
   { id: 'access', name: 'Acessos e circulação', items: ['stairs', 'elevator', 'hatch'] },
-];
+].map((category) => ({
+  ...category,
+  items: [
+    ...category.items,
+    ...Object.entries({ ...colonyAssets, ...vehicleAssets })
+      .filter(([, asset]) => asset.category === category.id)
+      .map(([id]) => id),
+  ],
+}));

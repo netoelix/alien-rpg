@@ -35,3 +35,7 @@ Antes de encerrar o bloco de módulos, seguir [a checklist de validação visual
 ## Consolidação — 25/10/2026
 
 Concluídos localmente: expansão do catálogo físico (incluindo 24 peças de ambientes), categorias recolhidas, prévia de inserção, otimização da viewport e revisão da ventilação. Dutos têm acessos configuráveis, junções por extremidade e acompanhamento geométrico das paredes. Conexões de ventilação entre pavimentos ficam para uma etapa futura. Publicação deste conjunto em preparação.
+
+## Expansão para colônias — adiada (25/10/2026)
+
+Registradas as futuras ferramentas de água (lagos, rios e piscinas), circulação externa (caminhos, calçadas e ruas), relevo (ribanceiras, penhascos e cânions) e áreas de pedras/vegetação. **Trabalhar nas prioridades anteriores antes de iniciar esta frente.** A ordem sugerida e as diretrizes estão no [roadmap de terrenos e colônias](blueprint-builder.md#roadmap-futuro--terrenos-e-colônias-25102026). Registro apenas de planejamento, sem implementação ou publicação.

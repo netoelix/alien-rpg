@@ -1,3 +1,7 @@
+import { reorderAsset } from './asset-order.js';
+import { levelAssets } from './level-assets.js';
+import { FloorFinishControls } from './FloorFinishControls.jsx';
+import { floorKinds } from './floor-finishes.js';
 import { ventAccessTypes, followVentWalls } from './ventilation.js';
 import { PlacementPreview } from './PlacementPreview.jsx';
 import { openingCandidate } from './placement.js';
@@ -1551,7 +1555,86 @@ export default function BlueprintEditor() {
                     : toolNames[selectedElement.kind]}{' '}
                   {selectedElement.asset && '· ' + assetNames[selectedElement.asset]}
                 </p>
+                {levelAssets[selectedElement.asset] && (
+                  <small>
+                    Desnível visual: não conecta pavimentos. A seta indica subida; os traços da
+                    borda indicam o lado baixo.
+                  </small>
+                )}
                 <fieldset disabled={!editable}>
+                  {selectedElement.asset === 'stairs' && (
+                    <details>
+                      <summary>Legenda de destino</summary>
+                      <small>Usa o nome da sala que contém o centro da saída conectada.</small>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={!selectedElement.connectionLabel?.hidden}
+                          onChange={(e) =>
+                            property('connectionLabel', {
+                              ...selectedElement.connectionLabel,
+                              hidden: !e.target.checked,
+                            })
+                          }
+                        />
+                        Mostrar destino
+                      </label>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedElement.connectionLabel?.export !== false}
+                          onChange={(e) =>
+                            property('connectionLabel', {
+                              ...selectedElement.connectionLabel,
+                              export: e.target.checked,
+                            })
+                          }
+                        />
+                        Incluir na exportação
+                      </label>
+                      {['dx', 'dy'].map((key) => (
+                        <label key={key}>
+                          Deslocamento {key === 'dx' ? 'X' : 'Y'} (m)
+                          <input
+                            type="number"
+                            step=".25"
+                            value={selectedElement.connectionLabel?.[key] || 0}
+                            onChange={(e) =>
+                              property('connectionLabel', {
+                                ...selectedElement.connectionLabel,
+                                [key]: Number(e.target.value),
+                              })
+                            }
+                          />
+                        </label>
+                      ))}
+                    </details>
+                  )}
+                  {selectedElement.kind === 'asset' && (
+                    <details>
+                      <summary>Ordem de sobreposição</summary>
+                      <div className="blueprint-object-actions">
+                        {[
+                          ['front', '⇈', 'Trazer para frente'],
+                          ['forward', '↑', 'Avançar um nível'],
+                          ['backward', '↓', 'Recuar um nível'],
+                          ['back', '⇊', 'Enviar para trás'],
+                        ].map(([action, icon, title]) => (
+                          <button
+                            key={action}
+                            title={title}
+                            aria-label={title}
+                            onClick={() =>
+                              commit(reorderAsset(project, selectedElement.id, action))
+                            }
+                          >
+                            {icon} {title}
+                          </button>
+                        ))}
+                      </div>
+                      <small>Entre equipamentos, plataformas e sinalização deste pavimento.</small>
+                    </details>
+                  )}
                   {['x', 'y', 'w', 'h', 'width', 'size', 'rotation']
                     .filter((key) => typeof selectedElement[key] === 'number')
                     .map((key) => (
@@ -1575,6 +1658,12 @@ export default function BlueprintEditor() {
                         />
                       </label>
                     ))}
+                  {floorKinds.includes(selectedElement.kind) && (
+                    <FloorFinishControls
+                      value={selectedElement.floorFinish}
+                      onChange={(value) => property('floorFinish', value)}
+                    />
+                  )}
                   {selectedElement.kind === 'dimension' && (
                     <DimensionControls {...selectedElement} onChange={property} />
                   )}
