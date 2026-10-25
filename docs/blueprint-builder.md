@@ -330,3 +330,13 @@ A ferramenta Texto permite até 1000 caracteres, múltiplas linhas, tamanho de 0
 ### Cotas de distância
 
 A ferramenta Cota de distância usa dois cliques e mostra a distância real entre os pontos em metros, inclusive na diagonal. As cotas pertencem à camada Anotações e são exportadas com ela. No modo Selecionar, arraste a linha para mover ou as extremidades para recalcular a medida. São objetos independentes: mover uma sala não desloca automaticamente uma cota fora do grupo selecionado.
+
+### Mobiliário físico — família de comando
+
+Bancada modular (2 × 1 m), terminal de bancada (0,60 × 0,45 m) e cadeira de operador (0,65 × 0,70 m) são peças independentes em vista superior. As bancadas podem ser duplicadas e encostadas lado a lado usando Guias; não há fusão automática. Os detalhes são desenhados nas dimensões da peça, com traço de espessura constante em metros. Os assets antigos permanecem compatíveis e mantêm suas dimensões iniciais anteriores. Para posicionar peças pequenas, use uma grade de 0,25 m ou Alt para suspender o encaixe.
+
+O catálogo de equipamentos está organizado em categorias recolhíveis: Comando, Habitação e convivência, Medicina e criogenia, Engenharia, Carga e armazenamento, Acessos e circulação. A busca continua global e expande as categorias com resultados. A organização não altera objetos dos projetos existentes.
+
+## Biblioteca de ambientes — 25/10/2026
+
+24 peças físicas em vista superior, organizadas em Jardim e vegetação, Área externa e Decoração interna. Inclui vasos, árvore, canteiros, hidroponia, pedras, espelho d’água, bancos, mesa externa, ombrelone, proteção, iluminação, gabinete técnico, painel solar, antena, drenagem, tapete, vitrine e aquário. Os desenhos são SVG leves e determinísticos, sem imagens externas. As peças usam as ferramentas existentes de escala, rotação, agrupamento, módulos e exportação.

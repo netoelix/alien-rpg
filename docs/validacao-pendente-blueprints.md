@@ -99,3 +99,45 @@ Usuário confirmou os demais itens funcionando. Duas exceções reportadas: impo
 - [ ] Selecionar corredor e marcar Fechar início / Fechar fim; confirmar que o piso não ultrapassa a ponta fechada.
 - [ ] Colocar aberturas nas pontas; reabrir uma ponta e conferir aviso, cancelamento e preservação das aberturas da outra ponta.
 - [ ] Salvar/reabrir, desfazer/refazer e exportar as novas estruturas.
+
+## Guias e encaixe em objetos
+
+- [ ] Desenhar paredes, salas e cotas próximo de quinas, centros e extremidades; conferir guias amarelas.
+- [ ] Mover estruturas/equipamentos e grupos por pontos diferentes: o encaixe deve alinhar suas bordas, não somente o cursor.
+- [ ] Segurar Alt para movimento/desenho livre; testar Guias e Grade independentemente.
+- [ ] Objetos/camadas ocultos não devem gerar guias; conferir tolerância com zoom.
+- [ ] Exportar sem guias na imagem.
+
+## Primeira família de mobiliário físico
+
+- [ ] Buscar Bancada modular, Terminal de bancada e Cadeira de operador e conferir dimensões iniciais.
+- [ ] Encostar duas bancadas lado a lado e colocar um terminal sobre elas.
+- [ ] Girar e redimensionar: conferir traço, seleção e prévia dos módulos.
+- [ ] Salvar/reabrir e exportar PNG/SVG; comparar os objetos antigos para confirmar preservação.
+
+## Prévia de inserção
+
+- [ ] Escolher equipamento e conferir tamanho/posição antes do clique; testar fora dos limites.
+- [ ] Escolher porta/janela e conferir encaixe na parede, ajuste próximo às quinas e indicação vermelha sem suporte.
+- [ ] Sair da viewport: prévia desaparece. Conferir que ela não aparece na exportação.
+- [ ] Repetir no mapa Teste para conferir desempenho após as otimizações.
+
+## Ventilação — acessos e desenho
+- Conferir duto com curvas, largura e juntas transversais.
+- Terminar na parede: grelha; dentro da sala: escotilha; fora: ponta aberta.
+- Selecionar o duto e alterar Início/Fim entre automático, grelha, escotilha, aberto e tampado.
+- Salvar/reabrir e exportar somente ventilação; conferir também miniatura do módulo.
+- Nesta etapa os acessos são recalculados pela posição. Ainda não há vínculo persistente que arraste o duto ao mover a sala, nem junções automáticas entre dutos ou pavimentos.
+
+### Junções de ventilação
+- Terminar um duto no eixo de outro: conferir junção em T e ponta sem escotilha.
+- Cruzar dois trajetos sem terminar no encontro: manter sobreposição independente.
+- Definir ponta como tampada/grelha/aberta: não conectar automaticamente.
+- Mover uma ponta para longe desfaz a conexão. Conferir exportação e módulos.
+- Vínculo persistente às paredes e conexões entre pavimentos continuam pendentes.
+
+### Grelhas acompanhando paredes
+- Mover, girar e redimensionar uma sala com duto terminando na parede: conferir a ponta durante o gesto e ao soltar.
+- Salvar/reabrir e repetir; duplicar sala e duto juntos e mover a sala copiada.
+- Mover o próprio duto tem prioridade; escotilhas permanecem livres. Excluir a sala mantém o duto no lugar.
+- A ligação é reconhecida pela geometria (proximidade até 0,3 m), sem IDs extras no arquivo. Não rearranja automaticamente o restante do trajeto.

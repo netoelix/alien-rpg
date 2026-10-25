@@ -1,3 +1,8 @@
+import { VentilationNetwork } from './Ventilation.jsx';
+import { memo, useMemo } from 'react';
+const emptyPreview = [];
+import { Furniture } from './Furniture.jsx';
+import { furniture } from './furniture.js';
 import { labelBounds } from './label-bounds.js';
 import { Dimension } from './Dimension.jsx';
 import { LabelText } from './LabelText.jsx';
@@ -71,12 +76,12 @@ function Shape({ element, outer = false, seamOverlap = false }) {
     <rect x={x} y={y} width={w} height={h} {...common} />
   );
 }
-export function Drawing({
+export const Drawing = memo(function Drawing({
   project,
   grid = false,
   gridStep = project.grid,
   selected,
-  preview = [],
+  preview = emptyPreview,
   interactive = false,
   wallSelection = null,
   arcSelection = null,
@@ -84,22 +89,36 @@ export function Drawing({
   handleRadius = 0.4,
 }) {
   const palette = palettes[project.theme];
-  const elements = [...project.elements, ...preview].filter((element) =>
-    objectVisible(project, element),
+  const elements = useMemo(
+    () => [...project.elements, ...preview].filter((element) => objectVisible(project, element)),
+    [project.elements, preview],
   );
   const visible = (id) => project.layers.find((l) => l.id === id)?.visible;
   const opacity = (id) => project.layers.find((l) => l.id === id)?.opacity ?? 1;
-  const structure = elements
-    .filter((e) => layerFor(e.kind) === 'structure')
-    .map(persistentWallStructure);
-  const sharedStructure = sharedWallStructures(structure);
-  const sections = structure.flatMap((element) =>
-    wallSections(element).map((wall) => ({ ...wall, id: element.id })),
-  );
+  const { structure, sharedStructure, sections, doors, openings, junctions, runs, transitions } =
+    useMemo(() => {
+      const structure = elements
+        .filter((e) => layerFor(e.kind) === 'structure')
+        .map(persistentWallStructure);
+      const sharedStructure = sharedWallStructures(structure);
+      const doors = elements.filter((e) => e.kind === 'door');
+      return {
+        structure,
+        sharedStructure,
+        doors,
+        sections: structure.flatMap((element) =>
+          wallSections(element).map((wall) => ({ ...wall, id: element.id })),
+        ),
+        openings: new Map(doors.map((e) => [e.id, openingGeometry(e, elements, sharedStructure)])),
+        junctions: sharedWallJunctions(structure),
+        runs: sharedStructure.map((e) => [...partitionEndCaps(e, structure), ...wallRuns(e)]),
+        transitions: structure.map(wallTransitions),
+      };
+    }, [elements]);
+  const getGeometry = (e) => openings.get(e.id);
   const line = (wall) => ({ x1: wall.a[0], y1: wall.a[1], x2: wall.b[0], y2: wall.b[1] });
-  const doors = elements.filter((e) => e.kind === 'door');
   const position = (e) => {
-    const p = openingGeometry(e, elements);
+    const p = getGeometry(e);
     return p ? `translate(${p.x} ${p.y}) rotate(${p.rotation})` : '';
   };
   return (
@@ -202,9 +221,9 @@ export function Drawing({
                   key={e.id}
                   transform={position(e)}
                   x={-e.width / 2}
-                  y={-openingGeometry(e, elements).frameDepth}
+                  y={-getGeometry(e).frameDepth}
                   width={e.width}
-                  height={2 * openingGeometry(e, elements).frameDepth}
+                  height={2 * getGeometry(e).frameDepth}
                   fill="black"
                 />
               ),
@@ -236,9 +255,9 @@ export function Drawing({
                   key={door.id}
                   transform={position(door)}
                   x={-door.width / 2}
-                  y={-openingGeometry(door, elements).frameDepth}
+                  y={-getGeometry(door).frameDepth}
                   width={door.width}
-                  height={2 * openingGeometry(door, elements).frameDepth}
+                  height={2 * getGeometry(door).frameDepth}
                   fill="black"
                 />
               ),
@@ -288,7 +307,7 @@ export function Drawing({
           />
           <g mask="url(#blueprint-section-cuts)" fill="none" stroke={palette.ink}>
             <g mask="url(#blueprint-junction-outside)" fill={palette.ink} stroke="none">
-              {sharedWallJunctions(structure).map((joint, index) => (
+              {junctions.map((joint, index) => (
                 <rect
                   key={index}
                   x={joint.x - joint.radius}
@@ -305,7 +324,7 @@ export function Drawing({
                 strokeLinejoin="round"
                 strokeLinecap="butt"
               >
-                {wallTransitions(structure[index]).map((joint, jointIndex) => (
+                {transitions[index].map((joint, jointIndex) => (
                   <rect
                     key={`transition-${jointIndex}`}
                     x={joint.x - joint.radius}
@@ -316,32 +335,30 @@ export function Drawing({
                     stroke="none"
                   />
                 ))}
-                {[...partitionEndCaps(element, structure), ...wallRuns(element)].map(
-                  (run, runIndex) => (
-                    <g key={runIndex}>
-                      <path d={run.d} strokeWidth={2 * wallWidths[run.type]} />
-                      {run.type === 'hull' && (
-                        <>
-                          <path d={run.d} stroke={palette.floor} strokeWidth=".95" />
-                          <path d={run.d} strokeWidth=".28" />
-                        </>
-                      )}
-                      {run.type === 'glass' && (
-                        <path
-                          d={run.d}
-                          stroke={palette.accent}
-                          strokeWidth=".4"
-                          strokeDasharray=".3 .2"
-                        />
-                      )}
-                    </g>
-                  ),
-                )}
+                {runs[index].map((run, runIndex) => (
+                  <g key={runIndex}>
+                    <path d={run.d} strokeWidth={2 * wallWidths[run.type]} />
+                    {run.type === 'hull' && (
+                      <>
+                        <path d={run.d} stroke={palette.floor} strokeWidth=".95" />
+                        <path d={run.d} strokeWidth=".28" />
+                      </>
+                    )}
+                    {run.type === 'glass' && (
+                      <path
+                        d={run.d}
+                        stroke={palette.accent}
+                        strokeWidth=".4"
+                        strokeDasharray=".3 .2"
+                      />
+                    )}
+                  </g>
+                ))}
               </g>
             ))}
           </g>
           {doors.map((door) => {
-            const geometry = openingGeometry(door, elements);
+            const geometry = getGeometry(door);
             if (!geometry) return null;
             const reach = geometry.depth / 2 + 0.03;
             return (
@@ -391,16 +408,16 @@ export function Drawing({
                 <g key={e.id} data-object={e.id} transform={position(e)}>
                   <path
                     stroke={e.openingType === 'window' ? palette.ink : undefined}
-                    d={`M ${-e.width / 2} ${-openingGeometry(e, elements).frameDepth} V ${openingGeometry(e, elements).frameDepth} M ${e.width / 2} ${-openingGeometry(e, elements).frameDepth} V ${openingGeometry(e, elements).frameDepth} M ${-e.width / 2} -.12 H ${e.width / 2} V .12 H ${-e.width / 2} Z`}
+                    d={`M ${-e.width / 2} ${-getGeometry(e).frameDepth} V ${getGeometry(e).frameDepth} M ${e.width / 2} ${-getGeometry(e).frameDepth} V ${getGeometry(e).frameDepth} M ${-e.width / 2} -.12 H ${e.width / 2} V .12 H ${-e.width / 2} Z`}
                   />
                   {e.openingType === 'window' && (
                     <path d={`M ${-e.width / 2} 0 H ${e.width / 2}`} stroke={palette.ink} />
                   )}
                   <rect
                     x={-e.width / 2}
-                    y={-openingGeometry(e, elements).frameDepth}
+                    y={-getGeometry(e).frameDepth}
                     width={e.width}
-                    height={2 * openingGeometry(e, elements).frameDepth}
+                    height={2 * getGeometry(e).frameDepth}
                     fill="transparent"
                     stroke="none"
                   />
@@ -419,51 +436,38 @@ export function Drawing({
                 data-object={e.id}
                 transform={`translate(${e.x + e.w / 2} ${e.y + e.h / 2}) rotate(${e.rotation}) translate(${-e.w / 2} ${-e.h / 2})`}
               >
-                <svg
-                  width={e.w}
-                  height={e.h}
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  fill={palette.floor}
-                  stroke={palette.ink}
-                  strokeWidth="2"
-                >
-                  <rect width="100" height="100" fill="transparent" stroke="none" />
-                  <AssetSymbol type={e.asset} />
-                </svg>
+                {furniture[e.asset] ? (
+                  <svg
+                    width={e.w}
+                    height={e.h}
+                    viewBox={`0 0 ${e.w} ${e.h}`}
+                    overflow="visible"
+                    fill={palette.floor}
+                    stroke={palette.ink}
+                  >
+                    <Furniture type={e.asset} w={e.w} h={e.h} />
+                  </svg>
+                ) : (
+                  <svg
+                    width={e.w}
+                    height={e.h}
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    fill={palette.floor}
+                    stroke={palette.ink}
+                    strokeWidth="2"
+                  >
+                    <rect width="100" height="100" fill="transparent" stroke="none" />
+                    <AssetSymbol type={e.asset} />
+                  </svg>
+                )}
               </g>
             ))}
         </g>
       )}
       {visible('vents') && (
         <g data-layer="vents" opacity={opacity('vents')} fill="none" stroke={palette.accent}>
-          {elements
-            .filter((e) => e.kind === 'vent')
-            .map((e) => (
-              <g key={e.id} data-object={e.id}>
-                <polyline
-                  points={e.points.map((p) => `${p.x},${p.y}`).join(' ')}
-                  strokeWidth={e.width}
-                  strokeOpacity=".3"
-                  strokeLinejoin="round"
-                />
-                <polyline
-                  points={e.points.map((p) => `${p.x},${p.y}`).join(' ')}
-                  strokeWidth=".12"
-                  strokeDasharray=".4 .2"
-                />
-                {[e.points[0], e.points.at(-1)].map((p, i) => (
-                  <circle
-                    key={i}
-                    cx={p.x}
-                    cy={p.y}
-                    r={e.width / 2}
-                    fill={palette.floor}
-                    strokeWidth=".1"
-                  />
-                ))}
-              </g>
-            ))}
+          <VentilationNetwork elements={elements} floor={palette.floor} />
         </g>
       )}
       {visible('labels') && (
@@ -497,11 +501,7 @@ export function Drawing({
             .filter((e) => e.id === selected)
             .map((e) => {
               const p =
-                e.kind === 'door'
-                  ? openingGeometry(e, elements)
-                  : e.kind === 'label'
-                    ? labelBounds(e)
-                    : e;
+                e.kind === 'door' ? getGeometry(e) : e.kind === 'label' ? labelBounds(e) : e;
               if (!p) return null;
               return e.points ? (
                 <polyline
@@ -680,4 +680,4 @@ export function Drawing({
           ))}
     </>
   );
-}
+});

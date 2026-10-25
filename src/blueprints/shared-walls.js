@@ -20,14 +20,15 @@ export function persistentWallStructure(element) {
 }
 
 // Resolve only the visual anchor; saved openings remain attached to their room.
-export function sharedOpeningAnchor(opening, elements) {
+export function sharedOpeningAnchor(opening, elements, resolvedStructure) {
   const anchor = doorPosition(opening, elements);
   if (!anchor) return opening;
   const structure = elements.filter((element) =>
     ['partition', 'room', 'ellipse', 'polygon', 'corridor'].includes(element.kind),
   );
   const angle = (anchor.rotation * Math.PI) / 180;
-  for (const element of sharedWallStructures(structure.map(persistentWallStructure))) {
+  for (const element of resolvedStructure ||
+    sharedWallStructures(structure.map(persistentWallStructure))) {
     if (element.joinWalls && element.id !== opening.wallId) continue;
     for (const section of wallSections(element)) {
       if (section.type === 'open') continue;

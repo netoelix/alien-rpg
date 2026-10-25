@@ -1,3 +1,6 @@
+import { VentilationNetwork } from './Ventilation.jsx';
+import { Furniture } from './Furniture.jsx';
+import { furniture } from './furniture.js';
 import { Dimension } from './Dimension.jsx';
 import { LabelText } from './LabelText.jsx';
 import { AssetSymbol } from './Assets.jsx';
@@ -18,10 +21,14 @@ export function ModuleSketch({ module }) {
                 y={element.y}
                 width={element.w}
                 height={element.h}
-                viewBox="0 0 100 100"
+                viewBox={furniture[element.asset] ? `0 0 ${element.w} ${element.h}` : '0 0 100 100'}
                 strokeWidth="3"
               >
-                <AssetSymbol type={element.asset} />
+                {furniture[element.asset] ? (
+                  <Furniture type={element.asset} w={element.w} h={element.h} />
+                ) : (
+                  <AssetSymbol type={element.asset} />
+                )}
               </svg>
             </g>
           );
@@ -42,15 +49,7 @@ export function ModuleSketch({ module }) {
             </g>
           );
         }
-        if (element.kind === 'vent')
-          return (
-            <polyline
-              key={element.id}
-              points={element.points.map((point) => point.x + ',' + point.y).join(' ')}
-              strokeWidth={element.width}
-              strokeOpacity=".4"
-            />
-          );
+        if (element.kind === 'vent') return null;
         if (element.kind === 'dimension') return <Dimension key={element.id} element={element} />;
         if (element.kind === 'label')
           return <LabelText key={element.id} element={element} fill="currentColor" stroke="none" />;
@@ -62,6 +61,7 @@ export function ModuleSketch({ module }) {
           </g>
         );
       })}
+      <VentilationNetwork elements={module.elements} />
     </g>
   );
 }
