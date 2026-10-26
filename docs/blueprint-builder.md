@@ -384,3 +384,18 @@ Adicionadas 40 peças grandes em 12 categorias, com três categorias novas: Feir
 ## Veículos — 25/10/2026
 
 18 peças em Veículos · ferroviários, Veículos · industriais e Veículos · rodoviários. Catálogo em [veículos](assets-veiculos.md). Desenhos externos, com linhas em unidades físicas para preservar a legibilidade nos vagões longos. Compatíveis com posicionamento, rotação, redimensionamento, sobreposição, cópia, módulos e exportação.
+
+## Traçados e entretenimento — 25/10/2026
+
+Ferramenta Traçados: escolher Trilhos ou Borda de desnível, clicar para definir vértices e concluir com Enter ou botão. Largura ajustável, curvas arredondadas opcionais e escolha do lado baixo para bordas. A curva é derivada dos vértices, sem alças Bézier independentes. Selecionar permite mover, editar/adicionar/remover vértices, copiar e salvar em módulos. Traçados pertencem a Equipamentos e são desenhados abaixo das peças. Repetições limitadas a 600 por traçado para preservar desempenho. Não há entroncamentos ferroviários automáticos, colisões ou simulação de trens. Ruas e calçadas continuam adiadas.
+
+16 assets de entretenimento: balcão modular, balcão em L, retaguarda de bar, banqueta, estação de bebidas, bilhar, roleta, pôquer, blackjack, caça-níqueis, palco, penteadeira de camarim, sofá reservado em U, cama com dossel, chaise longue e biombo. Categorias Bares e jogos de salão, Cassinos, Entretenimento/camarins/suítes.
+
+## Entretenimento — segunda expansão (25/10/2026)
+
+12 peças: jukebox, pinball, arcade duplo CRT, pebolim, mesa alta de coquetel, sofá curvo, caixa de cassino, mesa de dados, cabine de DJ analógica, caixa acústica, chapelaria e camarim duplo. Botões de sobreposição agora têm coluna própria, largura completa e ícone separado do texto.
+
+
+### Sanitários e manutenção — 26/10/2026
+
+Dez novas peças físicas: cabine de banho com antecâmara, cabine sanitária, ilha de vestiário, armário de secagem de trajes, tanque de higienização, estação de hidratação, unidade de tratamento de água, transformador, central de climatização e suporte de bobina industrial. Mantêm escala editável e armazenamento local. A conferência consolidada está em `conferencia-release-2026-10-26.md`.

@@ -1,3 +1,4 @@
+import { Trace } from './Trace.jsx';
 import { StairDestinationLabels } from './StairDestinationLabels.jsx';
 import { assetOrder } from './asset-order.js';
 import { floorMarkings } from './floor-markings.js';
@@ -386,6 +387,15 @@ export const Drawing = memo(function Drawing({
       )}
       {visible('equipment') && (
         <g data-layer="equipment" opacity={opacity('equipment')}>
+          <g stroke={palette.ink}>
+            {elements
+              .filter((e) => e.kind === 'trace')
+              .map((e) => (
+                <g key={e.id} data-object={e.id}>
+                  <Trace element={e} />
+                </g>
+              ))}
+          </g>
           {elements
             .filter((e) => e.kind === 'asset')
             .sort((a, b) => assetOrder(a) - assetOrder(b))

@@ -241,6 +241,7 @@ export const layerFor = (kind) =>
     corridor: 'structure',
     door: 'doors',
     asset: 'equipment',
+    trace: 'equipment',
     vent: 'vents',
     label: 'labels',
     dimension: 'labels',
@@ -889,7 +890,7 @@ export function parseProject(text) {
         ...(e.offset !== undefined ? { offset: number(e.offset, -2000, 2000) } : {}),
       };
     }
-    if (['vent', 'corridor', 'polygon'].includes(e.kind)) {
+    if (['vent', 'corridor', 'polygon', 'trace'].includes(e.kind)) {
       if (
         !Array.isArray(e.points) ||
         e.points.length < (e.kind === 'polygon' ? 3 : 2) ||
@@ -908,6 +909,17 @@ export function parseProject(text) {
         x: number(p.x, 0, result.width),
         y: number(p.y, 0, result.height),
       }));
+      if (e.kind === 'trace') {
+        if (
+          !['rail', 'ledge'].includes(e.traceType) ||
+          (e.rounded !== undefined && typeof e.rounded !== 'boolean') ||
+          (e.side !== undefined && ![1, -1].includes(e.side))
+        )
+          throw new Error('Traçado decorativo inválido.');
+        base.traceType = e.traceType;
+        base.rounded = e.rounded === true;
+        base.side = e.side === -1 ? -1 : 1;
+      }
       if (e.kind === 'polygon') validatePolygon(points);
       else if (
         points

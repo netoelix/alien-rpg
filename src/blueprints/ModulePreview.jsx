@@ -1,3 +1,4 @@
+import { Trace } from './Trace.jsx';
 import { assetOrder } from './asset-order.js';
 import { FloorFinish } from './FloorFinish.jsx';
 import { VentilationNetwork } from './Ventilation.jsx';
@@ -21,6 +22,7 @@ export function ModuleSketch({ module }) {
             (b.kind === 'asset' ? assetOrder(b) + 1 : 0),
         )
         .map((element) => {
+          if (element.kind === 'trace') return <Trace key={element.id} element={element} />;
           if (element.kind === 'asset')
             return (
               <g key={element.id} transform={shapeTransform(element)}>
