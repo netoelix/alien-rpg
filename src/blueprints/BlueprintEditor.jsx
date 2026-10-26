@@ -1,3 +1,4 @@
+import { TraceControls } from './TraceControls.jsx';
 import { reorderAsset } from './asset-order.js';
 import { levelAssets } from './level-assets.js';
 import { FloorFinishControls } from './FloorFinishControls.jsx';
@@ -92,6 +93,7 @@ const toolNames = {
   corridor: 'Corredor',
   door: 'Portas e janelas',
   vent: 'Ventilação',
+  trace: 'Traçados',
   asset: 'Equipamento',
   module: 'Módulo pronto',
   label: 'Texto',
@@ -147,6 +149,7 @@ export default function BlueprintEditor() {
   const [focusMode, setFocusMode] = useState(false);
   const [spaceHeld, setSpaceHeld] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
+  const [traceStyle, setTraceStyle] = useState({ traceType: 'rail', rounded: true, side: 1 });
   const [project, setProject] = useState(() => sessionProject || newProject());
   const [referenceFloors, setReferenceFloors] = useState([]);
   const [connectionPlacement, setConnectionPlacement] = useState(null);
@@ -357,6 +360,7 @@ export default function BlueprintEditor() {
           'asset',
           'label',
           'vent',
+          'trace',
         ].includes(tool);
     if (enabled && objectSnap && eligible && !spaceHeld) {
       const excluded = gesture?.element ? pastedGroup?.ids || [gesture.element.id] : [];
@@ -615,7 +619,7 @@ export default function BlueprintEditor() {
       }
       return;
     }
-    if (['corridor', 'vent', 'polygon'].includes(tool)) {
+    if (['corridor', 'vent', 'polygon', 'trace'].includes(tool)) {
       setPoints((old) =>
         old.length && old.at(-1).x === p.x && old.at(-1).y === p.y ? old : [...old, p],
       );
@@ -773,7 +777,18 @@ export default function BlueprintEditor() {
   }
   function finish() {
     if (points.length < (tool === 'polygon' ? 3 : 2)) return;
-    if (add([{ id: uid(), kind: tool, points, width: lineWidth }])) setPoints([]);
+    if (
+      add([
+        {
+          id: uid(),
+          kind: tool,
+          points,
+          width: lineWidth,
+          ...(tool === 'trace' ? traceStyle : {}),
+        },
+      ])
+    )
+      setPoints([]);
   }
   function resized(g) {
     if (g.kind === 'rotate') return rotateAsset(g.element, g.start, g.end, project, g.step);
@@ -1031,6 +1046,7 @@ export default function BlueprintEditor() {
       {
         id: 'preview',
         kind: tool,
+        ...(tool === 'trace' ? traceStyle : {}),
         width: lineWidth,
         points: cursor ? [...points, cursor] : points,
       },
@@ -1209,7 +1225,13 @@ export default function BlueprintEditor() {
       <div className="blueprint-layout">
         <aside className="blueprint-tools" aria-label="Ferramentas de desenho">
           <h2>{toolNames[tool]}</h2>
-          {['corridor', 'vent', 'polygon'].includes(tool) && (
+          {tool === 'trace' && (
+            <TraceControls
+              value={traceStyle}
+              onChange={(key, value) => setTraceStyle({ ...traceStyle, [key]: value })}
+            />
+          )}
+          {['corridor', 'vent', 'polygon', 'trace'].includes(tool) && (
             <>
               {tool !== 'polygon' && (
                 <label>
@@ -1613,7 +1635,7 @@ export default function BlueprintEditor() {
                   {selectedElement.kind === 'asset' && (
                     <details>
                       <summary>Ordem de sobreposição</summary>
-                      <div className="blueprint-object-actions">
+                      <div className="blueprint-stack-actions">
                         {[
                           ['front', '⇈', 'Trazer para frente'],
                           ['forward', '↑', 'Avançar um nível'],
@@ -1628,7 +1650,8 @@ export default function BlueprintEditor() {
                               commit(reorderAsset(project, selectedElement.id, action))
                             }
                           >
-                            {icon} {title}
+                            <span aria-hidden="true">{icon}</span>
+                            <span>{title}</span>
                           </button>
                         ))}
                       </div>
@@ -1663,6 +1686,9 @@ export default function BlueprintEditor() {
                       value={selectedElement.floorFinish}
                       onChange={(value) => property('floorFinish', value)}
                     />
+                  )}
+                  {selectedElement.kind === 'trace' && (
+                    <TraceControls value={selectedElement} onChange={property} />
                   )}
                   {selectedElement.kind === 'dimension' && (
                     <DimensionControls {...selectedElement} onChange={property} />
@@ -2423,7 +2449,7 @@ export default function BlueprintEditor() {
                 e.preventDefault();
                 setPoints((current) => current.slice(0, -1));
               }
-              if (e.key === 'Enter' && ['corridor', 'vent', 'polygon'].includes(tool)) {
+              if (e.key === 'Enter' && ['corridor', 'vent', 'polygon', 'trace'].includes(tool)) {
                 e.preventDefault();
                 finish();
               }

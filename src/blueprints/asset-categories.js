@@ -1,6 +1,9 @@
 import { vehicleAssets } from './vehicle-assets.js';
 import { colonyAssets } from './colony-assets.js';
 export const assetCategories = [
+  { id: 'bar', name: 'Bares e jogos de salão', items: [] },
+  { id: 'casino', name: 'Cassinos', items: [] },
+  { id: 'entertainment', name: 'Entretenimento, camarins e suítes', items: [] },
   { id: 'rail-vehicles', name: 'Veículos · ferroviários', items: [] },
   { id: 'industrial-vehicles', name: 'Veículos · industriais', items: [] },
   { id: 'road-vehicles', name: 'Veículos · rodoviários', items: [] },

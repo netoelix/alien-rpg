@@ -4,6 +4,7 @@ import { ToolIcon } from './ToolIcon.jsx';
 import { layerFor } from './model.js';
 import { objectVisible, setObjectFlag } from './objects.js';
 const names = {
+  trace: 'Traçado',
   partition: 'Parede independente',
   room: 'Sala retangular',
   ellipse: 'Sala oval',

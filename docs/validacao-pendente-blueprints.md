@@ -156,3 +156,9 @@ Usuário confirmou os demais itens funcionando. Duas exceções reportadas: impo
 - Inserir uma plataforma depois de um móvel e confirmar que fica abaixo dele.
 - Agrupar plataforma e móveis para mover juntos.
 - Salvar/reabrir, biblioteca de módulos e exportação PNG/SVG.
+
+## Traçados e entretenimento
+- Desenhar trilhos com curvas e uma borda, inverter o lado baixo.
+- Mover vértices, inserir/remover pontos e salvar/reabrir.
+- Copiar como módulo e exportar PNG/SVG com Equipamentos.
+- Conferir os 16 assets novos nas três categorias.
