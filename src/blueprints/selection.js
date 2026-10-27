@@ -6,7 +6,12 @@ export function selectionBounds(element) {
   if (element.kind === 'door') return null;
   if (element.kind === 'label') return labelBounds(element);
   if (element.points) {
-    const padding = element.kind === 'polygon' ? 0 : (element.width || 0) / 2;
+    const padding =
+      element.kind === 'polygon'
+        ? 0
+        : element.kind === 'trace' && element.traceType === 'rail'
+          ? element.width * 1.15
+          : (element.width || 0) / 2;
     const xs = element.points.map((p) => p.x),
       ys = element.points.map((p) => p.y);
     return {

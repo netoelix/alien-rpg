@@ -1,6 +1,8 @@
+import { legacyAssets } from './legacy-assets.js';
 import { vehicleAssets } from './vehicle-assets.js';
 import { colonyAssets } from './colony-assets.js';
 export const assetCategories = [
+  { id: 'floor-technical', name: 'Piso · inspeção e drenagem', items: [] },
   { id: 'bar', name: 'Bares e jogos de salão', items: [] },
   { id: 'casino', name: 'Cassinos', items: [] },
   { id: 'entertainment', name: 'Entretenimento, camarins e suítes', items: [] },
@@ -168,9 +170,11 @@ export const assetCategories = [
 ].map((category) => ({
   ...category,
   items: [
-    ...category.items,
-    ...Object.entries({ ...colonyAssets, ...vehicleAssets })
-      .filter(([, asset]) => asset.category === category.id)
-      .map(([id]) => id),
-  ],
+    ...new Set([
+      ...category.items,
+      ...Object.entries({ ...colonyAssets, ...vehicleAssets })
+        .filter(([, asset]) => asset.category === category.id)
+        .map(([id]) => id),
+    ]),
+  ].filter((id) => !Object.hasOwn(legacyAssets, id)),
 }));

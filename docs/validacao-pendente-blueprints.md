@@ -162,3 +162,243 @@ Usuário confirmou os demais itens funcionando. Duas exceções reportadas: impo
 - Mover vértices, inserir/remover pontos e salvar/reabrir.
 - Copiar como módulo e exportar PNG/SVG com Equipamentos.
 - Conferir os 16 assets novos nas três categorias.
+
+
+### Regiões de piso e acabamentos técnicos — 26/10/2026
+
+- [ ] Desenhar duas regiões em uma sala; conferir que não aparecem paredes e que equipamentos ficam por cima.
+- [ ] Comparar chapas, grelha, piso antiderrapante e painéis técnicos, variando escala e intensidade.
+- [ ] Mover e editar vértices, inclusive inserir um vértice na última aresta; desfazer/refazer.
+- [ ] Salvar/reabrir, copiar como módulo e exportar PNG/SVG.
+- [ ] Conferir que ocultar Estrutura oculta também regiões; verificar acabamentos antigos.
+
+
+### Revisão de assets e trilhos — 26/10/2026
+
+- [ ] Sobrepor árvore, pedra, veículo e sofá curvo a um piso marcado; corpos sólidos devem ocultá-lo.
+- [ ] Conferir cabine sanitária, chuveiro, guarita e barraca aberta.
+- [ ] Comparar trilho modular e desenhado, com retas/curvas e temas diferentes; conferir PNG/SVG.
+- [ ] Reabrir mapa anterior e verificar posição/escala dos assets.
+
+## Conferência atual consolidada — após a última validação do usuário (26/10/2026)
+
+Ponto de referência: o usuário testou a versão publicada com o catálogo consolidado e informou que parecia tudo funcionar. As listas históricas acima ficam como registro; não representam uma solicitação de repetir toda a validação. Desde esse retorno, as pendências visuais são:
+
+- [ ] Regiões de piso: desenhar áreas dentro de uma sala, combinar acabamentos, alterar módulo/intensidade, editar vértices e conferir ausência de paredes novas.
+- [ ] Padrões antiderrapante e painéis técnicos, além dos acabamentos anteriores; conferir que paredes e equipamentos permanecem por cima.
+- [ ] Preenchimento dos assets revisados: árvore, plantas, pedras, veículos, balcão em L e sofá curvo sobre um piso marcado; partes sólidas ocultam o fundo, vãos reais permanecem abertos.
+- [ ] Consistência de cabines sanitária/banho com vaso e chuveiro avulsos; guarita, barraca de feira e espessura dos contornos.
+- [ ] Trilho desenhado versus asset modular: dormentes, espessura dos trilhos, curvas, seleção e temas. Conferir também borda de desnível para regressões.
+- [ ] Salvar/reabrir um mapa anterior e um novo; preservar posições, dimensões, regiões e padrões. Testar módulos, desfazer/refazer e PNG/SVG.
+
+Última verificação técnica registrada: 203 testes e build aprovados antes deste registro. Isso não substitui a conferência visual do usuário. Nenhuma build ou publicação foi executada para atualizar esta lista.
+
+Ainda planejados, portanto não disponíveis para conferir: canaletas e novos detalhes de inspeção; ventilação contextual e acessos intermediários; conexões de ventilação entre pavimentos; piscinas, lagos e rios. Acrescentar seus testes quando implementados.
+
+### Acrescentar à conferência atual: canaletas e inspeção
+
+- [ ] Traçados: escolher Canaleta com tampas e Canaleta gradeada; conferir largura inicial de 0,4 m, curvas, junções visuais e densidade dos detalhes.
+- [ ] Alterar largura e editar/adicionar/remover vértices; mover, duplicar e desfazer/refazer.
+- [ ] Equipamentos → Piso · inspeção e drenagem: conferir as seis peças, escala, rotação e sobreposição sob móveis.
+- [ ] Salvar/reabrir, biblioteca de módulos e exportar PNG/SVG com Equipamentos ativado/desativado; conferir temas.
+- [ ] Montar uma região gradeada com tampas e canaletas, verificando legibilidade sem interferir em paredes/portas.
+
+Testes automatizados: 205 aprovados. Build e publicação não executados neste bloco, conforme solicitado. A conferência visual interativa continua pendente.
+
+### Acrescentar à conferência atual: ventilação contextual
+
+- [ ] Desenhar duto atravessando vazio, sala e corredor: estrutura completa fora, tracejado sem preenchimento dentro, sem apagar móveis.
+- [ ] Repetir com sala circular, por vértices e rotacionada; mover sala/duto e conferir atualização.
+- [ ] Conferir grelhas e escotilhas existentes discretas; junções entre dutos e cruzamentos independentes.
+- [ ] Exportar somente Ventilação em PNG/SVG: rede completa, fundo opaco e dimensões idênticas ao pavimento. Exportação combinada deve manter tracejado contextual.
+- [ ] Salvar/reabrir mapa antigo, trocar pavimento, ocultar/exibir camadas e verificar módulos.
+
+207 testes aprovados e imagem renderizada inspecionada. Nenhuma build/publicação neste bloco. Acessos intermediários e conexões verticais ainda não implementados.
+
+### Acrescentar à conferência atual: acessos intermediários de ventilação
+
+- [ ] Selecionar duto e expandir Acessos intermediários. Adicionar três acessos clicando no trajeto; testar clique fora e cancelamento com Escape/botão.
+- [ ] Alternar direita/esquerda, grelha/teto/piso, nome/destino e posição percentual por trecho. Grelha não interrompe o duto.
+- [ ] Mover duto/vértices, inserir e remover vértices; verificar acompanhamento dos acessos, desfazer/refazer.
+- [ ] Remover somente um acesso e confirmar preservação do duto e demais acessos.
+- [ ] Salvar/reabrir, copiar/colar e biblioteca de módulos.
+- [ ] Comparar exportação contextual e somente ventilação: símbolos discretos versus completos, nomes na completa, alinhamento mantido.
+
+210 testes aprovados e renderização inspecionada; validação interativa pendente. Sem build/publicação. Conexões verticais são o próximo bloco.
+
+### Correções após retorno visual: curvas e saídas de ventilação
+
+- [ ] Conferir quina do duto tracejado dentro da sala: as duas bordas devem continuar sem o grande vão reportado.
+- [ ] Escotilhas de teto/piso acompanham a largura do duto; alterar largura e conferir extremidades e acessos intermediários.
+- [ ] Grelha lateral: ajustar largura entre 0,2 e 3 m, mantendo lado/posição.
+- [ ] Marcar Conectar à parede próxima com pequeno espaço entre duto e parede; conferir ramal e grelha na parede. Trocar lado, afastar parede além de 2 m e testar trecho de parede aberto.
+- [ ] Mover sala/duto, salvar/reabrir e exportar somente ventilação e mapa combinado.
+
+213 testes aprovados. Conferência visual interativa destas correções pendente; sem build/publicação.
+
+### Extremidades de ventilação — ajuste após conferência
+
+- [ ] Grelha e tampa nas extremidades devem ocupar toda a largura do duto, tanto no mapa contextual quanto na exportação exclusiva. A apresentação discreta reduz somente opacidade, não escala.
+
+Removida redução para 65% que ainda afetava grelha e tampa. Regressão verificada em larguras de 0,5, 2 e 3 m; 15 testes de ventilação aprovados. Sem build/publicação.
+
+### Acrescentar à conferência atual: ventilação entre pavimentos
+
+- [ ] Criar escotilha de teto em um duto e escotilha de piso em outro pavimento; conectar pelas propriedades do acesso.
+- [ ] Conferir o nome do destino nos dois andares e usar Ir ao destino; conferir seleção do duto correto.
+- [ ] Mover dutos, editar nomes e salvar/reabrir: vínculo e destino devem permanecer corretos.
+- [ ] Desvincular e confirmar preservação dos acessos; remover um acesso/duto/pavimento e conferir limpeza apenas da conexão.
+- [ ] Duplicar pavimento ou copiar módulo: novas peças não devem herdar conexões externas.
+- [ ] Exportar PNG/SVG de cada pavimento, somente Ventilação e combinado; conferir texto do destino e alinhamento.
+
+Conexões usam acessos existentes, não posicionam saídas automaticamente. 217 testes aprovados; sem build/publicação. Verificação visual pendente.
+
+### Acrescentar: nomes automáticos das saídas
+
+- [ ] Nomear uma sala e posicionar grelha/escotilha nela; conferir Saída · nome da sala. Conferir também uma grelha com ramal até a parede.
+- [ ] Ligar dois pavimentos: conferir nome do pavimento e sala do outro lado; renomear a sala e verificar atualização.
+- [ ] Nome manual no acesso deve substituir o nome automático. Sem sala nomeada, não deve surgir nome inventado.
+- [ ] Conferir textos no mapa e exportação, sem duplicação no modo completo.
+
+219 testes aprovados; sem build/publicação. Conferência visual interativa pendente.
+
+### Acrescentar: seleção sem deslocamento involuntário
+
+- [ ] Com grade e guias ativadas, clicar em salas e equipamentos fora da grade: a posição deve permanecer idêntica, inclusive com pequenos tremores do mouse.
+- [ ] Repetir com grupos, portas e janelas; selecionar não deve mover nem criar uma alteração para desfazer.
+- [ ] Arrastar deliberadamente: conferir prévia, encaixe e desfazer; repetir com zoom aproximado e afastado.
+
+O arrasto começa após 4 pixels de movimento na tela. 221 testes aprovados; sem build/publicação. Conferência visual interativa pendente.
+
+### Símbolos e legendas de circulação
+
+- [ ] Escadas: uma marca no início inferior e duas no patamar superior, acompanhando a rotação.
+- [ ] Dutos: selecionar Teto e Chão tanto nos acessos intermediários quanto nas opções Início/Fim. Teto = quadrado com círculo; chão = quadrado com X. Escotilhas antigas mantêm o X.
+- [ ] Textos longos de destinos: conferir quebra de linha e caixa em PNG/SVG.
+- [ ] Com Selecionar/mover, arrastar diretamente uma caixa de texto. Só a legenda deve mover, com prévia; conferir desfazer, salvar e reabrir. Conferir legendas de escadas e de cada acesso do duto separadamente.
+- [ ] Camadas/objetos bloqueados não devem permitir arrastar legendas.
+
+223 testes aprovados e composição SVG renderizada e inspecionada. Interação no navegador pendente. Sem build/publicação.
+
+### Água: piscinas, lagos e rios
+
+- [ ] Região de piso / água → Acabamento → Água · piscina: desenhar pelo menos três pontos e Enter; verificar água opaca e borda dupla.
+- [ ] Usar Água · lago: conferir o contorno suavizado, editar/inserir/remover vértices e ajustar tamanho/intensidade das ondas.
+- [ ] Traçado → Rio / curso de água: desenhar vários pontos e Enter; ajustar largura e arredondamento. Curvas estreitas devem ser abertas para evitar dobras com rios muito largos.
+- [ ] Mover, duplicar, desfazer/refazer, salvar e reabrir; conferir persistência da água. Salvar/colocar um módulo contendo água.
+- [ ] Sobrepor equipamentos: devem permanecer acima da água. Piscina/lago não devem criar paredes ou aceitar portas.
+- [ ] Exportar PNG/SVG e conferir piscinas/lagos com Estrutura e rios com Equipamentos. Conferir também outro tema de exportação.
+
+226 testes aprovados; SVG renderizado e inspecionado. Interação no navegador pendente. Sem build/publicação. Regiões e rios não se unem automaticamente nesta primeira versão.
+
+### Revisão visual da água — margens
+
+Substituído o padrão de ondas em toda a superfície por contornos internos junto às margens. Lagos e rios têm um contorno contínuo e detalhes interrompidos; piscinas usam contornos regulares. Centro opaco e livre. O controle de escala passa a se chamar Detalhes da margem; intensidade continua ajustável nas regiões. Geometria salva e exportação preservadas. Renderização inspecionada; três testes de água aprovados.
+
+- [ ] Conferir margens de piscinas, lagos e rios, inclusive trechos estreitos e polígonos côncavos.
+- [ ] Variar tamanho/intensidade dos detalhes e exportar PNG/SVG; o centro deve continuar sem textura de ondas.
+
+### Circulação externa — caminhos, calçadas e ruas
+
+- [ ] Traçado: criar Caminho, Calçada e Rua; conferir larguras iniciais 1,5 / 2 / 6 m e ajustar livremente.
+- [ ] Alternar contorno simples, sem borda e meio-fio duplo; acabamento liso/placas. Faixa central de rua é opcional.
+- [ ] Conferir cruzamento, encontro em T, pontas encostadas, curvas e larguras diferentes; junção deve ficar livre de linhas internas. Sobreposição indica mesmo nível.
+- [ ] Selecionar e mover cada traçado, editar/inserir/remover vértices e desfazer/refazer.
+- [ ] Salvar/reabrir e colocar módulo contendo vários traçados; conferir estilo e junções preservados.
+- [ ] Exportar PNG/SVG com Equipamentos habilitado e conferir temas verde, azul e impressão. Equipamentos devem permanecer acima das vias.
+
+229 testes aprovados. Composição SVG renderizada e inspecionada; interação no navegador pendente. Sem build/publicação. Retirada das extensões de piso dos corredores registrada para o próximo ajuste.
+
+### Piso nas pontas dos corredores — corrigido
+
+Removido o prolongamento de meia largura além dos pontos inicial e final. Piso e acabamento agora terminam nas coordenadas reais do corredor, aberto ou fechado, inclusive em diagonais. Mantido apenas o pequeno recobrimento lateral de antialiasing; portas/janelas continuam com o preenchimento específico de suas aberturas. Corrige também mapas existentes ao abrir, sem migração de coordenadas.
+
+- [ ] Conferir corredor aberto nas duas pontas, em horizontal, vertical e diagonal: nenhum bloco de piso deve ultrapassar o final das paredes.
+- [ ] Fechar/reabrir início e fim; conferir portas e janelas nessas extremidades.
+- [ ] Conferir corredor conectado a sala e acabamento em placas, inclusive exportação PNG/SVG.
+
+230 testes aprovados e renderização de corredor aberto/fechado com porta e janela inspecionada. Sem build/publicação; interação no navegador pendente.
+
+### Módulos, exemplo e placas — 27/10/2026
+
+- [ ] Inserir os oito módulos: Ponte, Enfermaria, Alojamento, Depósito, Engenharia, Refeitório, Laboratório e Segurança. Conferir escala, entradas livres e aparelhos sobre bancadas.
+- [ ] Mover/duplicar conjunto, editar peças, salvar/reabrir e guardar um módulo pessoal. Bibliotecas antigas não devem mudar automaticamente.
+- [ ] Salvar sua planta antes de Abrir exemplo; conferir os oito setores da Estação de pesquisa, corredores, portas, duto e textos. Conferir exportação.
+- [ ] Caminho/calçada com placas: testar diagonal, curva e mudança de direção. Juntas devem acompanhar o traçado, sem grade global; cruzamentos não devem acumular detalhes.
+- [ ] Rua deve permanecer lisa, com faixa central opcional.
+
+233 testes aprovados, módulos/exemplo e circulação renderizados e inspecionados. Interação no navegador pendente. Sem build/publicação.
+
+### Relevo — suspenso por decisão do usuário (27/10/2026)
+
+Ribanceiras e penhascos foram retirados da implementação. Não incluir esta etapa na conferência atual; retomar apenas após redefinir o design. A ferramenta anterior Borda de desnível permanece.
+
+## Revisão do catálogo — 27/10/2026
+
+- [ ] Conferir os 19 desenhos revisados e os 26 novos assets listados em [revisao-assets-2026-10-27.md](revisao-assets-2026-10-27.md).
+- [ ] Conferir sobreposição opaca, escala e rotação dos novos objetos.
+- [ ] Abrir mapa antigo com ícones substituídos e verificar posição/tamanho.
+- [ ] Testar famílias recolhidas e busca.
+- [ ] Desenhar faixas de segurança/circulação curvas, salvar/reabrir e exportar.
+- [ ] Aprovar visual de pias, balcões, palco, penteadeiras, barraca, quiosque e equipamentos industriais.
+
+235 testes aprovados e pranchas inspecionadas tecnicamente; aprovação estética e interação final pendentes. Sem build/publicação.
+
+## Ajustes de inserção e sinalização — 27/10/2026
+
+- [ ] Comparar espessuras de paredes avulsas e de salas, nos quatro tipos, incluindo portas e encontros.
+- [ ] Faixa de segurança com contornos e hachuras como o asset; circulação com duas bordas e eixo tracejado. Escolher verde/âmbar e salvar/reabrir.
+- [ ] Conferir prévia do módulo pronto e do texto antes de clicar.
+- [ ] Girar equipamento antes de inserir: R/Shift+R na viewport ou ângulo na lateral; comparar prévia e peça inserida.
+- [ ] Reabrir exemplo novo: textos das saídas de ventilação próximos aos acessos, dentro das salas. Mapas já salvos não são reposicionados.
+
+## Interface — organização inicial
+
+- [ ] Criar à esquerda e editar a seleção à direita, sem perder a ferramenta ativa.
+- [ ] Abrir configurações, recuperação e exportação pelo topo; verificar acesso ao final do painel.
+- [ ] Inserir módulo pessoal pela biblioteca à esquerda.
+- [ ] Expandir família e categoria de assets: conferir recuo e distinção visual.
+- [ ] Conferir painéis e rolagem em janela estreita e modo de foco.
+
+## Seletores visuais
+
+- [ ] Escolher porta/janela, paredes e acabamentos pelas miniaturas; conferir opção ativa.
+- [ ] Selecionar cada traçado e conferir largura, bordas e demais controles específicos.
+- [ ] Alternar piso na criação e na seleção sem alterar o outro contexto.
+- [ ] Usar Tab e Enter/Espaço nos botões; conferir dicas e nomes completos.
+- [ ] Verificar legibilidade e rolagem nas laterais estreitas.
+
+### Legibilidade das amostras ampliadas
+
+- [ ] Distinguir porta e janela sem zoom: abertura ocupa a amostra, com batentes e vidro ampliados.
+- [ ] Conferir paredes com traços ampliados, percursos em trechos curtos e pisos com padrões maiores.
+- [ ] Verificar os botões na largura normal da lateral. São amostras de identificação; as dimensões dos objetos no mapa permanecem iguais.
+
+Correção de legibilidade: regra genérica de ícones de 20 px exclui os botões de amostras, inclusive seus SVGs internos. Conferir largura ocupada na lateral real; caminho, calçada, rua e canaleta gradeada agora têm amostras distintas. Navegador automatizado não iniciou neste ambiente; conferência interativa pendente.
+
+## Áreas: forma e finalidade
+
+- [ ] Criar sala, piso, piscina e lago como retângulo, elipse e por vértices. Água/piso não devem gerar paredes.
+- [ ] Conferir prévia, desfazer/refazer, edição por vértices e salvar/reabrir. Elipses de piso/água são contornos de pontos.
+- [ ] Após escolher piscina, inserir módulo: suas salas devem continuar salas.
+- [ ] Verificar troca de forma, atalhos e tipo de parede das salas.
+
+Acabamentos contextuais: piscina/lago mostram somente ajustes de água, sempre visíveis. Pisos mostram estilos sem expansão e sem Técnico. Mapas antigos com painéis técnicos continuam sendo lidos.
+
+## Família Percursos
+
+- [ ] Selecionar corredor, ventilação, rio, trilhos e sinalização; conferir largura inicial e controles específicos.
+- [ ] Corredor deve criar paredes; ventilação deve manter acessos; demais traçados não devem criar paredes.
+- [ ] Concluir, voltar ponto e cancelar aparecem durante o desenho; Enter e Escape continuam funcionando.
+- [ ] Salvar/reabrir, selecionar e editar percursos; conferir que o tipo permanece correto.
+- [ ] Trocar de família e voltar; verificar destaque do botão e seleção visual.
+
+## Compactação dos controles e cabeçalho
+
+- [ ] Medidas da seleção em duas colunas: editar X/Y, largura/altura e rotação.
+- [ ] Sobreposição sempre visível: Frente, +1 nível, −1 nível, Fundo.
+- [ ] Cotas direta/horizontal/vertical e módulos prontos selecionáveis por botões.
+- [ ] Traçados: bordas, acabamento e cor por botões; explicação em Como desenhar.
+- [ ] Checkbox e rótulo na mesma linha, inclusive união de paredes.
+- [ ] Cabeçalho compacto com nome do projeto; configurações continuam acessíveis.
+- [ ] Foco oculta apenas a confirmação repetitiva de alteração local; erros e orientações permanecem.

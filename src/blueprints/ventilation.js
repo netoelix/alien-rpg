@@ -2,7 +2,9 @@ import { nearestWall, openingHasWall, wallSegments } from './model.js';
 export const ventAccessTypes = {
   auto: 'Automático',
   grille: 'Grelha',
-  hatch: 'Escotilha piso/teto',
+  hatch: 'Escotilha (legado)',
+  ceiling: 'Acesso no teto · círculo',
+  floor: 'Acesso no chão · X',
   open: 'Aberto',
   cap: 'Tampado',
 };

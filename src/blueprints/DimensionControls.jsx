@@ -1,14 +1,17 @@
+import { OptionButtons } from './OptionButtons.jsx';
 export function DimensionControls({ mode = 'direct', offset = 0, onChange }) {
   return (
     <div>
-      <label>
-        Medida
-        <select value={mode} onChange={(e) => onChange('mode', e.target.value)}>
-          <option value="direct">Distância direta</option>
-          <option value="horizontal">Largura horizontal</option>
-          <option value="vertical">Altura vertical</option>
-        </select>
-      </label>
+      <OptionButtons
+        label="Medida"
+        value={mode}
+        onChange={(value) => onChange('mode', value)}
+        options={[
+          ['direct', '↗ Direta'],
+          ['horizontal', '↔ Horizontal'],
+          ['vertical', '↕ Vertical'],
+        ]}
+      />
       <label>
         Afastamento (m)
         <input

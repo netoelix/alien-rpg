@@ -1,10 +1,20 @@
+import { waterRegionPath } from './water.js';
 import { shapeTransform } from './orientation.js';
 export function Shape({ element, outer = false, seamOverlap = false, paint = 'currentColor' }) {
   // Tiny rendering overlap closes antialiasing seams at coincident boundaries.
   // Geometry, snapping and saved dimensions remain unchanged.
   const outline = outer ? 0.4 : seamOverlap ? 0.06 : 0;
+  if (element.kind === 'floorRegion' && element.floorFinish?.type === 'lake')
+    return (
+      <path
+        d={waterRegionPath(element.points, true)}
+        fill={paint}
+        stroke={paint}
+        strokeWidth={outline}
+      />
+    );
   if (element.kind === 'partition') return null;
-  if (element.kind === 'polygon')
+  if (['polygon', 'floorRegion'].includes(element.kind))
     return (
       <polygon
         points={element.points.map((p) => `${p.x},${p.y}`).join(' ')}
@@ -17,18 +27,7 @@ export function Shape({ element, outer = false, seamOverlap = false, paint = 'cu
   if (element.kind === 'corridor')
     return (
       <polyline
-        points={element.points
-          .map((p, i, pts) => {
-            if (!seamOverlap || (i !== 0 && i !== pts.length - 1)) return p.x + ',' + p.y;
-            const closed = i === 0 ? element.closedStart : element.closedEnd;
-            const other = i === 0 ? pts[1] : pts.at(-2),
-              len = Math.hypot(p.x - other.x, p.y - other.y);
-            const extra = closed ? 0 : element.width / 2;
-            return (
-              p.x + ((p.x - other.x) / len) * extra + ',' + (p.y + ((p.y - other.y) / len) * extra)
-            );
-          })
-          .join(' ')}
+        points={element.points.map((p) => p.x + ',' + p.y).join(' ')}
         fill="none"
         stroke={paint}
         strokeWidth={element.width + outline}

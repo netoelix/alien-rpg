@@ -1,3 +1,4 @@
+import { validVentLink } from './vent-links.js';
 import { uid } from './model.js';
 import { activeFloor, floorList } from './floors.js';
 
@@ -18,6 +19,8 @@ export function validEndpoint(project, endpoint) {
   );
 }
 export function pruneConnections(project) {
+  if (project.ventLinks)
+    project = { ...project, ventLinks: project.ventLinks.filter((l) => validVentLink(project, l)) };
   if (!project.connections) return project;
   return {
     ...project,

@@ -15,7 +15,11 @@ export function traceGeometry(element) {
     }
     const ab = Math.hypot(b.x - a.x, b.y - a.y),
       bc = Math.hypot(c.x - b.x, c.y - b.y);
-    const radius = Math.min(element.width, ab * 0.4, bc * 0.4);
+    const radius = Math.min(
+      element.width * (element.traceType === 'rail' ? 3 : 1),
+      ab * 0.4,
+      bc * 0.4,
+    );
     const from = mix(b, a, radius / ab),
       to = mix(b, c, radius / bc);
     points.push(from);
@@ -48,7 +52,16 @@ export function traceGeometry(element) {
       return { x: p.x + x * scale, y: p.y + y * scale };
     });
   const total = normals.reduce((sum, n) => sum + n.length, 0),
-    spacing = Math.max(0.6, total / 600),
+    spacing = Math.max(
+      element.traceType === 'rail'
+        ? (element.width * 0.64) / 0.9
+        : element.traceType === 'gratedChannel'
+          ? 0.16
+          : element.traceType === 'hazardLine'
+            ? 0.4
+            : 0.6,
+      total / 600,
+    ),
     marks = [];
   let travelled = 0,
     next = spacing / 2;
@@ -56,10 +69,11 @@ export function traceGeometry(element) {
     const n = normals[i];
     while (next < travelled + n.length && marks.length < 600) {
       const p = mix(points[i], points[i + 1], (next - travelled) / n.length);
-      const extent = element.traceType === 'rail' ? element.width * 0.65 : element.width / 2;
+      const extent =
+        element.traceType === 'rail' ? (element.width * 0.92) / 0.9 : element.width / 2;
       const side = element.side === -1 ? -1 : 1;
       marks.push(
-        element.traceType === 'rail'
+        ['rail', 'channel', 'gratedChannel'].includes(element.traceType)
           ? {
               a: { x: p.x - n.x * extent, y: p.y - n.y * extent },
               b: { x: p.x + n.x * extent, y: p.y + n.y * extent },

@@ -436,7 +436,7 @@
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.blueprint-layout aside button svg {
+.blueprint-layout aside button:not(.blueprint-choice-button) svg {
   flex: 0 0 20px;
   width: 20px;
   height: 20px;
@@ -894,4 +894,236 @@
 .blueprint-stack-actions button span:last-child {
   word-break: normal;
   overflow-wrap: normal;
+}
+
+/* Workbench: creation left, inspector right, occasional project settings above. */
+.blueprint-panel-context {
+  display: block;
+  color: #8caa99;
+  font-size: 10px;
+  margin-bottom: 6px;
+}
+.blueprint-global-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+  align-items: flex-start;
+}
+.blueprint-global-panel {
+  flex: 1 1 160px;
+  min-width: 0;
+  border: 1px solid #275440;
+  background: #081b13;
+  padding: 0 12px;
+}
+.blueprint-global-panel > summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-size: 12px;
+}
+.blueprint-global-panel[open] {
+  flex-basis: 100%;
+  padding-bottom: 12px;
+}
+.blueprint-global-panel label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 12px;
+}
+.blueprint-global-panel input:not([type='checkbox']),
+.blueprint-global-panel select {
+  width: 100%;
+  max-width: 360px;
+  min-width: 0;
+  padding: 8px;
+}
+.blueprint-global-panel p {
+  font-size: 12px;
+  max-width: 80ch;
+}
+.blueprint-global-panel button {
+  margin: 4px 6px 4px 0;
+}
+.blueprint-settings > .blueprint-selection-panel {
+  margin-top: 0;
+  border-top: 0;
+}
+.blueprint-asset-categories > .blueprint-asset-family {
+  border: 1px solid #345c49;
+  border-radius: 3px;
+  margin: 10px 0;
+}
+.blueprint-asset-family > summary {
+  padding: 10px 8px;
+  background: #10291d;
+  font-weight: bold;
+}
+.blueprint-asset-children {
+  margin: 4px 5px 10px 11px;
+  padding-left: 9px;
+  border-left: 2px solid #467b5c;
+}
+.blueprint-asset-children > .blueprint-asset-category {
+  margin-top: 4px;
+  border-top: 0;
+}
+.blueprint-asset-category > summary {
+  font-size: 12px;
+  padding: 8px 2px;
+  font-weight: normal;
+}
+.blueprint-asset-category > .blueprint-assets {
+  padding: 4px 0 10px;
+}
+.blueprint-global-panel summary:focus-visible,
+.blueprint-asset-categories summary:focus-visible {
+  outline: 2px solid #78ebae;
+  outline-offset: 2px;
+}
+@media (max-width: 700px) {
+  .blueprint-global-panel {
+    flex-basis: calc(50% - 8px);
+  }
+}
+
+.blueprint-visual-choices {
+  margin: 12px 0;
+  min-width: 0;
+}
+.blueprint-choice-heading {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.blueprint-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.blueprint-editor .blueprint-choice-grid button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  padding: 6px;
+  width: 100%;
+  min-width: 0;
+  min-height: 84px;
+  margin: 0;
+  text-align: center;
+  white-space: normal;
+  font-size: 11px;
+  line-height: 1.3;
+}
+.blueprint-layout aside .blueprint-choice-grid > .blueprint-choice-button > svg {
+  width: 100%;
+  height: auto;
+  flex: 0 0 auto;
+  display: block;
+  max-width: none;
+  aspect-ratio: 3 / 2;
+  min-height: 0;
+  background: #102c24;
+  color: #78ebae;
+  border-radius: 2px;
+  pointer-events: none;
+}
+.blueprint-choice-grid button:focus-visible {
+  outline: 2px solid #f1c46c;
+  outline-offset: 2px;
+}
+.blueprint-choice-grid button[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 2px #78ebae;
+}
+
+.blueprint-measure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 8px;
+}
+.blueprint-layout .blueprint-measure-grid label {
+  display: block;
+  margin: 4px 0;
+  font-size: 11px;
+}
+.blueprint-layout .blueprint-measure-grid input {
+  margin-top: 4px;
+  padding: 6px;
+  min-height: 32px;
+}
+.blueprint-layout label:has(> input[type='checkbox']) {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+.blueprint-layout label > input[type='checkbox'] {
+  flex: 0 0 16px;
+  margin: 0;
+}
+.blueprint-order-panel .blueprint-stack-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.blueprint-order-panel .blueprint-stack-actions button {
+  padding: 6px;
+  font-size: 11px;
+}
+.blueprint-option-buttons > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.blueprint-layout aside .blueprint-option-buttons button {
+  flex: 1 1 70px;
+  width: auto;
+  margin: 0;
+  justify-content: center;
+  padding: 7px;
+  min-height: 36px;
+  text-align: center;
+  font-size: 11px;
+}
+.blueprint-inline-help p {
+  color: #9bb5a5;
+}
+.blueprint-heading {
+  gap: 12px;
+}
+.blueprint-heading h1 {
+  font-size: 28px;
+  margin: 6px 0;
+}
+.blueprint-project-caption {
+  margin: 4px 0;
+  font-size: 12px;
+}
+.blueprint-project-caption span {
+  color: #90aa9b;
+}
+.blueprint-filebar {
+  padding: 10px 0;
+}
+.blueprint-global-controls {
+  gap: 6px;
+  margin: 8px 0;
+}
+.blueprint-global-panel {
+  flex: 0 1 auto;
+}
+.blueprint-global-panel[open] {
+  flex-basis: 100%;
+}
+.blueprint-focus .blueprint-status-routine {
+  display: none;
+}
+
+.blueprint-global-controls {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
 }

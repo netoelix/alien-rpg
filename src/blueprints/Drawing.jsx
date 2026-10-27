@@ -1,3 +1,7 @@
+import { CirculationNetwork } from './CirculationNetwork.jsx';
+import { isCirculation } from './circulation.js';
+import { VentDestinationLabels } from './VentDestinationLabels.jsx';
+import { FloorRegion } from './FloorRegion.jsx';
 import { Trace } from './Trace.jsx';
 import { StairDestinationLabels } from './StairDestinationLabels.jsx';
 import { assetOrder } from './asset-order.js';
@@ -54,7 +58,7 @@ export const Drawing = memo(function Drawing({
   const { structure, sharedStructure, sections, doors, openings, junctions, runs, transitions } =
     useMemo(() => {
       const structure = elements
-        .filter((e) => layerFor(e.kind) === 'structure')
+        .filter((e) => layerFor(e.kind) === 'structure' && e.kind !== 'floorRegion')
         .map(persistentWallStructure);
       const sharedStructure = sharedWallStructures(structure);
       const doors = elements.filter((e) => e.kind === 'door');
@@ -169,7 +173,6 @@ export const Drawing = memo(function Drawing({
             {structure.map((e) => (
               <g key={e.id}>
                 <Shape element={e} seamOverlap />
-                <FloorFinish element={e} ink={palette.ink} />
               </g>
             ))}
           </g>
@@ -258,6 +261,14 @@ export const Drawing = memo(function Drawing({
               <Shape key={e.id} element={e} seamOverlap />
             ))}
           </g>
+          {structure.map((e) => (
+            <FloorFinish key={'finish-' + e.id} element={e} ink={palette.ink} />
+          ))}
+          {elements
+            .filter((e) => e.kind === 'floorRegion')
+            .map((e) => (
+              <FloorRegion key={e.id} element={e} floor={palette.floor} ink={palette.ink} />
+            ))}
           <rect
             width={project.width}
             height={project.height}
@@ -296,18 +307,25 @@ export const Drawing = memo(function Drawing({
                 ))}
                 {runs[index].map((run, runIndex) => (
                   <g key={runIndex}>
-                    <path d={run.d} strokeWidth={2 * wallWidths[run.type]} />
+                    <path
+                      d={run.d}
+                      strokeWidth={(element.kind === 'partition' ? 1 : 2) * wallWidths[run.type]}
+                    />
                     {run.type === 'hull' && (
                       <>
-                        <path d={run.d} stroke={palette.floor} strokeWidth=".95" />
-                        <path d={run.d} strokeWidth=".28" />
+                        <path
+                          d={run.d}
+                          stroke={palette.floor}
+                          strokeWidth={element.kind === 'partition' ? 0.475 : 0.95}
+                        />
+                        <path d={run.d} strokeWidth={element.kind === 'partition' ? 0.14 : 0.28} />
                       </>
                     )}
                     {run.type === 'glass' && (
                       <path
                         d={run.d}
                         stroke={palette.accent}
-                        strokeWidth=".4"
+                        strokeWidth={element.kind === 'partition' ? 0.2 : 0.4}
                         strokeDasharray=".3 .2"
                       />
                     )}
@@ -351,6 +369,14 @@ export const Drawing = memo(function Drawing({
                 )}
               </g>
             ))}
+          {visible('structure') &&
+            elements
+              .filter((e) => e.kind === 'floorRegion')
+              .map((e) => (
+                <g key={e.id} data-object={e.id} opacity="0">
+                  <Shape element={e} />
+                </g>
+              ))}
         </g>
       )}
       {visible('doors') && (
@@ -387,12 +413,13 @@ export const Drawing = memo(function Drawing({
       )}
       {visible('equipment') && (
         <g data-layer="equipment" opacity={opacity('equipment')}>
-          <g stroke={palette.ink}>
+          <CirculationNetwork elements={elements} floor={palette.floor} ink={palette.ink} />
+          <g stroke={palette.ink} color={palette.ink}>
             {elements
-              .filter((e) => e.kind === 'trace')
+              .filter((e) => e.kind === 'trace' && !isCirculation(e))
               .map((e) => (
                 <g key={e.id} data-object={e.id}>
-                  <Trace element={e} />
+                  <Trace element={e} floor={palette.floor} />
                 </g>
               ))}
           </g>
@@ -414,7 +441,7 @@ export const Drawing = memo(function Drawing({
                     fill={palette.floor}
                     stroke={floorMarkings[e.asset] ? palette.accent : palette.ink}
                   >
-                    <Furniture type={e.asset} w={e.w} h={e.h} />
+                    <Furniture type={e.asset} w={e.w} h={e.h} floor={palette.floor} />
                   </svg>
                 ) : (
                   <svg
@@ -446,7 +473,18 @@ export const Drawing = memo(function Drawing({
       )}
       {visible('vents') && (
         <g data-layer="vents" opacity={opacity('vents')} fill="none" stroke={palette.accent}>
-          <VentilationNetwork elements={elements} floor={palette.floor} />
+          <VentilationNetwork
+            elements={elements}
+            floor={palette.floor}
+            contextual
+            width={project.width}
+            height={project.height}
+          />
+        </g>
+      )}
+      {visible('vents') && (
+        <g data-layer="vents" opacity={opacity('vents')}>
+          <VentDestinationLabels project={project} elements={elements} ink={palette.accent} />
         </g>
       )}
       {visible('labels') && (

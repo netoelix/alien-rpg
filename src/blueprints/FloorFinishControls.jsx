@@ -1,26 +1,26 @@
+import { VisualChoices } from './VisualChoices.jsx';
 import { floorFinishes } from './floor-finishes.js';
 export function FloorFinishControls({ value, onChange }) {
   const current = value || { type: 'plain', size: 1, opacity: 0.2 };
+  const water = ['pool', 'lake'].includes(current.type);
   return (
-    <details>
-      <summary>Acabamento do piso</summary>
-      <label>
-        Padrão
-        <select
+    <fieldset className="blueprint-floor-options">
+      <legend>{water ? 'Detalhes da água' : 'Acabamento do piso'}</legend>
+      {!water && (
+        <VisualChoices
+          label="Padrão"
+          kind="floor"
           value={current.type}
-          onChange={(e) => onChange({ ...current, type: e.target.value })}
-        >
-          {Object.entries(floorFinishes).map(([key, label]) => (
-            <option key={key} value={key}>
-              {label}
-            </option>
-          ))}
-        </select>
-      </label>
+          onChange={(type) => onChange({ ...current, type })}
+          options={Object.entries(floorFinishes).filter(
+            ([key]) => !['pool', 'lake', 'service'].includes(key),
+          )}
+        />
+      )}
       {current.type !== 'plain' && (
         <>
           <label>
-            Módulo (m)
+            {['pool', 'lake'].includes(current.type) ? 'Detalhes da margem (m)' : 'Módulo (m)'}
             <input
               type="number"
               min=".25"
@@ -42,10 +42,12 @@ export function FloorFinishControls({ value, onChange }) {
             />
           </label>
           <small>
-            A escala do padrão é em metros; acompanha o tamanho do ambiente sem esticar as placas.
+            {['pool', 'lake'].includes(current.type)
+              ? 'Detalhes acompanham as margens; o centro permanece livre.'
+              : 'A escala do padrão é em metros; acompanha o tamanho do ambiente sem esticar as placas.'}
           </small>
         </>
       )}
-    </details>
+    </fieldset>
   );
 }

@@ -1,9 +1,14 @@
+import { colonyAssets } from './colony-assets.js';
 import { isPlatform } from './level-assets.js';
 import { floorMarkings } from './floor-markings.js';
 // Platforms support markings and furniture, regardless of insertion order.
 export function assetOrder(element) {
   if (Number.isFinite(element.stackOrder)) return element.stackOrder;
-  return isPlatform(element.asset) ? 0 : floorMarkings[element.asset] ? 1 : 2;
+  return isPlatform(element.asset)
+    ? 0
+    : floorMarkings[element.asset] || colonyAssets[element.asset]?.category === 'floor-technical'
+      ? 1
+      : 2;
 }
 
 export function reorderAsset(project, id, action) {

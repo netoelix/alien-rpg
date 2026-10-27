@@ -1,3 +1,4 @@
+import { SanitaryFixture } from './SanitaryFixture.jsx';
 import { vehicleAssets } from './vehicle-assets.js';
 import { ColonyFurniture } from './ColonyFurniture.jsx';
 import { colonyAssets } from './colony-assets.js';
@@ -9,8 +10,9 @@ import { floorMarkings } from './floor-markings.js';
 import { EnvironmentFurniture } from './EnvironmentFurniture.jsx';
 import { environmentAssets } from './environment-assets.js';
 import { furniture } from './furniture.js';
-export function Furniture({ type, w = furniture[type]?.w, h = furniture[type]?.h }) {
-  if (colonyAssets[type] || vehicleAssets[type]) return <ColonyFurniture type={type} w={w} h={h} />;
+export function Furniture({ type, floor, w = furniture[type]?.w, h = furniture[type]?.h }) {
+  if (colonyAssets[type] || vehicleAssets[type])
+    return <ColonyFurniture type={type} w={w} h={h} floor={floor} />;
   if (['stairs', 'elevator'].includes(type)) return <AccessFurniture type={type} w={w} h={h} />;
   if (levelAssets[type]) return <LevelFurniture type={type} w={w} h={h} />;
   if (floorMarkings[type]) return <FloorMarking type={type} w={w} h={h} />;
@@ -445,13 +447,7 @@ export function Furniture({ type, w = furniture[type]?.w, h = furniture[type]?.h
           <path d={`M${w * 0.35} ${h * 0.5}H${w * 0.65}`} fill="none" />
         </>
       )}
-      {type === 'sanitaryToilet' && (
-        <>
-          <ellipse cx={w / 2} cy={h * 0.59} rx={w * 0.43} ry={h * 0.38} />
-          <ellipse cx={w / 2} cy={h * 0.6} rx={w * 0.26} ry={h * 0.24} fill="none" />
-          <rect x={edge / 2} y={edge / 2} width={w - edge} height={h * 0.23} rx={inset / 2} />
-        </>
-      )}
+      {type === 'sanitaryToilet' && <SanitaryFixture type={type} w={w} h={h} />}
       {type === 'washBasin' && (
         <>
           <rect x={edge / 2} y={edge / 2} width={w - edge} height={h - edge} rx={inset} />
@@ -460,17 +456,7 @@ export function Furniture({ type, w = furniture[type]?.w, h = furniture[type]?.h
           <circle cx={w / 2} cy={h * 0.55} r={Math.min(0.025, w * 0.04)} />
         </>
       )}
-      {type === 'showerTray' && (
-        <>
-          <rect x={edge / 2} y={edge / 2} width={w - edge} height={h - edge} rx={inset / 2} />
-          <rect x={inset} y={inset} width={w - 2 * inset} height={h - 2 * inset} rx={inset} />
-          <circle cx={w * 0.75} cy={h * 0.75} r={Math.min(0.05, w * 0.08)} />
-          <path
-            d={`M${w / 2} ${edge}V${h * 0.16} M${w * 0.4} ${h * 0.16}H${w * 0.6}`}
-            fill="none"
-          />
-        </>
-      )}
+      {type === 'showerTray' && <SanitaryFixture type={type} w={w} h={h} />}
       {type === 'galleySink' && (
         <>
           <rect x={edge / 2} y={edge / 2} width={w - edge} height={h - edge} />
