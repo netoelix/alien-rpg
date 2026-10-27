@@ -399,3 +399,67 @@ Ferramenta Traçados: escolher Trilhos ou Borda de desnível, clicar para defini
 ### Sanitários e manutenção — 26/10/2026
 
 Dez novas peças físicas: cabine de banho com antecâmara, cabine sanitária, ilha de vestiário, armário de secagem de trajes, tanque de higienização, estação de hidratação, unidade de tratamento de água, transformador, central de climatização e suporte de bobina industrial. Mantêm escala editável e armazenamento local. A conferência consolidada está em `conferencia-release-2026-10-26.md`.
+
+
+### Regiões de piso — 26/10/2026
+
+Ferramenta Região de piso: desenhe um polígono e finalize com Enter. A região não cria paredes, não aceita portas e fica abaixo das paredes/equipamentos. O desenho pode ocupar livremente a área do mapa; não é recortado automaticamente pela sala. Os vértices e o acabamento são editáveis, e o elemento participa de seleção, módulos, salvamento e exportação na camada Estrutura. A última região desenhada cobre as anteriores.
+
+Novos padrões: piso antiderrapante e painéis técnicos, com módulo em metros e intensidade ajustável. Padrões SVG têm complexidade constante independentemente da área. Acabamentos de salas foram retirados da máscara de paredes e passam a ser desenhados sobre o piso.
+
+
+### Consistência visual e trilhos — 26/10/2026
+
+Silhuetas sólidas de vegetação, decoração, veículos e mobiliário ocultam elementos inferiores. Subcontornos abertos permanecem sem preenchimento; grelha de drenagem e vãos reais permanecem vazados. Cabines reutilizam o vaso/base de chuveiro avulsos. Guarita ganha paredes e mobiliário legíveis; barraca representa atendimento aberto, sem sobrepor um X de cobertura ao interior.
+
+RailTrack é compartilhado pelo trecho modular e pelo traçado: dormentes retangulares e trilhos com espessura e preenchimento do tema. A largura do traçado continua sendo a distância entre os eixos dos trilhos; os dormentes ultrapassam essa medida. Curvas usam raio maior quando há espaço, com geometria limitada a 600 dormentes por traçado. Mapas salvos mantêm seus IDs e posições e recebem os desenhos atualizados.
+
+## Ventilação contextual — decisão de produto (26/10/2026)
+
+Especificação aprovada e ordem de execução em [Prioridades e ventilação](proximas-etapas.md#prioridades-e-ventilação--decisões-de-26102026). A apresentação deve alternar automaticamente por trecho: bordas tracejadas sem preenchimento sobre salas/corredores e estrutura completa no vazio. Exportar somente ventilação sempre produz estrutura completa. A rede pertence ao pavimento, mantendo seu alinhamento de exportação. Acessos intermediários laterais/teto/piso são vinculados ao percurso e não interrompem o duto; conexões entre pavimentos vêm depois. Planejamento, não implementação.
+
+### Canaletas e inspeção — 26/10/2026
+
+Implementado localmente: Traçados → Canaleta com tampas / Canaleta gradeada, largura inicial de 0,4 m ao escolher o tipo e curvas opcionais. Editar vértices, mover, copiar, módulos e arquivos preservam o tipo. São detalhes visuais em Equipamentos, sem paredes, escoamento ou conexão com ventilação. Repetições limitadas a 600 por trajeto para manter desempenho.
+
+Categoria Piso · inspeção e drenagem: tampa retangular, tampa circular, grelha de drenagem, painel com dobradiças, caixa de conexões embutida e escotilha reforçada. Preenchimentos sólidos e escala física; prioridade padrão abaixo de móveis, ajustável pelos controles de sobreposição.
+
+Validação: 205 testes aprovados. Nenhuma build ou publicação solicitada/executada neste bloco. Ventilação contextual e água continuam planejadas.
+
+### Ventilação contextual — implementada localmente (26/10/2026)
+
+Sobre a geometria de salas retangulares, ovais, polígonos e corredores visíveis: bordas tracejadas, sem preenchimento. Fora desses ambientes: duto completo. Máscaras SVG fazem a transição por trecho sem subdividir/modificar o trajeto salvo. Acessos existentes aparecem reduzidos e discretos no mapa principal. Regiões de acabamento não contam como salas.
+
+Exportar somente Ventilação escolhe a apresentação completa e mantém fundo opaco, mesmo se a opção de transparência estiver marcada. Exportações combinadas preservam o tratamento contextual. Ambas mantêm dimensões/alinhamento do pavimento ativo. Miniaturas de módulos continuam com ventilação completa. Acesso intermediário e conexões entre pavimentos permanecem para os próximos blocos.
+
+207 testes aprovados; renderização contextual inspecionada em imagem. Sem build/publicação. Conferência interativa do usuário pendente.
+
+### Acessos intermediários de ventilação — 26/10/2026
+
+Selecionar duto → Acessos intermediários → Adicionar acesso no mapa; clicar sobre o percurso. Escape ou o mesmo botão cancela. Novo acesso inicia como grelha lateral, com edição de lado, tipo (grelha/teto/piso), trecho, posição percentual e nome/destino manual (até 80 caracteres). Limite de 100 acessos por duto. Não há associação automática com nome de sala nesta etapa.
+
+Portas de ventilação são dados internos do próprio duto, vinculados a segmento e fração, sem cortar a rede. Mover/redimensionar o percurso preserva a posição relativa. Inserir/remover vértices remapeia acessos aos segmentos restantes, preservando segmentos intactos e projetando posições afetadas no trajeto resultante. Excluir um acesso mantém o duto; excluir o duto exclui seus acessos. Mapas anteriores sem acessos adicionais permanecem compatíveis. Módulos/copiar/salvar preservam os acessos.
+
+Na apresentação contextual, símbolos discretos; na completa, símbolos normais e nomes informados. Escotilhas têm marcas distintas para piso/teto. Não são ainda conexões entre pavimentos. 210 testes aprovados, renderização inspecionada; sem build/publicação.
+
+### Ajustes de curvas, dimensões e ramais — 26/10/2026
+
+Referência contextual usa bordas finas paralelas, evitando o vão grande produzido pelo tracejado sobre um traço espesso nas quinas. Escotilhas de teto/piso (intermediárias e nas extremidades) mantêm a largura do duto, sem reduzir sua escala no mapa contextual. Discrição é feita pela intensidade do traço.
+
+Grelhas intermediárias têm largura configurável de 0,2 a 3 m. Opção Conectar à parede próxima cria um ramal perpendicular no lado selecionado até a primeira parede válida, em alcance máximo de 2 m medido da lateral do duto. Não usa parede oculta, trecho explicitamente aberto ou passagem sem suporte suficiente para a saída. Sem alvo válido, mantém a grelha no próprio duto. Ligação é recalculada geometricamente ao mover sala/duto; não cria um vínculo persistente por ID. Ramal acompanha a apresentação contextual/completa e é exportado com a ventilação. Alterar lado pode mudar a parede alcançada.
+
+213 testes aprovados; imagem de referência com curva, escotilha e ramal inspecionada. Sem build/publicação.
+
+### Ventilação entre pavimentos — 26/10/2026
+
+Conexões entre acessos intermediários existentes: selecionar duto, expandir Acessos intermediários e escolher outro acesso em Conexão entre pavimentos. Vincula teto a piso em outro pavimento; cada acesso aceita um destino. Não cria escotilhas automaticamente nem altera suas posições. Identificadores de piso/duto/acesso preservam a conexão ao mover os objetos; os trajetos continuam independentes.
+
+Cada lado mostra nome do pavimento e nome manual do acesso de destino (ou nome do duto como alternativa), com Ir ao destino e Desvincular nas propriedades. Os textos fazem parte da camada Ventilação e da exportação; não inferem o nome de sala nesta etapa. Desvincular mantém os dois acessos. Remover duto, acesso ou pavimento, ou trocar escotilha por grelha, limpa vínculos inválidos. Duplicar piso/módulo não copia vínculos externos para as novas peças.
+
+Armazenamento em ventLinks no projeto. Modelos antigos sem essa lista continuam compatíveis; escadas/elevadores mantêm sua lista separada. 217 testes aprovados. Sem build/publicação; conferência visual interativa pendente.
+
+### Destinos automáticos de ventilação — 26/10/2026
+
+Saídas locais (intermediárias e extremidades de grelha/escotilha) mostram Saída · nome da sala quando a posição está dentro ou junto à borda de uma sala nomeada. Ramais usam a posição da grelha na parede. Conexões entre pavimentos mostram o pavimento e a sala no acesso remoto; nome manual do acesso tem prioridade. Renomear/mover salas recalcula o texto. Sem sala nomeada, não inventa um nome; destinos verticais usam nome do duto/acesso como alternativa. Preferir o ambiente menor em sobreposição. Não rastreia o percurso inteiro para inferir destinos não vinculados.
+
+Resumo nas propriedades renomeado para Acessos e conexões entre pavimentos. Ajuda explica que a conexão exige um acesso intermediário do tipo teto/piso; as extremidades automáticas não recebem vínculos verticais. Grelhas exibem orientação para trocar o tipo, em vez de ocultar toda a indicação da funcionalidade.

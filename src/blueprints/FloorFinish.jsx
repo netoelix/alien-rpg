@@ -15,6 +15,25 @@ export function FloorFinish({ element, ink = 'currentColor' }) {
           patternUnits="userSpaceOnUse"
         >
           <g fill="none" stroke={ink} strokeWidth={Math.min(0.025, size * 0.04)}>
+            {finish.type === 'tread' && (
+              <path
+                d={`M${size * 0.15} ${size * 0.35}l${size * 0.2} -${size * 0.2}M${size * 0.65} ${size * 0.85}l${size * 0.2} -${size * 0.2}`}
+              />
+            )}
+            {finish.type === 'service' && (
+              <>
+                <rect
+                  x={size * 0.12}
+                  y={size * 0.12}
+                  width={size * 0.76}
+                  height={size * 0.76}
+                  rx={size * 0.04}
+                />
+                <path
+                  d={`M${size * 0.38} ${size * 0.25}h${size * 0.24}M${size * 0.38} ${size * 0.75}h${size * 0.24}`}
+                />
+              </>
+            )}
             {finish.type === 'tiles' && <path d={`M${size} 0H0V${size}`} />}
             {finish.type === 'plates' && (
               <>

@@ -1,3 +1,6 @@
+import { CirculationNetwork } from './CirculationNetwork.jsx';
+import { isCirculation } from './circulation.js';
+import { FloorRegion } from './FloorRegion.jsx';
 import { Trace } from './Trace.jsx';
 import { assetOrder } from './asset-order.js';
 import { FloorFinish } from './FloorFinish.jsx';
@@ -15,6 +18,7 @@ import { shapeTransform } from './orientation.js';
 export function ModuleSketch({ module }) {
   return (
     <g fill="none" stroke="currentColor" strokeWidth=".12" strokeLinejoin="round">
+      <CirculationNetwork elements={module.elements} />
       {[...module.elements]
         .sort(
           (a, b) =>
@@ -22,6 +26,9 @@ export function ModuleSketch({ module }) {
             (b.kind === 'asset' ? assetOrder(b) + 1 : 0),
         )
         .map((element) => {
+          if (element.kind === 'floorRegion')
+            return <FloorRegion key={element.id} element={element} />;
+          if (isCirculation(element)) return null;
           if (element.kind === 'trace') return <Trace key={element.id} element={element} />;
           if (element.kind === 'asset')
             return (
@@ -34,6 +41,7 @@ export function ModuleSketch({ module }) {
                   viewBox={
                     furniture[element.asset] ? `0 0 ${element.w} ${element.h}` : '0 0 100 100'
                   }
+                  fill="#102c24"
                   strokeWidth="3"
                 >
                   {furniture[element.asset] ? (

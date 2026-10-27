@@ -23,7 +23,7 @@ test('traces persist, edit vertices and copy through modules', () => {
   const module = createModule(p, ['t'], 'Trilho');
   assert.equal(placeModule(newProject(), module, 30, 30).project.elements[0].traceType, 'rail');
   assert.throws(() =>
-    parseProject(JSON.stringify({ ...p, elements: [{ ...trace, traceType: 'road' }] })),
+    parseProject(JSON.stringify({ ...p, elements: [{ ...trace, traceType: 'unknown-type' }] })),
   );
 });
 test('curves generate finite rails, marks are bounded, ledge side reverses', () => {

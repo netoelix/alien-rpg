@@ -72,3 +72,57 @@ test('closed corridor walls form a continuous contour regardless of edge directi
     assert.equal(runs[0].points.length, 4);
   }
 });
+
+test('corridor floor and finishes stop at the actual endpoints in every direction', async () => {
+  const { createServer } = await import('vite');
+  const { createElement: h } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const server = await createServer({
+    server: { middlewareMode: true, hmr: false },
+    optimizeDeps: { noDiscovery: true, include: [] },
+  });
+  try {
+    const { Shape } = await server.ssrLoadModule('/src/blueprints/FloorShape.jsx');
+    const { FloorFinish } = await server.ssrLoadModule('/src/blueprints/FloorFinish.jsx');
+    for (const points of [
+      corridor.points,
+      [
+        { x: 10, y: 10 },
+        { x: 10, y: 30 },
+      ],
+      [
+        { x: 30, y: 30 },
+        { x: 10, y: 10 },
+      ],
+      [
+        { x: 10, y: 10 },
+        { x: 20, y: 10 },
+        { x: 20, y: 20 },
+      ],
+    ]) {
+      for (const flags of [
+        {},
+        { closedStart: true },
+        { closedEnd: true },
+        { closedStart: true, closedEnd: true },
+      ]) {
+        const element = {
+          ...corridor,
+          ...flags,
+          points,
+          floorFinish: { type: 'plates', size: 1, opacity: 0.3 },
+        };
+        const expected = points.map((p) => p.x + ',' + p.y).join(' ');
+        for (const props of [{}, { seamOverlap: true }, { outer: true }]) {
+          const svg = renderToStaticMarkup(h('svg', {}, h(Shape, { element, ...props })));
+          assert.ok(svg.includes(`points="${expected}"`));
+          assert.match(svg, /stroke-linecap="butt"/);
+        }
+        const finish = renderToStaticMarkup(h('svg', {}, h(FloorFinish, { element })));
+        assert.ok(finish.includes(`points="${expected}"`));
+      }
+    }
+  } finally {
+    await server.close();
+  }
+});

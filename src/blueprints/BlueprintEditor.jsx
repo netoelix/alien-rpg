@@ -1,3 +1,13 @@
+import { OptionButtons } from './OptionButtons.jsx';
+import { pathTools, pathChoices, pathPreset } from './path-tools.js';
+import { areaTools, areaElement } from './area-tools.js';
+import { VisualChoices } from './VisualChoices.jsx';
+import { legacyAssets } from './legacy-assets.js';
+import { moveDestinationLabel } from './destination-labels.js';
+import { beginObjectDrag, objectDragStarted } from './object-drag.js';
+import { switchFloor as switchVentFloor } from './floors.js';
+import { VentPortControls } from './VentPortControls.jsx';
+import { nearestVentPort } from './vent-ports.js';
 import { TraceControls } from './TraceControls.jsx';
 import { reorderAsset } from './asset-order.js';
 import { levelAssets } from './level-assets.js';
@@ -14,7 +24,8 @@ import { DimensionControls } from './DimensionControls.jsx';
 import { dimensionOffset } from './dimensions.js';
 import { Dimension } from './Dimension.jsx';
 import { TextControls } from './TextControls.jsx';
-import { ModulePlacementPreview } from './ModulePreview.jsx';
+import { LabelText } from './LabelText.jsx';
+import { ModuleSketch, ModulePlacementPreview } from './ModulePreview.jsx';
 import { ModuleLibrary } from './ModuleLibrary.jsx';
 import { placeModuleGrid, rotateModule } from './modules.js';
 import { arrangements, arrangeEquipment, objectView } from './arrange.js';
@@ -94,6 +105,7 @@ const toolNames = {
   door: 'Portas e janelas',
   vent: 'Ventilação',
   trace: 'Traçados',
+  floorRegion: 'Região de piso / água',
   asset: 'Equipamento',
   module: 'Módulo pronto',
   label: 'Texto',
@@ -114,6 +126,7 @@ const toolKeys = {
   t: 'label',
 };
 const hints = {
+  floorRegion: 'Marque os vértices; Enter conclui e Escape cancela. Sem paredes.',
   wall: 'Clique na borda de uma sala ou corredor. Ajuste o trecho e o tipo no painel.',
   select:
     'Arraste para mover. Ctrl+C/Ctrl+V copia e cola; Ctrl+D duplica; setas movem (Shift: 10 passos).',
@@ -149,10 +162,14 @@ export default function BlueprintEditor() {
   const [focusMode, setFocusMode] = useState(false);
   const [spaceHeld, setSpaceHeld] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
+  const [portPlacement, setPortPlacement] = useState(null);
+  const [areaPurpose, setAreaPurpose] = useState('room');
+  const [regionFinish, setRegionFinish] = useState({ type: 'plates', size: 1, opacity: 0.3 });
   const [traceStyle, setTraceStyle] = useState({ traceType: 'rail', rounded: true, side: 1 });
   const [project, setProject] = useState(() => sessionProject || newProject());
   const [referenceFloors, setReferenceFloors] = useState([]);
   const [connectionPlacement, setConnectionPlacement] = useState(null);
+  const [assetRotation, setAssetRotation] = useState(0);
   const [modulePlacement, setModulePlacement] = useState(null);
   const [repeatModule, setRepeatModule] = useState(false);
   const [moduleGridOptions, setModuleGridOptions] = useState({ rows: 1, columns: 1, gap: 0 });
@@ -163,7 +180,7 @@ export default function BlueprintEditor() {
     [future, setFuture] = useState([]);
   const [tool, setTool] = useState('room'),
     [selected, setSelected] = useState(null);
-  const [asset, setAsset] = useState('console'),
+  const [asset, setAsset] = useState('commandBench'),
     [moduleType, setModuleType] = useState('bridge');
   const [assetSearch, setAssetSearch] = useState('');
   const [dimensionStyle, setDimensionStyle] = useState({ mode: 'direct', offset: 0 });
@@ -171,8 +188,10 @@ export default function BlueprintEditor() {
   const [selectionAngle, setSelectionAngle] = useState(15);
   const [arrangement, setArrangement] = useState('left');
   const [rotationPivot, setRotationPivot] = useState(null);
-  const matchingAssets = Object.entries(assetNames).filter(([, name]) =>
-    normalizeSearch(name).includes(normalizeSearch(assetSearch)),
+  const matchingAssets = Object.entries(assetNames).filter(
+    ([id, name]) =>
+      !Object.hasOwn(legacyAssets, id) &&
+      normalizeSearch(name).includes(normalizeSearch(assetSearch)),
   );
   const [lineWidth, setLineWidth] = useState(2),
     [doorWidth, setDoorWidth] = useState(1.5),
@@ -307,12 +326,14 @@ export default function BlueprintEditor() {
     return layer?.visible && !layer.locked;
   }
   function add(elements) {
+    if (areaTools.includes(tool))
+      elements = elements.map((e) => areaElement(e, areaPurpose, regionFinish));
     if (elements.some((e) => !allowed(e.kind))) {
       setMessage('Mostre e desbloqueie as camadas usadas por esta ferramenta.');
       return false;
     }
     const created = elements.map((element) =>
-      ['room', 'ellipse', 'polygon', 'corridor'].includes(tool) && creationWall !== 'auto'
+      ['room', 'ellipse', 'polygon', 'corridor'].includes(element.kind) && creationWall !== 'auto'
         ? {
             ...element,
             walls: wallSegments(element).map((_, segment) => ({
@@ -361,6 +382,7 @@ export default function BlueprintEditor() {
           'label',
           'vent',
           'trace',
+          'floorRegion',
         ].includes(tool);
     if (enabled && objectSnap && eligible && !spaceHeld) {
       const excluded = gesture?.element ? pastedGroup?.ids || [gesture.element.id] : [];
@@ -386,6 +408,56 @@ export default function BlueprintEditor() {
     event.preventDefault();
     svgRef.current.focus({ preventScroll: true });
     const p = location(event);
+    const destination = event.target.closest('[data-destination-object]');
+    if (destination && tool === 'select' && event.button === 0 && !spaceHeld) {
+      const element = project.elements.find((e) => e.id === destination.dataset.destinationObject);
+      if (!element || element.locked || !allowed(element.kind)) return;
+      const point = location(event, false);
+      svgRef.current.setPointerCapture(event.pointerId);
+      setGesture({
+        ...beginObjectDrag(element, point, event),
+        kind: 'destinationLabel',
+        labelKey: destination.dataset.destinationKey,
+      });
+      return;
+    }
+    if (portPlacement) {
+      const vent = project.elements.find((e) => e.id === portPlacement && e.kind === 'vent');
+      if (!vent || !allowed('vent')) {
+        setPortPlacement(null);
+        return;
+      }
+      const hit = nearestVentPort(vent.points, p);
+      if (!hit || hit.distance > Math.max(0.4, vent.width / 2)) {
+        setMessage('Clique sobre o duto selecionado para criar o acesso.');
+        return;
+      }
+      if ((vent.ports || []).length >= 100) {
+        setPortPlacement(null);
+        return;
+      }
+      const port = {
+        id: uid(),
+        segment: hit.segment,
+        t: hit.t,
+        type: 'grille',
+        side: 1,
+        label: '',
+      };
+      if (
+        commit({
+          ...project,
+          elements: project.elements.map((e) =>
+            e.id === vent.id ? { ...e, ports: [...(e.ports || []), port] } : e,
+          ),
+        })
+      ) {
+        setPortPlacement(null);
+        setMessage('Acesso criado. Ajuste tipo, lado e destino nas propriedades.');
+      }
+      return;
+    }
+
     setCursor(p);
     if (tool === 'pan' || event.button === 1 || event.button === 2 || spaceHeld) {
       svgRef.current.setPointerCapture(event.pointerId);
@@ -536,7 +608,7 @@ export default function BlueprintEditor() {
         setSelected(primary.id);
         setPastedGroup({ selectedId: primary.id, ids });
         svgRef.current.setPointerCapture(event.pointerId);
-        setGesture({ kind: 'move', element: primary, start: p, end: p });
+        setGesture(beginObjectDrag(primary, p, event));
         return;
       }
       if (event.shiftKey && element.kind !== 'door') {
@@ -595,7 +667,7 @@ export default function BlueprintEditor() {
         });
         return;
       }
-      setGesture({ kind: 'move', element, start: p, end: p });
+      setGesture(beginObjectDrag(element, p, event));
       return;
     }
     if (tool === 'module') {
@@ -619,7 +691,7 @@ export default function BlueprintEditor() {
       }
       return;
     }
-    if (['corridor', 'vent', 'polygon', 'trace'].includes(tool)) {
+    if (['corridor', 'vent', 'polygon', 'trace', 'floorRegion'].includes(tool)) {
       setPoints((old) =>
         old.length && old.at(-1).x === p.x && old.at(-1).y === p.y ? old : [...old, p],
       );
@@ -642,12 +714,22 @@ export default function BlueprintEditor() {
     }
     if (tool === 'asset')
       add([
-        { id: uid(), kind: 'asset', asset, x: p.x, y: p.y, ...assetFootprint(asset), rotation: 0 },
+        {
+          id: uid(),
+          kind: 'asset',
+          asset,
+          x: p.x,
+          y: p.y,
+          ...assetFootprint(asset),
+          rotation: assetRotation,
+        },
       ]);
     if (tool === 'label' && label.trim())
       add([{ id: uid(), kind: 'label', x: p.x, y: p.y, text: label, ...labelStyle }]);
   }
   function move(event) {
+    if (['move', 'destinationLabel'].includes(gesture?.kind) && !objectDragStarted(gesture, event))
+      return;
     const p = location(event);
     setSnapGuides(pendingGuides.current);
     setCursor(p);
@@ -663,7 +745,10 @@ export default function BlueprintEditor() {
     }
     setGesture({
       ...gesture,
-      end: ['rotate', 'rotateGroup'].includes(gesture.kind) ? location(event, false) : p,
+      dragging: ['move', 'destinationLabel'].includes(gesture.kind) ? true : gesture.dragging,
+      end: ['rotate', 'rotateGroup', 'destinationLabel'].includes(gesture.kind)
+        ? location(event, false)
+        : p,
       step: event.shiftKey ? 15 : 1,
       proportional: event.shiftKey,
     });
@@ -683,13 +768,28 @@ export default function BlueprintEditor() {
     if (!gesture) return;
     if (svgRef.current.hasPointerCapture(event.pointerId))
       svgRef.current.releasePointerCapture(event.pointerId);
+    if (['move', 'destinationLabel'].includes(gesture.kind) && !objectDragStarted(gesture, event)) {
+      setGesture(null);
+      return;
+    }
     const g = {
       ...gesture,
-      end: location(event, !['rotate', 'rotateGroup'].includes(gesture.kind)),
+      end: location(event, !['rotate', 'rotateGroup', 'destinationLabel'].includes(gesture.kind)),
       step: event.shiftKey ? 15 : 1,
       proportional: event.shiftKey,
     };
     setGesture(null);
+    if (g.kind === 'destinationLabel') {
+      commit({
+        ...project,
+        elements: project.elements.map((e) =>
+          e.id === g.element.id
+            ? moveDestinationLabel(e, g.labelKey, g.end.x - g.start.x, g.end.y - g.start.y)
+            : e,
+        ),
+      });
+      return;
+    }
     if (g.kind === 'dimensionOffset') {
       commit({
         ...project,
@@ -776,7 +876,7 @@ export default function BlueprintEditor() {
     }
   }
   function finish() {
-    if (points.length < (tool === 'polygon' ? 3 : 2)) return;
+    if (points.length < (['polygon', 'floorRegion'].includes(tool) ? 3 : 2)) return;
     if (
       add([
         {
@@ -785,6 +885,7 @@ export default function BlueprintEditor() {
           points,
           width: lineWidth,
           ...(tool === 'trace' ? traceStyle : {}),
+          ...(tool === 'floorRegion' ? { floorFinish: regionFinish } : {}),
         },
       ])
     )
@@ -802,10 +903,12 @@ export default function BlueprintEditor() {
     );
   }
   function changeTool(next) {
+    setPortPlacement(null);
     setCursor(null);
     setSnapGuides([]);
     setConnectionPlacement(null);
     setModulePlacement(null);
+    if (next === 'floorRegion') setAreaPurpose('floor');
     setTool(next);
     setPoints([]);
     setGesture(null);
@@ -1040,17 +1143,21 @@ export default function BlueprintEditor() {
           : element,
       ),
     };
-  if (gesture && ['room', 'ellipse'].includes(gesture.kind)) preview = [rectangle(gesture)];
+  if (gesture && ['room', 'ellipse'].includes(gesture.kind))
+    preview = [areaElement(rectangle(gesture), areaPurpose, regionFinish)];
   if (points.length && !['dimension', 'wall'].includes(tool))
     preview = [
       {
         id: 'preview',
         kind: tool,
         ...(tool === 'trace' ? traceStyle : {}),
+        ...(tool === 'floorRegion' ? { floorFinish: regionFinish } : {}),
         width: lineWidth,
         points: cursor ? [...points, cursor] : points,
       },
     ];
+  if (areaTools.includes(tool))
+    preview = preview.map((e) => areaElement(e, areaPurpose, regionFinish));
   if (gesture?.kind === 'move' && gesture.element.kind !== 'door')
     drawn = {
       ...project,
@@ -1109,6 +1216,20 @@ export default function BlueprintEditor() {
       groupRotationError = error.message;
     }
   }
+  if (gesture?.kind === 'destinationLabel')
+    drawn = {
+      ...project,
+      elements: project.elements.map((e) =>
+        e.id === gesture.element.id
+          ? moveDestinationLabel(
+              e,
+              gesture.labelKey,
+              gesture.end.x - gesture.start.x,
+              gesture.end.y - gesture.start.y,
+            )
+          : e,
+      ),
+    };
   drawn = followVentWalls(project, drawn);
   const gridStep =
     project.grid * Math.max(1, Math.ceil(project.width / view.zoom / project.grid / 100));
@@ -1118,9 +1239,14 @@ export default function BlueprintEditor() {
     >
       <div className="blueprint-heading">
         <div>
-          <div className="eyebrow">OFICINA CARTOGRÁFICA · VERSÃO INICIAL</div>
-          <h1>Criador de plantas</h1>
-          <p>Desenhe, monte e exporte. Seus mapas não são enviados ao servidor.</p>
+          <div className="eyebrow">OFICINA CARTOGRÁFICA</div>
+          <h1>Editor de mapas</h1>
+          <p className="blueprint-project-caption">
+            {project.name}{' '}
+            <span title="Os mapas são editados neste navegador e não são enviados ao servidor.">
+              · Local
+            </span>
+          </p>
         </div>
         <a href="#/" className="button">
           VOLTAR AO ARQUIVO
@@ -1168,16 +1294,195 @@ export default function BlueprintEditor() {
         >
           SALVAR PROJETO
         </button>
-        <button disabled={!past.length} onClick={undo}>
-          DESFAZER
-        </button>
-        <button disabled={!future.length} onClick={redo}>
-          REFAZER
-        </button>
+
         <span>
           {project.elements.length} objetos · {dirty ? 'alterações nesta sessão' : 'projeto pronto'}
         </span>
       </div>
+      <nav className="blueprint-global-controls" aria-label="Configurações do projeto">
+        <details name="blueprint-global" className="blueprint-global-panel">
+          <summary>Projeto e escala</summary>
+          <label>
+            Nome
+            <input
+              value={project.name}
+              maxLength="120"
+              onChange={(e) => commit({ ...project, name: e.target.value })}
+            />
+          </label>
+          {['width', 'height'].map((key) => (
+            <label key={key}>
+              {key === 'width' ? 'Largura' : 'Altura'} da planta (m)
+              <input
+                type="number"
+                min="10"
+                max="2000"
+                value={project[key]}
+                onChange={(e) => commit({ ...project, [key]: Number(e.target.value) })}
+              />
+            </label>
+          ))}
+          <label>
+            Encaixe da grade
+            <select
+              value={project.grid}
+              onChange={(e) => commit({ ...project, grid: Number(e.target.value) })}
+            >
+              {[0.25, 0.5, 1, 2, 5, 10, 25, 50].map((n) => (
+                <option key={n} value={n}>
+                  {n} m
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="muted">Alterar a grade não redimensiona salas nem objetos.</p>
+          <label>
+            Aparência
+            <select
+              value={project.theme}
+              onChange={(e) => commit({ ...project, theme: e.target.value })}
+            >
+              <option value="green">Terminal verde</option>
+              <option value="blue">Planta azul</option>
+              <option value="print">Impressão clara</option>
+            </select>
+          </label>
+        </details>
+        <details name="blueprint-global" className="blueprint-global-panel">
+          <summary>Recuperação neste dispositivo</summary>
+          <label>
+            <input
+              type="checkbox"
+              checked={autosave}
+              onChange={(e) => setAutosave(e.target.checked)}
+            />
+            Guardar automaticamente neste navegador
+          </label>
+          <p className="muted">
+            Opcional. Não sincroniza entre dispositivos. Baixe o projeto para guardar uma cópia
+            duradoura.
+          </p>
+          <button
+            disabled={!recovery}
+            onClick={() => {
+              if (dirty && !window.confirm('Substituir a planta atual pela recuperação local?'))
+                return;
+              try {
+                replace(parseProject(localStorage.getItem(storageKey) || ''));
+                setMessage('Cópia local recuperada.');
+              } catch (error) {
+                setMessage(error.message);
+              }
+            }}
+          >
+            RECUPERAR CÓPIA LOCAL
+          </button>
+          <button
+            disabled={!recovery}
+            onClick={() => {
+              if (window.confirm('Apagar somente a cópia de recuperação deste navegador?')) {
+                try {
+                  localStorage.removeItem(storageKey);
+                  setAutosave(false);
+                  setRecovery(false);
+                } catch {
+                  setMessage('Não foi possível limpar o armazenamento local.');
+                }
+              }
+            }}
+          >
+            APAGAR CÓPIA LOCAL
+          </button>
+        </details>
+        <details name="blueprint-global" className="blueprint-global-panel">
+          <summary>Exportar imagem</summary>
+          <p className="muted">
+            A exportação usa somente o pavimento ativo e mantém o mesmo alinhamento entre camadas. A
+            grade não é exportada.
+          </p>
+          {project.layers.map((l) => (
+            <label key={l.id}>
+              <input
+                type="checkbox"
+                checked={exportLayers.includes(l.id)}
+                disabled={!l.visible}
+                onChange={(e) =>
+                  setExportLayers((ids) =>
+                    e.target.checked ? [...ids, l.id] : ids.filter((id) => id !== l.id),
+                  )
+                }
+              />
+              {l.name}
+              {!l.visible ? ' (oculta)' : ''}
+            </label>
+          ))}
+          <label>
+            Formato
+            <select value={format} onChange={(e) => setFormat(e.target.value)}>
+              <option value="png">PNG</option>
+              <option value="svg">SVG vetorial</option>
+            </select>
+          </label>
+          <label>
+            Maior lado
+            <select value={pixels} onChange={(e) => setPixels(Number(e.target.value))}>
+              {[1024, 2048, 4096].map((n) => (
+                <option key={n} value={n}>
+                  {n} pixels
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={transparent}
+              onChange={(e) => setTransparent(e.target.checked)}
+            />
+            Fundo transparente
+          </label>
+          {exportLayers.length === 1 && exportLayers[0] === 'vents' && (
+            <small>
+              A exportação exclusiva da ventilação mostra os dutos completos sobre fundo opaco,
+              mantendo o alinhamento do pavimento.
+            </small>
+          )}
+          <button
+            disabled={exporting || !!gesture || !!points.length}
+            onClick={async () => {
+              setExporting(true);
+              try {
+                await exportDrawing(svgRef.current, project, {
+                  format,
+                  transparent,
+                  pixels,
+                  layers: exportLayers.filter(
+                    (id) => project.layers.find((l) => l.id === id)?.visible,
+                  ),
+                });
+                setMessage(
+                  'Download da imagem solicitado. O projeto continua editável nesta sessão.',
+                );
+              } catch (error) {
+                setMessage(error.message);
+              } finally {
+                setExporting(false);
+              }
+            }}
+          >
+            {exporting ? 'GERANDO…' : 'BAIXAR IMAGEM'}
+          </button>
+        </details>
+        <details name="blueprint-global" className="blueprint-global-panel">
+          <summary>Atalhos e navegação</summary>
+          <p>
+            Arraste com o botão do meio ou direito para mover a visão. Espaço + arraste também
+            funciona. + / −: zoom. Home: enquadrar. F: modo de foco. Escape: sair do foco ou
+            cancelar. Passe sobre os ícones para ver os atalhos de ferramentas. Os atalhos funcionam
+            com foco na planta; Tab continua navegando pelos controles.
+          </p>
+        </details>
+      </nav>
       <FloorControls
         project={project}
         disabled={!!gesture || !!points.length || exporting}
@@ -1219,61 +1524,171 @@ export default function BlueprintEditor() {
           }
         }}
       />
-      <p role="status" className="blueprint-status">
+      <p
+        role="status"
+        className={`blueprint-status ${message === 'Alteração aplicada somente neste navegador.' ? 'blueprint-status-routine' : ''}`}
+      >
         {message}
       </p>
       <div className="blueprint-layout">
         <aside className="blueprint-tools" aria-label="Ferramentas de desenho">
-          <h2>{toolNames[tool]}</h2>
-          {tool === 'trace' && (
-            <TraceControls
-              value={traceStyle}
-              onChange={(key, value) => setTraceStyle({ ...traceStyle, [key]: value })}
+          <small className="blueprint-panel-context">Criar / desenhar</small>
+          <h2>
+            {areaTools.includes(tool)
+              ? 'Áreas'
+              : pathTools.includes(tool)
+                ? 'Percursos'
+                : toolNames[tool]}
+          </h2>
+          {pathTools.includes(tool) && (
+            <VisualChoices
+              label="Desenhar percurso"
+              kind="trace"
+              value={tool === 'trace' ? traceStyle.traceType : tool}
+              options={pathChoices}
+              onChange={(value) => {
+                const preset = pathPreset(value);
+                changeTool(preset.tool);
+                setLineWidth(preset.width);
+                if (preset.tool === 'trace') setTraceStyle(preset.style);
+              }}
             />
           )}
-          {['corridor', 'vent', 'polygon', 'trace'].includes(tool) && (
+          {pathTools.includes(tool) && (
+            <label>
+              Largura (m)
+              <input
+                type="number"
+                min=".25"
+                max="50"
+                step=".25"
+                value={lineWidth}
+                onChange={(e) => setLineWidth(Math.max(0.25, Math.min(50, Number(e.target.value))))}
+              />
+            </label>
+          )}
+          {areaTools.includes(tool) && (
             <>
-              {tool !== 'polygon' && (
-                <label>
-                  Largura (m)
-                  <input
-                    type="number"
-                    min=".25"
-                    max="50"
-                    step=".25"
-                    value={lineWidth}
-                    onChange={(e) =>
-                      setLineWidth(Math.max(0.25, Math.min(50, Number(e.target.value))))
-                    }
-                  />
-                </label>
+              <VisualChoices
+                label="Criar"
+                kind="purpose"
+                value={areaPurpose}
+                options={[
+                  ['room', 'Sala'],
+                  ['floor', 'Piso'],
+                  ['pool', 'Piscina'],
+                  ['lake', 'Lago'],
+                ]}
+                onChange={(purpose) => {
+                  setAreaPurpose(purpose);
+                  if (tool === 'floorRegion') changeTool('polygon');
+                  setPoints([]);
+                }}
+              />
+              <VisualChoices
+                label="Forma"
+                kind="shape"
+                value={tool === 'floorRegion' ? 'polygon' : tool}
+                options={[
+                  ['room', 'Retângulo'],
+                  ['ellipse', 'Elipse'],
+                  ['polygon', 'Vértices'],
+                ]}
+                onChange={changeTool}
+              />
+            </>
+          )}
+          {['room', 'ellipse', 'polygon', 'corridor'].includes(tool) &&
+            (areaPurpose === 'room' || tool === 'corridor') && (
+              <VisualChoices
+                label="Parede ao desenhar"
+                kind="wall"
+                value={creationWall}
+                onChange={setCreationWall}
+                options={[
+                  ['auto', 'Automática'],
+                  ...Object.entries(wallTypes).filter(([k]) => k !== 'open'),
+                ]}
+              />
+            )}
+          {areaTools.includes(tool) && areaPurpose !== 'room' && (
+            <>
+              <p>
+                Área sem paredes. Arraste para definir retângulos e elipses; por vértices, Enter
+                conclui.
+              </p>
+              <FloorFinishControls
+                value={{
+                  ...regionFinish,
+                  type: areaPurpose === 'floor' ? regionFinish.type : areaPurpose,
+                }}
+                allowWater={areaPurpose !== 'floor'}
+                onChange={(finish) => {
+                  setRegionFinish(finish);
+                  if (['pool', 'lake'].includes(finish.type)) setAreaPurpose(finish.type);
+                  else setAreaPurpose('floor');
+                }}
+              />
+            </>
+          )}
+          {tool === 'trace' && (
+            <TraceControls
+              showType={false}
+              value={traceStyle}
+              onChange={(key, value) => {
+                setTraceStyle({ ...traceStyle, [key]: value });
+                if (key === 'traceType' && ['channel', 'gratedChannel'].includes(value))
+                  setLineWidth(0.4);
+                if (key === 'traceType' && ['path', 'sidewalk', 'road'].includes(value)) {
+                  setLineWidth(value === 'road' ? 6 : value === 'sidewalk' ? 2 : 1.5);
+                  setTraceStyle({ traceType: value, rounded: true, side: 1 });
+                }
+                if (key === 'traceType' && ['hazardLine', 'walkwayLine'].includes(value)) {
+                  setLineWidth(value === 'hazardLine' ? 0.3 : 1.2);
+                  setTraceStyle({ traceType: value, rounded: true, side: 1 });
+                }
+                if (key === 'traceType' && value === 'river') {
+                  setLineWidth(3);
+                  setTraceStyle({ ...traceStyle, traceType: value, rounded: true });
+                }
+              }}
+            />
+          )}
+          {['corridor', 'vent', 'polygon', 'trace', 'floorRegion'].includes(tool) && (
+            <>
+              {points.length > 0 && (
+                <div className="blueprint-path-actions">
+                  <button
+                    disabled={points.length < (['polygon', 'floorRegion'].includes(tool) ? 3 : 2)}
+                    onClick={finish}
+                  >
+                    CONCLUIR TRAÇADO
+                  </button>
+                  <button
+                    disabled={!points.length}
+                    onClick={() => setPoints((current) => current.slice(0, -1))}
+                  >
+                    REMOVER ÚLTIMO PONTO
+                  </button>
+                  <button disabled={!points.length} onClick={() => setPoints([])}>
+                    CANCELAR TRAÇADO
+                  </button>
+                </div>
               )}
-              <button disabled={points.length < (tool === 'polygon' ? 3 : 2)} onClick={finish}>
-                CONCLUIR TRAÇADO
-              </button>
-              <button
-                disabled={!points.length}
-                onClick={() => setPoints((current) => current.slice(0, -1))}
-              >
-                REMOVER ÚLTIMO PONTO
-              </button>
-              <button disabled={!points.length} onClick={() => setPoints([])}>
-                CANCELAR TRAÇADO
-              </button>
             </>
           )}
           {tool === 'door' && (
             <>
-              <label>
-                Tipo de abertura
-                <select
-                  value={openingType}
-                  onChange={(event) => setOpeningType(event.target.value)}
-                >
-                  <option value="door">Porta</option>
-                  <option value="window">Janela</option>
-                </select>
-              </label>
+              <VisualChoices
+                label="Abertura"
+                kind="opening"
+                value={openingType}
+                onChange={setOpeningType}
+                options={[
+                  ['door', 'Porta'],
+                  ['window', 'Janela'],
+                ]}
+              />
               <label>
                 Largura da abertura (m)
                 <input
@@ -1305,6 +1720,16 @@ export default function BlueprintEditor() {
                 {furniture[asset] &&
                   `${furniture[asset].w} × ${furniture[asset].h} m · Peça física em vista superior.`}
               </p>
+              <label>
+                Rotação antes de inserir (°)
+                <input
+                  type="number"
+                  step="15"
+                  value={assetRotation}
+                  onChange={(e) => setAssetRotation(Number(e.target.value) || 0)}
+                />
+              </label>
+              <small>Na viewport: R gira 90°; Shift+R gira no sentido contrário.</small>
               <AssetCatalog
                 items={matchingAssets}
                 search={assetSearch}
@@ -1315,16 +1740,12 @@ export default function BlueprintEditor() {
             </>
           )}
           {tool === 'module' && (
-            <label>
-              Módulo (10 × 8 m)
-              <select value={moduleType} onChange={(e) => setModuleType(e.target.value)}>
-                {Object.entries(moduleNames).map(([value, name]) => (
-                  <option key={value} value={value}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <OptionButtons
+              label="Módulo pronto · 10 × 8 m"
+              value={moduleType}
+              onChange={setModuleType}
+              options={Object.entries(moduleNames)}
+            />
           )}
           {tool === 'wall' && (
             <div>
@@ -1343,21 +1764,13 @@ export default function BlueprintEditor() {
               </label>
               {manualWall && (
                 <>
-                  <label>
-                    Tipo
-                    <select
-                      value={wallType === 'open' ? 'internal' : wallType}
-                      onChange={(e) => setWallType(e.target.value)}
-                    >
-                      {Object.entries(wallTypes)
-                        .filter(([k]) => k !== 'open')
-                        .map(([k, v]) => (
-                          <option key={k} value={k}>
-                            {v}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
+                  <VisualChoices
+                    label="Parede avulsa"
+                    kind="wall"
+                    value={wallType === 'open' ? 'internal' : wallType}
+                    onChange={setWallType}
+                    options={Object.entries(wallTypes).filter(([k]) => k !== 'open')}
+                  />
                   <p>Clique no início e no fim. Escape cancela.</p>
                 </>
               )}
@@ -1414,17 +1827,13 @@ export default function BlueprintEditor() {
                     SELECIONAR BORDA INTEIRA
                   </button>
                 </details>
-                <label>
-                  Tipo de parede
-                  <select value={wallType} onChange={(event) => setWallType(event.target.value)}>
-                    <option value="auto">Automática (unir ambientes)</option>
-                    {Object.entries(wallTypes).map(([value, name]) => (
-                      <option key={value} value={value}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <VisualChoices
+                  label="Tipo de parede"
+                  kind="wall"
+                  value={wallType}
+                  onChange={setWallType}
+                  options={[['auto', 'Automática (unir ambientes)'], ...Object.entries(wallTypes)]}
+                />
                 <label>
                   Início do trecho (%)
                   <input
@@ -1565,452 +1974,76 @@ export default function BlueprintEditor() {
               }
             />
           )}
-          <details open>
-            <summary>Propriedades da seleção</summary>
-            {selectedElement ? (
-              <>
-                <p>
-                  {selectedElement.kind === 'door'
-                    ? selectedElement.openingType === 'window'
-                      ? 'Janela'
-                      : 'Porta'
-                    : toolNames[selectedElement.kind]}{' '}
-                  {selectedElement.asset && '· ' + assetNames[selectedElement.asset]}
-                </p>
-                {levelAssets[selectedElement.asset] && (
-                  <small>
-                    Desnível visual: não conecta pavimentos. A seta indica subida; os traços da
-                    borda indicam o lado baixo.
-                  </small>
-                )}
-                <fieldset disabled={!editable}>
-                  {selectedElement.asset === 'stairs' && (
-                    <details>
-                      <summary>Legenda de destino</summary>
-                      <small>Usa o nome da sala que contém o centro da saída conectada.</small>
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={!selectedElement.connectionLabel?.hidden}
-                          onChange={(e) =>
-                            property('connectionLabel', {
-                              ...selectedElement.connectionLabel,
-                              hidden: !e.target.checked,
-                            })
-                          }
-                        />
-                        Mostrar destino
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={selectedElement.connectionLabel?.export !== false}
-                          onChange={(e) =>
-                            property('connectionLabel', {
-                              ...selectedElement.connectionLabel,
-                              export: e.target.checked,
-                            })
-                          }
-                        />
-                        Incluir na exportação
-                      </label>
-                      {['dx', 'dy'].map((key) => (
-                        <label key={key}>
-                          Deslocamento {key === 'dx' ? 'X' : 'Y'} (m)
-                          <input
-                            type="number"
-                            step=".25"
-                            value={selectedElement.connectionLabel?.[key] || 0}
-                            onChange={(e) =>
-                              property('connectionLabel', {
-                                ...selectedElement.connectionLabel,
-                                [key]: Number(e.target.value),
-                              })
-                            }
-                          />
-                        </label>
-                      ))}
-                    </details>
-                  )}
-                  {selectedElement.kind === 'asset' && (
-                    <details>
-                      <summary>Ordem de sobreposição</summary>
-                      <div className="blueprint-stack-actions">
-                        {[
-                          ['front', '⇈', 'Trazer para frente'],
-                          ['forward', '↑', 'Avançar um nível'],
-                          ['backward', '↓', 'Recuar um nível'],
-                          ['back', '⇊', 'Enviar para trás'],
-                        ].map(([action, icon, title]) => (
-                          <button
-                            key={action}
-                            title={title}
-                            aria-label={title}
-                            onClick={() =>
-                              commit(reorderAsset(project, selectedElement.id, action))
-                            }
-                          >
-                            <span aria-hidden="true">{icon}</span>
-                            <span>{title}</span>
-                          </button>
-                        ))}
-                      </div>
-                      <small>Entre equipamentos, plataformas e sinalização deste pavimento.</small>
-                    </details>
-                  )}
-                  {['x', 'y', 'w', 'h', 'width', 'size', 'rotation']
-                    .filter((key) => typeof selectedElement[key] === 'number')
-                    .map((key) => (
-                      <label key={key}>
-                        {
-                          {
-                            x: 'X (m)',
-                            y: 'Y (m)',
-                            w: 'Largura (m)',
-                            h: 'Altura (m)',
-                            width: 'Largura (m)',
-                            size: 'Texto (m)',
-                            rotation: 'Rotação (°)',
-                          }[key]
-                        }
-                        <input
-                          type="number"
-                          step={key === 'rotation' ? 15 : 0.25}
-                          value={selectedElement[key]}
-                          onChange={(e) => property(key, Number(e.target.value))}
-                        />
-                      </label>
-                    ))}
-                  {floorKinds.includes(selectedElement.kind) && (
-                    <FloorFinishControls
-                      value={selectedElement.floorFinish}
-                      onChange={(value) => property('floorFinish', value)}
-                    />
-                  )}
-                  {selectedElement.kind === 'trace' && (
-                    <TraceControls value={selectedElement} onChange={property} />
-                  )}
-                  {selectedElement.kind === 'dimension' && (
-                    <DimensionControls {...selectedElement} onChange={property} />
-                  )}
-                  {selectedElement.kind === 'corridor' && (
-                    <fieldset>
-                      <legend>Extremidades</legend>
-                      {[
-                        ['closedStart', 'Fechar início'],
-                        ['closedEnd', 'Fechar fim'],
-                      ].map(([key, title]) => (
-                        <label key={key}>
-                          <input
-                            type="checkbox"
-                            checked={!!selectedElement[key]}
-                            onChange={(e) => {
-                              const next = setCorridorEnd(
-                                project,
-                                selectedElement.id,
-                                key,
-                                e.target.checked,
-                              );
-                              const removed =
-                                project.elements.filter((x) => x.kind === 'door').length -
-                                next.elements.filter((x) => x.kind === 'door').length;
-                              if (
-                                removed &&
-                                !window.confirm(
-                                  'Reabrir esta extremidade removerá ' +
-                                    removed +
-                                    ' porta(s)/janela(s). Continuar?',
-                                )
-                              )
-                                return;
-                              commit(next);
-                            }}
-                          />
-                          {title}
-                        </label>
-                      ))}
-                    </fieldset>
-                  )}
-                  {selectedElement.kind === 'vent' && (
-                    <fieldset>
-                      <legend>Acessos do duto</legend>
-                      {[0, 1].map((i) => (
-                        <label key={i}>
-                          {i ? 'Fim' : 'Início'}
-                          <select
-                            value={selectedElement.accesses?.[i] || 'auto'}
-                            onChange={(e) => {
-                              const values = [...(selectedElement.accesses || ['auto', 'auto'])];
-                              values[i] = e.target.value;
-                              property('accesses', values);
-                            }}
-                          >
-                            {Object.entries(ventAccessTypes).map(([k, v]) => (
-                              <option key={k} value={k}>
-                                {v}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-                      ))}
-                      <small>
-                        Automático conecta pontas a outros dutos, sugere grelha nas paredes e
-                        escotilha dentro de salas. Escolha outro acesso para manter a ponta
-                        independente.
-                      </small>
-                    </fieldset>
-                  )}
-                  {selectedElement.kind === 'label' && (
-                    <TextControls {...selectedElement} onChange={property} />
-                  )}
-                  {selectedElement.points && (
-                    <details className="blueprint-vertices">
-                      <summary>Vértices ({selectedElement.points.length})</summary>
-                      <p>
-                        Arraste os círculos na planta ou ajuste as coordenadas. As portas acompanham
-                        a borda.
-                      </p>
-                      <div className="blueprint-vertex-list">
-                        {selectedElement.points.map((point, index) => (
-                          <div key={index} className="blueprint-vertex-row">
-                            <span>{index + 1}</span>
-                            {['x', 'y'].map((axis) => (
-                              <label key={axis}>
-                                {axis.toUpperCase()} (m)
-                                <input
-                                  type="number"
-                                  aria-label={`Vértice ${index + 1}, ${axis.toUpperCase()} em metros`}
-                                  min="0"
-                                  max={axis === 'x' ? project.width : project.height}
-                                  step={project.grid}
-                                  value={point[axis]}
-                                  onChange={(event) =>
-                                    vertexProperty(index, axis, Number(event.target.value))
-                                  }
-                                />
-                              </label>
-                            ))}
-                            <div className="blueprint-vertex-actions">
-                              <button
-                                type="button"
-                                aria-label={`Inserir vértice após ${index + 1}`}
-                                disabled={
-                                  ['dimension', 'partition'].includes(selectedElement.kind) ||
-                                  selectedElement.points.length >= 500 ||
-                                  (selectedElement.kind !== 'polygon' &&
-                                    index === selectedElement.points.length - 1)
-                                }
-                                onClick={() => vertexCount(index, 'insert')}
-                              >
-                                + PONTO
-                              </button>
-                              <button
-                                type="button"
-                                aria-label={`Remover vértice ${index + 1}`}
-                                disabled={
-                                  selectedElement.points.length <=
-                                  (selectedElement.kind === 'polygon' ? 3 : 2)
-                                }
-                                onClick={() => vertexCount(index, 'remove')}
-                              >
-                                REMOVER
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </details>
-                  )}
-                  {selectedElement.kind === 'door' && (
-                    <label>
-                      Tipo da abertura selecionada
-                      <select
-                        value={selectedElement.openingType || 'door'}
-                        onChange={(event) => property('openingType', event.target.value)}
-                      >
-                        <option value="door">Porta</option>
-                        <option value="window">Janela</option>
-                      </select>
-                    </label>
-                  )}
-                  {selectedElement.kind !== 'door' && (
-                    <button onClick={duplicate}>
-                      <ToolIcon name="copy" /> Duplicar
-                    </button>
-                  )}
-                  {wallSegments(selectedElement).length > 0 && (
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selectedElement.joinWalls === true}
-                        onChange={(event) => property('joinWalls', event.target.checked)}
-                      />
-                      Unir paredes ao encostar ambientes
-                    </label>
-                  )}
-                  {selectedElement.kind === 'room' && (
-                    <details>
-                      <summary>Sala com equipamentos</summary>
-                      <div className="blueprint-stacked-actions">
-                        {[-1, 1].map((direction) => (
-                          <button
-                            key={direction}
-                            aria-label={`Girar conjunto ${direction === 1 ? '+90°' : '−90°'}`}
-                            title={`Girar sala e equipamentos ${direction === 1 ? '+90°' : '−90°'}`}
-                            onClick={() => {
-                              try {
-                                commit(rotateRoomContents(project, selected, direction));
-                              } catch (error) {
-                                setMessage(error.message);
-                              }
-                            }}
-                          >
-                            <ToolIcon name={direction === 1 ? 'rotateRight' : 'rotateLeft'} />
-                            {direction === 1 ? '+90°' : '−90°'} conjunto
-                          </button>
-                        ))}
-                      </div>
-                      <p>
-                        Inclui equipamentos inteiramente dentro da sala e suas portas/janelas.
-                        Corredores e dutos permanecem no lugar.
-                      </p>
-                      {['x', 'y'].map((axis) => (
-                        <label key={axis}>
-                          Deslocamento {axis.toUpperCase()} (m)
-                          <input
-                            type="number"
-                            step={project.grid}
-                            value={roomShift[axis]}
-                            onChange={(event) =>
-                              setRoomShift({ ...roomShift, [axis]: Number(event.target.value) })
-                            }
-                          />
-                        </label>
-                      ))}
-                      <button
-                        onClick={() => {
-                          try {
-                            if (
-                              commit(moveRoomContents(project, selected, roomShift.x, roomShift.y))
-                            )
-                              setRoomShift({ x: 0, y: 0 });
-                          } catch (error) {
-                            setMessage(error.message);
-                          }
-                        }}
-                      >
-                        <ToolIcon name="pan" /> Mover conjunto
-                      </button>
-                      <button
-                        onClick={() => {
-                          try {
-                            const copy = duplicateRoomContents(
-                              project,
-                              selected,
-                              roomShift.x,
-                              roomShift.y,
-                            );
-                            if (commit(copy.project)) {
-                              setSelected(copy.selectedId);
-                              setRoomShift({ x: 0, y: 0 });
-                            }
-                          } catch (error) {
-                            setMessage(error.message);
-                          }
-                        }}
-                      >
-                        <ToolIcon name="copy" /> Duplicar conjunto
-                      </button>
-                    </details>
-                  )}
-                  {project.elements.some(
-                    (e) => (pastedGroup?.ids || [selected]).includes(e.id) && e.kind === 'room',
-                  ) && (
-                    <button
-                      type="button"
-                      onClick={convertSelectedRooms}
-                      disabled={!!gesture}
-                      title="Converte as salas retangulares em polígonos para editar os cantos individualmente. Ctrl+Z desfaz."
-                    >
-                      <ToolIcon name="polygon" /> Converter salas em vértices
-                    </button>
-                  )}
-                  {(selectedElement.kind === 'asset' || pastedGroup?.ids.length) && (
-                    <div className="blueprint-quick-actions">
-                      <button
-                        onClick={() => rotateSelection(-90)}
-                        aria-label="Girar −90°"
-                        title="Girar −90° (Shift+R)"
-                      >
-                        <ToolIcon name="rotateLeft" /> −90°
-                      </button>
-                      <button
-                        onClick={() => rotateSelection(90)}
-                        aria-label="Girar +90°"
-                        title="Girar +90° (R)"
-                      >
-                        <ToolIcon name="rotateRight" /> +90°
-                      </button>
-                    </div>
-                  )}
-                  <button
-                    onClick={() => groupSelection(false)}
-                    disabled={!pastedGroup || pastedGroup.ids.length < 2}
-                    title="Agrupar seleção (Ctrl+G)"
-                  >
-                    <ToolIcon name="group" /> Agrupar
-                  </button>
-                  <button
-                    onClick={() => groupSelection(true)}
-                    disabled={!selectedElement.groupId}
-                    title="Desagrupar (Ctrl+Shift+G)"
-                  >
-                    <ToolIcon name="ungroup" /> Desagrupar
-                  </button>
-                  <button
-                    onClick={remove}
-                    title={
-                      pastedGroup?.ids.length
-                        ? 'Remover seleção (Delete)'
-                        : 'Remover objeto (Delete)'
-                    }
-                  >
-                    <ToolIcon name="delete" /> Remover
-                  </button>
-                </fieldset>
-              </>
-            ) : (
-              <p className="muted">Use Selecionar / mover para ajustar uma peça.</p>
-            )}
-          </details>
+
+          <ModuleLibrary
+            project={project}
+            ids={pastedGroup?.ids || (selected ? [selected] : [])}
+            disabled={!!gesture || !!points.length || !!connectionPlacement || !!modulePlacement}
+            onError={setMessage}
+            onPlace={(module) => {
+              setModuleGridOptions({ rows: 1, columns: 1, gap: 0 });
+              setModulePlacement(module);
+              setConnectionPlacement(null);
+              setTool('select');
+              setSelected(null);
+              setPastedGroup(null);
+              setRotationPivot(null);
+              setCursor(null);
+              setMessage('Clique no mapa para posicionar o módulo. Escape cancela.');
+              svgRef.current?.focus({ preventScroll: true });
+            }}
+          />
         </aside>
         <section className="blueprint-workspace" aria-label="Área de desenho">
           <div className="blueprint-tool-grid" role="toolbar" aria-label="Ferramentas da viewport">
-            {Object.entries(toolNames).map(([id, name]) => {
-              const shortcut = Object.keys(toolKeys)
-                .find((key) => toolKeys[key] === id)
-                ?.toUpperCase();
-              return (
-                <button
-                  key={id}
-                  aria-label={name}
-                  title={shortcut ? name + ' (' + shortcut + ')' : name}
-                  aria-keyshortcuts={shortcut}
-                  aria-pressed={tool === id}
-                  onClick={() => {
-                    changeTool(id);
-                    svgRef.current?.focus();
-                  }}
-                >
-                  <ToolIcon name={id} />
-                </button>
-              );
-            })}
+            {Object.entries(toolNames)
+              .filter(
+                ([id]) => !['ellipse', 'polygon', 'floorRegion', 'vent', 'trace'].includes(id),
+              )
+              .map(([id, originalName]) => {
+                const name =
+                  id === 'room'
+                    ? 'Áreas: salas, pisos e água'
+                    : id === 'corridor'
+                      ? 'Percursos: corredores, dutos e traçados'
+                      : originalName;
+                const shortcut = Object.keys(toolKeys)
+                  .find((key) => toolKeys[key] === id)
+                  ?.toUpperCase();
+                return (
+                  <button
+                    key={id}
+                    aria-label={name}
+                    title={shortcut ? name + ' (' + shortcut + ')' : name}
+                    aria-keyshortcuts={shortcut}
+                    aria-pressed={
+                      id === 'room'
+                        ? areaTools.includes(tool)
+                        : id === 'corridor'
+                          ? pathTools.includes(tool)
+                          : tool === id
+                    }
+                    onClick={() => {
+                      if (id === 'corridor') {
+                        if (!pathTools.includes(tool)) {
+                          changeTool(id);
+                          setLineWidth(2);
+                        }
+                      } else changeTool(id);
+                      svgRef.current?.focus();
+                    }}
+                  >
+                    <ToolIcon name={id} />
+                  </button>
+                );
+              })}
           </div>
           <p className="blueprint-hint">
             {toolNames[tool]} · {hints[tool]}
           </p>
-          {(['room', 'ellipse', 'polygon', 'corridor'].includes(tool) || tool === 'door') && (
+          {((['room', 'ellipse', 'polygon', 'corridor'].includes(tool) &&
+            (areaPurpose === 'room' || tool === 'corridor')) ||
+            tool === 'door') && (
             <div className="blueprint-context-tools" aria-label="Opções da ferramenta">
               {tool === 'door' ? (
                 <>
@@ -2432,6 +2465,8 @@ export default function BlueprintEditor() {
                 e.preventDefault();
                 if (modulePlacement) {
                   if (!e.repeat) rotatePendingModule(e.shiftKey ? -1 : 1);
+                } else if (tool === 'asset') {
+                  if (!e.repeat) setAssetRotation((v) => (v + (e.shiftKey ? 270 : 90)) % 360);
                 } else rotateSelection(e.shiftKey ? -90 : 90);
               }
               const direction = {
@@ -2449,11 +2484,15 @@ export default function BlueprintEditor() {
                 e.preventDefault();
                 setPoints((current) => current.slice(0, -1));
               }
-              if (e.key === 'Enter' && ['corridor', 'vent', 'polygon', 'trace'].includes(tool)) {
+              if (
+                e.key === 'Enter' &&
+                ['corridor', 'vent', 'polygon', 'trace', 'floorRegion'].includes(tool)
+              ) {
                 e.preventDefault();
                 finish();
               }
               if (e.key === 'Escape') {
+                setPortPlacement(null);
                 setConnectionPlacement(null);
                 setModulePlacement(null);
                 setPastedGroup(null);
@@ -2540,11 +2579,26 @@ export default function BlueprintEditor() {
                   point={cursor}
                   tool={tool}
                   asset={asset}
+                  rotation={assetRotation}
                   width={doorWidth}
                   openingType={openingType}
                   zoom={view.zoom}
                 />
               )}
+            {cursor && !gesture && !modulePlacement && tool === 'module' && (
+              <g data-editor-only="true" pointerEvents="none" opacity=".65" color="#f1c46c">
+                <ModuleSketch module={{ elements: makeModule(moduleType, cursor.x, cursor.y) }} />
+              </g>
+            )}
+            {cursor && !gesture && tool === 'label' && label.trim() && (
+              <LabelText
+                data-editor-only="true"
+                pointerEvents="none"
+                fill="#f1c46c"
+                opacity=".7"
+                element={{ x: cursor.x, y: cursor.y, text: label, ...labelStyle }}
+              />
+            )}
             {modulePlacement && cursor && (
               <ModulePlacementPreview
                 module={modulePlacement}
@@ -2676,25 +2730,460 @@ export default function BlueprintEditor() {
               : 'Arraste salas; clique para posicionar peças.'}
           </p>
         </section>
-        <aside className="blueprint-settings" aria-label="Projeto, camadas e exportação">
-          <ModuleLibrary
-            project={project}
-            ids={pastedGroup?.ids || (selected ? [selected] : [])}
-            disabled={!!gesture || !!points.length || !!connectionPlacement || !!modulePlacement}
-            onError={setMessage}
-            onPlace={(module) => {
-              setModuleGridOptions({ rows: 1, columns: 1, gap: 0 });
-              setModulePlacement(module);
-              setConnectionPlacement(null);
-              setTool('select');
-              setSelected(null);
-              setPastedGroup(null);
-              setRotationPivot(null);
-              setCursor(null);
-              setMessage('Clique no mapa para posicionar o módulo. Escape cancela.');
-              svgRef.current?.focus({ preventScroll: true });
-            }}
-          />
+        <aside className="blueprint-settings" aria-label="Seleção, objetos e camadas">
+          <details open className="blueprint-selection-panel">
+            <summary>Propriedades da seleção</summary>
+            {selectedElement ? (
+              <>
+                <p>
+                  {selectedElement.kind === 'door'
+                    ? selectedElement.openingType === 'window'
+                      ? 'Janela'
+                      : 'Porta'
+                    : toolNames[selectedElement.kind]}{' '}
+                  {selectedElement.asset && '· ' + assetNames[selectedElement.asset]}
+                </p>
+                {levelAssets[selectedElement.asset] && (
+                  <small>
+                    Desnível visual: não conecta pavimentos. A seta indica subida; os traços da
+                    borda indicam o lado baixo.
+                  </small>
+                )}
+                <fieldset disabled={!editable}>
+                  {selectedElement.asset === 'stairs' && (
+                    <details>
+                      <summary>Legenda de destino</summary>
+                      <small>Usa o nome da sala que contém o centro da saída conectada.</small>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={!selectedElement.connectionLabel?.hidden}
+                          onChange={(e) =>
+                            property('connectionLabel', {
+                              ...selectedElement.connectionLabel,
+                              hidden: !e.target.checked,
+                            })
+                          }
+                        />
+                        Mostrar destino
+                      </label>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedElement.connectionLabel?.export !== false}
+                          onChange={(e) =>
+                            property('connectionLabel', {
+                              ...selectedElement.connectionLabel,
+                              export: e.target.checked,
+                            })
+                          }
+                        />
+                        Incluir na exportação
+                      </label>
+                      {['dx', 'dy'].map((key) => (
+                        <label key={key}>
+                          Deslocamento {key === 'dx' ? 'X' : 'Y'} (m)
+                          <input
+                            type="number"
+                            step=".25"
+                            value={selectedElement.connectionLabel?.[key] || 0}
+                            onChange={(e) =>
+                              property('connectionLabel', {
+                                ...selectedElement.connectionLabel,
+                                [key]: Number(e.target.value),
+                              })
+                            }
+                          />
+                        </label>
+                      ))}
+                    </details>
+                  )}
+                  {selectedElement.kind === 'asset' && (
+                    <section className="blueprint-order-panel" aria-label="Ordem de sobreposição">
+                      <span className="blueprint-choice-heading">Sobreposição</span>
+                      <div className="blueprint-stack-actions">
+                        {[
+                          ['front', '⇈', 'Trazer para frente'],
+                          ['forward', '↑', 'Avançar um nível'],
+                          ['backward', '↓', 'Recuar um nível'],
+                          ['back', '⇊', 'Enviar para trás'],
+                        ].map(([action, icon, title]) => (
+                          <button
+                            key={action}
+                            title={title}
+                            aria-label={title}
+                            onClick={() =>
+                              commit(reorderAsset(project, selectedElement.id, action))
+                            }
+                          >
+                            <span aria-hidden="true">{icon}</span>
+                            <span>
+                              {
+                                {
+                                  front: 'Frente',
+                                  forward: '+1 nível',
+                                  backward: '−1 nível',
+                                  back: 'Fundo',
+                                }[action]
+                              }
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                  <div className="blueprint-measure-grid">
+                    {['x', 'y', 'w', 'h', 'width', 'size', 'rotation']
+                      .filter((key) => typeof selectedElement[key] === 'number')
+                      .map((key) => (
+                        <label key={key}>
+                          {
+                            {
+                              x: 'X (m)',
+                              y: 'Y (m)',
+                              w: 'Largura (m)',
+                              h: 'Altura (m)',
+                              width: 'Largura (m)',
+                              size: 'Texto (m)',
+                              rotation: 'Rotação (°)',
+                            }[key]
+                          }
+                          <input
+                            type="number"
+                            step={key === 'rotation' ? 15 : 0.25}
+                            value={selectedElement[key]}
+                            onChange={(e) => property(key, Number(e.target.value))}
+                          />
+                        </label>
+                      ))}
+                  </div>
+                  {floorKinds.includes(selectedElement.kind) && (
+                    <FloorFinishControls
+                      allowWater={selectedElement.kind === 'floorRegion'}
+                      value={selectedElement.floorFinish}
+                      onChange={(value) => property('floorFinish', value)}
+                    />
+                  )}
+                  {selectedElement.kind === 'trace' && (
+                    <TraceControls value={selectedElement} onChange={property} />
+                  )}
+                  {selectedElement.kind === 'dimension' && (
+                    <DimensionControls {...selectedElement} onChange={property} />
+                  )}
+                  {selectedElement.kind === 'corridor' && (
+                    <fieldset>
+                      <legend>Extremidades</legend>
+                      {[
+                        ['closedStart', 'Fechar início'],
+                        ['closedEnd', 'Fechar fim'],
+                      ].map(([key, title]) => (
+                        <label key={key}>
+                          <input
+                            type="checkbox"
+                            checked={!!selectedElement[key]}
+                            onChange={(e) => {
+                              const next = setCorridorEnd(
+                                project,
+                                selectedElement.id,
+                                key,
+                                e.target.checked,
+                              );
+                              const removed =
+                                project.elements.filter((x) => x.kind === 'door').length -
+                                next.elements.filter((x) => x.kind === 'door').length;
+                              if (
+                                removed &&
+                                !window.confirm(
+                                  'Reabrir esta extremidade removerá ' +
+                                    removed +
+                                    ' porta(s)/janela(s). Continuar?',
+                                )
+                              )
+                                return;
+                              commit(next);
+                            }}
+                          />
+                          {title}
+                        </label>
+                      ))}
+                    </fieldset>
+                  )}
+                  {selectedElement.kind === 'vent' && (
+                    <fieldset>
+                      <legend>Acessos do duto</legend>
+                      {[0, 1].map((i) => (
+                        <label key={i}>
+                          {i ? 'Fim' : 'Início'}
+                          <select
+                            value={selectedElement.accesses?.[i] || 'auto'}
+                            onChange={(e) => {
+                              const values = [...(selectedElement.accesses || ['auto', 'auto'])];
+                              values[i] = e.target.value;
+                              property('accesses', values);
+                            }}
+                          >
+                            {Object.entries(ventAccessTypes).map(([k, v]) => (
+                              <option key={k} value={k}>
+                                {v}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ))}
+                      <small>
+                        Automático conecta pontas a outros dutos, sugere grelha nas paredes e
+                        escotilha dentro de salas. Escolha outro acesso para manter a ponta
+                        independente.
+                      </small>
+                    </fieldset>
+                  )}
+                  {selectedElement.kind === 'vent' && (
+                    <VentPortControls
+                      project={project}
+                      onProjectChange={commit}
+                      onNavigate={(endpoint) => {
+                        if (commit(switchVentFloor(project, endpoint.floorId))) {
+                          setSelected(endpoint.elementId);
+                          setPortPlacement(null);
+                        }
+                      }}
+                      element={selectedElement}
+                      onChange={(ports) => property('ports', ports)}
+                      placing={portPlacement === selectedElement.id}
+                      onPlace={() => {
+                        setPortPlacement(
+                          portPlacement === selectedElement.id ? null : selectedElement.id,
+                        );
+                        setMessage('Clique sobre o duto para posicionar o acesso; Escape cancela.');
+                      }}
+                    />
+                  )}
+                  {selectedElement.kind === 'label' && (
+                    <TextControls {...selectedElement} onChange={property} />
+                  )}
+                  {selectedElement.points && (
+                    <details className="blueprint-vertices">
+                      <summary>Vértices ({selectedElement.points.length})</summary>
+                      <p>
+                        Arraste os círculos na planta ou ajuste as coordenadas. As portas acompanham
+                        a borda.
+                      </p>
+                      <div className="blueprint-vertex-list">
+                        {selectedElement.points.map((point, index) => (
+                          <div key={index} className="blueprint-vertex-row">
+                            <span>{index + 1}</span>
+                            {['x', 'y'].map((axis) => (
+                              <label key={axis}>
+                                {axis.toUpperCase()} (m)
+                                <input
+                                  type="number"
+                                  aria-label={`Vértice ${index + 1}, ${axis.toUpperCase()} em metros`}
+                                  min="0"
+                                  max={axis === 'x' ? project.width : project.height}
+                                  step={project.grid}
+                                  value={point[axis]}
+                                  onChange={(event) =>
+                                    vertexProperty(index, axis, Number(event.target.value))
+                                  }
+                                />
+                              </label>
+                            ))}
+                            <div className="blueprint-vertex-actions">
+                              <button
+                                type="button"
+                                aria-label={`Inserir vértice após ${index + 1}`}
+                                disabled={
+                                  ['dimension', 'partition'].includes(selectedElement.kind) ||
+                                  selectedElement.points.length >= 500 ||
+                                  (!['polygon', 'floorRegion'].includes(selectedElement.kind) &&
+                                    index === selectedElement.points.length - 1)
+                                }
+                                onClick={() => vertexCount(index, 'insert')}
+                              >
+                                + PONTO
+                              </button>
+                              <button
+                                type="button"
+                                aria-label={`Remover vértice ${index + 1}`}
+                                disabled={
+                                  selectedElement.points.length <=
+                                  (['polygon', 'floorRegion'].includes(selectedElement.kind)
+                                    ? 3
+                                    : 2)
+                                }
+                                onClick={() => vertexCount(index, 'remove')}
+                              >
+                                REMOVER
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                  {selectedElement.kind === 'door' && (
+                    <label>
+                      Tipo da abertura selecionada
+                      <select
+                        value={selectedElement.openingType || 'door'}
+                        onChange={(event) => property('openingType', event.target.value)}
+                      >
+                        <option value="door">Porta</option>
+                        <option value="window">Janela</option>
+                      </select>
+                    </label>
+                  )}
+                  {selectedElement.kind !== 'door' && (
+                    <button onClick={duplicate}>
+                      <ToolIcon name="copy" /> Duplicar
+                    </button>
+                  )}
+                  {wallSegments(selectedElement).length > 0 && (
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={selectedElement.joinWalls === true}
+                        onChange={(event) => property('joinWalls', event.target.checked)}
+                      />
+                      Unir ao encostar
+                    </label>
+                  )}
+                  {selectedElement.kind === 'room' && (
+                    <details>
+                      <summary>Sala com equipamentos</summary>
+                      <div className="blueprint-stacked-actions">
+                        {[-1, 1].map((direction) => (
+                          <button
+                            key={direction}
+                            aria-label={`Girar conjunto ${direction === 1 ? '+90°' : '−90°'}`}
+                            title={`Girar sala e equipamentos ${direction === 1 ? '+90°' : '−90°'}`}
+                            onClick={() => {
+                              try {
+                                commit(rotateRoomContents(project, selected, direction));
+                              } catch (error) {
+                                setMessage(error.message);
+                              }
+                            }}
+                          >
+                            <ToolIcon name={direction === 1 ? 'rotateRight' : 'rotateLeft'} />
+                            {direction === 1 ? '+90°' : '−90°'} conjunto
+                          </button>
+                        ))}
+                      </div>
+                      <p>
+                        Inclui equipamentos inteiramente dentro da sala e suas portas/janelas.
+                        Corredores e dutos permanecem no lugar.
+                      </p>
+                      {['x', 'y'].map((axis) => (
+                        <label key={axis}>
+                          Deslocamento {axis.toUpperCase()} (m)
+                          <input
+                            type="number"
+                            step={project.grid}
+                            value={roomShift[axis]}
+                            onChange={(event) =>
+                              setRoomShift({ ...roomShift, [axis]: Number(event.target.value) })
+                            }
+                          />
+                        </label>
+                      ))}
+                      <button
+                        onClick={() => {
+                          try {
+                            if (
+                              commit(moveRoomContents(project, selected, roomShift.x, roomShift.y))
+                            )
+                              setRoomShift({ x: 0, y: 0 });
+                          } catch (error) {
+                            setMessage(error.message);
+                          }
+                        }}
+                      >
+                        <ToolIcon name="pan" /> Mover conjunto
+                      </button>
+                      <button
+                        onClick={() => {
+                          try {
+                            const copy = duplicateRoomContents(
+                              project,
+                              selected,
+                              roomShift.x,
+                              roomShift.y,
+                            );
+                            if (commit(copy.project)) {
+                              setSelected(copy.selectedId);
+                              setRoomShift({ x: 0, y: 0 });
+                            }
+                          } catch (error) {
+                            setMessage(error.message);
+                          }
+                        }}
+                      >
+                        <ToolIcon name="copy" /> Duplicar conjunto
+                      </button>
+                    </details>
+                  )}
+                  {project.elements.some(
+                    (e) => (pastedGroup?.ids || [selected]).includes(e.id) && e.kind === 'room',
+                  ) && (
+                    <button
+                      type="button"
+                      onClick={convertSelectedRooms}
+                      disabled={!!gesture}
+                      title="Converte as salas retangulares em polígonos para editar os cantos individualmente. Ctrl+Z desfaz."
+                    >
+                      <ToolIcon name="polygon" /> Converter salas em vértices
+                    </button>
+                  )}
+                  {(selectedElement.kind === 'asset' || pastedGroup?.ids.length) && (
+                    <div className="blueprint-quick-actions">
+                      <button
+                        onClick={() => rotateSelection(-90)}
+                        aria-label="Girar −90°"
+                        title="Girar −90° (Shift+R)"
+                      >
+                        <ToolIcon name="rotateLeft" /> −90°
+                      </button>
+                      <button
+                        onClick={() => rotateSelection(90)}
+                        aria-label="Girar +90°"
+                        title="Girar +90° (R)"
+                      >
+                        <ToolIcon name="rotateRight" /> +90°
+                      </button>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => groupSelection(false)}
+                    disabled={!pastedGroup || pastedGroup.ids.length < 2}
+                    title="Agrupar seleção (Ctrl+G)"
+                  >
+                    <ToolIcon name="group" /> Agrupar
+                  </button>
+                  <button
+                    onClick={() => groupSelection(true)}
+                    disabled={!selectedElement.groupId}
+                    title="Desagrupar (Ctrl+Shift+G)"
+                  >
+                    <ToolIcon name="ungroup" /> Desagrupar
+                  </button>
+                  <button
+                    onClick={remove}
+                    title={
+                      pastedGroup?.ids.length
+                        ? 'Remover seleção (Delete)'
+                        : 'Remover objeto (Delete)'
+                    }
+                  >
+                    <ToolIcon name="delete" /> Remover
+                  </button>
+                </fieldset>
+              </>
+            ) : (
+              <p className="muted">Selecione um objeto para editar.</p>
+            )}
+          </details>
+
           <ObjectsPanel
             project={project}
             selected={selected}
@@ -2727,63 +3216,7 @@ export default function BlueprintEditor() {
               setPanelsOpen(true);
             }}
           />
-          <details>
-            <summary>Atalhos e navegação</summary>
-            <p>
-              Arraste com o botão do meio ou direito para mover a visão. Espaço + arraste também
-              funciona. + / −: zoom. Home: enquadrar. F: modo de foco. Escape: sair do foco ou
-              cancelar. Passe sobre os ícones para ver os atalhos de ferramentas. Os atalhos
-              funcionam com foco na planta; Tab continua navegando pelos controles.
-            </p>
-          </details>
-          <details>
-            <summary>Projeto e escala</summary>
-            <label>
-              Nome
-              <input
-                value={project.name}
-                maxLength="120"
-                onChange={(e) => commit({ ...project, name: e.target.value })}
-              />
-            </label>
-            {['width', 'height'].map((key) => (
-              <label key={key}>
-                {key === 'width' ? 'Largura' : 'Altura'} da planta (m)
-                <input
-                  type="number"
-                  min="10"
-                  max="2000"
-                  value={project[key]}
-                  onChange={(e) => commit({ ...project, [key]: Number(e.target.value) })}
-                />
-              </label>
-            ))}
-            <label>
-              Encaixe da grade
-              <select
-                value={project.grid}
-                onChange={(e) => commit({ ...project, grid: Number(e.target.value) })}
-              >
-                {[0.25, 0.5, 1, 2, 5, 10, 25, 50].map((n) => (
-                  <option key={n} value={n}>
-                    {n} m
-                  </option>
-                ))}
-              </select>
-            </label>
-            <p className="muted">Alterar a grade não redimensiona salas nem objetos.</p>
-            <label>
-              Aparência
-              <select
-                value={project.theme}
-                onChange={(e) => commit({ ...project, theme: e.target.value })}
-              >
-                <option value="green">Terminal verde</option>
-                <option value="blue">Planta azul</option>
-                <option value="print">Impressão clara</option>
-              </select>
-            </label>
-          </details>
+
           <details>
             <summary>Camadas</summary>
             {project.layers.map((layer) => (
@@ -2839,125 +3272,6 @@ export default function BlueprintEditor() {
                 </label>
               </div>
             ))}
-          </details>
-          <details>
-            <summary>Recuperação neste dispositivo</summary>
-            <label>
-              <input
-                type="checkbox"
-                checked={autosave}
-                onChange={(e) => setAutosave(e.target.checked)}
-              />
-              Guardar automaticamente neste navegador
-            </label>
-            <p className="muted">
-              Opcional. Não sincroniza entre dispositivos. Baixe o projeto para guardar uma cópia
-              duradoura.
-            </p>
-            <button
-              disabled={!recovery}
-              onClick={() => {
-                if (dirty && !window.confirm('Substituir a planta atual pela recuperação local?'))
-                  return;
-                try {
-                  replace(parseProject(localStorage.getItem(storageKey) || ''));
-                  setMessage('Cópia local recuperada.');
-                } catch (error) {
-                  setMessage(error.message);
-                }
-              }}
-            >
-              RECUPERAR CÓPIA LOCAL
-            </button>
-            <button
-              disabled={!recovery}
-              onClick={() => {
-                if (window.confirm('Apagar somente a cópia de recuperação deste navegador?')) {
-                  try {
-                    localStorage.removeItem(storageKey);
-                    setAutosave(false);
-                    setRecovery(false);
-                  } catch {
-                    setMessage('Não foi possível limpar o armazenamento local.');
-                  }
-                }
-              }}
-            >
-              APAGAR CÓPIA LOCAL
-            </button>
-          </details>
-          <details>
-            <summary>Exportar imagem</summary>
-            <p className="muted">
-              A exportação usa somente o pavimento ativo e mantém o mesmo alinhamento entre camadas.
-              A grade não é exportada.
-            </p>
-            {project.layers.map((l) => (
-              <label key={l.id}>
-                <input
-                  type="checkbox"
-                  checked={exportLayers.includes(l.id)}
-                  disabled={!l.visible}
-                  onChange={(e) =>
-                    setExportLayers((ids) =>
-                      e.target.checked ? [...ids, l.id] : ids.filter((id) => id !== l.id),
-                    )
-                  }
-                />
-                {l.name}
-                {!l.visible ? ' (oculta)' : ''}
-              </label>
-            ))}
-            <label>
-              Formato
-              <select value={format} onChange={(e) => setFormat(e.target.value)}>
-                <option value="png">PNG</option>
-                <option value="svg">SVG vetorial</option>
-              </select>
-            </label>
-            <label>
-              Maior lado
-              <select value={pixels} onChange={(e) => setPixels(Number(e.target.value))}>
-                {[1024, 2048, 4096].map((n) => (
-                  <option key={n} value={n}>
-                    {n} pixels
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={transparent}
-                onChange={(e) => setTransparent(e.target.checked)}
-              />
-              Fundo transparente
-            </label>
-            <button
-              disabled={exporting || !!gesture || !!points.length}
-              onClick={async () => {
-                setExporting(true);
-                try {
-                  await exportDrawing(svgRef.current, project, {
-                    format,
-                    transparent,
-                    pixels,
-                    layers: exportLayers.filter(
-                      (id) => project.layers.find((l) => l.id === id)?.visible,
-                    ),
-                  });
-                  setMessage(
-                    'Download da imagem solicitado. O projeto continua editável nesta sessão.',
-                  );
-                } catch (error) {
-                  setMessage(error.message);
-                } finally {
-                  setExporting(false);
-                }
-              }}
-            >
-              {exporting ? 'GERANDO…' : 'BAIXAR IMAGEM'}
-            </button>
           </details>
         </aside>
       </div>

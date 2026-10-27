@@ -1,3 +1,7 @@
+import { presetEquipment } from './preset-layouts.js';
+import { isCirculation, normalizeCirculation } from './circulation.js';
+import { normalizeVentLinks } from './vent-links.js';
+import { normalizeVentPorts, remapVentPorts } from './vent-ports.js';
 import { vehicleAssets } from './vehicle-assets.js';
 import { colonyAssets } from './colony-assets.js';
 import { floorKinds, normalizeFloorFinish } from './floor-finishes.js';
@@ -93,115 +97,117 @@ export function setWallSection(project, id, section) {
   );
 }
 export const assetTypes = [
-  'surveillanceCamera',
-  'crtStation',
-  'communicationsRadio',
-  'reportPrinter',
-  'dataTapeCabinet',
-  ...Object.keys(colonyAssets),
-  ...Object.keys(vehicleAssets),
-  'raisedPlatform',
-  'gratedPlatform',
-  'shortSteps',
-  'stairFlight',
-  'accessRamp',
-  'levelEdge',
-  'hazardStripe',
-  'floorArrow',
-  'loadingZone',
-  'walkwayMark',
-  'pottedPalm',
-  'broadleafPot',
-  'roundShrub',
-  'gardenTree',
-  'longPlanter',
-  'roundPlanter',
-  'hydroponicBed',
-  'gardenRocks',
-  'gardenPond',
-  'parkBench',
-  'picnicTable',
-  'sunParasol',
-  'safetyBollard',
-  'floodlightStand',
-  'outdoorCabinet',
-  'solarPanelArray',
-  'dishAntenna',
-  'concreteBarrier',
-  'drainGrate',
-  'wovenRug',
-  'floorLamp',
-  'displayPlinth',
-  'displayCase',
-  'aquariumTank',
-  'labIncubator',
-  'sampleFreezer',
-  'tubeRack',
-  'securityMonitor',
-  'securitySafe',
-  'protectionShield',
-  'weaponLocker',
-  'gearStand',
-  'inspectionBench',
-  'labCentrifuge',
-  'labMicroscope',
-  'sampleAnalyzer',
-  'dissectionTable',
-  'loungeSofa',
-  'loungeArmchair',
-  'sideTable',
-  'lowCabinet',
-  'labSinkBench',
-  'sampleFridge',
-  'analysisCabinet',
-  'securityLocker',
-  'cargoContainer',
-  'reinforcedCrate',
-  'horizontalTank',
-  'airCompressor',
-  'cryoPodPlan',
-  'surgeryTable',
-  'medicalTrolley',
-  'serverCabinet',
-  'briefingTable',
-  'sanitaryToilet',
-  'washBasin',
-  'showerTray',
-  'galleySink',
-  'galleyHob',
-  'powerUnit',
-  'pumpUnit',
-  'verticalTank',
-  'serviceBench',
-  'cargoPallet',
-  'storageShelf',
-  'crewBed',
-  'wallLocker',
-  'crewBench',
-  'diningTable',
-  'examBed',
-  'medicalCabinet',
-  'commandBench',
-  'deskTerminal',
-  'operatorSeat',
-  'stairs',
-  'elevator',
-  'console',
-  'bed',
-  'cryo',
-  'table',
-  'crate',
-  'reactor',
-  'chair',
-  'medical',
-  'locker',
-  'hatch',
-  'engine',
-  'tank',
-  'rack',
-  'workbench',
-  'kitchen',
-  'sofa',
+  ...new Set([
+    'surveillanceCamera',
+    'crtStation',
+    'communicationsRadio',
+    'reportPrinter',
+    'dataTapeCabinet',
+    ...Object.keys(colonyAssets),
+    ...Object.keys(vehicleAssets),
+    'raisedPlatform',
+    'gratedPlatform',
+    'shortSteps',
+    'stairFlight',
+    'accessRamp',
+    'levelEdge',
+    'hazardStripe',
+    'floorArrow',
+    'loadingZone',
+    'walkwayMark',
+    'pottedPalm',
+    'broadleafPot',
+    'roundShrub',
+    'gardenTree',
+    'longPlanter',
+    'roundPlanter',
+    'hydroponicBed',
+    'gardenRocks',
+    'gardenPond',
+    'parkBench',
+    'picnicTable',
+    'sunParasol',
+    'safetyBollard',
+    'floodlightStand',
+    'outdoorCabinet',
+    'solarPanelArray',
+    'dishAntenna',
+    'concreteBarrier',
+    'drainGrate',
+    'wovenRug',
+    'floorLamp',
+    'displayPlinth',
+    'displayCase',
+    'aquariumTank',
+    'labIncubator',
+    'sampleFreezer',
+    'tubeRack',
+    'securityMonitor',
+    'securitySafe',
+    'protectionShield',
+    'weaponLocker',
+    'gearStand',
+    'inspectionBench',
+    'labCentrifuge',
+    'labMicroscope',
+    'sampleAnalyzer',
+    'dissectionTable',
+    'loungeSofa',
+    'loungeArmchair',
+    'sideTable',
+    'lowCabinet',
+    'labSinkBench',
+    'sampleFridge',
+    'analysisCabinet',
+    'securityLocker',
+    'cargoContainer',
+    'reinforcedCrate',
+    'horizontalTank',
+    'airCompressor',
+    'cryoPodPlan',
+    'surgeryTable',
+    'medicalTrolley',
+    'serverCabinet',
+    'briefingTable',
+    'sanitaryToilet',
+    'washBasin',
+    'showerTray',
+    'galleySink',
+    'galleyHob',
+    'powerUnit',
+    'pumpUnit',
+    'verticalTank',
+    'serviceBench',
+    'cargoPallet',
+    'storageShelf',
+    'crewBed',
+    'wallLocker',
+    'crewBench',
+    'diningTable',
+    'examBed',
+    'medicalCabinet',
+    'commandBench',
+    'deskTerminal',
+    'operatorSeat',
+    'stairs',
+    'elevator',
+    'console',
+    'bed',
+    'cryo',
+    'table',
+    'crate',
+    'reactor',
+    'chair',
+    'medical',
+    'locker',
+    'hatch',
+    'engine',
+    'tank',
+    'rack',
+    'workbench',
+    'kitchen',
+    'sofa',
+  ]),
 ];
 export const moduleNames = {
   bridge: 'Ponte de comando',
@@ -210,6 +216,8 @@ export const moduleNames = {
   cargo: 'Depósito de carga',
   engineering: 'Engenharia',
   mess: 'Refeitório',
+  laboratory: 'Laboratório de análise',
+  security: 'Segurança e arsenal',
 };
 export const layers = [
   { id: 'structure', name: 'Estrutura' },
@@ -234,6 +242,7 @@ export function newProject() {
 export const snap = (n, step) => Math.round(n / step) * step;
 export const layerFor = (kind) =>
   ({
+    floorRegion: 'structure',
     partition: 'structure',
     room: 'structure',
     polygon: 'structure',
@@ -598,20 +607,24 @@ export function changeVertexCount(project, id, index, action) {
       'Restaure as paredes automáticas antes de adicionar ou remover vértices. Mover vértices continua disponível.',
     );
   const points = [...source.points];
-  const minimum = source.kind === 'polygon' ? 3 : 2;
+  const minimum = ['polygon', 'floorRegion'].includes(source.kind) ? 3 : 2;
   if (action === 'remove') {
     if (points.length <= minimum)
       throw new Error(`Este traçado precisa manter pelo menos ${minimum} vértices.`);
     points.splice(index, 1);
   } else {
     if (points.length >= 500) throw new Error('Limite de 500 vértices atingido.');
-    if (source.kind !== 'polygon' && index === points.length - 1)
+    if (!['polygon', 'floorRegion'].includes(source.kind) && index === points.length - 1)
       throw new Error('Escolha um segmento anterior ao último ponto para inserir um vértice.');
     const a = points[index],
       b = points[(index + 1) % points.length];
     points.splice(index + 1, 0, { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
   }
-  const changed = { ...source, points };
+  const changed = {
+    ...source,
+    points,
+    ...(source.kind === 'vent' && source.ports ? { ports: remapVentPorts(source, points) } : {}),
+  };
   const previousSegments = wallSegments(source);
   const nextSegments = wallSegments(changed);
   const updatedDoors = new Map(
@@ -697,49 +710,21 @@ export function duplicateElement(project, id) {
 }
 export function makeModule(type, x, y) {
   if (!Object.hasOwn(moduleNames, type)) throw new Error('Módulo desconhecido.');
-  const room = { id: uid(), kind: 'room', x, y, w: 10, h: 8 };
-  const asset = (asset, xOffset, yOffset, w = 2, h = 1) => ({
+  const room = {
     id: uid(),
-    kind: 'asset',
-    asset,
-    x: x + xOffset,
-    y: y + yOffset,
-    w,
-    h,
-    rotation: 0,
-  });
-  const layouts = {
-    medical: () => [
-      asset('medical', 2, 2, 2, 3),
-      asset('medical', 6, 2, 2, 3),
-      asset('console', 7, 6),
-    ],
-    bridge: () => [
-      asset('console', 1, 1, 8, 2),
-      asset('chair', 3, 4, 1, 1),
-      asset('chair', 6, 4, 1, 1),
-    ],
-    quarters: () => [
-      asset('bed', 1, 1, 2, 3),
-      asset('bed', 7, 1, 2, 3),
-      asset('locker', 1, 6),
-      asset('table', 5, 5, 2, 2),
-    ],
-    cargo: () => [asset('rack', 1, 1, 2, 5), asset('rack', 7, 1, 2, 5), asset('crate', 4, 1, 2, 2)],
-    engineering: () => [
-      asset('engine', 4, 1, 2, 3),
-      asset('tank', 1, 1, 2, 3),
-      asset('workbench', 7, 1, 2, 4),
-      asset('console', 1, 6),
-    ],
-    mess: () => [
-      asset('kitchen', 1, 1, 2, 4),
-      asset('table', 5, 3, 3, 2),
-      asset('sofa', 5, 1, 3, 1),
-      asset('sofa', 5, 6, 3, 1),
-    ],
+    kind: 'room',
+    name: moduleNames[type],
+    x,
+    y,
+    w: 10,
+    h: 8,
+    floorFinish: {
+      type: ['medical', 'laboratory', 'mess'].includes(type) ? 'tiles' : 'plates',
+      size: 2,
+      opacity: 0.12,
+    },
   };
-  const equipment = layouts[type]();
+  const equipment = presetEquipment(type, x, y, uid);
   return [
     room,
     ...equipment,
@@ -812,6 +797,21 @@ export function parseProject(text) {
         export: label.export !== false,
       };
     }
+    if (e.destinationOffsets !== undefined) {
+      if (
+        !e.destinationOffsets ||
+        typeof e.destinationOffsets !== 'object' ||
+        Array.isArray(e.destinationOffsets) ||
+        Object.keys(e.destinationOffsets).length > 102
+      )
+        throw new Error('Posições de legendas inválidas.');
+      base.destinationOffsets = Object.fromEntries(
+        Object.entries(e.destinationOffsets).map(([key, value]) => {
+          if (key.length > 180 || !value) throw new Error('Posição de legenda inválida.');
+          return [key, { dx: number(value.dx, -2000, 2000), dy: number(value.dy, -2000, 2000) }];
+        }),
+      );
+    }
     if (e.name !== undefined) base.name = string(e.name, 80);
     if (e.groupId !== undefined) {
       base.groupId = string(e.groupId, 100);
@@ -821,9 +821,16 @@ export function parseProject(text) {
     if (e.floorFinish !== undefined) {
       if (!floorKinds.includes(e.kind)) throw new Error('Este objeto não possui piso.');
       base.floorFinish = normalizeFloorFinish(e.floorFinish);
+      if (['pool', 'lake'].includes(base.floorFinish.type) && e.kind !== 'floorRegion')
+        throw new Error('Desenhe água com a ferramenta de regiões.');
     }
     if (e.walls !== undefined) {
-      if (layerFor(e.kind) !== 'structure' || !Array.isArray(e.walls) || e.walls.length > 1000)
+      if (
+        e.kind === 'floorRegion' ||
+        layerFor(e.kind) !== 'structure' ||
+        !Array.isArray(e.walls) ||
+        e.walls.length > 1000
+      )
         throw new Error('Trechos de parede inválidos.');
       base.walls = e.walls.map((wall) => {
         if (
@@ -890,10 +897,10 @@ export function parseProject(text) {
         ...(e.offset !== undefined ? { offset: number(e.offset, -2000, 2000) } : {}),
       };
     }
-    if (['vent', 'corridor', 'polygon', 'trace'].includes(e.kind)) {
+    if (['vent', 'corridor', 'polygon', 'trace', 'floorRegion'].includes(e.kind)) {
       if (
         !Array.isArray(e.points) ||
-        e.points.length < (e.kind === 'polygon' ? 3 : 2) ||
+        e.points.length < (['polygon', 'floorRegion'].includes(e.kind) ? 3 : 2) ||
         e.points.length > 500
       )
         throw new Error('Traçado inválido.');
@@ -902,25 +909,43 @@ export function parseProject(text) {
         e.accesses !== undefined &&
         (!Array.isArray(e.accesses) ||
           e.accesses.length !== 2 ||
-          e.accesses.some((t) => !['auto', 'grille', 'hatch', 'open', 'cap'].includes(t)))
+          e.accesses.some(
+            (t) => !['auto', 'grille', 'hatch', 'ceiling', 'floor', 'open', 'cap'].includes(t),
+          ))
       )
         throw new Error('Acessos de ventilação inválidos.');
       const points = e.points.map((p) => ({
         x: number(p.x, 0, result.width),
         y: number(p.y, 0, result.height),
       }));
+      if (e.kind === 'vent' && e.ports !== undefined)
+        base.ports = normalizeVentPorts(e.ports, points);
       if (e.kind === 'trace') {
         if (
-          !['rail', 'ledge'].includes(e.traceType) ||
+          ![
+            'rail',
+            'ledge',
+            'channel',
+            'gratedChannel',
+            'river',
+            'hazardLine',
+            'walkwayLine',
+            'path',
+            'sidewalk',
+            'road',
+          ].includes(e.traceType) ||
           (e.rounded !== undefined && typeof e.rounded !== 'boolean') ||
           (e.side !== undefined && ![1, -1].includes(e.side))
         )
           throw new Error('Traçado decorativo inválido.');
         base.traceType = e.traceType;
+        if (['hazardLine', 'walkwayLine'].includes(e.traceType) && e.signageColor !== undefined)
+          base.signageColor = e.signageColor === 'green' ? 'green' : 'amber';
+        if (isCirculation(e)) Object.assign(base, normalizeCirculation(e));
         base.rounded = e.rounded === true;
         base.side = e.side === -1 ? -1 : 1;
       }
-      if (e.kind === 'polygon') validatePolygon(points);
+      if (['polygon', 'floorRegion'].includes(e.kind)) validatePolygon(points);
       else if (
         points
           .slice(1)
@@ -941,7 +966,9 @@ export function parseProject(text) {
               ...(e.closedEnd === true ? { closedEnd: true } : {}),
             }
           : {}),
-        ...(e.kind === 'polygon' ? {} : { width: number(e.width, 0.25, 50) }),
+        ...(['polygon', 'floorRegion'].includes(e.kind)
+          ? {}
+          : { width: number(e.width, 0.25, 50) }),
         points,
       };
     }
@@ -1022,7 +1049,7 @@ export function parseProject(text) {
       if (!id || !name || floorIds.has(id)) throw new Error('Pavimento inválido ou repetido.');
       floorIds.add(id);
       if (id === result.activeFloor) return { id, name };
-      const { floors, activeFloor, connections, ...base } = raw;
+      const { floors, activeFloor, connections, ventLinks, ...base } = raw;
       const parsed = parseProject(JSON.stringify({ ...base, elements: floor.elements || [] }));
       return { id, name, elements: parsed.elements };
     });
@@ -1047,6 +1074,7 @@ export function parseProject(text) {
       return { id, from, to };
     });
   }
+  if (raw.ventLinks !== undefined) result.ventLinks = normalizeVentLinks(result, raw.ventLinks);
   return result;
 }
 export function validatePolygon(points) {
@@ -1082,37 +1110,106 @@ export function validatePolygon(points) {
     throw new Error('A sala precisa fechar uma área de pelo menos 0,0625 m².');
 }
 export function exampleProject() {
+  const elements = [];
+  const types = [
+    'bridge',
+    'medical',
+    'laboratory',
+    'security',
+    'quarters',
+    'mess',
+    'engineering',
+    'cargo',
+  ];
+  types.forEach((type, i) => {
+    const x = 4 + (i % 4) * 14,
+      y = i < 4 ? 4 : 20;
+    elements.push(...makeModule(type, x, y));
+    elements.push({
+      id: uid(),
+      kind: 'label',
+      x: x + 0.5,
+      y: y - 0.6,
+      text: moduleNames[type].toUpperCase(),
+      size: 0.32,
+    });
+    elements.push({
+      id: uid(),
+      kind: 'corridor',
+      width: 2,
+      joinWalls: true,
+      points: [
+        { x: x + 5, y: y + 8 },
+        { x: x + 5, y: y + 11 },
+      ],
+    });
+  });
+  elements.push({
+    id: uid(),
+    kind: 'corridor',
+    width: 2,
+    joinWalls: true,
+    closedStart: true,
+    closedEnd: true,
+    walls: [
+      { segment: 6, start: 0, end: 1, type: 'internal' },
+      { segment: 7, start: 0, end: 1, type: 'internal' },
+    ],
+    points: [
+      { x: 53, y: 15 },
+      { x: 2, y: 15 },
+      { x: 2, y: 31 },
+      { x: 53, y: 31 },
+    ],
+  });
+  // A service duct runs through the rear of the technical sectors, with explicit room accesses.
+  elements.push({
+    id: uid(),
+    kind: 'vent',
+    width: 0.8,
+    points: [
+      { x: 10, y: 7 },
+      { x: 10, y: 2 },
+      { x: 38, y: 2 },
+      { x: 38, y: 7 },
+    ],
+    accesses: ['ceiling', 'ceiling'],
+    destinationOffsets: { 'end-0': { dx: 0, dy: 0.5 }, 'end-1': { dx: 0, dy: 0.5 } },
+    ports: [
+      {
+        id: uid(),
+        segment: 1,
+        t: 0.5,
+        type: 'grille',
+        side: 1,
+        size: 0.7,
+        connectWall: true,
+        label: 'Enfermaria',
+      },
+    ],
+  });
+  elements.push({
+    id: uid(),
+    kind: 'label',
+    x: 4,
+    y: 36,
+    text: 'ESTAÇÃO DE PESQUISA / DECK 01',
+    size: 0.8,
+  });
+  elements.push({
+    id: uid(),
+    kind: 'label',
+    x: 4,
+    y: 38,
+    text: '8 setores · equipamentos em escala · circulação e manutenção',
+    size: 0.4,
+  });
   return {
     ...newProject(),
-    name: 'Deck de demonstração',
-    width: 40,
-    height: 30,
-    elements: [
-      ...makeModule('bridge', 4, 4),
-      ...makeModule('medical', 24, 4),
-      {
-        id: uid(),
-        kind: 'corridor',
-        width: 2,
-        points: [
-          { x: 9, y: 12 },
-          { x: 9, y: 18 },
-          { x: 29, y: 18 },
-          { x: 29, y: 12 },
-        ],
-      },
-      {
-        id: uid(),
-        kind: 'vent',
-        width: 0.7,
-        points: [
-          { x: 5, y: 6 },
-          { x: 5, y: 22 },
-          { x: 33, y: 22 },
-          { x: 33, y: 6 },
-        ],
-      },
-      { id: uid(), kind: 'label', x: 4, y: 27, text: 'DECK 01 / DEMONSTRAÇÃO', size: 1 },
-    ],
+    name: 'Estação de pesquisa · demonstração',
+    width: 60,
+    height: 42,
+    grid: 0.5,
+    elements,
   };
 }

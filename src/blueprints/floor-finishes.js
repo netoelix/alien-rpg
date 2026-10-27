@@ -1,10 +1,14 @@
+import { waterFinishes } from './water.js';
 export const floorFinishes = {
+  ...waterFinishes,
   plain: 'Liso',
+  tread: 'Piso antiderrapante',
+  service: 'Painéis técnicos',
   plates: 'Chapas metálicas',
   tiles: 'Placas modulares',
   grating: 'Piso gradeado',
 };
-export const floorKinds = ['room', 'ellipse', 'polygon', 'corridor'];
+export const floorKinds = ['room', 'ellipse', 'polygon', 'corridor', 'floorRegion'];
 export function normalizeFloorFinish(value) {
   if (!value || typeof value !== 'object' || !Object.hasOwn(floorFinishes, value.type))
     throw new Error('Acabamento de piso inválido.');

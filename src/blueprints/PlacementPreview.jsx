@@ -6,7 +6,16 @@ import { openingCandidate } from './placement.js';
 import { openingGeometry } from './wall-geometry.js';
 import { persistentWallStructure, sharedWallStructures } from './shared-walls.js';
 import { layerFor } from './model.js';
-export function PlacementPreview({ project, point, tool, asset, width, openingType, zoom }) {
+export function PlacementPreview({
+  project,
+  point,
+  tool,
+  asset,
+  width,
+  openingType,
+  zoom,
+  rotation = 0,
+}) {
   const resolved = useMemo(
     () =>
       tool === 'door'
@@ -28,6 +37,7 @@ export function PlacementPreview({ project, point, tool, asset, width, openingTy
         data-editor-only="true"
         pointerEvents="none"
         opacity=".65"
+        transform={`rotate(${rotation} ${point.x + w / 2} ${point.y + h / 2})`}
         color={valid ? '#f1c46c' : '#ff7373'}
       >
         <svg

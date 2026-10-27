@@ -30,7 +30,7 @@ export async function exportDrawing(svg, project, { format, transparent, layers,
   copy.querySelectorAll('[data-layer]').forEach((e) => {
     if (!layers.includes(e.dataset.layer)) e.remove();
   });
-  if (transparent) copy.querySelector('[data-background]')?.remove();
+  prepareVentilationExport(copy, layers, transparent);
   const blob = new Blob([new XMLSerializer().serializeToString(copy)], {
     type: 'image/svg+xml;charset=utf-8',
   });
@@ -55,4 +55,14 @@ export async function exportDrawing(svg, project, { format, transparent, layers,
   } finally {
     URL.revokeObjectURL(url);
   }
+}
+
+export function prepareVentilationExport(copy, layers, transparent) {
+  const ventilationOnly = layers.length === 1 && layers[0] === 'vents';
+  copy.querySelectorAll('[data-vent-presentation]').forEach((e) => {
+    if (e.dataset.ventPresentation === (ventilationOnly ? 'full' : 'contextual'))
+      e.removeAttribute('display');
+    else e.remove();
+  });
+  if (transparent && !ventilationOnly) copy.querySelector('[data-background]')?.remove();
 }

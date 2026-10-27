@@ -39,6 +39,12 @@ export function LevelFurniture({ type, w = levelAssets[type]?.w, h = levelAssets
         <>
           <rect x={edge} y={edge} width={w - edge * 2} height={h - edge * 2} />
           <path d={`M${inset} 0V${h}M${w - inset} 0V${h}`} fill="none" />
+          <path
+            data-stair-landings="true"
+            d={`M${inset} ${h - edge * 2}H${w - inset} M${inset} ${edge * 2}H${w - inset} M${inset} ${Math.min(h * 0.12, edge * 6)}H${w - inset}`}
+            fill="none"
+            strokeWidth={edge * 2}
+          />
           {stepPositions(h).map((y) => (
             <path key={y} d={`M${inset} ${y}H${w - inset}`} fill="none" />
           ))}
@@ -52,11 +58,16 @@ export function LevelFurniture({ type, w = levelAssets[type]?.w, h = levelAssets
       {type === 'accessRamp' && (
         <>
           <rect x={edge} y={edge} width={w - edge * 2} height={h - edge * 2} />
+          <path d={`M${inset} 0V${h}M${w - inset} 0V${h}`} fill="none" strokeWidth={edge * 2} />
           <path
-            d={`M${inset} ${h - inset}L${w / 2} ${inset}L${w - inset} ${h - inset}M${w / 2} ${h * 0.8}V${h * 0.25}M${w * 0.4} ${h * 0.38}L${w / 2} ${h * 0.25}L${w * 0.6} ${h * 0.38}`}
+            d={`M${inset} ${h - edge * 2}H${w - inset} M${inset} ${edge * 2}H${w - inset}M${inset} ${edge * 6}H${w - inset}`}
             fill="none"
           />
-          <path d={`M${inset} 0V${h}M${w - inset} 0V${h}`} fill="none" />
+          <path
+            d={`M${w / 2} ${h * 0.8}V${h * 0.25}M${w * 0.37} ${h * 0.4}L${w / 2} ${h * 0.25}L${w * 0.63} ${h * 0.4}`}
+            fill="none"
+            strokeWidth={edge * 1.6}
+          />
         </>
       )}
       {type === 'levelEdge' && (
