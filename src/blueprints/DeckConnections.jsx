@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField.jsx';
 import { useState } from 'react';
 import { activeFloor, floorList, switchFloor } from './floors.js';
 import { addConnections, floorElements } from './connections.js';
@@ -190,7 +191,7 @@ export function DeckConnections({
               >
                 <label>
                   X (m)
-                  <input
+                  <NumberField
                     type="number"
                     min="0"
                     max={project.width - 2}
@@ -202,7 +203,7 @@ export function DeckConnections({
                 </label>
                 <label>
                   Y (m)
-                  <input
+                  <NumberField
                     type="number"
                     min="0"
                     max={project.height - 2}

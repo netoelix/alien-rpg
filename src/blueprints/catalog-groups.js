@@ -1,5 +1,10 @@
 export const catalogGroups = [
   {
+    id: 'settlements',
+    name: 'Colônias',
+    categories: ['settlement-living', 'settlement-care', 'settlement', 'settlement-services'],
+  },
+  {
     id: 'social',
     name: 'Lazer e hospitalidade',
     categories: ['bar', 'casino', 'entertainment', 'quarters', 'decor'],

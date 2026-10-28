@@ -1,3 +1,4 @@
+import { traceGeometry } from './trace-geometry.js';
 export const circulationTypes = { path: 'Caminho', sidewalk: 'Calçada', road: 'Rua' };
 export const isCirculation = (e) =>
   e.kind === 'trace' && Object.hasOwn(circulationTypes, e.traceType);
@@ -20,7 +21,22 @@ export function normalizeCirculation(e) {
     (e.markings !== undefined && typeof e.markings !== 'boolean')
   )
     throw new Error('Acabamento de circulação inválido.');
-  return { edge: s.edge, surface: s.finish, markings: s.markings };
+  if (
+    e.sidewalkWidth !== undefined &&
+    (typeof e.sidewalkWidth !== 'number' ||
+      !Number.isFinite(e.sidewalkWidth) ||
+      e.sidewalkWidth < 0 ||
+      e.sidewalkWidth > 20)
+  )
+    throw new Error('Largura da calçada inválida.');
+  return {
+    edge: s.edge,
+    surface: s.finish,
+    markings: s.markings,
+    ...(e.traceType === 'road' && e.sidewalkWidth !== undefined
+      ? { sidewalkWidth: e.sidewalkWidth }
+      : {}),
+  };
 }
 export function traceBounds(e) {
   const pad = e.width / 2 + 0.2;
@@ -68,4 +84,22 @@ export function pavementJoints(points, width, inset = 0.18) {
     traveled += s.length;
   }
   return joints;
+}
+
+// Derived from the smoothed road, so outer pavement and carriageway share every bend.
+export function roadSidewalks(elements) {
+  return elements
+    .filter((e) => e.traceType === 'road' && e.sidewalkWidth > 0 && !e.hidden)
+    .map((e) => ({
+      ...e,
+      id: e.id,
+      traceType: 'sidewalk',
+      sidewalkWidth: 0,
+      width: e.width + 2 * e.sidewalkWidth,
+      points: traceGeometry(e).center,
+      rounded: false,
+      edge: 'curb',
+      surface: 'slabs',
+      markings: false,
+    }));
 }

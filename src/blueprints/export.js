@@ -22,6 +22,7 @@ export async function exportDrawing(svg, project, { format, transparent, layers,
     project.height >= project.width
       ? pixels
       : Math.round((pixels * project.height) / project.width);
+  copy.setAttribute('overflow', 'hidden');
   copy.setAttribute('width', width);
   copy.setAttribute('height', height);
   copy.removeAttribute('style');

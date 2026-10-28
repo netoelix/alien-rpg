@@ -78,6 +78,7 @@ export function rotateGroup(project, ids, direction = 1, freeAngle = null, pivot
     };
   });
   for (const element of elements.filter((e) => members.has(e.id) && e.kind !== 'door')) {
+    if (project.mode === 'colony' && element.kind === 'asset') continue;
     const box = selectionBounds(element);
     if (
       box.x < -1e-8 ||

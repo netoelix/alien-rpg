@@ -1,3 +1,4 @@
+import { normalizeProjectMode } from './project-mode.js';
 import { presetEquipment } from './preset-layouts.js';
 import { isCirculation, normalizeCirculation } from './circulation.js';
 import { normalizeVentLinks } from './vent-links.js';
@@ -230,6 +231,7 @@ export const uid = () => crypto.randomUUID();
 export function newProject() {
   return {
     version: 1,
+    mode: 'construction',
     name: 'Planta sem título',
     width: 80,
     height: 60,
@@ -747,9 +749,10 @@ export function parseProject(text) {
   };
   if (raw.version !== 1 || !Array.isArray(raw.elements) || raw.elements.length > 3000)
     throw new Error('Formato de projeto não suportado (máximo de 3000 objetos).');
+  result.mode = normalizeProjectMode(raw.mode);
   result.name = string(raw.name, 120);
-  result.width = number(raw.width, 10, 2000);
-  result.height = number(raw.height, 10, 2000);
+  result.width = number(raw.width, 10, result.mode === 'colony' ? 10000 : 2000);
+  result.height = number(raw.height, 10, result.mode === 'colony' ? 10000 : 2000);
   result.grid = number(raw.grid, 0.25, 50);
   result.theme = ['green', 'blue', 'print'].includes(raw.theme) ? raw.theme : 'green';
   if (!Array.isArray(raw.layers)) throw new Error('Camadas inválidas.');
@@ -923,8 +926,13 @@ export function parseProject(text) {
       if (e.kind === 'trace') {
         if (
           ![
+            'pipe',
+            'cable',
+            'cableTray',
             'rail',
             'ledge',
+            'talus',
+            'cliff',
             'channel',
             'gratedChannel',
             'river',
@@ -972,7 +980,11 @@ export function parseProject(text) {
         points,
       };
     }
-    const position = { x: number(e.x, 0, result.width), y: number(e.y, 0, result.height) };
+    const overflow = result.mode === 'colony' && e.kind === 'asset';
+    const position = {
+      x: number(e.x, overflow ? -2000 : 0, result.width),
+      y: number(e.y, overflow ? -2000 : 0, result.height),
+    };
     if (e.kind === 'label') {
       if (e.align !== undefined && !['start', 'middle', 'end'].includes(e.align))
         throw new Error('Alinhamento inválido.');
@@ -1035,7 +1047,11 @@ export function parseProject(text) {
       )
         throw new Error('Objeto girado ultrapassa o tamanho da planta.');
     }
-    if (e.w && (e.x + e.w > result.width || e.y + e.h > result.height))
+    if (
+      !(result.mode === 'colony' && e.kind === 'asset') &&
+      e.w &&
+      (e.x + e.w > result.width || e.y + e.h > result.height)
+    )
       throw new Error('Objeto ultrapassa o tamanho da planta.');
   }
   if (raw.floors !== undefined) {

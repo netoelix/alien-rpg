@@ -1,3 +1,5 @@
+import { NumberField } from './NumberField.jsx';
+import { projectModes, isColony, assetInMode, toolInMode, pathInMode } from './project-mode.js';
 import { OptionButtons } from './OptionButtons.jsx';
 import { pathTools, pathChoices, pathPreset } from './path-tools.js';
 import { areaTools, areaElement } from './area-tools.js';
@@ -191,6 +193,7 @@ export default function BlueprintEditor() {
   const matchingAssets = Object.entries(assetNames).filter(
     ([id, name]) =>
       !Object.hasOwn(legacyAssets, id) &&
+      assetInMode(project, id) &&
       normalizeSearch(name).includes(normalizeSearch(assetSearch)),
   );
   const [lineWidth, setLineWidth] = useState(2),
@@ -252,6 +255,16 @@ export default function BlueprintEditor() {
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
   }, [dirty]);
+  useEffect(() => {
+    setTool('select');
+    setPoints([]);
+    setGesture(null);
+    setCursor(null);
+    setModulePlacement(null);
+    setConnectionPlacement(null);
+    setPortPlacement(null);
+    setAreaPurpose(project.mode === 'colony' ? 'floor' : 'room');
+  }, [project.mode]);
   function commit(next) {
     try {
       const valid = parseProject(
@@ -360,9 +373,15 @@ export default function BlueprintEditor() {
     point.y = event.clientY;
     const p = point.matrixTransform(svgRef.current.getScreenCTM().inverse());
     const enabled = align && !event.altKey;
+    const overflow =
+      isColony(project) &&
+      (tool === 'asset' ||
+        (tool === 'select' &&
+          (gesture?.element?.kind === 'asset' || selectedElement?.kind === 'asset')));
+    const low = overflow ? -2000 : 0;
     const raw = {
-      x: Math.max(0, Math.min(project.width, p.x)),
-      y: Math.max(0, Math.min(project.height, p.y)),
+      x: Math.max(low, Math.min(project.width, p.x)),
+      y: Math.max(low, Math.min(project.height, p.y)),
     };
     const result = {
       x: enabled && magnet ? snap(raw.x, project.grid) : raw.x,
@@ -399,8 +418,8 @@ export default function BlueprintEditor() {
       pendingGuides.current = match.guides;
     }
     return {
-      x: Math.max(0, Math.min(project.width, result.x)),
-      y: Math.max(0, Math.min(project.height, result.y)),
+      x: Math.max(low, Math.min(project.width, result.x)),
+      y: Math.max(low, Math.min(project.height, result.y)),
     };
   }
   function down(event) {
@@ -903,6 +922,16 @@ export default function BlueprintEditor() {
     );
   }
   function changeTool(next) {
+    if (!toolInMode(project, next)) return;
+    if (isColony(project) && next === 'corridor') {
+      next = 'trace';
+      setTraceStyle(pathPreset('path').style);
+      setLineWidth(3);
+    }
+    if (isColony(project) && areaTools.includes(next) && areaPurpose === 'room')
+      setAreaPurpose('floor');
+    if (next === 'asset' && !assetInMode(project, asset) && matchingAssets.length)
+      setAsset(matchingAssets[0][0]);
     setPortPlacement(null);
     setCursor(null);
     setSnapGuides([]);
@@ -1117,7 +1146,7 @@ export default function BlueprintEditor() {
   }
   function zoom(factor) {
     setView((v) => {
-      const z = Math.max(0.5, Math.min(12, v.zoom * factor));
+      const z = Math.max(0.5, Math.min(isColony(project) ? 1024 : 12, v.zoom * factor));
       return {
         zoom: z,
         x: v.x + project.width / v.zoom / 2 - project.width / z / 2,
@@ -1302,6 +1331,24 @@ export default function BlueprintEditor() {
       <nav className="blueprint-global-controls" aria-label="Configurações do projeto">
         <details name="blueprint-global" className="blueprint-global-panel">
           <summary>Projeto e escala</summary>
+          <OptionButtons
+            label="Tipo de mapa"
+            value={project.mode || 'construction'}
+            options={projectModes}
+            onChange={(mode) => {
+              changeTool('select');
+              setSelected(null);
+              setPastedGroup(null);
+              setAreaPurpose(mode === 'colony' ? 'floor' : 'room');
+              commit({ ...project, mode });
+            }}
+          />
+          <p className="muted">
+            {isColony(project)
+              ? 'Colônia: áreas externas e infraestrutura.'
+              : 'Construção: interiores, salas e pavimentos.'}{' '}
+            Trocar o modo preserva o mapa e suas medidas.
+          </p>
           <label>
             Nome
             <input
@@ -1313,10 +1360,10 @@ export default function BlueprintEditor() {
           {['width', 'height'].map((key) => (
             <label key={key}>
               {key === 'width' ? 'Largura' : 'Altura'} da planta (m)
-              <input
+              <NumberField
                 type="number"
                 min="10"
-                max="2000"
+                max={isColony(project) ? 10000 : 2000}
                 value={project[key]}
                 onChange={(e) => commit({ ...project, [key]: Number(e.target.value) })}
               />
@@ -1498,32 +1545,34 @@ export default function BlueprintEditor() {
           }
         }}
       />
-      <DeckConnections
-        placing={!!connectionPlacement}
-        onCancelPlacement={() => setConnectionPlacement(null)}
-        onPlace={(placement) => {
-          setModulePlacement(null);
-          setConnectionPlacement(placement);
-          setTool('select');
-          setSelected(null);
-          setPastedGroup(null);
-          setCursor(null);
-          setMessage('Clique no mapa para posicionar a conexão. Escape cancela.');
-          svgRef.current?.focus({ preventScroll: true });
-        }}
-        project={project}
-        disabled={!!gesture || !!points.length || exporting}
-        referenceFloors={referenceFloors}
-        setReferenceFloors={setReferenceFloors}
-        onError={setMessage}
-        onChange={(next) => {
-          if (commit(next)) {
+      {!isColony(project) && (
+        <DeckConnections
+          placing={!!connectionPlacement}
+          onCancelPlacement={() => setConnectionPlacement(null)}
+          onPlace={(placement) => {
+            setModulePlacement(null);
+            setConnectionPlacement(placement);
+            setTool('select');
             setSelected(null);
             setPastedGroup(null);
-            setRotationPivot(null);
-          }
-        }}
-      />
+            setCursor(null);
+            setMessage('Clique no mapa para posicionar a conexão. Escape cancela.');
+            svgRef.current?.focus({ preventScroll: true });
+          }}
+          project={project}
+          disabled={!!gesture || !!points.length || exporting}
+          referenceFloors={referenceFloors}
+          setReferenceFloors={setReferenceFloors}
+          onError={setMessage}
+          onChange={(next) => {
+            if (commit(next)) {
+              setSelected(null);
+              setPastedGroup(null);
+              setRotationPivot(null);
+            }
+          }}
+        />
+      )}
       <p
         role="status"
         className={`blueprint-status ${message === 'Alteração aplicada somente neste navegador.' ? 'blueprint-status-routine' : ''}`}
@@ -1545,7 +1594,7 @@ export default function BlueprintEditor() {
               label="Desenhar percurso"
               kind="trace"
               value={tool === 'trace' ? traceStyle.traceType : tool}
-              options={pathChoices}
+              options={pathChoices.filter(([id]) => pathInMode(project, id))}
               onChange={(value) => {
                 const preset = pathPreset(value);
                 changeTool(preset.tool);
@@ -1557,7 +1606,7 @@ export default function BlueprintEditor() {
           {pathTools.includes(tool) && (
             <label>
               Largura (m)
-              <input
+              <NumberField
                 type="number"
                 min=".25"
                 max="50"
@@ -1574,7 +1623,7 @@ export default function BlueprintEditor() {
                 kind="purpose"
                 value={areaPurpose}
                 options={[
-                  ['room', 'Sala'],
+                  ...(!isColony(project) ? [['room', 'Sala']] : []),
                   ['floor', 'Piso'],
                   ['pool', 'Piscina'],
                   ['lake', 'Lago'],
@@ -1633,6 +1682,7 @@ export default function BlueprintEditor() {
           )}
           {tool === 'trace' && (
             <TraceControls
+              colony={isColony(project)}
               showType={false}
               value={traceStyle}
               onChange={(key, value) => {
@@ -1691,7 +1741,7 @@ export default function BlueprintEditor() {
               />
               <label>
                 Largura da abertura (m)
-                <input
+                <NumberField
                   type="number"
                   min=".25"
                   max="20"
@@ -1722,7 +1772,7 @@ export default function BlueprintEditor() {
               </p>
               <label>
                 Rotação antes de inserir (°)
-                <input
+                <NumberField
                   type="number"
                   step="15"
                   value={assetRotation}
@@ -1749,19 +1799,18 @@ export default function BlueprintEditor() {
           )}
           {tool === 'wall' && (
             <div>
-              <label>
-                Modo
-                <select
-                  value={manualWall ? 'draw' : 'edit'}
-                  onChange={(e) => {
-                    setManualWall(e.target.value === 'draw');
-                    setPoints([]);
-                  }}
-                >
-                  <option value="edit">Editar parede existente</option>
-                  <option value="draw">Desenhar parede independente</option>
-                </select>
-              </label>
+              <OptionButtons
+                label="Modo"
+                value={manualWall ? 'draw' : 'edit'}
+                options={[
+                  ['edit', 'Editar existente'],
+                  ['draw', 'Desenhar parede'],
+                ]}
+                onChange={(mode) => {
+                  setManualWall(mode === 'draw');
+                  setPoints([]);
+                }}
+              />
               {manualWall && (
                 <>
                   <VisualChoices
@@ -1836,7 +1885,7 @@ export default function BlueprintEditor() {
                 />
                 <label>
                   Início do trecho (%)
-                  <input
+                  <NumberField
                     type="number"
                     min="0"
                     max="100"
@@ -1846,7 +1895,7 @@ export default function BlueprintEditor() {
                 </label>
                 <label>
                   Fim do trecho (%)
-                  <input
+                  <NumberField
                     type="number"
                     min="0"
                     max="100"
@@ -1872,12 +1921,15 @@ export default function BlueprintEditor() {
                 >
                   APLICAR TRECHO
                 </button>
-                <p>
-                  Aplicar altera somente o intervalo escolhido, preservando os demais trechos.
-                  Automática restaura a união dos ambientes apenas nesse intervalo. Portas e janelas
-                  recortam a parede; remova a peça antes de transformar seu trecho em abertura
-                  livre.
-                </p>
+                <details className="blueprint-inline-help">
+                  <summary>Como funciona o trecho</summary>
+                  <p>
+                    Aplicar altera somente o intervalo escolhido, preservando os demais trechos.
+                    Automática restaura a união dos ambientes apenas nesse intervalo. Portas e
+                    janelas recortam a parede; remova a peça antes de transformar seu trecho em
+                    abertura livre.
+                  </p>
+                </details>
                 {selectedElement.kind === 'ellipse' && (
                   <details onToggle={(event) => setArcPreview(event.currentTarget.open)}>
                     <summary>Editar arco contínuo</summary>
@@ -1894,7 +1946,7 @@ export default function BlueprintEditor() {
                     <p>0° à direita; sentido horário. Para cruzar 0°, use um fim acima de 360°.</p>
                     <label>
                       Início do arco (°)
-                      <input
+                      <NumberField
                         type="number"
                         min="0"
                         max="359.99"
@@ -1904,7 +1956,7 @@ export default function BlueprintEditor() {
                     </label>
                     <label>
                       Fim do arco (°)
-                      <input
+                      <NumberField
                         type="number"
                         min="0"
                         max="720"
@@ -1926,35 +1978,43 @@ export default function BlueprintEditor() {
                     <p>Usa o tipo de parede selecionado acima. Desfazer reverte o arco inteiro.</p>
                   </details>
                 )}
-                <details>
-                  <summary>Padrões para este ambiente</summary>
-                  <p>Substitui todos os trechos deste ambiente. Espessura apenas visual.</p>
-                  {[
-                    ['internal', 'Divisórias de nave'],
-                    ['hull', 'Casco de nave / estação'],
-                    ['structural', 'Instalação planetária'],
-                  ].map(([type, name]) => (
+                <section
+                  className="blueprint-wall-presets"
+                  aria-label="Aplicar em todas as paredes"
+                >
+                  <h3>Ambiente inteiro</h3>
+                  <p>Aplica a todas as paredes.</p>
+                  <div className="blueprint-wall-preset-actions">
+                    {[
+                      ['internal', 'Divisórias'],
+                      ['hull', 'Casco'],
+                      ['structural', 'Estrutural'],
+                    ].map(([type, name]) => (
+                      <button
+                        key={type}
+                        onClick={() =>
+                          property(
+                            'walls',
+                            wallSegments(selectedElement).map((_, segment) => ({
+                              segment,
+                              start: 0,
+                              end: 1,
+                              type,
+                            })),
+                          )
+                        }
+                      >
+                        {name}
+                      </button>
+                    ))}
                     <button
-                      key={type}
-                      onClick={() =>
-                        property(
-                          'walls',
-                          wallSegments(selectedElement).map((_, segment) => ({
-                            segment,
-                            start: 0,
-                            end: 1,
-                            type,
-                          })),
-                        )
-                      }
+                      title="Restaurar paredes automáticas em todo o ambiente"
+                      onClick={() => property('walls', [])}
                     >
-                      {name}
+                      Automáticas
                     </button>
-                  ))}
-                  <button onClick={() => property('walls', [])}>
-                    RESTAURAR PAREDES AUTOMÁTICAS
-                  </button>
-                </details>
+                  </div>
+                </section>
               </fieldset>
             )}
           {tool === 'dimension' && (
@@ -1975,37 +2035,45 @@ export default function BlueprintEditor() {
             />
           )}
 
-          <ModuleLibrary
-            project={project}
-            ids={pastedGroup?.ids || (selected ? [selected] : [])}
-            disabled={!!gesture || !!points.length || !!connectionPlacement || !!modulePlacement}
-            onError={setMessage}
-            onPlace={(module) => {
-              setModuleGridOptions({ rows: 1, columns: 1, gap: 0 });
-              setModulePlacement(module);
-              setConnectionPlacement(null);
-              setTool('select');
-              setSelected(null);
-              setPastedGroup(null);
-              setRotationPivot(null);
-              setCursor(null);
-              setMessage('Clique no mapa para posicionar o módulo. Escape cancela.');
-              svgRef.current?.focus({ preventScroll: true });
-            }}
-          />
+          {!isColony(project) && (
+            <ModuleLibrary
+              project={project}
+              ids={pastedGroup?.ids || (selected ? [selected] : [])}
+              disabled={!!gesture || !!points.length || !!connectionPlacement || !!modulePlacement}
+              onError={setMessage}
+              onPlace={(module) => {
+                setModuleGridOptions({ rows: 1, columns: 1, gap: 0 });
+                setModulePlacement(module);
+                setConnectionPlacement(null);
+                setTool('select');
+                setSelected(null);
+                setPastedGroup(null);
+                setRotationPivot(null);
+                setCursor(null);
+                setMessage('Clique no mapa para posicionar o módulo. Escape cancela.');
+                svgRef.current?.focus({ preventScroll: true });
+              }}
+            />
+          )}
         </aside>
         <section className="blueprint-workspace" aria-label="Área de desenho">
           <div className="blueprint-tool-grid" role="toolbar" aria-label="Ferramentas da viewport">
             {Object.entries(toolNames)
               .filter(
-                ([id]) => !['ellipse', 'polygon', 'floorRegion', 'vent', 'trace'].includes(id),
+                ([id]) =>
+                  toolInMode(project, id) &&
+                  !['ellipse', 'polygon', 'floorRegion', 'vent', 'trace'].includes(id),
               )
               .map(([id, originalName]) => {
                 const name =
                   id === 'room'
-                    ? 'Áreas: salas, pisos e água'
+                    ? isColony(project)
+                      ? 'Áreas: superfícies e água'
+                      : 'Áreas: salas, pisos e água'
                     : id === 'corridor'
-                      ? 'Percursos: corredores, dutos e traçados'
+                      ? isColony(project)
+                        ? 'Percursos externos'
+                        : 'Percursos: corredores, dutos e traçados'
                       : originalName;
                 const shortcut = Object.keys(toolKeys)
                   .find((key) => toolKeys[key] === id)
@@ -2041,45 +2109,6 @@ export default function BlueprintEditor() {
           <p className="blueprint-hint">
             {toolNames[tool]} · {hints[tool]}
           </p>
-          {((['room', 'ellipse', 'polygon', 'corridor'].includes(tool) &&
-            (areaPurpose === 'room' || tool === 'corridor')) ||
-            tool === 'door') && (
-            <div className="blueprint-context-tools" aria-label="Opções da ferramenta">
-              {tool === 'door' ? (
-                <>
-                  <button
-                    aria-pressed={openingType === 'door'}
-                    onClick={() => setOpeningType('door')}
-                  >
-                    Porta
-                  </button>
-                  <button
-                    aria-pressed={openingType === 'window'}
-                    onClick={() => setOpeningType('window')}
-                  >
-                    Janela
-                  </button>
-                </>
-              ) : (
-                <label>
-                  Parede ao desenhar
-                  <select
-                    value={creationWall}
-                    onChange={(event) => setCreationWall(event.target.value)}
-                  >
-                    <option value="auto">Automática</option>
-                    {Object.entries(wallTypes)
-                      .filter(([type]) => type !== 'open')
-                      .map(([type, name]) => (
-                        <option key={type} value={type}>
-                          {name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-              )}
-            </div>
-          )}
           <div className="blueprint-canvas-toolbar">
             <button
               type="button"
@@ -2222,7 +2251,7 @@ export default function BlueprintEditor() {
                   ].map(([key, label]) => (
                     <label key={key}>
                       {label}
-                      <input
+                      <NumberField
                         type="number"
                         min={key === 'gap' ? 0 : 1}
                         max={key === 'gap' ? 100 : 10}
@@ -2270,7 +2299,7 @@ export default function BlueprintEditor() {
                     rotateFreely();
                   }}
                 >
-                  <input
+                  <NumberField
                     type="number"
                     min="-360"
                     max="360"
@@ -2783,7 +2812,7 @@ export default function BlueprintEditor() {
                       {['dx', 'dy'].map((key) => (
                         <label key={key}>
                           Deslocamento {key === 'dx' ? 'X' : 'Y'} (m)
-                          <input
+                          <NumberField
                             type="number"
                             step=".25"
                             value={selectedElement.connectionLabel?.[key] || 0}
@@ -2848,7 +2877,7 @@ export default function BlueprintEditor() {
                               rotation: 'Rotação (°)',
                             }[key]
                           }
-                          <input
+                          <NumberField
                             type="number"
                             step={key === 'rotation' ? 15 : 0.25}
                             value={selectedElement[key]}
@@ -2865,7 +2894,11 @@ export default function BlueprintEditor() {
                     />
                   )}
                   {selectedElement.kind === 'trace' && (
-                    <TraceControls value={selectedElement} onChange={property} />
+                    <TraceControls
+                      colony={isColony(project)}
+                      value={selectedElement}
+                      onChange={property}
+                    />
                   )}
                   {selectedElement.kind === 'dimension' && (
                     <DimensionControls {...selectedElement} onChange={property} />
@@ -2975,7 +3008,7 @@ export default function BlueprintEditor() {
                             {['x', 'y'].map((axis) => (
                               <label key={axis}>
                                 {axis.toUpperCase()} (m)
-                                <input
+                                <NumberField
                                   type="number"
                                   aria-label={`Vértice ${index + 1}, ${axis.toUpperCase()} em metros`}
                                   min="0"
@@ -3077,7 +3110,7 @@ export default function BlueprintEditor() {
                       {['x', 'y'].map((axis) => (
                         <label key={axis}>
                           Deslocamento {axis.toUpperCase()} (m)
-                          <input
+                          <NumberField
                             type="number"
                             step={project.grid}
                             value={roomShift[axis]}

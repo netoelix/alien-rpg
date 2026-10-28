@@ -2,6 +2,7 @@ import { useId, useMemo } from 'react';
 import { traceGeometry } from './trace-geometry.js';
 import {
   circulationStyle,
+  roadSidewalks,
   isCirculation,
   overlappingTraces,
   pavementJoints,
@@ -22,6 +23,11 @@ export function CirculationNetwork({ elements, floor = '#102c24', ink = 'current
         })),
     [elements],
   );
+  const sidewalks = useMemo(() => roadSidewalks(elements), [elements]);
+  const extent = elements.reduce(
+    (max, e) => e.points?.reduce((n, p) => Math.max(n, p.x + 100, p.y + 100), max) ?? max,
+    2200,
+  );
   const stroke = (p, width, color, extra = {}) => (
     <polyline key={p.e.id} points={p.points} strokeWidth={width} stroke={color} {...extra} />
   );
@@ -33,6 +39,7 @@ export function CirculationNetwork({ elements, floor = '#102c24', ink = 'current
       strokeLinecap="butt"
       color={ink}
     >
+      {sidewalks.length > 0 && <CirculationNetwork elements={sidewalks} floor={floor} ink={ink} />}
       <defs>
         {paths.map((p, i) => (
           <mask
@@ -41,10 +48,10 @@ export function CirculationNetwork({ elements, floor = '#102c24', ink = 'current
             maskUnits="userSpaceOnUse"
             x="-100"
             y="-100"
-            width="2200"
-            height="2200"
+            width={extent}
+            height={extent}
           >
-            <rect x="-100" y="-100" width="2200" height="2200" fill="white" />
+            <rect x="-100" y="-100" width={extent} height={extent} fill="white" />
             {paths
               .filter((q) => q !== p && overlappingTraces(p.e, q.e))
               .map((q) => stroke(q, q.e.width + 0.12, 'black'))}

@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField.jsx';
 export function TextControls({ text, size, align = 'start', bold = false, onChange }) {
   return (
     <div className="blueprint-text-controls">
@@ -12,7 +13,7 @@ export function TextControls({ text, size, align = 'start', bold = false, onChan
       </label>
       <label>
         Tamanho (m)
-        <input
+        <NumberField
           type="number"
           min=".25"
           max="20"

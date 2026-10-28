@@ -2,6 +2,10 @@ import { legacyAssets } from './legacy-assets.js';
 import { vehicleAssets } from './vehicle-assets.js';
 import { colonyAssets } from './colony-assets.js';
 export const assetCategories = [
+  { id: 'settlement', name: 'Indústria e logística', items: [] },
+  { id: 'settlement-living', name: 'Habitação e administração', items: [] },
+  { id: 'settlement-care', name: 'Ciência, saúde e segurança', items: [] },
+  { id: 'settlement-services', name: 'Cultivo e serviços essenciais', items: [] },
   { id: 'floor-technical', name: 'Piso · inspeção e drenagem', items: [] },
   { id: 'bar', name: 'Bares e jogos de salão', items: [] },
   { id: 'casino', name: 'Cassinos', items: [] },

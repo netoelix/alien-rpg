@@ -14,7 +14,7 @@ export function SignageTrace({ element, geometry }) {
       {hazard ? (
         <>
           <defs>
-            <mask id={id} maskUnits="userSpaceOnUse" x="-100" y="-100" width="2200" height="2200">
+            <mask id={id} maskUnits="userSpaceOnUse" x="-100" y="-100" width={12000} height={12000}>
               <polyline
                 points={coords(geometry.center)}
                 stroke="white"

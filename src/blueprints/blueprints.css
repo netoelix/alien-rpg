@@ -1127,3 +1127,29 @@
   padding-bottom: 12px;
   margin-bottom: 12px;
 }
+
+.blueprint-wall-presets {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #275440;
+}
+.blueprint-wall-presets h3 {
+  margin: 0;
+  font-size: 13px;
+}
+.blueprint-wall-presets p {
+  margin: 4px 0 8px;
+  color: #9bb5a5;
+}
+.blueprint-wall-preset-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.blueprint-layout aside .blueprint-wall-preset-actions button {
+  margin: 0;
+  padding: 7px 4px;
+  justify-content: center;
+  text-align: center;
+  font-size: 11px;
+}
