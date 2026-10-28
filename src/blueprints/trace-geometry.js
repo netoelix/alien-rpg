@@ -53,13 +53,15 @@ export function traceGeometry(element) {
     });
   const total = normals.reduce((sum, n) => sum + n.length, 0),
     spacing = Math.max(
-      element.traceType === 'rail'
-        ? (element.width * 0.64) / 0.9
-        : element.traceType === 'gratedChannel'
-          ? 0.16
-          : element.traceType === 'hazardLine'
-            ? 0.4
-            : 0.6,
+      ['talus', 'cliff'].includes(element.traceType)
+        ? Math.max(0.35, element.width * 0.28)
+        : element.traceType === 'rail'
+          ? (element.width * 0.64) / 0.9
+          : element.traceType === 'gratedChannel'
+            ? 0.16
+            : element.traceType === 'hazardLine'
+              ? 0.4
+              : 0.6,
       total / 600,
     ),
     marks = [];

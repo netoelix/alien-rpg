@@ -1,7 +1,8 @@
+import { NumberField } from './NumberField.jsx';
 import { OptionButtons } from './OptionButtons.jsx';
 import { VisualChoices } from './VisualChoices.jsx';
 import { circulationTypes, circulationStyle } from './circulation.js';
-export function TraceControls({ value, onChange, showType = true }) {
+export function TraceControls({ value, onChange, showType = true, colony = false }) {
   const circulation = Object.hasOwn(circulationTypes, value.traceType || ''),
     style = circulationStyle(value);
   return (
@@ -18,7 +19,16 @@ export function TraceControls({ value, onChange, showType = true }) {
             ['hazardLine', 'Faixa de segurança'],
             ['walkwayLine', 'Faixa de circulação'],
             ['river', 'Rio'],
+            ['pipe', 'Tubulação'],
+            ['cable', 'Fiação'],
+            ['cableTray', 'Eletrocalha'],
             ['rail', 'Trilhos'],
+            ...(colony
+              ? [
+                  ['talus', 'Talude'],
+                  ['cliff', 'Penhasco'],
+                ]
+              : []),
             ['ledge', 'Borda de desnível'],
             ['channel', 'Canaleta com tampas'],
             ['gratedChannel', 'Canaleta gradeada'],
@@ -33,6 +43,18 @@ export function TraceControls({ value, onChange, showType = true }) {
         />
         Arredondar curvas
       </label>
+      {value.traceType === 'road' && (
+        <label>
+          Calçadas automáticas (m por lado)
+          <NumberField
+            min="0"
+            max="20"
+            step=".25"
+            value={value.sidewalkWidth || 0}
+            onChange={(e) => onChange('sidewalkWidth', Number(e.target.value))}
+          />
+        </label>
+      )}
       {circulation && (
         <>
           <OptionButtons
@@ -68,17 +90,16 @@ export function TraceControls({ value, onChange, showType = true }) {
           )}
         </>
       )}
-      {value.traceType === 'ledge' && (
-        <label>
-          Lado baixo
-          <select
-            value={value.side || 1}
-            onChange={(e) => onChange('side', Number(e.target.value))}
-          >
-            <option value="1">Direita do desenho</option>
-            <option value="-1">Esquerda do desenho</option>
-          </select>
-        </label>
+      {['ledge', 'talus', 'cliff'].includes(value.traceType) && (
+        <OptionButtons
+          label="Lado baixo"
+          value={value.side || 1}
+          onChange={(side) => onChange('side', side)}
+          options={[
+            [1, 'Direita'],
+            [-1, 'Esquerda'],
+          ]}
+        />
       )}
 
       {['hazardLine', 'walkwayLine'].includes(value.traceType) && (

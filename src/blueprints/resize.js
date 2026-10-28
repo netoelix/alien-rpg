@@ -41,20 +41,32 @@ export function resizeElement(element, handle, dx, dy, bounds, proportional = fa
     };
     return assetFits(next, bounds) ? next : element;
   }
+  const overflow = bounds.mode === 'colony' && element.kind === 'asset';
   const minimum = 0.25;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   let left = element.x;
   let top = element.y;
   let right = left + element.w;
   let bottom = top + element.h;
-  if (handle.includes('w')) left = clamp(left + dx, 0, right - minimum);
-  if (handle.includes('e')) right = clamp(right + dx, left + minimum, bounds.width);
-  if (handle.includes('n')) top = clamp(top + dy, 0, bottom - minimum);
-  if (handle.includes('s')) bottom = clamp(bottom + dy, top + minimum, bounds.height);
+  if (handle.includes('w')) left = clamp(left + dx, overflow ? -2000 : 0, right - minimum);
+  if (handle.includes('e'))
+    right = clamp(right + dx, left + minimum, overflow ? bounds.width + 2000 : bounds.width);
+  if (handle.includes('n')) top = clamp(top + dy, overflow ? -2000 : 0, bottom - minimum);
+  if (handle.includes('s'))
+    bottom = clamp(bottom + dy, top + minimum, overflow ? bounds.height + 2000 : bounds.height);
   return { ...element, x: left, y: top, w: right - left, h: bottom - top };
 }
 
 export function assetFits(element, bounds) {
+  if (bounds.mode === 'colony' && element.kind === 'asset')
+    return (
+      element.x >= -2000 &&
+      element.y >= -2000 &&
+      element.x <= bounds.width &&
+      element.y <= bounds.height &&
+      element.w <= 2000 &&
+      element.h <= 2000
+    );
   const box = selectionBounds(element);
   return (
     element.x >= 0 &&

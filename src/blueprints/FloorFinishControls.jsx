@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField.jsx';
 import { VisualChoices } from './VisualChoices.jsx';
 import { floorFinishes } from './floor-finishes.js';
 export function FloorFinishControls({ value, onChange }) {
@@ -21,7 +22,7 @@ export function FloorFinishControls({ value, onChange }) {
         <>
           <label>
             {['pool', 'lake'].includes(current.type) ? 'Detalhes da margem (m)' : 'Módulo (m)'}
-            <input
+            <NumberField
               type="number"
               min=".25"
               max="10"

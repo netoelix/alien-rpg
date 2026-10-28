@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField.jsx';
 import { VentDeckLinkControls } from './VentDeckLinkControls.jsx';
 import { ventPortTypes } from './vent-ports.js';
 export function VentPortControls({
@@ -52,7 +53,7 @@ export function VentPortControls({
             <>
               <label>
                 Largura da saída (m)
-                <input
+                <NumberField
                   type="number"
                   min=".2"
                   max="3"

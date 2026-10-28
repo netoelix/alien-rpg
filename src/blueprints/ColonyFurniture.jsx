@@ -26,7 +26,14 @@ export function ColonyFurniture({
       overflow="visible"
     >
       <g
-        strokeWidth={vehicle ? Math.min(0.055, w / 20, h / 20) : Math.min(2, 3.5 / Math.max(w, h))}
+        fill={asset.exterior ? floor || '#102c24' : undefined}
+        strokeWidth={
+          asset.exterior
+            ? 0.65
+            : vehicle
+              ? Math.min(0.055, w / 20, h / 20)
+              : Math.min(2, 3.5 / Math.max(w, h))
+        }
         strokeLinejoin="round"
         strokeLinecap="round"
       >

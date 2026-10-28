@@ -440,6 +440,7 @@ export const Drawing = memo(function Drawing({
                     overflow="visible"
                     fill={palette.floor}
                     stroke={floorMarkings[e.asset] ? palette.accent : palette.ink}
+                    color={floorMarkings[e.asset] ? palette.accent : palette.ink}
                   >
                     <Furniture type={e.asset} w={e.w} h={e.h} floor={palette.floor} />
                   </svg>

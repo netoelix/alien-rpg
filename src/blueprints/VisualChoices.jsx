@@ -12,6 +12,8 @@ const shortNames = {
   gratedChannel: 'Gradeada',
   channel: 'Canaleta',
   ledge: 'Desnível',
+  talus: 'Talude',
+  cliff: 'Penhasco',
   tread: 'Antiderrapante',
   service: 'Técnico',
   plates: 'Chapas',

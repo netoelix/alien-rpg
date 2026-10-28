@@ -128,3 +128,59 @@ Uma entrada Percursos reúne corredor, ventilação e traçados na viewport. Sel
 ### Compactação da interface
 
 Medidas em duas colunas, sobreposição sempre visível, botões para cotas/módulos/bordas/acabamento/cor. Ajuda dos traçados recolhida. Cabeçalho reduzido, nome do projeto e indicação Local. Aviso rotineiro de edição local oculto no foco; demais mensagens preservadas. Conferência visual pendente, sem publicação.
+
+### Colônias — decisões de 28/10/2026 (planejamento)
+
+- Separar modos Construção e Colônia em Projeto e escala. Cada modo apresenta ferramentas e biblioteca próprias, compartilhando código quando adequado. Não misturar ferramentas internas com o planejamento externo.
+- Colônias representam estruturas por fora, sem interiores, portas ou janelas individuais. Bibliotecas de estruturas grandes: edifícios, galpões, praças, feiras, parques, fazendas, minas, espaço-portos e equipamentos de infraestrutura. Identificação pela silhueta e detalhes, sem depender de texto.
+- Escala configurável para mapas grandes; metros podem continuar como opção. Definir unidade de exibição e dimensão da grade sem redimensionar objetos acidentalmente.
+- Revisar linguagem visual das estruturas e seus contornos; não reutilizar diretamente as paredes de salas como aparência final.
+- Relevo deve representar assentamentos em níveis diferentes. Revisar também a borda de desnível atual; design anterior de relevo permanece rejeitado. Ainda definir convenções para talude, penhasco, cota/altura e edifícios altos.
+- Implementação de colônias não iniciada: próximo passo é definir linguagem visual e comportamento do modo. Conversão de projeto existente entre modos ainda não definida.
+
+Controles redundantes retirados: balão Parede ao desenhar e seletor Porta/Janela sobre a viewport. Escolhas permanecem na lateral. Navegação e manipulação direta preservadas. Conferência e desempenho anteriores aprovados pelo usuário; sem build/publicação nesta etapa.
+
+### Base dos modos Construção / Colônia — 28/10/2026
+- Implementado seletor em Projeto e escala; modo persistido no arquivo e recuperação local.
+- Projetos antigos continuam em Construção. Alternar modo não converte, apaga ou redimensiona objetos.
+- Colônia oferece áreas sem paredes, percursos externos e catálogo inicial filtrado (exterior, vegetação, comércio, transporte e veículos).
+- Ferramentas de portas, paredes internas, módulos de interiores e conexões entre pavimentos permanecem em Construção. Pavimentos existentes continuam acessíveis para não esconder dados.
+- Próximo bloco: taludes com hachuras, penhascos com fraturas e biblioteca de edificações externas detalhadas. Escala interna ainda em metros (até 2000 m); apresentação em km e terrenos maiores pendentes.
+- Verificado: 11 testes direcionados e compilação do BlueprintEditor via Vite SSR. Sem publicação.
+
+### Relevo de colônias — 28/10/2026
+- Talude com hachuras alternadas e penhasco com fraturas implementados como traçados editáveis no modo Colônia.
+- Direita/esquerda define o lado baixo; largura controla a extensão gráfica das marcas (não é altitude).
+- Compatíveis com salvar/reabrir e renderização SVG compartilhada pela exportação; máximo de 600 marcas por traçado.
+- Nove testes direcionados passaram; editor compilado e amostra renderizada inspecionada. Conferência interativa pendente.
+- Próximo bloco: edificações externas detalhadas; regiões elevadas/depressões e cotas de terreno continuam pendentes. Sem build/publicação.
+
+### Edificações externas — 28/10/2026
+- Primeiro catálogo exclusivo de Colônia: bloco habitacional, hangar industrial, usina de processamento, estufas, plataforma de pouso, mercado coberto, silos e posto de controle.
+- Coberturas opacas, proporções iniciais em metros, detalhes de telhado e infraestrutura; sem interiores. Renderização compartilhada com exportação.
+- 6 testes direcionados aprovados, incluindo persistência dos 8 assets e reaproveitamento via módulos. Prancha renderizada inspecionada.
+- Próximos blocos: expandir estruturas após validação, cotas/áreas de terreno e escala de colônias. Sem publicação.
+
+### Revisão visual das coberturas — 28/10/2026
+- Revisados sete assets externos; plataforma de pouso aprovada mantida intacta.
+- Vocabulário comum: parapeito espesso com contorno interno, claraboias com caixilhos/reflexos, exaustores com carcaça e três pás, painéis segmentados, tanques com bocais/escadas, antena com prato oval/braços/base.
+- Mantidos identificadores, dimensões e compatibilidade com mapas existentes. Três testes direcionados passaram; prancha dos oito assets renderizada e inspecionada.
+- Pendente validar legibilidade das coberturas na viewport, especialmente estufas e antena do posto de controle. Sem publicação.
+
+### Expansão colonial — 16 estruturas, 28/10/2026
+- Contenção de reator; laboratório; administração; posto médico; hospital; segurança; habitação compacta e alta densidade; armazém de cargas e refrigerado; processador atmosférico; hidroponia; tratamento de água; subestação elétrica; oficina/garagem; comunicações.
+- Catálogo Colônias dividido em habitação/administração, ciência/saúde/segurança, indústria/logística e cultivo/serviços essenciais.
+- Vocabulário compartilhado de coberturas, carcaças, caixilhos, tubulações e antenas. Dimensões iniciais físicas; estruturas opacas com espaços externos vazios.
+- 4 testes direcionados aprovados, incluindo persistência/reuso de todos os 24 edifícios; duas pranchas renderizadas e inspecionadas.
+- Sem build/publicação; validação interativa pendente.
+
+### Infraestrutura, bordas e edição numérica — 28/10/2026
+- Mantida a espessura dos edifícios aprovada pelo usuário. Cor das pás explicitamente vinculada à paleta no SVG exportado.
+- Colônias aceitam até 10.000 × 10.000 m e zoom até 1024×. Construções mantêm limite de 2.000 m.
+- Assets de Colônia aceitam origem negativa até -2000 m e podem atravessar bordas; exportação recorta no retângulo do projeto. Objetos continuam íntegros no arquivo. Outras geometrias mantêm limites anteriores.
+- NumberField compartilhado: digitação transitória livre (incluindo campo vazio), aplicação ao perder foco/Enter, Escape cancela; zero permanece inválido para dimensões que exigem valor positivo.
+- Rua → Calçadas automáticas (m por lado): geometria derivada da mesma curva da rua, seguindo edição e largura. Zero desliga. Calçadas independentes existentes não são vinculadas automaticamente.
+- Traçados Tubulação, Fiação, Eletrocalha disponíveis nos dois modos. Novos assets de Área externa: poste de braço duplo, transformador, tampa circular e tampa dupla.
+- Conferidas imagens de junção e recorte/cor; revisão React aplicada a estado transitório local, sem repintar a viewport a cada tecla, geometria de calçadas memoizada.
+- Navegador headless indisponível no ambiente: interação dos campos permanece pendente de conferência manual. Sem publicação.
+- Verificação final deste bloco: 247 testes passaram, zero falhas (TEMP/TMP em .test-tmp/test-temp para evitar restrição de rename do sandbox); BlueprintEditor compilado via Vite SSR. Renderização final da junção e recorte inspecionada após ajustes.

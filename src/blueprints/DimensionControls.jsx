@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField.jsx';
 import { OptionButtons } from './OptionButtons.jsx';
 export function DimensionControls({ mode = 'direct', offset = 0, onChange }) {
   return (
@@ -14,7 +15,7 @@ export function DimensionControls({ mode = 'direct', offset = 0, onChange }) {
       />
       <label>
         Afastamento (m)
-        <input
+        <NumberField
           type="number"
           min="-2000"
           max="2000"

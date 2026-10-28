@@ -402,3 +402,42 @@ Acabamentos contextuais: piscina/lago mostram somente ajustes de água, sempre v
 - [ ] Checkbox e rótulo na mesma linha, inclusive união de paredes.
 - [ ] Cabeçalho compacto com nome do projeto; configurações continuam acessíveis.
 - [ ] Foco oculta apenas a confirmação repetitiva de alteração local; erros e orientações permanecem.
+
+### Modos de projeto — base de Colônia
+- Em Projeto e escala, alternar Construção/Colônia e verificar mudança das ferramentas e catálogo.
+- Em Colônia, testar área retangular/polígono, água, percurso externo e vegetação.
+- Salvar e reabrir: conferir modo mantido e medidas inalteradas.
+- Abrir mapa antigo e alternar modos: conferir preservação de objetos e pavimentos; voltar a Construção para ferramentas internas.
+- Talude, penhasco e novos prédios ainda não fazem parte desta etapa.
+
+### Talude / penhasco (modo Colônia)
+- Percursos → Talude ou Penhasco: desenhar reto e com curvas, concluir com Enter.
+- Alternar Lado baixo Direita/Esquerda; conferir marcas acompanhando o contorno.
+- Alterar largura e vértices, desfazer/refazer, salvar/reabrir e exportar Equipamentos.
+- Conferir legibilidade na escala do mapa. A largura é visual, ainda não representa cota/altura física.
+
+### Primeiras edificações externas
+- Projeto e escala → Colônia → Equipamentos → Colônias → Edificações e infraestrutura.
+- Conferir as 8 peças: habitação, hangar, usina, estufas, plataforma de pouso, mercado, silos e posto de controle.
+- Posicionar sobre caminhos e outros objetos para confirmar coberturas opacas; espaços entre estruturas permanecem vazios.
+- Rotacionar, redimensionar, salvar/reabrir e exportar; conferir proporções e legibilidade no mapa.
+
+### Revisão das coberturas externas
+- Conferir distinção entre claraboias, painéis solares e exaustores no bloco habitacional.
+- Usina: tanques com bocais, tubulações e unidades de ventilação.
+- Estufas: caixilhos e vidro; posto de controle: antena com prato e suporte, diferente dos exaustores.
+- Hangar, mercado e silos: conferir espessuras e detalhes em zoom normal. Plataforma de pouso preservada.
+
+### Expansão colonial — 16 novos assets
+- Conferir os quatro subgrupos em Equipamentos → Colônias e busca por nome.
+- Contenção de reator, laboratório, administração, posto médico/hospital, segurança, residências compacta/alta densidade.
+- Armazéns comum/refrigerado, processador atmosférico, hidroponia, tratamento de água, subestação, garagem e comunicações.
+- Validar escala em conjunto, rotação/prévia, sobreposição opaca, salvar/reabrir e exportação. Processador atmosférico tem 70 × 48 m: aumentar o mapa se necessário.
+
+### Conferência — infraestrutura e edição numérica
+- Trocar larguras apagando todo o valor e digitando outro; Enter/apagar foco aplica, Escape cancela. Conferir projeto, seleção, rotação e coordenadas.
+- Colônia: definir largura 1500 m e depois até 10000 m; salvar/reabrir, navegar e ampliar.
+- Mover edifício parcialmente para fora de cada borda; exportar PNG/SVG e conferir recorte e preservação no projeto.
+- Confirmar pás verdes/azuis conforme tema na exportação; espessuras anteriores preservadas.
+- Selecionar rua e definir Calçadas automáticas = 2 m; cruzar ruas com calçadas, editar vértices/curvas e conferir quinas. Calçadas antigas independentes devem ser removidas manualmente se estiverem duplicando a faixa automática.
+- Conferir Tubulação, Fiação, Eletrocalha; poste, transformador e tampas em Área externa nos dois modos.

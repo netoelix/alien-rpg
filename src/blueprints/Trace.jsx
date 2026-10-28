@@ -1,3 +1,5 @@
+import { UtilityTrace } from './UtilityTrace.jsx';
+import { Relief } from './Relief.jsx';
 import { SignageTrace } from './SignageTrace.jsx';
 import { CirculationNetwork } from './CirculationNetwork.jsx';
 import { isCirculation } from './circulation.js';
@@ -6,6 +8,9 @@ import { RailTrack } from './RailTrack.jsx';
 import { traceGeometry } from './trace-geometry.js';
 const coords = (points) => points.map((p) => p.x + ',' + p.y).join(' ');
 export function Trace({ element, floor, ink }) {
+  if (['pipe', 'cable', 'cableTray'].includes(element.traceType))
+    return <UtilityTrace element={element} floor={floor} />;
+  if (['talus', 'cliff'].includes(element.traceType)) return <Relief element={element} />;
   const g = traceGeometry(element),
     rail = element.traceType === 'rail',
     channel = ['channel', 'gratedChannel'].includes(element.traceType);

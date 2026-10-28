@@ -1,5 +1,9 @@
+import { utilityAssets } from './utility-assets.js';
+import { settlementAssets } from './settlement-assets.js';
 import { revisedAssets, expandedAssets } from './revised-assets.js';
 export const colonyAssets = {
+  ...utilityAssets,
+  ...settlementAssets,
   industrialRange: {
     name: 'Fogão industrial com forno',
     w: 1.5,
