@@ -1,3 +1,4 @@
+import { HelpHint } from './HelpHint.jsx';
 import { NumberField } from './NumberField.jsx';
 import { VentDeckLinkControls } from './VentDeckLinkControls.jsx';
 import { ventPortTypes } from './vent-ports.js';
@@ -19,17 +20,16 @@ export function VentPortControls({
       <button type="button" disabled={ports.length >= 100} onClick={onPlace}>
         {placing ? 'Cancelar posicionamento' : 'Adicionar acesso no mapa'}
       </button>
-      <small>
+      <HelpHint label="Posicionar e conectar acessos">
         Clique no duto para posicionar. Escape cancela. Direita/esquerda seguem o sentido do início
-        ao fim.
-      </small>
-      <small>
-        Para ligar pavimentos, adicione um acesso e escolha Escotilha de teto ou de piso. As pontas
-        automáticas não criam esse vínculo.
-      </small>
+        ao fim. Para ligar pavimentos, adicione um acesso e escolha Escotilha de teto ou de piso. As
+        pontas automáticas não criam esse vínculo.
+      </HelpHint>
       {ports.map((p, i) => (
-        <fieldset key={p.id}>
-          <legend>Acesso {i + 1}</legend>
+        <details className="blueprint-port-card" key={p.id}>
+          <summary>
+            {p.label || `Acesso ${i + 1}`} · {ventPortTypes[p.type]}
+          </summary>
           <label>
             Tipo
             <select value={p.type} onChange={(e) => update(p.id, 'type', e.target.value)}>
@@ -70,10 +70,10 @@ export function VentPortControls({
                 />
                 Conectar à parede próxima
               </label>
-              <small>
+              <HelpHint label="Ramal até a parede">
                 Cria um ramal até a primeira parede válida no lado escolhido, a até 2 m. Sem parede
                 nesse alcance, mantém a saída no duto.
-              </small>
+              </HelpHint>
             </>
           )}
           <label>
@@ -120,7 +120,7 @@ export function VentPortControls({
           <button type="button" onClick={() => onChange(ports.filter((x) => x.id !== p.id))}>
             Remover acesso
           </button>
-        </fieldset>
+        </details>
       ))}
     </details>
   );

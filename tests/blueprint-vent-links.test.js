@@ -92,3 +92,43 @@ test('linked ventilation UI and destination labels render without invalid data',
     await server.close();
   }
 });
+
+test('automatic floor link creates aligned peer atomically and survives save', async () => {
+  const { connectVentFloor, ventLinkEndpoint } = await import('../src/blueprints/vent-links.js');
+  const { ventPortPosition } = await import('../src/blueprints/vent-ports.js');
+  let p = { ...newProject(), elements: [duct('source', 'ceiling')] };
+  const from = { floorId: activeFloor(p), elementId: 'source', portId: 'port' };
+  p = addFloor(p);
+  const target = activeFloor(p);
+  p = switchFloor(p, from.floorId);
+  const before = JSON.stringify(p),
+    next = save(connectVentFloor(p, from, target));
+  assert.equal(JSON.stringify(p), before);
+  assert.equal(activeFloor(next), from.floorId);
+  const peer = ventLinkEndpoint(next, next.ventLinks[0].to);
+  assert.equal(peer.port.type, 'floor');
+  const at = ventPortPosition(peer.vent.points, peer.port);
+  assert.equal(at.x, 7.5);
+  assert.equal(at.y, 3);
+  assert.throws(() => connectVentFloor(next, from, target), /já possui/);
+});
+
+test('automatic link reuses aligned duct and rejects blocked or ambiguous destination', async () => {
+  const { connectVentFloor } = await import('../src/blueprints/vent-links.js');
+  let p = { ...newProject(), elements: [duct('source', 'ceiling')] };
+  const from = { floorId: activeFloor(p), elementId: 'source', portId: 'port' };
+  p = addFloor(p);
+  const target = activeFloor(p);
+  const dest = { ...duct('destination', 'floor'), ports: [] };
+  p = switchFloor({ ...p, elements: [dest] }, from.floorId);
+  const next = save(connectVentFloor(p, from, target));
+  assert.equal(floorElements(next, target).length, 1);
+  assert.equal(next.ventLinks[0].to.elementId, 'destination');
+  for (const elements of [[{ ...dest, locked: true }], [dest, { ...dest, id: 'second' }]]) {
+    const changed = {
+      ...p,
+      floors: p.floors.map((f) => (f.id === target ? { ...f, elements } : f)),
+    };
+    assert.throws(() => connectVentFloor(changed, from, target));
+  }
+});

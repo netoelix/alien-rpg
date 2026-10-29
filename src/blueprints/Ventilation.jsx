@@ -3,7 +3,7 @@ import { traceGeometry } from './trace-geometry.js';
 import { VentPorts } from './VentPorts.jsx';
 import { useId } from 'react';
 import { Shape } from './FloorShape.jsx';
-import { ventAccess, ventSeams, ventNetworks } from './ventilation.js';
+import { ventAccess, ventSeams, ventNetworks, isClosedVent } from './ventilation.js';
 export function Ventilation({
   element,
   elements = [],
@@ -12,6 +12,8 @@ export function Ventilation({
   subtle = false,
   contextMask,
 }) {
+  const closed = isClosedVent(element);
+  const Stroke = closed ? 'polygon' : 'polyline';
   const accesses =
     element.points.length >= 2 ? [0, 1].map((i) => ventAccess(element, i, elements)) : [];
   const resolved = element.points.map((p, i) =>
@@ -22,7 +24,7 @@ export function Ventilation({
   if (phase === 'reference') {
     const edges = traceGeometry({
       ...element,
-      points: resolved,
+      points: closed ? [resolved.at(-2), ...resolved, resolved[1]] : resolved,
       traceType: 'ledge',
       rounded: false,
       width: width + 0.06,
@@ -30,7 +32,10 @@ export function Ventilation({
     return (
       <g fill="none" strokeWidth=".06" strokeLinejoin="miter">
         {[edges.left, edges.right].map((edge, i) => (
-          <polyline key={i} points={edge.map((p) => p.x + ',' + p.y).join(' ')} />
+          <polyline
+            key={i}
+            points={(closed ? edge.slice(1, -1) : edge).map((p) => p.x + ',' + p.y).join(' ')}
+          />
         ))}
       </g>
     );
@@ -38,10 +43,10 @@ export function Ventilation({
   return (
     <g fill="none" strokeLinejoin="round" strokeLinecap="butt">
       {(phase === 'all' || phase === 'outline') && (
-        <polyline points={points} strokeWidth={width + 0.12} />
+        <Stroke points={points} strokeWidth={width + 0.12} />
       )}
       {(phase === 'all' || phase === 'fill') && (
-        <polyline points={points} stroke={floor} strokeWidth={width} />
+        <Stroke points={points} stroke={floor} strokeWidth={width} />
       )}
       {(phase === 'all' || phase === 'detail' || phase === 'seams') &&
         ventSeams({ ...element, points: resolved }).map((p, i) => (

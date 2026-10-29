@@ -1,3 +1,4 @@
+import { EditorPopup } from './EditorPopup.jsx';
 import { useState } from 'react';
 import {
   activeFloor,
@@ -39,60 +40,62 @@ export function FloorControls({ project, disabled, onChange, onError }) {
           ))}
         </select>
       </label>
-      <button
-        disabled={disabled || floors.length >= 20}
-        onClick={() => apply((value) => addFloor(value))}
-      >
-        Novo pavimento
-      </button>
-      <button
-        disabled={disabled || floors.length >= 20}
-        onClick={() => apply((value) => addFloor(value, true))}
-      >
-        Duplicar
-      </button>
-      <button
-        disabled={disabled}
-        onClick={() => {
-          setName(current.name);
-          setEditing(!editing);
-        }}
-      >
-        Renomear
-      </button>
-      <button
-        disabled={disabled || floors.length === 1}
-        onClick={() => {
-          if (
-            window.confirm(
-              'Excluir “' +
-                current.name +
-                '” e todos os seus objetos? Você pode desfazer esta ação.',
-            )
-          )
-            apply(removeFloor);
-        }}
-      >
-        Excluir pavimento
-      </button>
-      {editing && (
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            apply((value) => renameFloor(value, name));
-            setEditing(false);
+      <EditorPopup title="Gerenciar pavimentos">
+        <button
+          disabled={disabled || floors.length >= 20}
+          onClick={() => apply((value) => addFloor(value))}
+        >
+          Novo pavimento
+        </button>
+        <button
+          disabled={disabled || floors.length >= 20}
+          onClick={() => apply((value) => addFloor(value, true))}
+        >
+          Duplicar
+        </button>
+        <button
+          disabled={disabled}
+          onClick={() => {
+            setName(current.name);
+            setEditing(!editing);
           }}
         >
-          <input
-            aria-label="Nome do pavimento"
-            maxLength={80}
-            required
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-          <button disabled={disabled}>Salvar nome</button>
-        </form>
-      )}
+          Renomear
+        </button>
+        <button
+          disabled={disabled || floors.length === 1}
+          onClick={() => {
+            if (
+              window.confirm(
+                'Excluir “' +
+                  current.name +
+                  '” e todos os seus objetos? Você pode desfazer esta ação.',
+              )
+            )
+              apply(removeFloor);
+          }}
+        >
+          Excluir pavimento
+        </button>
+        {editing && (
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              apply((value) => renameFloor(value, name));
+              setEditing(false);
+            }}
+          >
+            <input
+              aria-label="Nome do pavimento"
+              maxLength={80}
+              required
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+            <button disabled={disabled}>Salvar nome</button>
+          </form>
+        )}
+      </EditorPopup>
     </div>
   );
 }

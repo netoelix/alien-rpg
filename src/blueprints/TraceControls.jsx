@@ -1,3 +1,4 @@
+import { HelpHint } from './HelpHint.jsx';
 import { NumberField } from './NumberField.jsx';
 import { OptionButtons } from './OptionButtons.jsx';
 import { VisualChoices } from './VisualChoices.jsx';
@@ -116,14 +117,13 @@ export function TraceControls({ value, onChange, showType = true, colony = false
         </>
       )}
 
-      <details className="blueprint-inline-help">
-        <summary>Como desenhar</summary>
+      <HelpHint label="Como desenhar">
         <p>
           Clique para marcar pontos; Enter conclui e Escape cancela. Após selecionar, ajuste os
           vértices. Caminhos, calçadas e ruas se unem quando se cruzam no mesmo nível. Os traçados
           decorativos ficam em Equipamentos e não criam paredes.
         </p>
-      </details>
+      </HelpHint>
     </fieldset>
   );
 }

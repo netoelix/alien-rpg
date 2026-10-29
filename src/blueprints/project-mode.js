@@ -4,6 +4,7 @@ export const projectModes = [
   ['colony', 'Colônia'],
 ];
 const externalCategories = new Set([
+  'mining-production',
   'settlement',
   'settlement-living',
   'settlement-care',

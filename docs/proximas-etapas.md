@@ -184,3 +184,84 @@ Controles redundantes retirados: balão Parede ao desenhar e seletor Porta/Janel
 - Conferidas imagens de junção e recorte/cor; revisão React aplicada a estado transitório local, sem repintar a viewport a cada tecla, geometria de calçadas memoizada.
 - Navegador headless indisponível no ambiente: interação dos campos permanece pendente de conferência manual. Sem publicação.
 - Verificação final deste bloco: 247 testes passaram, zero falhas (TEMP/TMP em .test-tmp/test-temp para evitar restrição de rename do sandbox); BlueprintEditor compilado via Vite SSR. Renderização final da junção e recorte inspecionada após ajustes.
+
+### Expansão de interiores — restaurantes, contenção e decoração
+
+27 novos assets em vista superior, com dimensões físicas e preenchimento dos corpos sólidos. Novos grupos Restaurantes e serviço de mesa e Prisão e contenção. Inclui oito peças de restaurante, seis de contenção, seis decorativas, quatro de apoio ao cassino e três de hotelaria/serviços/segurança. Quadros de parede representam a moldura vista de cima. Grade de contenção é decorativa, sem substituir paredes estruturais.
+
+Verificados catálogo, persistência das dimensões e reutilização em módulos (4 testes direcionados aprovados). Pranchas de revisão em outputs/colonia-conceitos/interiores-1.png a interiores-3.png. Alterações locais; publicação não solicitada neste bloco.
+
+### Academia, contenção e colchões avulsos
+
+Dez novas peças: esteira ergométrica, bicicleta ergométrica, banco de supino, estação de musculação, suporte de halteres, mesa de refeitório ancorada, cama de cela individual, carrinho de limpeza e colchões avulsos solteiro/casal. Categoria Academia e condicionamento em Lazer e hospitalidade. Sofá VIP redesenhado com dois bancos costas com costas, seis almofadas, braços e encosto central; identidade e dimensões anteriores preservadas. Colchões sem estrutura ou roupa de cama, com borda e capitonê. Pranchas academia-colchoes-1.png e academia-colchoes-2.png conferidas. Publicação não solicitada.
+
+### Mineração e produção industrial — primeiro bloco
+
+12 peças em categoria própria, disponíveis em construção e colônia: vagoneta compacta, locomotiva de bateria para mina, perfuratriz sobre esteiras, carregadeira subterrânea articulada, britador, moega, prensa hidráulica, célula de soldagem e esteira modular (reta, curva de 90 graus, transferência, terminal motorizado). Vagoneta e veículos de mina complementam os veículos grandes existentes. Esteiras com 1,20 m de largura; posicionamento manual, sem conexão automática ou simulação. Demais itens da lista aprovada permanecem para expansão posterior. Pranchas mineracao-1.png e mineracao-2.png revisadas. Alterações locais, sem publicação.
+
+### Mineração e produção — segundo bloco
+
+15 peças adicionais completam a proposta: vagoneta basculante, plataforma ferroviária compacta de mina, perfuratriz jumbo de dois braços, peneira vibratória, guincho de extração, transportador de roletes, esteira coberta, mesa giratória de carga, elevador industrial, guilhotina, calandra, forno de fundição, misturador, máquina de envase e ponte rolante. Categoria soma 27 peças. Pranchas mineracao-expansao-1/2/3.png conferidas. Partes abertas da ponte e transportador preservam transparência; carenagens e plataformas sólidas ocultam objetos abaixo. São assets estáticos, sem animação nem conexão automática entre pavimentos. Sem publicação neste bloco.
+
+### Planejado para discussão — pavimentos, ciclos e ajuda contextual
+
+Solicitações registradas em 29/10/2026; sem implementação nesta etapa.
+
+- Integrar o asset de elevador industrial às conexões entre pavimentos, com destinos selecionáveis e preservação de instâncias decorativas existentes.
+- Suportar subsolos, com identificação explícita abaixo do térreo. Definir a relação entre nome, ordem e nível físico antes de implementar; renomear sozinho não deve alterar vínculos.
+- Reordenar pavimentos existentes somente quando não houver conexão com pavimento acima ou abaixo, conforme pedido do usuário. Discutir tratamento de elevadores com vários destinos e dutos antes de liberar a operação; preservar identificadores e nunca redirecionar conexões silenciosamente.
+- Permitir concluir traçados no ponto inicial para formar ciclos, começando pela ventilação. Fechar a geometria sem grelhas/tampas artificiais na emenda, preservar largura/curvas, acessos intermediários, exportação e persistência. Definir como reabrir o ciclo e avaliar extensão a outros traçados compatíveis.
+- Reduzir texto permanente nas propriedades, especialmente ventilação. Proposta: botão de informação junto ao controle/grupo, ajuda por hover e foco de teclado, também acessível por clique/toque. Manter rótulos, estados e mensagens essenciais visíveis. Discutir layout antes de alterar a interface.
+- Lista aprovada de mineração/produção concluída: 27 assets (24 conceitos originais; esteira aberta detalhada em quatro módulos). Restam evoluções funcionais acima, não assets dessa lista.
+
+### Proposta complementar — conexões espaciais de ventilação e traçados
+
+Para discussão antes de implementação:
+
+- Ao conectar ventilação a outro pavimento, selecionar o destino e criar automaticamente um acesso correspondente nas mesmas coordenadas X/Y. Se houver duto compatível no destino, reutilizá-lo; se não houver, propor um ponto de acesso inicial a partir do qual desenhar o novo duto, sem inventar direção/comprimento. Interface deve distinguir acesso criado de trecho ainda não desenhado.
+- Substituir a seleção indiscriminada de acessos por correspondência espacial validada. Destacar destino, posição e compatibilidade; não vincular silenciosamente saídas distantes. Preservar vínculos antigos até revisão explícita.
+- Acessos entre pavimentos devem ter relação coerente de teto/piso. Definir comportamento de movimento, exclusão, desfazer e edição dos pares, evitando deixar vínculos inconsistentes.
+- Trechos de ventilação podem conectar ponta a ponta, formando uma rede contínua sem grelha/tampa na junção. Avaliar também ponta em lateral para derivações T, com confirmação visual de encaixe. Cruzamento visual por si só não cria conexão.
+- Considerar nós compartilhados de conexão mantendo trechos editáveis individualmente, inclusive ciclos; validar tolerância de encaixe, larguras distintas, curvas e acessos existentes.
+- Estender o princípio a corredores, ruas e caminhos, com regras próprias: respeitar paredes/aberturas explícitas em corredores, tipo/nível dos traçados externos, bordas e calçadas. Não unir famílias incompatíveis automaticamente.
+- Sequência sugerida: acessos verticais coincidentes; rede de ventilação e ciclos; extensão a outras famílias após validação.
+
+### Conexões verticais de ventilação — primeira implementação
+
+- Seletor de pavimento substitui lista de acessos arbitrários. Cria/reutiliza acesso oposto teto/piso nas mesmas coordenadas, com vínculo bidirecional e navegação existente.
+- Duto coincidente é reaproveitado; múltiplos dutos no ponto, destino travado/oculto ou acesso incompatível geram erro sem mutação.
+- Sem duto no destino, cria trecho inicial do comprimento da largura do duto de origem, centralizado no acesso, com mesma orientação. Escolha técnica explícita desta etapa: usa duto editável existente em vez de nova entidade de acesso isolado. Não desenha o percurso completo. Limites da planta validados.
+- Vínculos legados preservados. Criação entregue em uma única alteração de projeto. Seis testes passaram, incluindo ida/volta de salvamento e renderização dos controles.
+- Pendentes: conferência interativa de desfazer/refazer; sincronização de movimentos posteriores (não implementada); ciclos/continuidade e demais tópicos do roadmap. Sem publicação.
+
+### Ciclos de ventilação — primeira etapa
+
+- Durante desenho de dutos: clicar no início após três pontos ou usar Fechar ciclo. Fecha com ponto final coincidente, preservando formato de arquivo existente.
+- Renderização completa usa contorno fechado; referência contextual inclui a quina da emenda. Ciclos não exibem acesso automático nas pontas.
+- Continuidade entre trechos já existente confirmada por testes: pontas automáticas próximas unem a rede, cruzamentos simples não unem; tampas/acessos explícitos continuam independentes. Não são vínculos rígidos: mover um trecho não arrasta o outro.
+- 18 testes direcionados passaram, incluindo salvamento, renderização e compilação do editor. Aviso de porta HMR ocupada durante testes paralelos, sem falhas.
+- Pendente conferência visual; edição dos dois vértices coincidentes ainda independente (afastá-los reabre o ciclo). Prévia de encaixe e edição coordenada de nós ficam para próxima etapa. Sem publicação.
+
+### Edição de ciclos e indicação de encaixe
+
+- Mover qualquer vértice da emenda move ambos os pontos coincidentes, preservando o ciclo. Remover o canto inicial/final fecha novamente o contorno, mínimo três cantos.
+- Durante desenho de ventilação, marcador circular destaca conexão potencial ou retorno ao início; encaixe em objetos ativo ajusta ao eixo do duto dentro da tolerância de 0,15 m. Alt ignora o encaixe; pontas explicitamente tampadas continuam independentes.
+- 11 testes passaram, incluindo edição de emenda e compilação do editor. Pendente conferência interativa do marcador/encaixe.
+- Nós entre dutos distintos ainda não arrastam juntos; sincronização vertical e comando explícito para reabrir ciclos permanecem pendentes. Sem publicação.
+
+### Ajuda contextual do Blueprint
+
+Aplicado componente compartilhado de informação aos painéis de projeto/escala, recuperação, exportação, desenhos, paredes, acessos de ventilação, propriedades/vértices/conjuntos, módulos, objetos e referências de pavimentos. Textos de ajuda abrem com hover/foco; clique/toque fixa ou fecha; Escape fecha sem cancelar a ferramenta. Conteúdo no fluxo do painel evita recorte em scroll lateral. Estados, erros, rótulos e aviso de exportação opaca mantidos visíveis; seção dedicada de atalhos permanece consultável.
+
+Dez testes direcionados passaram, incluindo compilação do editor e controles de conexão. Verificação interativa de mouse/teclado/toque pendente. Sem publicação.
+
+### Compactação dos painéis globais e acessos
+
+- Configurações globais abrem dialogs nativos com foco modal, Escape e botão Fechar. Faixa única reúne projeto, recuperação, exportação, atalhos, seletor de pavimento, gerenciamento e referências/conexões. Conteúdo não aumenta a altura da página.
+- Seletor de pavimento permanece direto; operações de gerenciamento em janela. Posicionar conexão fecha a janela para permitir clique na planta.
+- Cada acesso de ventilação inicia recolhido, resumo nome/tipo. Ajuda de posicionamento/conexão unificada. Ícones sem borda quadrada, rótulo curto de assunto; hover/foco/toque mantidos.
+- Dez testes direcionados passaram e editor compilou. Interação dos dialogs, modo foco, viewport estreita e posicionamento devem ser conferidos visualmente. Sem publicação.
+
+### Auditoria técnica — 29/10/2026
+
+Relatório: docs/auditoria-blueprint-2026-10-29.md. Análise sem alterar funcionalidades. Baseline: 254 testes passaram. Prioridades: primitivas geométricas e acesso seguro a pavimentos; ciclos de imports; normalização/transações; separação do editor; contratos de traçados; catálogo. Preservar diferenças semânticas entre dutos, corredores e circulação externa. Profiling e conferência de foco/modal permanecem pendentes. Retomar features do roadmap após os blocos técnicos aprovados.

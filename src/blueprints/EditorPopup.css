@@ -1,0 +1,72 @@
+.blueprint-popup-control {
+  display: inline-block;
+}
+dialog.blueprint-popup {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(640px, calc(100vw - 32px));
+  max-height: 80vh;
+  padding: 0;
+  color: #bde6cc;
+  background: #081b13;
+  border: 1px solid #528b6d;
+  box-shadow: 0 12px 60px #000a;
+  overflow: auto;
+}
+.blueprint-popup::backdrop {
+  background: #0009;
+}
+.blueprint-popup > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  position: sticky;
+  top: 0;
+  background: #10271c;
+  z-index: 2;
+}
+.blueprint-popup > header button {
+  min-width: 2rem;
+  padding: 0.2rem;
+  font-size: 1.3rem;
+}
+.blueprint-popup-body {
+  padding: 1rem;
+}
+.blueprint-popup-body label {
+  display: block;
+  margin: 0.5rem 0;
+}
+.blueprint-popup-body .deck-connection-layout {
+  display: block;
+}
+.blueprint-global-controls {
+  display: flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0 !important;
+}
+.blueprint-global-controls .blueprint-floor-controls {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.blueprint-port-card {
+  margin: 0.45rem 0;
+  border: 1px solid #315940;
+  padding: 0.5rem;
+}
+.blueprint-port-card > summary {
+  cursor: pointer;
+  line-height: 1.5;
+}
+.blueprint-help-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}

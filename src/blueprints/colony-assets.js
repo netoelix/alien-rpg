@@ -1,7 +1,11 @@
+import { miningAssets } from './mining-assets.js';
+import { hospitalityAssets } from './hospitality-assets.js';
 import { utilityAssets } from './utility-assets.js';
 import { settlementAssets } from './settlement-assets.js';
 import { revisedAssets, expandedAssets } from './revised-assets.js';
 export const colonyAssets = {
+  ...hospitalityAssets,
+  ...miningAssets,
   ...utilityAssets,
   ...settlementAssets,
   industrialRange: {

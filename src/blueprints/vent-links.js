@@ -1,5 +1,5 @@
 import { ventRoomName } from './vent-room-name.js';
-import { ventPortPosition } from './vent-ports.js';
+import { nearestVentPort, ventPortPosition } from './vent-ports.js';
 import { activeFloor, floorList } from './floors.js';
 import { floorElements } from './connections.js';
 import { uid } from './model.js';
@@ -104,4 +104,71 @@ export function normalizeVentLinks(project, value) {
     ids.add(l.id);
     return link;
   });
+}
+
+// New vertical links are spatially aligned. Legacy links remain readable unchanged.
+export function connectVentFloor(project, from, targetFloor) {
+  const source = ventLinkEndpoint(project, from);
+  if (
+    !source ||
+    from.floorId === targetFloor ||
+    !floorList(project).some((f) => f.id === targetFloor)
+  )
+    throw Error('Escolha um acesso vertical e outro pavimento.');
+  const position = ventPortPosition(source.vent.points, source.port, source.vent.width);
+  const type = source.port.type === 'ceiling' ? 'floor' : 'ceiling';
+  const elements = floorElements(project, targetFloor);
+  const near = elements
+    .filter((e) => e.kind === 'vent')
+    .map((vent) => ({ vent, hit: nearestVentPort(vent.points, position) }))
+    .filter((v) => v.hit && v.hit.distance < 0.001);
+  if (near.length > 1)
+    throw Error('Há vários dutos nesse ponto no destino. Separe os trechos antes de conectar.');
+  let vent = near[0]?.vent,
+    hit = near[0]?.hit;
+  if (vent?.hidden || vent?.locked) throw Error('Mostre e desbloqueie o duto no destino.');
+  if (!vent) {
+    const angle = (position.angle * Math.PI) / 180,
+      half = source.vent.width / 2;
+    const points = [-1, 1].map((sign) => ({
+      x: position.x + sign * Math.cos(angle) * half,
+      y: position.y + sign * Math.sin(angle) * half,
+    }));
+    if (points.some((p) => p.x < 0 || p.y < 0 || p.x > project.width || p.y > project.height))
+      throw Error(
+        'Não há espaço para o trecho inicial nessa posição. Crie um duto no destino ou afaste o acesso da borda.',
+      );
+    vent = {
+      id: uid(),
+      kind: 'vent',
+      name: 'Acesso entre pavimentos',
+      width: source.vent.width,
+      points,
+    };
+    hit = { segment: 0, t: 0.5 };
+  }
+  const existing = (vent.ports || []).filter((p) => {
+    const at = ventPortPosition(vent.points, p, vent.width);
+    return p.type !== 'grille' && Math.hypot(at.x - position.x, at.y - position.y) < 0.001;
+  });
+  if (existing.length > 1 || (existing[0] && existing[0].type !== type))
+    throw Error('O acesso existente no destino não é compatível com teto/piso.');
+  const port = existing[0] || {
+    id: uid(),
+    type,
+    segment: hit.segment,
+    t: hit.t,
+    side: 1,
+    label: '',
+  };
+  if (!existing.length) vent = { ...vent, ports: [...(vent.ports || []), port] };
+  if (vent.ports.length > 100) throw Error('Limite de 100 acessos por duto.');
+  const updated = elements.some((e) => e.id === vent.id)
+    ? elements.map((e) => (e.id === vent.id ? vent : e))
+    : [...elements, vent];
+  const next = {
+    ...project,
+    floors: floorList(project).map((f) => (f.id === targetFloor ? { ...f, elements: updated } : f)),
+  };
+  return addVentLink(next, from, { floorId: targetFloor, elementId: vent.id, portId: port.id });
 }

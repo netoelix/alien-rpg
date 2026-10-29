@@ -8,6 +8,8 @@ export const ventAccessTypes = {
   open: 'Aberto',
   cap: 'Tampado',
 };
+import { isClosedVent } from './vent-cycle.js';
+export { isClosedVent, closeVentPoints } from './vent-cycle.js';
 // Only endpoints connect; crossing centerlines alone never joins networks.
 export function ventConnection(vent, index, elements) {
   if ((vent.accesses?.[index] || 'auto') !== 'auto') return null;
@@ -58,6 +60,7 @@ export function ventNetworks(elements) {
   return [...groups.values()];
 }
 export function ventAccess(vent, index, elements) {
+  if (isClosedVent(vent)) return { ...vent.points[0], type: 'junction', angle: 0 };
   const connection = ventConnection(vent, index, elements);
   if (connection) return { x: connection.x, y: connection.y, type: 'junction', angle: 0 };
   const point = index ? vent.points.at(-1) : vent.points[0],

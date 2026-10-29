@@ -1,3 +1,4 @@
+import { isClosedVent } from './vent-cycle.js';
 import { normalizeProjectMode } from './project-mode.js';
 import { presetEquipment } from './preset-layouts.js';
 import { isCirculation, normalizeCirculation } from './circulation.js';
@@ -585,7 +586,12 @@ export function moveVertex(element, index, point) {
   return {
     ...element,
     points: element.points.map((current, position) =>
-      position === index ? { ...point } : current,
+      position === index ||
+      (isClosedVent(element) &&
+        [0, element.points.length - 1].includes(index) &&
+        [0, element.points.length - 1].includes(position))
+        ? { ...point }
+        : current,
     ),
   };
 }
@@ -609,11 +615,16 @@ export function changeVertexCount(project, id, index, action) {
       'Restaure as paredes automáticas antes de adicionar ou remover vértices. Mover vértices continua disponível.',
     );
   const points = [...source.points];
-  const minimum = ['polygon', 'floorRegion'].includes(source.kind) ? 3 : 2;
+  const closedVent = isClosedVent(source);
+  const minimum = closedVent ? 4 : ['polygon', 'floorRegion'].includes(source.kind) ? 3 : 2;
   if (action === 'remove') {
     if (points.length <= minimum)
       throw new Error(`Este traçado precisa manter pelo menos ${minimum} vértices.`);
-    points.splice(index, 1);
+    if (closedVent && [0, points.length - 1].includes(index)) {
+      points.pop();
+      points.shift();
+      points.push({ ...points[0] });
+    } else points.splice(index, 1);
   } else {
     if (points.length >= 500) throw new Error('Limite de 500 vértices atingido.');
     if (!['polygon', 'floorRegion'].includes(source.kind) && index === points.length - 1)
