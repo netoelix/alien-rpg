@@ -1,3 +1,4 @@
+import { HelpHint } from './HelpHint.jsx';
 import { useState } from 'react';
 import { assetNames } from './Assets.jsx';
 import { ToolIcon } from './ToolIcon.jsx';
@@ -66,7 +67,7 @@ export function ObjectsPanel({ project, selected, disabled, onChange, onSelect, 
           ))}
         </select>
       </label>
-      <small>Ocultar também retira da exportação. Bloquear protege contra alterações.</small>
+      <HelpHint>Ocultar também retira da exportação. Bloquear protege contra alterações.</HelpHint>
       <ul className="blueprint-object-list">
         {filtered.map(({ element, title }) => {
           const visible = objectVisible(project, element);

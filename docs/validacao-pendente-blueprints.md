@@ -441,3 +441,69 @@ Acabamentos contextuais: piscina/lago mostram somente ajustes de água, sempre v
 - Confirmar pás verdes/azuis conforme tema na exportação; espessuras anteriores preservadas.
 - Selecionar rua e definir Calçadas automáticas = 2 m; cruzar ruas com calçadas, editar vértices/curvas e conferir quinas. Calçadas antigas independentes devem ser removidas manualmente se estiverem duplicando a faixa automática.
 - Conferir Tubulação, Fiação, Eletrocalha; poste, transformador e tampas em Área externa nos dois modos.
+
+### Interiores — bloco de restaurantes e cassino
+
+- Conferir os 27 novos assets no mapa, nas categorias Restaurantes, Prisão e contenção, Decoração, Cassino, Habitação, Sanitários e Segurança.
+- Verificar escala, rotação e sobreposição com outros objetos; fontes, estátuas e mobiliário sólido devem ocultar o que fica abaixo de seus corpos.
+- Quadros e painéis são vistos de cima; grade de contenção é uma peça decorativa, não uma parede para encaixe de portas.
+- Conferir especialmente cabine de restaurante, buffet, sanitário de cela, estátua, fonte de parede e sofá VIP.
+- Verificação automatizada concluída: catálogo, salvar/reabrir e reutilização em módulos. Conferência interativa pelo usuário pendente.
+
+### Academia e colchões — conferir no editor
+
+- Categoria Academia e condicionamento: cinco equipamentos, detalhes e proporções ao inserir e girar.
+- Sofá VIP: dois lados de assentos, encosto central e braços; conferir também instâncias já existentes.
+- Mesa e cama de contenção, carrinho de limpeza: conferir sobreposição e escala.
+- Colchões em Habitação e convivência: solteiro 0,88 × 1,88 m; casal 1,38 × 1,88 m, sem cama ou travesseiro.
+- Pranchas renderizadas revisadas; validação interativa pelo usuário pendente.
+
+### Mineração e produção — conferência pendente
+
+- Inserir, girar e combinar os 12 assets em Mineração e produção industrial, nos modos construção e colônia.
+- Conferir escala da vagoneta/locomotiva compactas frente aos vagões grandes existentes.
+- Conferir broca, esteiras, caçamba, articulação, mandíbulas do britador e braço de soldagem em zoom normal.
+- Montar trechos retos, curvas, transferência e terminal motorizado de esteira; largura comum 1,20 m, encaixe manual.
+- Renderização das pranchas, salvamento, modos e reutilização em módulos verificados; interação visual no editor pendente.
+
+### Mineração — segundo bloco de 15 peças
+
+- Conferir visualmente os 15 novos assets em Mineração e produção industrial, em zoom normal e rotacionados.
+- Combinar transportador de roletes e esteira coberta (1,20 m) com peças do bloco anterior.
+- Ponte rolante: conferir ordem de sobreposição acima de máquinas, preservando vazios entre vigas.
+- Elevador industrial é decorativo e não cria conexão entre pavimentos automaticamente.
+- Conferir mecanismos da vagoneta, braços da perfuratriz, peneira, guincho, calandra, guilhotina e máquinas de processo.
+- Pranchas renderizadas revisadas; salvamento e reutilização dos 27 assets nos dois modos verificados.
+
+### Conexão automática de ventilação
+
+- Criar dois pavimentos, selecionar uma escotilha intermediária de teto/piso e escolher o pavimento em Conexão entre pavimentos → Criar conexão no mesmo ponto.
+- Sem duto no destino: conferir trecho inicial centralizado, largura/orientação e símbolo oposto; estender pelos vértices.
+- Com duto coincidente: conferir reaproveitamento sem duplicação e navegação nos dois sentidos.
+- Conferir desfazer/refazer da criação completa e salvar/reabrir. Movimento posterior das peças ainda é independente; sincronização pendente.
+
+### Ciclos de ventilação
+
+- Desenhar três ou mais pontos e clicar no início ou Fechar ciclo. Conferir ausência de tampa na emenda.
+- Conferir quina sobre sala/corredor e exportação só de ventilação; salvar/reabrir e desfazer/refazer.
+- Encostar ponta automática de outro duto na rede; confirmar continuidade. Cruzamento sem ponta deve continuar independente.
+- Vértices inicial/final são editados separadamente por enquanto; afastá-los reabre o percurso.
+
+### Conferir edição dos ciclos
+
+- Mover o primeiro ou último vértice e remover um canto: ciclo deve permanecer fechado.
+- Desenhar junto à ponta/eixo de outro duto: conferir marcador e encaixe com opção de encaixe em objetos ativa; Alt suspende encaixe.
+- Testar desfazer/refazer das alterações de vértices.
+
+### Ajuda contextual global
+
+- Conferir botões ⓘ nos painéis de projeto, ferramentas, propriedades, módulos, objetos e pavimentos.
+- Mouse: entrar/sair; teclado: Tab, Enter, Escape; toque: abrir/fechar. Ajuda não deve cancelar desenhos nem ficar cortada no fim da lateral.
+- Conferir leitura e rolagem com várias ajudas fixadas. Avisos de erro, estados e valores dos objetos devem continuar visíveis.
+
+### Painéis compactos
+
+- Abrir/fechar projeto, exportação, recuperação, gerenciamento e referências: Escape, botão × e clique no fundo; conferir foco do teclado e rolagem dentro da janela.
+- Posicionar escada/elevador deve fechar janela e permitir clicar na planta.
+- Conferir faixa superior em largura menor e modo de foco.
+- Expandir acessos de ventilação individualmente e conferir rótulos das ajudas sem quadrado.

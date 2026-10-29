@@ -1,3 +1,4 @@
+import { HelpHint } from './HelpHint.jsx';
 import { NumberField } from './NumberField.jsx';
 import { VisualChoices } from './VisualChoices.jsx';
 import { floorFinishes } from './floor-finishes.js';
@@ -42,11 +43,11 @@ export function FloorFinishControls({ value, onChange }) {
               onChange={(e) => onChange({ ...current, opacity: Number(e.target.value) })}
             />
           </label>
-          <small>
+          <HelpHint>
             {['pool', 'lake'].includes(current.type)
               ? 'Detalhes acompanham as margens; o centro permanece livre.'
               : 'A escala do padrão é em metros; acompanha o tamanho do ambiente sem esticar as placas.'}
-          </small>
+          </HelpHint>
         </>
       )}
     </fieldset>

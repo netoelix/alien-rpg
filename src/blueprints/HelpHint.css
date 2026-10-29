@@ -1,0 +1,41 @@
+.blueprint-help {
+  display: inline-block;
+  margin: 0.15rem 0 0.35rem;
+  max-width: 100%;
+}
+.blueprint-help .blueprint-help-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 28px;
+  padding: 0 0.15rem !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-transform: none;
+  color: inherit;
+}
+.blueprint-help-label {
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+.blueprint-help-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.blueprint-help-content {
+  margin-top: 0.3rem;
+  padding: 0.6rem;
+  border-left: 2px solid #528b6d;
+  background: #091e16;
+  color: #bde6cc;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.blueprint-help-content p {
+  margin: 0;
+}

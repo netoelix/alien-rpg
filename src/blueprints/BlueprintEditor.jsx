@@ -1,3 +1,6 @@
+import { EditorPopup } from './EditorPopup.jsx';
+import { HelpHint } from './HelpHint.jsx';
+import { closeVentPoints, ventConnection } from './ventilation.js';
 import { NumberField } from './NumberField.jsx';
 import { projectModes, isColony, assetInMode, toolInMode, pathInMode } from './project-mode.js';
 import { OptionButtons } from './OptionButtons.jsx';
@@ -417,6 +420,21 @@ export default function BlueprintEditor() {
       for (const guide of match.guides) result[guide.axis] = match[guide.axis];
       pendingGuides.current = match.guides;
     }
+    if (enabled && objectSnap && tool === 'vent' && !gesture && !spaceHeld && !portPlacement) {
+      const match = ventConnection(
+        { id: '__draft__', kind: 'vent', points: [raw, raw] },
+        0,
+        project.elements.filter((e) => !e.locked),
+      );
+      if (match) {
+        result.x = match.x;
+        result.y = match.y;
+      }
+      if (points.length >= 3 && Math.hypot(raw.x - points[0].x, raw.y - points[0].y) <= 0.15) {
+        result.x = points[0].x;
+        result.y = points[0].y;
+      }
+    }
     return {
       x: Math.max(low, Math.min(project.width, result.x)),
       y: Math.max(low, Math.min(project.height, result.y)),
@@ -710,6 +728,14 @@ export default function BlueprintEditor() {
       }
       return;
     }
+    if (
+      tool === 'vent' &&
+      points.length >= 3 &&
+      Math.hypot(p.x - points[0].x, p.y - points[0].y) < 0.15
+    ) {
+      finish(true);
+      return;
+    }
     if (['corridor', 'vent', 'polygon', 'trace', 'floorRegion'].includes(tool)) {
       setPoints((old) =>
         old.length && old.at(-1).x === p.x && old.at(-1).y === p.y ? old : [...old, p],
@@ -894,14 +920,14 @@ export default function BlueprintEditor() {
       });
     }
   }
-  function finish() {
+  function finish(close = false) {
     if (points.length < (['polygon', 'floorRegion'].includes(tool) ? 3 : 2)) return;
     if (
       add([
         {
           id: uid(),
           kind: tool,
-          points,
+          points: tool === 'vent' && close === true ? closeVentPoints(points) : points,
           width: lineWidth,
           ...(tool === 'trace' ? traceStyle : {}),
           ...(tool === 'floorRegion' ? { floorFinish: regionFinish } : {}),
@@ -1329,8 +1355,7 @@ export default function BlueprintEditor() {
         </span>
       </div>
       <nav className="blueprint-global-controls" aria-label="Configurações do projeto">
-        <details name="blueprint-global" className="blueprint-global-panel">
-          <summary>Projeto e escala</summary>
+        <EditorPopup title="Projeto e escala">
           <OptionButtons
             label="Tipo de mapa"
             value={project.mode || 'construction'}
@@ -1343,12 +1368,12 @@ export default function BlueprintEditor() {
               commit({ ...project, mode });
             }}
           />
-          <p className="muted">
+          <HelpHint>
             {isColony(project)
               ? 'Colônia: áreas externas e infraestrutura.'
               : 'Construção: interiores, salas e pavimentos.'}{' '}
             Trocar o modo preserva o mapa e suas medidas.
-          </p>
+          </HelpHint>
           <label>
             Nome
             <input
@@ -1382,7 +1407,7 @@ export default function BlueprintEditor() {
               ))}
             </select>
           </label>
-          <p className="muted">Alterar a grade não redimensiona salas nem objetos.</p>
+          <HelpHint>Alterar a grade não redimensiona salas nem objetos.</HelpHint>
           <label>
             Aparência
             <select
@@ -1394,9 +1419,8 @@ export default function BlueprintEditor() {
               <option value="print">Impressão clara</option>
             </select>
           </label>
-        </details>
-        <details name="blueprint-global" className="blueprint-global-panel">
-          <summary>Recuperação neste dispositivo</summary>
+        </EditorPopup>
+        <EditorPopup title="Recuperação neste dispositivo">
           <label>
             <input
               type="checkbox"
@@ -1405,10 +1429,10 @@ export default function BlueprintEditor() {
             />
             Guardar automaticamente neste navegador
           </label>
-          <p className="muted">
+          <HelpHint>
             Opcional. Não sincroniza entre dispositivos. Baixe o projeto para guardar uma cópia
             duradoura.
-          </p>
+          </HelpHint>
           <button
             disabled={!recovery}
             onClick={() => {
@@ -1440,13 +1464,12 @@ export default function BlueprintEditor() {
           >
             APAGAR CÓPIA LOCAL
           </button>
-        </details>
-        <details name="blueprint-global" className="blueprint-global-panel">
-          <summary>Exportar imagem</summary>
-          <p className="muted">
+        </EditorPopup>
+        <EditorPopup title="Exportar imagem">
+          <HelpHint>
             A exportação usa somente o pavimento ativo e mantém o mesmo alinhamento entre camadas. A
             grade não é exportada.
-          </p>
+          </HelpHint>
           {project.layers.map((l) => (
             <label key={l.id}>
               <input
@@ -1519,60 +1542,59 @@ export default function BlueprintEditor() {
           >
             {exporting ? 'GERANDO…' : 'BAIXAR IMAGEM'}
           </button>
-        </details>
-        <details name="blueprint-global" className="blueprint-global-panel">
-          <summary>Atalhos e navegação</summary>
+        </EditorPopup>
+        <EditorPopup title="Atalhos e navegação">
           <p>
             Arraste com o botão do meio ou direito para mover a visão. Espaço + arraste também
             funciona. + / −: zoom. Home: enquadrar. F: modo de foco. Escape: sair do foco ou
             cancelar. Passe sobre os ícones para ver os atalhos de ferramentas. Os atalhos funcionam
             com foco na planta; Tab continua navegando pelos controles.
           </p>
-        </details>
-      </nav>
-      <FloorControls
-        project={project}
-        disabled={!!gesture || !!points.length || exporting}
-        onError={setMessage}
-        onChange={(next) => {
-          if (commit(next)) {
-            setConnectionPlacement(null);
-            setModulePlacement(null);
-            setSelected(null);
-            setPastedGroup(null);
-            setRotationPivot(null);
-            setCursor(null);
-          }
-        }}
-      />
-      {!isColony(project) && (
-        <DeckConnections
-          placing={!!connectionPlacement}
-          onCancelPlacement={() => setConnectionPlacement(null)}
-          onPlace={(placement) => {
-            setModulePlacement(null);
-            setConnectionPlacement(placement);
-            setTool('select');
-            setSelected(null);
-            setPastedGroup(null);
-            setCursor(null);
-            setMessage('Clique no mapa para posicionar a conexão. Escape cancela.');
-            svgRef.current?.focus({ preventScroll: true });
-          }}
+        </EditorPopup>
+        <FloorControls
           project={project}
           disabled={!!gesture || !!points.length || exporting}
-          referenceFloors={referenceFloors}
-          setReferenceFloors={setReferenceFloors}
           onError={setMessage}
           onChange={(next) => {
             if (commit(next)) {
+              setConnectionPlacement(null);
+              setModulePlacement(null);
               setSelected(null);
               setPastedGroup(null);
               setRotationPivot(null);
+              setCursor(null);
             }
           }}
         />
-      )}
+        {!isColony(project) && (
+          <DeckConnections
+            placing={!!connectionPlacement}
+            onCancelPlacement={() => setConnectionPlacement(null)}
+            onPlace={(placement) => {
+              setModulePlacement(null);
+              setConnectionPlacement(placement);
+              setTool('select');
+              setSelected(null);
+              setPastedGroup(null);
+              setCursor(null);
+              setMessage('Clique no mapa para posicionar a conexão. Escape cancela.');
+              svgRef.current?.focus({ preventScroll: true });
+            }}
+            project={project}
+            disabled={!!gesture || !!points.length || exporting}
+            referenceFloors={referenceFloors}
+            setReferenceFloors={setReferenceFloors}
+            onError={setMessage}
+            onChange={(next) => {
+              if (commit(next)) {
+                setSelected(null);
+                setPastedGroup(null);
+                setRotationPivot(null);
+              }
+            }}
+          />
+        )}
+      </nav>
       <p
         role="status"
         className={`blueprint-status ${message === 'Alteração aplicada somente neste navegador.' ? 'blueprint-status-routine' : ''}`}
@@ -1662,10 +1684,10 @@ export default function BlueprintEditor() {
             )}
           {areaTools.includes(tool) && areaPurpose !== 'room' && (
             <>
-              <p>
+              <HelpHint label="Como desenhar a área">
                 Área sem paredes. Arraste para definir retângulos e elipses; por vértices, Enter
                 conclui.
-              </p>
+              </HelpHint>
               <FloorFinishControls
                 value={{
                   ...regionFinish,
@@ -1714,6 +1736,11 @@ export default function BlueprintEditor() {
                   >
                     CONCLUIR TRAÇADO
                   </button>
+                  {tool === 'vent' && (
+                    <button disabled={points.length < 3} onClick={() => finish(true)}>
+                      FECHAR CICLO
+                    </button>
+                  )}
                   <button
                     disabled={!points.length}
                     onClick={() => setPoints((current) => current.slice(0, -1))}
@@ -1779,7 +1806,7 @@ export default function BlueprintEditor() {
                   onChange={(e) => setAssetRotation(Number(e.target.value) || 0)}
                 />
               </label>
-              <small>Na viewport: R gira 90°; Shift+R gira no sentido contrário.</small>
+              <HelpHint>Na viewport: R gira 90°; Shift+R gira no sentido contrário.</HelpHint>
               <AssetCatalog
                 items={matchingAssets}
                 search={assetSearch}
@@ -1820,7 +1847,7 @@ export default function BlueprintEditor() {
                     onChange={setWallType}
                     options={Object.entries(wallTypes).filter(([k]) => k !== 'open')}
                   />
-                  <p>Clique no início e no fim. Escape cancela.</p>
+                  <HelpHint>Clique no início e no fim. Escape cancela.</HelpHint>
                 </>
               )}
             </div>
@@ -1921,15 +1948,14 @@ export default function BlueprintEditor() {
                 >
                   APLICAR TRECHO
                 </button>
-                <details className="blueprint-inline-help">
-                  <summary>Como funciona o trecho</summary>
+                <HelpHint label="Como funciona o trecho">
                   <p>
                     Aplicar altera somente o intervalo escolhido, preservando os demais trechos.
                     Automática restaura a união dos ambientes apenas nesse intervalo. Portas e
                     janelas recortam a parede; remova a peça antes de transformar seu trecho em
                     abertura livre.
                   </p>
-                </details>
+                </HelpHint>
                 {selectedElement.kind === 'ellipse' && (
                   <details onToggle={(event) => setArcPreview(event.currentTarget.open)}>
                     <summary>Editar arco contínuo</summary>
@@ -1940,10 +1966,12 @@ export default function BlueprintEditor() {
                         </button>
                       ))}
                     </div>
-                    <p>
+                    <HelpHint label="Prévia do arco">
                       O tracejado branco mostra o arco antes de aplicar e não aparece na exportação.
-                    </p>
-                    <p>0° à direita; sentido horário. Para cruzar 0°, use um fim acima de 360°.</p>
+                    </HelpHint>
+                    <HelpHint>
+                      0° à direita; sentido horário. Para cruzar 0°, use um fim acima de 360°.
+                    </HelpHint>
                     <label>
                       Início do arco (°)
                       <NumberField
@@ -1975,7 +2003,9 @@ export default function BlueprintEditor() {
                     >
                       APLICAR TIPO AO ARCO
                     </button>
-                    <p>Usa o tipo de parede selecionado acima. Desfazer reverte o arco inteiro.</p>
+                    <HelpHint>
+                      Usa o tipo de parede selecionado acima. Desfazer reverte o arco inteiro.
+                    </HelpHint>
                   </details>
                 )}
                 <section
@@ -1983,7 +2013,7 @@ export default function BlueprintEditor() {
                   aria-label="Aplicar em todas as paredes"
                 >
                   <h3>Ambiente inteiro</h3>
-                  <p>Aplica a todas as paredes.</p>
+                  <HelpHint>Aplica a todas as paredes.</HelpHint>
                   <div className="blueprint-wall-preset-actions">
                     {[
                       ['internal', 'Divisórias'],
@@ -2286,7 +2316,7 @@ export default function BlueprintEditor() {
                 />
                 Inserção contínua
               </label>
-              <small>Shift+clique repete · Esc encerra</small>
+              <HelpHint>Shift+clique repete · Esc encerra</HelpHint>
             </div>
           )}
           {tool === 'select' && selectedElement && (
@@ -2562,6 +2592,29 @@ export default function BlueprintEditor() {
               preview={preview}
               interactive={tool === 'select'}
             />
+            {tool === 'vent' &&
+              cursor &&
+              !gesture &&
+              !portPlacement &&
+              (ventConnection(
+                { id: '__draft__', kind: 'vent', points: [cursor, cursor] },
+                0,
+                project.elements.filter((e) => !e.locked),
+              ) ||
+                (points.length >= 3 &&
+                  Math.hypot(cursor.x - points[0].x, cursor.y - points[0].y) < 0.001)) && (
+                <g data-editor-only="true" pointerEvents="none">
+                  <circle
+                    cx={cursor.x}
+                    cy={cursor.y}
+                    r={0.22}
+                    fill="none"
+                    stroke="#f1c46c"
+                    strokeWidth=".06"
+                  />
+                  <title>Conexão de ventilação</title>
+                </g>
+              )}
             {tool === 'wall' && manualWall && points.length === 1 && cursor && (
               <line
                 data-editor-only="true"
@@ -2782,7 +2835,9 @@ export default function BlueprintEditor() {
                   {selectedElement.asset === 'stairs' && (
                     <details>
                       <summary>Legenda de destino</summary>
-                      <small>Usa o nome da sala que contém o centro da saída conectada.</small>
+                      <HelpHint>
+                        Usa o nome da sala que contém o centro da saída conectada.
+                      </HelpHint>
                       <label>
                         <input
                           type="checkbox"
@@ -2963,11 +3018,11 @@ export default function BlueprintEditor() {
                           </select>
                         </label>
                       ))}
-                      <small>
+                      <HelpHint label="Acessos automáticos">
                         Automático conecta pontas a outros dutos, sugere grelha nas paredes e
                         escotilha dentro de salas. Escolha outro acesso para manter a ponta
                         independente.
-                      </small>
+                      </HelpHint>
                     </fieldset>
                   )}
                   {selectedElement.kind === 'vent' && (
@@ -2997,10 +3052,10 @@ export default function BlueprintEditor() {
                   {selectedElement.points && (
                     <details className="blueprint-vertices">
                       <summary>Vértices ({selectedElement.points.length})</summary>
-                      <p>
+                      <HelpHint>
                         Arraste os círculos na planta ou ajuste as coordenadas. As portas acompanham
                         a borda.
-                      </p>
+                      </HelpHint>
                       <div className="blueprint-vertex-list">
                         {selectedElement.points.map((point, index) => (
                           <div key={index} className="blueprint-vertex-row">
@@ -3103,10 +3158,10 @@ export default function BlueprintEditor() {
                           </button>
                         ))}
                       </div>
-                      <p>
+                      <HelpHint>
                         Inclui equipamentos inteiramente dentro da sala e suas portas/janelas.
                         Corredores e dutos permanecem no lugar.
-                      </p>
+                      </HelpHint>
                       {['x', 'y'].map((axis) => (
                         <label key={axis}>
                           Deslocamento {axis.toUpperCase()} (m)

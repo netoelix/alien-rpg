@@ -1,3 +1,4 @@
+import { HelpHint } from './HelpHint.jsx';
 import { ModuleThumbnail } from './ModulePreview.jsx';
 import { useRef, useState } from 'react';
 import {
@@ -27,9 +28,9 @@ export function ModuleLibrary({ project, ids, disabled, onPlace, onError }) {
   return (
     <details className="blueprint-module-library">
       <summary>Meus módulos ({modules.length})</summary>
-      <small>
+      <HelpHint>
         Biblioteca desta sessão. Baixe os módulos para reutilizar depois em qualquer mapa.
-      </small>
+      </HelpHint>
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -54,10 +55,10 @@ export function ModuleLibrary({ project, ids, disabled, onPlace, onError }) {
         </label>
         <button disabled={disabled || !ids.length}>Guardar seleção</button>
       </form>
-      <small>
+      <HelpHint>
         Selecione as peças desejadas. Portas e janelas acompanham suas estruturas; salas
         retangulares incluem os equipamentos internos.
-      </small>
+      </HelpHint>
       <input
         hidden
         type="file"

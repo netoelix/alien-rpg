@@ -7,7 +7,7 @@ export const catalogGroups = [
   {
     id: 'social',
     name: 'Lazer e hospitalidade',
-    categories: ['bar', 'casino', 'entertainment', 'quarters', 'decor'],
+    categories: ['fitness', 'restaurant', 'bar', 'casino', 'entertainment', 'quarters', 'decor'],
   },
   {
     id: 'commerce',
@@ -17,9 +17,13 @@ export const catalogGroups = [
   {
     id: 'technical',
     name: 'Operações e indústria',
-    categories: ['command', 'engineering', 'workshop', 'cargo'],
+    categories: ['mining-production', 'command', 'engineering', 'workshop', 'cargo'],
   },
-  { id: 'care', name: 'Ciência e proteção', categories: ['laboratory', 'medical', 'security'] },
+  {
+    id: 'care',
+    name: 'Ciência e proteção',
+    categories: ['laboratory', 'medical', 'security', 'detention'],
+  },
   { id: 'outside', name: 'Exterior e paisagismo', categories: ['garden', 'exterior'] },
   {
     id: 'vehicles',

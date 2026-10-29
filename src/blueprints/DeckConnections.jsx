@@ -1,3 +1,5 @@
+import { EditorPopup } from './EditorPopup.jsx';
+import { HelpHint } from './HelpHint.jsx';
 import { NumberField } from './NumberField.jsx';
 import { useState } from 'react';
 import { activeFloor, floorList, switchFloor } from './floors.js';
@@ -87,7 +89,7 @@ export function DeckConnections({
     stops.get(local.elementId).push({ link, destination });
   }
   return (
-    <div className="blueprint-deck-panels">
+    <EditorPopup title="Referências e conexões">
       <details className="blueprint-deck-options">
         <summary>
           Referência visual <small>Sobrepor pavimentos</small>
@@ -110,8 +112,10 @@ export function DeckConnections({
             </label>
           ))}
         </fieldset>
-        <small>Transparência automática conforme a quantidade de referências visíveis. </small>
-        <small>Guia de alinhamento. Não aparece na exportação.</small>
+        <HelpHint label="Sobreposição de pavimentos">
+          Transparência automática conforme o número de pavimentos visíveis. Referências não
+          aparecem na exportação.
+        </HelpHint>
       </details>
       <details className="blueprint-deck-options">
         <summary>
@@ -163,6 +167,7 @@ export function DeckConnections({
             <button
               className="deck-place"
               disabled={disabled || !destinations.length || placing}
+              data-close-popup="true"
               onClick={() => onPlace({ type, targetIds: destinations })}
             >
               Posicionar no mapa
@@ -266,6 +271,6 @@ export function DeckConnections({
           </section>
         </div>
       </details>
-    </div>
+    </EditorPopup>
   );
 }
