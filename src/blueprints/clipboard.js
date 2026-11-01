@@ -60,12 +60,22 @@ export function copyBlueprint(project, selectedId) {
 }
 
 export function pasteBlueprint(project, clipboard, dx, dy) {
+  const result = draftPaste(project, clipboard, dx, dy);
+  return { ...result, project: parseProject(JSON.stringify(result.project)) };
+}
+
+export function draftPaste(project, clipboard, dx, dy) {
   if (!clipboard?.elements.length) throw new Error('Copie uma peça antes de colar.');
   checkLayers(project, clipboard.elements);
+  return placeCopies(project, clipboard, dx, dy);
+}
+
+function placeCopies(project, clipboard, dx, dy) {
   const ids = new Map(clipboard.elements.map((element) => [element.id, uid()]));
-  const groups = new Map(
-    clipboard.elements.filter((e) => e.groupId).map((e) => [e.groupId, uid()]),
-  );
+  const groups = new Map();
+  for (const { groupId } of clipboard.elements) {
+    if (groupId && !groups.has(groupId)) groups.set(groupId, uid());
+  }
   const copies = clipboard.elements.map((element) =>
     element.kind === 'door'
       ? { ...element, id: ids.get(element.id), wallId: ids.get(element.wallId) }
@@ -75,9 +85,7 @@ export function pasteBlueprint(project, clipboard, dx, dy) {
     if (element.groupId) element.groupId = groups.get(element.groupId);
   });
   return {
-    project: parseProject(
-      JSON.stringify({ ...project, elements: [...project.elements, ...copies] }),
-    ),
+    project: { ...project, elements: [...project.elements, ...copies] },
     selectedId: ids.get(clipboard.selectedId),
     ids: copies.map((element) => element.id),
   };
@@ -88,26 +96,33 @@ export function movePastedGroup(project, ids, dx, dy) {
     project,
     project.elements.filter((element) => ids.includes(element.id) || ids.includes(element.wallId)),
   );
+  return translateGroup(project, ids, dx, dy);
+}
+
+export function translateGroup(project, ids, dx, dy) {
+  const members = new Set(ids);
   return {
     ...project,
     elements: project.elements.map((element) =>
-      ids.includes(element.id) && element.kind !== 'door' ? moveElement(element, dx, dy) : element,
+      members.has(element.id) && element.kind !== 'door' ? moveElement(element, dx, dy) : element,
     ),
   };
 }
 
 export function removeSelection(project, ids) {
+  return parseProject(JSON.stringify(draftRemoval(project, ids)));
+}
+
+export function draftRemoval(project, ids) {
   const removed = project.elements.filter(
     (element) => ids.includes(element.id) || ids.includes(element.wallId),
   );
   checkLayers(project, removed);
   const removedIds = new Set(removed.map((element) => element.id));
-  return parseProject(
-    JSON.stringify({
-      ...project,
-      elements: project.elements.filter((element) => !removedIds.has(element.id)),
-    }),
-  );
+  return {
+    ...project,
+    elements: project.elements.filter((element) => !removedIds.has(element.id)),
+  };
 }
 
 export function duplicateSelection(project, ids) {
@@ -149,8 +164,8 @@ export function duplicateSelection(project, ids) {
     [0, -height],
   ]) {
     try {
-      const copy = pasteBlueprint(project, clipboard, dx, dy);
-      copy.project = fitOpenings(copy.project);
+      const copy = placeCopies(project, clipboard, dx, dy);
+      copy.project = fitOpenings(parseProject(JSON.stringify(copy.project)));
       if (
         copy.project.elements.some(
           (element) =>

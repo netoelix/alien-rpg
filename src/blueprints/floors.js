@@ -1,11 +1,6 @@
-import { uid } from './model.js';
-
-export function floorList(project) {
-  return project.floors || [{ id: 'deck-1', name: 'Pavimento 1' }];
-}
-export function activeFloor(project) {
-  return project.activeFloor || floorList(project)[0].id;
-}
+import { uid } from './ids.js';
+import { activeFloor, floorList } from './floor-store.js';
+export { activeFloor, floorList } from './floor-store.js';
 // The active deck lives in elements. Inactive decks hold their own snapshots.
 // Existing geometry operations therefore never see objects from another deck.
 export function switchFloor(project, id) {

@@ -507,3 +507,13 @@ Acabamentos contextuais: piscina/lago mostram somente ajustes de água, sempre v
 - Posicionar escada/elevador deve fechar janela e permitir clicar na planta.
 - Conferir faixa superior em largura menor e modo de foco.
 - Expandir acessos de ventilação individualmente e conferir rótulos das ajudas sem quadrado.
+
+### Refatoração interna — 30/10/2026
+
+Sem mudanças de interface. Quando disponível, conferir em conjunto: abrir projeto com vários pavimentos; alternar entre eles; posicionar porta e acesso de ventilação; criar conexão de ventilação; salvar/reabrir. Os testes automatizados cobrem persistência, referências inválidas e isolamento dos pavimentos, mas a interação visual deste bloco ainda não foi conferida.
+
+### Resultado da conferência manual — 01/11/2026
+
+O usuário aprovou os blocos A (seleção e histórico), B (prévia e geometria) e C (pavimentos, persistência e exportação). D1 (câmera) e D2 (zoom) passaram. No D3 houve um pequeno engasgo durante o movimento do conjunto. Não foi informada diferença entre local e Vercel para esse caso. No mapa real que antes travava, o usuário relatou câmera e movimentação de objetos fluidas.
+
+Pendência D3: comparar o mesmo arraste com encaixe em objetos ligado e desligado. Quando ativo, snapToObjects reconstrói as âncoras e ordena as coordenadas dos alvos a cada chamada. Medir antes de atribuir o engasgo a essa rotina.

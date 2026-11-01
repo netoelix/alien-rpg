@@ -1,3 +1,4 @@
+import { projectPointToSegment } from './segment-geometry.js';
 export const ventPortTypes = {
   grille: 'Grelha lateral',
   ceiling: 'Escotilha de teto',
@@ -6,14 +7,9 @@ export const ventPortTypes = {
 export function nearestVentPort(points, point) {
   let best = null;
   for (let segment = 0; segment < points.length - 1; segment++) {
-    const a = points[segment],
-      b = points[segment + 1],
-      dx = b.x - a.x,
-      dy = b.y - a.y,
-      len = dx * dx + dy * dy;
-    if (!len) continue;
-    const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / len));
-    const distance = Math.hypot(point.x - a.x - t * dx, point.y - a.y - t * dy);
+    const projection = projectPointToSegment(point, points[segment], points[segment + 1]);
+    if (!projection) continue;
+    const { t, distance } = projection;
     if (!best || distance < best.distance) best = { segment, t, distance };
   }
   return best;

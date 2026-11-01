@@ -265,3 +265,9 @@ Dez testes direcionados passaram, incluindo compilação do editor e controles d
 ### Auditoria técnica — 29/10/2026
 
 Relatório: docs/auditoria-blueprint-2026-10-29.md. Análise sem alterar funcionalidades. Baseline: 254 testes passaram. Prioridades: primitivas geométricas e acesso seguro a pavimentos; ciclos de imports; normalização/transações; separação do editor; contratos de traçados; catálogo. Preservar diferenças semânticas entre dutos, corredores e circulação externa. Profiling e conferência de foco/modal permanecem pendentes. Retomar features do roadmap após os blocos técnicos aprovados.
+
+### Refatoração interna — 30/10/2026
+
+- Concluída base compartilhada de projeção, armazenamento dos pavimentos e geração de IDs.
+- Decodificação de arquivo separada da validação recursiva dos pavimentos.
+- Próximo bloco: investigar e testar validações duplicadas nas operações de edição antes de alterar transações/histórico. Não remover validação de operações isoladas sem uma fronteira comum comprovada.
