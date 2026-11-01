@@ -102,3 +102,18 @@ Análise estática com execução de testes; não inclui profiling interativo, r
 ## Baseline executado
 
 Comando: node --test --test-concurrency=1, TEMP/TMP apontando para .test-tmp/audit-temp devido às restrições do ambiente. Resultado: 254 testes, 254 aprovados, zero falhas/cancelados/ignorados, cerca de 62 segundos. Log local: .test-tmp/audit-tests.log. Isso mede execução da suíte, não desempenho da viewport. Não foi gerada build nem houve publicação nesta auditoria.
+
+## Refatoração inicial — 30/10/2026
+
+- Extraídos segment-geometry.js, floor-store.js e ids.js. Paredes e ventilação compartilham a projeção geométrica; leitura/escrita de pavimentos usa uma única regra para o pavimento ativo.
+- Mantidas reexportações existentes, IDs e formato de persistência. Reduzidas dependências circulares entre model, conexões e ventilação; outros ciclos continuam pendentes.
+- Corrigida criação de destino de ventilação no pavimento ativo quando a origem está em outro pavimento. Cobertura de imutabilidade e salvar/reabrir.
+- Primeiro bloco: 257 testes aprovados, build concluída, formatação aprovada. Log: .test-tmp/refactor-tests.log.
+- Bloco seguinte: separada a decodificação JSON da normalização privada. Pavimentos inativos reutilizam a validação diretamente, sem converter cada snapshot para texto e ler novamente. Limite de arquivo continua na entrada pública. Não foram retiradas validações nem alterado o histórico de desfazer/refazer.
+- Sem publicação e sem alteração visual. Não foi medido ganho de desempenho da viewport.
+
+### Critério para o próximo bloco de transações
+
+O commit do editor ajusta paredes/aberturas, remove vínculos inválidos, valida dados e verifica bloqueios antes de registrar o histórico. Algumas operações de grupos/clipboard já validam antes disso. Não basta apagar a primeira chamada: essas operações também são usadas isoladamente e precisam continuar rejeitando dados inválidos. Extrair primeiro uma preparação de transação testável, mantendo a ordem atual; depois distinguir explicitamente operações intermediárias de operações públicas validadas. Cobrir falha sem alteração do projeto e desfazer/refazer antes de reduzir verificações.
+
+Validação final do bloco de normalização: 258 testes aprovados, zero falhas, build de produção concluída. Log local: .test-tmp/refactor-normalization-tests.log. Conferência visual continua registrada para depois; nenhuma publicação realizada.

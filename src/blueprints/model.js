@@ -1,3 +1,6 @@
+import { projectPointToSegment } from './segment-geometry.js';
+import { uid } from './ids.js';
+export { uid } from './ids.js';
 import { isClosedVent } from './vent-cycle.js';
 import { normalizeProjectMode } from './project-mode.js';
 import { presetEquipment } from './preset-layouts.js';
@@ -228,7 +231,6 @@ export const layers = [
   { id: 'vents', name: 'Ventilação' },
   { id: 'labels', name: 'Anotações' },
 ];
-export const uid = () => crypto.randomUUID();
 export function newProject() {
   return {
     version: 1,
@@ -367,12 +369,9 @@ export function nearestWall(elements, point, maxDistance = 2) {
   let best = null;
   elements.forEach((wall) =>
     wallSegments(wall).forEach(([a, b], segment) => {
-      const dx = b[0] - a[0],
-        dy = b[1] - a[1],
-        length = dx * dx + dy * dy;
-      if (!length) return;
-      const t = Math.max(0, Math.min(1, ((point.x - a[0]) * dx + (point.y - a[1]) * dy) / length));
-      const distance = Math.hypot(point.x - a[0] - t * dx, point.y - a[1] - t * dy);
+      const projection = projectPointToSegment(point, { x: a[0], y: a[1] }, { x: b[0], y: b[1] });
+      if (!projection) return;
+      const { t, distance } = projection;
       if (distance <= maxDistance && (!best || distance < best.distance))
         best = { wallId: wall.id, segment, t, distance };
     }),
@@ -747,8 +746,12 @@ export function makeModule(type, x, y) {
 // Projeta uma lista explícita de campos: um arquivo importado nunca vira HTML ou código.
 export function parseProject(text) {
   if (text.length > 5_000_000) throw new Error('Projeto acima de 5 MB.');
-  const raw = JSON.parse(text),
-    result = newProject();
+  return normalizeProjectData(JSON.parse(text));
+}
+// Receives decoded JSON only. Keep file limits at the public parsing boundary.
+// Inactive floors reuse validation without serializing and parsing each snapshot.
+function normalizeProjectData(raw) {
+  const result = newProject();
   const number = (n, min, max) => {
     if (typeof n !== 'number' || !Number.isFinite(n) || n < min || n > max)
       throw new Error('Medida inválida no projeto.');
@@ -1077,7 +1080,7 @@ export function parseProject(text) {
       floorIds.add(id);
       if (id === result.activeFloor) return { id, name };
       const { floors, activeFloor, connections, ventLinks, ...base } = raw;
-      const parsed = parseProject(JSON.stringify({ ...base, elements: floor.elements || [] }));
+      const parsed = normalizeProjectData({ ...base, elements: floor.elements || [] });
       return { id, name, elements: parsed.elements };
     });
     if (!floorIds.has(result.activeFloor)) throw new Error('Pavimento ativo não encontrado.');

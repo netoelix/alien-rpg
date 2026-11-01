@@ -1,3 +1,13 @@
+import { clickedGroup, boxSelection, toggleSelection } from './selection-set.js';
+import {
+  rotateGestureGroup,
+  moveGestureTarget,
+  transformGestureTarget,
+  gestureUsesSnap,
+} from './gesture-transform.js';
+import { gesturePreview, rectangle } from './gesture-preview.js';
+import { selectionCommands } from './selection-commands.js';
+import { startHistory, applyEdit, undoEdit, redoEdit } from './edit-history.js';
 import { EditorPopup } from './EditorPopup.jsx';
 import { HelpHint } from './HelpHint.jsx';
 import { closeVentPoints, ventConnection } from './ventilation.js';
@@ -8,7 +18,6 @@ import { pathTools, pathChoices, pathPreset } from './path-tools.js';
 import { areaTools, areaElement } from './area-tools.js';
 import { VisualChoices } from './VisualChoices.jsx';
 import { legacyAssets } from './legacy-assets.js';
-import { moveDestinationLabel } from './destination-labels.js';
 import { beginObjectDrag, objectDragStarted } from './object-drag.js';
 import { switchFloor as switchVentFloor } from './floors.js';
 import { VentPortControls } from './VentPortControls.jsx';
@@ -18,7 +27,7 @@ import { reorderAsset } from './asset-order.js';
 import { levelAssets } from './level-assets.js';
 import { FloorFinishControls } from './FloorFinishControls.jsx';
 import { floorKinds } from './floor-finishes.js';
-import { ventAccessTypes, followVentWalls } from './ventilation.js';
+import { ventAccessTypes } from './ventilation.js';
 import { PlacementPreview } from './PlacementPreview.jsx';
 import { openingCandidate } from './placement.js';
 import { AssetCatalog } from './AssetCatalog.jsx';
@@ -26,7 +35,6 @@ import { assetFootprint, furniture } from './furniture.js';
 import { snapToObjects } from './snapping.js';
 import { setCorridorEnd } from './corridor-ends.js';
 import { DimensionControls } from './DimensionControls.jsx';
-import { dimensionOffset } from './dimensions.js';
 import { Dimension } from './Dimension.jsx';
 import { TextControls } from './TextControls.jsx';
 import { LabelText } from './LabelText.jsx';
@@ -36,59 +44,38 @@ import { placeModuleGrid, rotateModule } from './modules.js';
 import { arrangements, arrangeEquipment, objectView } from './arrange.js';
 import { activeFloor, floorList } from './floors.js';
 import { ObjectsPanel } from './ObjectsPanel.jsx';
-import { objectEditable, assertObjectChanges } from './objects.js';
-import { pruneConnections, addConnections } from './connections.js';
+import { objectEditable } from './objects.js';
+import { addConnections } from './connections.js';
 import { DeckReference, DeckConnections } from './DeckConnections.jsx';
 import { FloorControls } from './FloorControls.jsx';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ToolIcon } from './ToolIcon.jsx';
 import { Drawing } from './Drawing.jsx';
-import { resizeElement, rotateAsset } from './resize.js';
-import {
-  expandGroups,
-  setSelectionGroup,
-  rotateGroup,
-  freeRotationFrame,
-  rotationDragAngle,
-  convertRoomsToPolygons,
-} from './groups.js';
-import { selectInBox, selectionBounds } from './selection.js';
-import {
-  copyBlueprint,
-  pasteBlueprint,
-  movePastedGroup,
-  removeSelection,
-  duplicateSelection,
-} from './clipboard.js';
+import { freeRotationFrame } from './groups.js';
+import { selectionBounds } from './selection.js';
 import { AssetSymbol, assetNames } from './Assets.jsx';
 import {
   wallTypes,
   wallSegments,
   setWallSection,
   setWallArc,
-  fitOpenings,
-  duplicateElement,
   exampleProject,
   layerFor,
   makeModule,
   moduleNames,
-  moveElement,
   moveRoomContents,
   duplicateRoomContents,
   rotateRoomContents,
   moveVertex,
   changeVertexCount,
   nearestWall,
-  openingHasWall,
   newProject,
   parseProject,
-  removeElement,
   snap,
   uid,
 } from './model.js';
 import { downloadBlob, exportDrawing, projectFilename } from './export.js';
 import './blueprints.css';
-const emptyDrawingPreview = [];
 const storageKey = 'alien-blueprint-recovery-v1';
 const normalizeSearch = (text) =>
   text
@@ -171,7 +158,8 @@ export default function BlueprintEditor() {
   const [areaPurpose, setAreaPurpose] = useState('room');
   const [regionFinish, setRegionFinish] = useState({ type: 'plates', size: 1, opacity: 0.3 });
   const [traceStyle, setTraceStyle] = useState({ traceType: 'rail', rounded: true, side: 1 });
-  const [project, setProject] = useState(() => sessionProject || newProject());
+  const [history, setHistory] = useState(() => startHistory(sessionProject || newProject()));
+  const { project, past, future } = history;
   const [referenceFloors, setReferenceFloors] = useState([]);
   const [connectionPlacement, setConnectionPlacement] = useState(null);
   const [assetRotation, setAssetRotation] = useState(0);
@@ -181,8 +169,6 @@ export default function BlueprintEditor() {
   const visibleReferences = floorList(project).filter(
     (floor) => floor.id !== activeFloor(project) && referenceFloors.includes(floor.id),
   );
-  const [past, setPast] = useState([]),
-    [future, setFuture] = useState([]);
   const [tool, setTool] = useState('room'),
     [selected, setSelected] = useState(null);
   const [asset, setAsset] = useState('commandBench'),
@@ -193,12 +179,16 @@ export default function BlueprintEditor() {
   const [selectionAngle, setSelectionAngle] = useState(15);
   const [arrangement, setArrangement] = useState('left');
   const [rotationPivot, setRotationPivot] = useState(null);
-  const matchingAssets = Object.entries(assetNames).filter(
-    ([id, name]) =>
-      !Object.hasOwn(legacyAssets, id) &&
-      assetInMode(project, id) &&
-      normalizeSearch(name).includes(normalizeSearch(assetSearch)),
-  );
+  const mode = project.mode;
+  const matchingAssets = useMemo(() => {
+    const query = normalizeSearch(assetSearch);
+    return Object.entries(assetNames).filter(
+      ([id, name]) =>
+        !Object.hasOwn(legacyAssets, id) &&
+        assetInMode({ mode }, id) &&
+        normalizeSearch(name).includes(query),
+    );
+  }, [assetSearch, mode]);
   const [lineWidth, setLineWidth] = useState(2),
     [doorWidth, setDoorWidth] = useState(1.5),
     [openingType, setOpeningType] = useState('door'),
@@ -270,23 +260,7 @@ export default function BlueprintEditor() {
   }, [project.mode]);
   function commit(next) {
     try {
-      const valid = parseProject(
-        JSON.stringify(pruneConnections(fitOpenings(followVentWalls(project, next)))),
-      );
-      assertObjectChanges(project, valid);
-      for (const opening of valid.elements.filter((element) => element.kind === 'door')) {
-        const previous = project.elements.find((element) => element.id === opening.id);
-        if (
-          JSON.stringify(previous) !== JSON.stringify(opening) &&
-          !openingHasWall(opening, valid.elements)
-        )
-          throw new Error(
-            'Este trecho está aberto. Restaure a parede em Editar paredes antes de colocar uma porta ou janela.',
-          );
-      }
-      setPast((p) => [...p.slice(-49), project]);
-      setFuture([]);
-      setProject(valid);
+      setHistory(applyEdit(history, next));
       setDirty(true);
       setMessage('Alteração aplicada somente neste navegador.');
       return true;
@@ -300,9 +274,7 @@ export default function BlueprintEditor() {
     setConnectionPlacement(null);
     setModulePlacement(null);
     setPastedGroup(null);
-    setProject(next);
-    setPast([]);
-    setFuture([]);
+    setHistory(startHistory(next));
     setSelected(null);
     setPoints([]);
     setGesture(null);
@@ -316,9 +288,7 @@ export default function BlueprintEditor() {
     setRotationPivot(null);
     setPastedGroup(null);
     if (!past.length) return;
-    setFuture((f) => [project, ...f]);
-    setProject(past.at(-1));
-    setPast((p) => p.slice(0, -1));
+    setHistory(undoEdit);
     setSelected(null);
     setPoints([]);
     setDirty(true);
@@ -331,9 +301,7 @@ export default function BlueprintEditor() {
     setRotationPivot(null);
     setPoints([]);
     if (!future.length) return;
-    setPast((p) => [...p, project]);
-    setProject(future[0]);
-    setFuture((f) => f.slice(1));
+    setHistory(redoEdit);
     setSelected(null);
     setDirty(true);
   }
@@ -636,29 +604,23 @@ export default function BlueprintEditor() {
       }
       setSelected(id);
       if (element.groupId && !event.shiftKey) {
-        const ids = expandGroups(project, [id]);
-        const primary =
-          element.kind === 'door'
-            ? project.elements.find((item) => ids.includes(item.id) && item.kind !== 'door') ||
-              element
-            : element;
+        const group = clickedGroup(project, element);
+        const primary = project.elements.find((item) => item.id === group?.selectedId) ?? element;
         setSelected(primary.id);
-        setPastedGroup({ selectedId: primary.id, ids });
+        setPastedGroup(group);
         svgRef.current.setPointerCapture(event.pointerId);
         setGesture(beginObjectDrag(primary, p, event));
         return;
       }
       if (event.shiftKey && element.kind !== 'door') {
-        const ids = new Set(pastedGroup?.ids || (selected ? [selected] : []));
-        const members = expandGroups(project, [id]);
-        if (ids.has(id)) members.forEach((member) => ids.delete(member));
-        else members.forEach((member) => ids.add(member));
-        const selectedId =
-          [...ids].find(
-            (key) => project.elements.find((item) => item.id === key)?.kind !== 'door',
-          ) || null;
-        setSelected(selectedId);
-        setPastedGroup(selectedId ? { selectedId, ids: [...ids] } : null);
+        const next = toggleSelection(
+          project,
+          pastedGroup?.ids || (selected ? [selected] : []),
+          id,
+          selected,
+        );
+        setSelected(next?.selectedId ?? null);
+        setPastedGroup(next);
         return;
       }
       if (pastedGroup?.ids.includes(id) && element.kind !== 'door') {
@@ -791,22 +753,10 @@ export default function BlueprintEditor() {
     setGesture({
       ...gesture,
       dragging: ['move', 'destinationLabel'].includes(gesture.kind) ? true : gesture.dragging,
-      end: ['rotate', 'rotateGroup', 'destinationLabel'].includes(gesture.kind)
-        ? location(event, false)
-        : p,
+      end: gestureUsesSnap(gesture.kind) ? p : location(event, false),
       step: event.shiftKey ? 15 : 1,
       proportional: event.shiftKey,
     });
-  }
-  function rectangle(g) {
-    return {
-      id: 'preview',
-      kind: g.kind,
-      x: Math.min(g.start.x, g.end.x),
-      y: Math.min(g.start.y, g.end.y),
-      w: Math.abs(g.start.x - g.end.x),
-      h: Math.abs(g.start.y - g.end.y),
-    };
   }
   function up(event) {
     setSnapGuides([]);
@@ -819,29 +769,15 @@ export default function BlueprintEditor() {
     }
     const g = {
       ...gesture,
-      end: location(event, !['rotate', 'rotateGroup', 'destinationLabel'].includes(gesture.kind)),
+      end: location(event, gestureUsesSnap(gesture.kind)),
       step: event.shiftKey ? 15 : 1,
       proportional: event.shiftKey,
     };
     setGesture(null);
-    if (g.kind === 'destinationLabel') {
-      commit({
-        ...project,
-        elements: project.elements.map((e) =>
-          e.id === g.element.id
-            ? moveDestinationLabel(e, g.labelKey, g.end.x - g.start.x, g.end.y - g.start.y)
-            : e,
-        ),
-      });
-      return;
-    }
-    if (g.kind === 'dimensionOffset') {
-      commit({
-        ...project,
-        elements: project.elements.map((e) =>
-          e.id === g.element.id ? { ...e, offset: dimensionOffset(e, g.end) } : e,
-        ),
-      });
+    if (g.kind === 'vertex' && g.end.x === g.start.x && g.end.y === g.start.y) return;
+    const transformed = transformGestureTarget(project, g);
+    if (transformed) {
+      commit(transformed);
       return;
     }
     if (g.kind === 'rotationPivot') {
@@ -849,45 +785,25 @@ export default function BlueprintEditor() {
       return;
     }
     if (g.kind === 'rotateGroup') {
-      try {
-        const angle = rotationDragAngle(g.frame, g.start, g.end, g.step);
-        if (angle !== 0) commit(rotateGroup(project, g.frame.ids, 1, angle, g.frame));
-      } catch (error) {
-        setMessage(error.message);
-      }
+      const rotation = rotateGestureGroup(project, g);
+      if (rotation.error) setMessage(rotation.error);
+      else if (rotation.angle !== 0) commit(rotation.project);
       return;
     }
     if (g.kind === 'marquee') {
-      const ids = [
-        ...new Set([
-          ...(g.additive ? pastedGroup?.ids || (selected ? [selected] : []) : []),
-          ...selectInBox(project, g.start, g.end),
-        ]),
-      ];
-      const expanded = expandGroups(project, ids);
-      setSelected(expanded[0] || null);
-      setPastedGroup(expanded.length ? { selectedId: expanded[0], ids: expanded } : null);
-      setMessage(
-        `${ids.length} peças selecionadas. Arraste uma peça ou use as setas; Ctrl+C copia.`,
+      const next = boxSelection(
+        project,
+        g,
+        pastedGroup?.ids || (selected ? [selected] : []),
+        selected,
       );
-      return;
-    }
-    if (g.kind === 'resize' || g.kind === 'rotate') {
-      commit({
-        ...project,
-        elements: project.elements.map((element) =>
-          element.id === g.element.id ? resized(g) : element,
-        ),
-      });
-      return;
-    }
-    if (g.kind === 'vertex' && (g.end.x !== g.start.x || g.end.y !== g.start.y)) {
-      commit({
-        ...project,
-        elements: project.elements.map((element) =>
-          element.id === g.element.id ? moveVertex(element, g.index, g.end) : element,
-        ),
-      });
+      setSelected(next?.selectedId ?? null);
+      setPastedGroup(next);
+      setMessage(
+        next
+          ? next.ids.length + ' peça(s) na seleção. Arraste para mover; Ctrl+C copia.'
+          : 'Nenhuma peça selecionada.',
+      );
       return;
     }
     if (['room', 'ellipse'].includes(g.kind)) {
@@ -895,29 +811,13 @@ export default function BlueprintEditor() {
       if (e.w >= 0.25 && e.h >= 0.25) add([{ ...e, id: uid() }]);
     }
     if (g.kind === 'move' && (g.end.x !== g.start.x || g.end.y !== g.start.y)) {
-      if (pastedGroup?.selectedId === g.element.id) {
-        try {
-          commit(
-            movePastedGroup(project, pastedGroup.ids, g.end.x - g.start.x, g.end.y - g.start.y),
-          );
-        } catch (error) {
-          setMessage(error.message);
-        }
-        return;
+      try {
+        const moved = moveGestureTarget(project, g, pastedGroup);
+        if (moved) commit(moved);
+        else setMessage('A porta precisa permanecer sobre uma parede.');
+      } catch (error) {
+        setMessage(error.message);
       }
-      let changed;
-      if (g.element.kind === 'door') {
-        const wall = nearestWall(project.elements, g.end);
-        if (!wall) {
-          setMessage('A porta precisa permanecer sobre uma parede.');
-          return;
-        }
-        changed = { ...g.element, wallId: wall.wallId, segment: wall.segment, t: wall.t };
-      } else changed = moveElement(g.element, g.end.x - g.start.x, g.end.y - g.start.y);
-      commit({
-        ...project,
-        elements: project.elements.map((e) => (e.id === changed.id ? changed : e)),
-      });
     }
   }
   function finish(close = false) {
@@ -935,17 +835,6 @@ export default function BlueprintEditor() {
       ])
     )
       setPoints([]);
-  }
-  function resized(g) {
-    if (g.kind === 'rotate') return rotateAsset(g.element, g.start, g.end, project, g.step);
-    return resizeElement(
-      g.element,
-      g.handle,
-      g.end.x - g.start.x,
-      g.end.y - g.start.y,
-      project,
-      g.proportional,
-    );
   }
   function changeTool(next) {
     if (!toolInMode(project, next)) return;
@@ -968,25 +857,6 @@ export default function BlueprintEditor() {
     setPoints([]);
     setGesture(null);
   }
-  function remove() {
-    if (gesture || points.length) return;
-    if (pastedGroup?.ids.length) {
-      try {
-        if (commit(removeSelection(project, pastedGroup.ids))) {
-          setSelected(null);
-          setPastedGroup(null);
-          setMessage('Seleção removida. Ctrl+Z restaura o conjunto.');
-        }
-      } catch (error) {
-        setMessage(error.message);
-      }
-      return;
-    }
-    if (selected && allowed(selectedElement?.kind)) {
-      commit(removeElement(project, selected));
-      setSelected(null);
-    }
-  }
   async function openFile(event) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -1004,93 +874,11 @@ export default function BlueprintEditor() {
       setMessage('Não foi possível abrir: ' + error.message);
     }
   }
-  const selectedElement = project.elements.find((e) => e.id === selected);
+  const selectedElement = useMemo(
+    () => (selected ? project.elements.find((e) => e.id === selected) : undefined),
+    [project.elements, selected],
+  );
   const editable = selectedElement && objectEditable(project, selectedElement);
-  function groupSelection(ungroup = false) {
-    if (gesture || points.length) return;
-    try {
-      const ids = expandGroups(project, pastedGroup?.ids || (selected ? [selected] : []));
-      if (commit(setSelectionGroup(project, ids, ungroup))) {
-        setPastedGroup(ids.length ? { selectedId: selected || ids[0], ids } : null);
-        setMessage(
-          ungroup
-            ? 'Grupo desfeito; peças continuam selecionadas.'
-            : 'Grupo criado. Será preservado ao salvar o projeto.',
-        );
-      }
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-  function copySelection() {
-    if (gesture || points.length) return;
-    try {
-      clipboard.current = { ...copyBlueprint(project, pastedGroup?.ids || selected), count: 0 };
-      setMessage('Cópia guardada nesta aba. Use Ctrl+V na planta para colar.');
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-  function pasteSelection() {
-    if (gesture || points.length) return;
-    try {
-      const offset = project.grid * ((clipboard.current?.count || 0) + 1);
-      const result = pasteBlueprint(project, clipboard.current, offset, offset);
-      if (commit(result.project)) {
-        clipboard.current.count++;
-        setSelected(result.selectedId);
-        setPastedGroup({ selectedId: result.selectedId, ids: result.ids });
-        setTool('select');
-        setMessage(
-          'Cópia selecionada. Arraste a estrutura para mover o conjunto; Escape libera as peças.',
-        );
-      }
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-  function duplicate() {
-    if (!editable || gesture || points.length) return;
-    try {
-      const copy = pastedGroup?.ids.length
-        ? duplicateSelection(project, pastedGroup.ids)
-        : duplicateElement(project, selected);
-      if (commit(copy.project)) {
-        setSelected(copy.selectedId);
-        setPastedGroup(copy.ids ? { selectedId: copy.selectedId, ids: copy.ids } : null);
-        setTool('select');
-        setMessage(
-          copy.ids
-            ? 'Conjunto duplicado e selecionado. Arraste para posicionar.'
-            : 'Cópia selecionada. Arraste para posicionar; equipamentos internos são peças independentes.',
-        );
-      }
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-  function convertSelectedRooms() {
-    if (!editable || gesture || points.length) return;
-    try {
-      if (commit(convertRoomsToPolygons(project, pastedGroup?.ids || [selected]))) {
-        setMessage(
-          'Sala convertida em vértices. Paredes e aberturas preservadas; Ctrl+Z restaura o retângulo.',
-        );
-      }
-    } catch (error) {
-      setMessage(error.message);
-    }
-  }
-  function rotateFreely() {
-    if (!editable || gesture || points.length) return;
-    try {
-      const ids = pastedGroup?.ids || [selected];
-      commit(rotateGroup(project, ids, 1, Number(selectionAngle), rotationFrame));
-    } catch (error) {
-      setMessage(error.message);
-    }
-    svgRef.current?.focus();
-  }
   function rotatePendingModule(direction) {
     if (!modulePlacement || gesture) return;
     try {
@@ -1099,45 +887,6 @@ export default function BlueprintEditor() {
       setMessage(error.message);
     }
     svgRef.current?.focus({ preventScroll: true });
-  }
-  function rotateSelection(delta) {
-    if (pastedGroup?.ids.length && !gesture && !points.length) {
-      try {
-        commit(rotateGroup(project, pastedGroup.ids, delta > 0 ? 1 : -1));
-      } catch (error) {
-        setMessage(error.message);
-      }
-      return;
-    }
-    if (selectedElement && selectedElement.kind !== 'door' && !gesture && !points.length) {
-      if (selectedElement.kind !== 'asset') {
-        try {
-          commit(rotateGroup(project, [selected], delta > 0 ? 1 : -1));
-        } catch (error) {
-          setMessage(error.message);
-        }
-        return;
-      }
-
-      property('rotation', (((selectedElement.rotation + delta) % 360) + 360) % 360);
-    }
-  }
-  function nudge(dx, dy) {
-    if (!editable || selectedElement.kind === 'door' || gesture || points.length) return;
-    if (pastedGroup?.selectedId === selected) {
-      try {
-        commit(movePastedGroup(project, pastedGroup.ids, dx, dy));
-      } catch (error) {
-        setMessage(error.message);
-      }
-      return;
-    }
-    commit({
-      ...project,
-      elements: project.elements.map((element) =>
-        element.id === selected ? moveElement(element, dx, dy) : element,
-      ),
-    });
   }
   function property(key, value) {
     if (editable)
@@ -1180,77 +929,30 @@ export default function BlueprintEditor() {
       };
     });
   }
-  let drawn = project,
-    preview = emptyDrawingPreview;
-  if (gesture?.kind === 'dimensionOffset')
-    drawn = {
-      ...project,
-      elements: project.elements.map((e) =>
-        e.id === gesture.element.id ? { ...e, offset: dimensionOffset(e, gesture.end) } : e,
-      ),
-    };
-  if (gesture?.kind === 'vertex')
-    drawn = {
-      ...project,
-      elements: project.elements.map((element) =>
-        element.id === gesture.element.id
-          ? moveVertex(element, gesture.index, gesture.end)
-          : element,
-      ),
-    };
-  if (gesture && ['room', 'ellipse'].includes(gesture.kind))
-    preview = [areaElement(rectangle(gesture), areaPurpose, regionFinish)];
-  if (points.length && !['dimension', 'wall'].includes(tool))
-    preview = [
-      {
-        id: 'preview',
-        kind: tool,
-        ...(tool === 'trace' ? traceStyle : {}),
-        ...(tool === 'floorRegion' ? { floorFinish: regionFinish } : {}),
-        width: lineWidth,
-        points: cursor ? [...points, cursor] : points,
-      },
-    ];
-  if (areaTools.includes(tool))
-    preview = preview.map((e) => areaElement(e, areaPurpose, regionFinish));
-  if (gesture?.kind === 'move' && gesture.element.kind !== 'door')
-    drawn = {
-      ...project,
-      elements: project.elements.map((e) =>
-        (
-          pastedGroup?.selectedId === gesture.element.id
-            ? pastedGroup.ids.includes(e.id) && e.kind !== 'door'
-            : e.id === gesture.element.id
-        )
-          ? moveElement(e, gesture.end.x - gesture.start.x, gesture.end.y - gesture.start.y)
-          : e,
-      ),
-    };
-  if (gesture?.kind === 'move' && gesture.element.kind === 'door') {
-    const wall = nearestWall(project.elements, gesture.end);
-    if (wall)
-      drawn = {
-        ...project,
-        elements: project.elements.map((element) =>
-          element.id === gesture.element.id
-            ? { ...element, wallId: wall.wallId, segment: wall.segment, t: wall.t }
-            : element,
-        ),
-      };
-  }
-  // Mantém a grade legível em plantas grandes sem mudar a medida de encaixe.
-  if (gesture?.kind === 'resize' || gesture?.kind === 'rotate')
-    drawn = {
-      ...project,
-      elements: project.elements.map((element) =>
-        element.id === gesture.element.id ? resized(gesture) : element,
-      ),
-    };
-  const baseRotationFrame = freeRotationFrame(
+  const { drawn, preview, groupAngle, groupRotationError } = gesturePreview({
     project,
-    pastedGroup?.ids || (selected ? [selected] : []),
-  );
-  const rotationKey = JSON.stringify(baseRotationFrame?.ids.slice().sort() || []);
+    gesture,
+    points,
+    cursor,
+    tool,
+    areaPurpose,
+    regionFinish,
+    traceStyle,
+    lineWidth,
+    pastedGroup,
+  });
+  const feedbackElement = ['resize', 'rotate'].includes(gesture?.kind)
+    ? drawn.elements.find((e) => e.id === gesture.element.id)
+    : null;
+  const groupIds = pastedGroup?.ids;
+  const { baseRotationFrame, rotationKey } = useMemo(() => {
+    const ids = groupIds || (selected ? [selected] : []);
+    const frame = ids.length ? freeRotationFrame(project, ids) : null;
+    return {
+      baseRotationFrame: frame,
+      rotationKey: JSON.stringify(frame?.ids.slice().sort() || []),
+    };
+  }, [project, groupIds, selected]);
   const customPivot =
     gesture?.kind === 'rotationPivot'
       ? { cx: gesture.end.x, cy: gesture.end.y }
@@ -1258,34 +960,36 @@ export default function BlueprintEditor() {
         ? rotationPivot
         : null;
   const rotationFrame = baseRotationFrame ? { ...baseRotationFrame, ...customPivot } : null;
+  const {
+    remove,
+    groupSelection,
+    copySelection,
+    pasteSelection,
+    duplicate,
+    convertSelectedRooms,
+    rotateFreely,
+    rotateSelection,
+    nudge,
+  } = selectionCommands({
+    project,
+    selected,
+    selectedElement,
+    editable,
+    pastedGroup,
+    drawing: Boolean(gesture || points.length),
+    clipboard,
+    commit,
+    allowed,
+    setSelected,
+    setPastedGroup,
+    setMessage,
+    setTool,
+    selectionAngle,
+    rotationFrame,
+    svgRef,
+    property,
+  });
   const groupHandleRadius = Math.max(0.2, project.width / view.zoom / 90);
-  let groupRotationError = '';
-  const groupAngle =
-    gesture?.kind === 'rotateGroup'
-      ? rotationDragAngle(gesture.frame, gesture.start, gesture.end, gesture.step)
-      : 0;
-  if (gesture?.kind === 'rotateGroup') {
-    try {
-      drawn = rotateGroup(project, gesture.frame.ids, 1, groupAngle, gesture.frame);
-    } catch (error) {
-      groupRotationError = error.message;
-    }
-  }
-  if (gesture?.kind === 'destinationLabel')
-    drawn = {
-      ...project,
-      elements: project.elements.map((e) =>
-        e.id === gesture.element.id
-          ? moveDestinationLabel(
-              e,
-              gesture.labelKey,
-              gesture.end.x - gesture.start.x,
-              gesture.end.y - gesture.start.y,
-            )
-          : e,
-      ),
-    };
-  drawn = followVentWalls(project, drawn);
   const gridStep =
     project.grid * Math.max(1, Math.ceil(project.width / view.zoom / project.grid / 100));
   return (
@@ -2794,11 +2498,11 @@ export default function BlueprintEditor() {
               Escape cancela
             </output>
           )}
-          {['resize', 'rotate'].includes(gesture?.kind) && (
+          {feedbackElement && (
             <output className="blueprint-transform-feedback" aria-live="off">
               {gesture.kind === 'rotate'
-                ? `Rotação: ${resized(gesture).rotation}° · Shift: passos de 15°`
-                : `${resized(gesture).w.toFixed(2)} × ${resized(gesture).h.toFixed(2)} m`}
+                ? `Rotação: ${feedbackElement.rotation}° · Shift: passos de 15°`
+                : `${feedbackElement.w.toFixed(2)} × ${feedbackElement.h.toFixed(2)} m`}
               {gesture.kind === 'resize' &&
                 gesture.handle.length === 2 &&
                 (gesture.proportional ? ' · Proporção mantida' : ' · Shift: manter proporção')}

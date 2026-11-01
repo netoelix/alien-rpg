@@ -196,3 +196,17 @@ test('copied geometry binds to its own wall without references to original IDs',
   assert.deepEqual(result.elements[3].points[1], { x: 32, y: 15 });
   assert.equal(result.elements[1], vent);
 });
+
+test('automatic duct ends distinguish corridor walls, floor and open ends in both orientations', () => {
+  for (const vertical of [false, true]) {
+    const at = (x, y) => (vertical ? { x: y, y: x } : { x, y });
+    const corridor = { id: 'hall', kind: 'corridor', width: 4, points: [at(3, 10), at(20, 10)] };
+    const access = (p, hall = corridor) =>
+      ventAccess({ id: 'v', kind: 'vent', width: 1, points: [at(12, 2), p] }, 1, [hall]);
+    assert.equal(access(at(12, 8)).type, 'grille');
+    assert.equal(access(at(12, 10)).type, 'hatch');
+    assert.equal(access(at(2, 10)).type, 'open');
+    assert.equal(access(at(3, 10), { ...corridor, closedStart: true }).type, 'grille');
+    assert.equal(access(at(12, 10), { ...corridor, hidden: true }).type, 'open');
+  }
+});

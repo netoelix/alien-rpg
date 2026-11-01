@@ -1,8 +1,7 @@
 import { ventRoomName } from './vent-room-name.js';
 import { nearestVentPort, ventPortPosition } from './vent-ports.js';
-import { activeFloor, floorList } from './floors.js';
-import { floorElements } from './connections.js';
-import { uid } from './model.js';
+import { activeFloor, floorList, floorElements, updateFloorElements } from './floor-store.js';
+import { uid } from './ids.js';
 export function ventLinkEndpoint(project, endpoint) {
   if (!endpoint) return null;
   const vent = floorElements(project, endpoint.floorId).find(
@@ -166,9 +165,6 @@ export function connectVentFloor(project, from, targetFloor) {
   const updated = elements.some((e) => e.id === vent.id)
     ? elements.map((e) => (e.id === vent.id ? vent : e))
     : [...elements, vent];
-  const next = {
-    ...project,
-    floors: floorList(project).map((f) => (f.id === targetFloor ? { ...f, elements: updated } : f)),
-  };
+  const next = updateFloorElements(project, targetFloor, updated);
   return addVentLink(next, from, { floorId: targetFloor, elementId: vent.id, portId: port.id });
 }

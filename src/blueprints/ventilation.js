@@ -1,3 +1,4 @@
+import { projectPointToSegment } from './segment-geometry.js';
 import { nearestWall, openingHasWall, wallSegments } from './model.js';
 export const ventAccessTypes = {
   auto: 'Automático',
@@ -20,19 +21,14 @@ export function ventConnection(vent, index, elements) {
     for (let i = 1; i < target.points.length; i++) {
       const a = target.points[i - 1],
         b = target.points[i];
-      const dx = b.x - a.x,
-        dy = b.y - a.y,
-        length = dx * dx + dy * dy;
-      if (!length) continue;
-      const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / length));
+      const projection = projectPointToSegment(point, a, b);
+      if (!projection) continue;
+      const { t, x, y, distance } = projection;
       if (
         (i === 1 && t === 0 && (target.accesses?.[0] || 'auto') !== 'auto') ||
         (i === target.points.length - 1 && t === 1 && (target.accesses?.[1] || 'auto') !== 'auto')
       )
         continue;
-      const x = a.x + t * dx,
-        y = a.y + t * dy,
-        distance = Math.hypot(x - point.x, y - point.y);
       if (distance <= 0.15 && (!best || distance < best.distance))
         best = { x, y, distance, targetId: target.id };
     }
@@ -67,13 +63,28 @@ export function ventAccess(vent, index, elements) {
     other = index ? vent.points.at(-2) : vent.points[1];
   let angle = (Math.atan2(point.y - other.y, point.x - other.x) * 180) / Math.PI;
   const surfaces = elements.filter(
-    (e) => ['room', 'ellipse', 'polygon', 'partition'].includes(e.kind) && !e.hidden,
+    (e) => ['room', 'ellipse', 'polygon', 'partition', 'corridor'].includes(e.kind) && !e.hidden,
   );
   const candidate = nearestWall(surfaces, point, 0.3);
   const wall =
     candidate && openingHasWall({ ...candidate, width: vent.width }, surfaces) ? candidate : null;
   const inside = surfaces.some((e) => {
     if (e.kind === 'partition') return false;
+    if (e.kind === 'corridor') {
+      return e.points.some((b, i) => {
+        if (!i) return false;
+        const a = e.points[i - 1];
+        const hit = projectPointToSegment(point, a, b);
+        if (!hit || hit.distance > e.width / 2) return false;
+        // The floor ends flush at each outer tip, even without a closing wall.
+        const dx = b.x - a.x,
+          dy = b.y - a.y;
+        if (i === 1 && (point.x - a.x) * dx + (point.y - a.y) * dy < 0) return false;
+        if (i === e.points.length - 1 && (point.x - b.x) * dx + (point.y - b.y) * dy > 0)
+          return false;
+        return true;
+      });
+    }
     let found = false;
     for (const [a, b] of wallSegments(e)) {
       if (
@@ -120,7 +131,7 @@ export function followVentWalls(previous, next) {
   const oldById = new Map(previous.elements.map((e) => [e.id, e]));
   const nextById = new Map(next.elements.map((e) => [e.id, e]));
   const walls = previous.elements.filter(
-    (e) => ['room', 'ellipse', 'polygon', 'partition'].includes(e.kind) && !e.hidden,
+    (e) => ['room', 'ellipse', 'polygon', 'partition', 'corridor'].includes(e.kind) && !e.hidden,
   );
   if (
     !walls.some(

@@ -106,8 +106,12 @@ export function expandGroups(project, ids) {
 }
 
 export function setSelectionGroup(project, ids, ungroup = false) {
-  const members = expandGroups(project, ids);
-  const elements = project.elements.filter((e) => members.includes(e.id));
+  return parseProject(JSON.stringify(draftSelectionGroup(project, ids, ungroup)));
+}
+
+export function draftSelectionGroup(project, ids, ungroup = false) {
+  const members = new Set(expandGroups(project, ids));
+  const elements = project.elements.filter((e) => members.has(e.id));
   if (!ungroup && elements.filter((e) => e.kind !== 'door').length < 2)
     throw new Error('Selecione pelo menos duas peças para agrupar.');
   if (
@@ -118,16 +122,14 @@ export function setSelectionGroup(project, ids, ungroup = false) {
   )
     throw new Error('Mostre e desbloqueie todas as camadas do grupo.');
   const groupId = ungroup ? null : uid();
-  return parseProject(
-    JSON.stringify({
-      ...project,
-      elements: project.elements.map((e) => {
-        if (!members.includes(e.id)) return e;
-        const { groupId: previous, ...rest } = e;
-        return groupId ? { ...rest, groupId } : rest;
-      }),
+  return {
+    ...project,
+    elements: project.elements.map((e) => {
+      if (!members.has(e.id)) return e;
+      const { groupId: previous, ...rest } = e;
+      return groupId ? { ...rest, groupId } : rest;
     }),
-  );
+  };
 }
 
 export function freeRotationFrame(project, ids) {

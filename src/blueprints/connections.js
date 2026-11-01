@@ -1,12 +1,8 @@
 import { validVentLink } from './vent-links.js';
-import { uid } from './model.js';
-import { activeFloor, floorList } from './floors.js';
+import { uid } from './ids.js';
+import { activeFloor, floorList, floorElements } from './floor-store.js';
+export { floorElements } from './floor-store.js';
 
-export function floorElements(project, id) {
-  return id === activeFloor(project)
-    ? project.elements
-    : floorList(project).find((floor) => floor.id === id)?.elements || [];
-}
 export function validEndpoint(project, endpoint) {
   return (
     floorList(project).some((floor) => floor.id === endpoint.floorId) &&
