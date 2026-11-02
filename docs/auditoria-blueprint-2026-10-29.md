@@ -117,3 +117,20 @@ Comando: node --test --test-concurrency=1, TEMP/TMP apontando para .test-tmp/aud
 O commit do editor ajusta paredes/aberturas, remove vínculos inválidos, valida dados e verifica bloqueios antes de registrar o histórico. Algumas operações de grupos/clipboard já validam antes disso. Não basta apagar a primeira chamada: essas operações também são usadas isoladamente e precisam continuar rejeitando dados inválidos. Extrair primeiro uma preparação de transação testável, mantendo a ordem atual; depois distinguir explicitamente operações intermediárias de operações públicas validadas. Cobrir falha sem alteração do projeto e desfazer/refazer antes de reduzir verificações.
 
 Validação final do bloco de normalização: 258 testes aprovados, zero falhas, build de produção concluída. Log local: .test-tmp/refactor-normalization-tests.log. Conferência visual continua registrada para depois; nenhuma publicação realizada.
+
+## Fechamento técnico — 02/11/2026
+
+A revisão local passou na formatação, nos 286 testes da suíte completa e na build de produção. O modelo, a seleção e as regras de edição agora consultam a mesma função de associação entre tipo de objeto e camada. A seleção por caixa usa a verificação comum de visibilidade e bloqueio. As validações das operações independentes de edição continuam necessárias aos seus chamadores.
+
+A verificação percorreu as 384 entradas selecionáveis do catálogo, conferindo categoria alcançável, dimensões e geometria SVG. Os aliases dos 13 tipos legados renderizaram o mesmo desenho dos respectivos substitutos. Os testes existentes cobrem os módulos prontos, os tipos de percurso, os vínculos e a persistência após edição de vértices.
+
+**Medição D3.** Na planta sintética de 800 objetos, foram deslocados dez itens (uma sala, a porta e oito equipamentos). Para cada opção de guias foram feitas 400 amostras após aquecimento, alternando a ordem entre rodadas. Mediana/p95 do cálculo de encaixe e deslocamento no Node: 0,675/0,980 ms com guias e 0,015/0,017 ms sem guias. A medição exclui eventos do navegador, React, SVG e pintura. O custo medido isoladamente não explica por si só o engasgo percebido.
+
+**Conferência interativa pendente.** O Edge automatizado encerrou na inicialização e o navegador integrado retornou timeout ao acessar a porta local da build. Os resultados manuais anteriores de A–C e D1–D2 permanecem válidos para a revisão que foi testada. Para a candidata atual:
+
+1. Abrir carga-800.json, selecionar por caixa uma sala com seus equipamentos e repetir o mesmo arraste com **Guias** ligada e desligada. Manter zoom e **Encaixar** iguais nos dois casos. Registrar se o engasgo ocorre durante o movimento ou ao soltar.
+2. Dividir uma borda longe de uma janela, remover o vértice, desfazer/refazer e salvar/reabrir. A janela deve continuar na parede correta. Uma divisão pelo batente deve ser recusada sem mover a janela.
+3. Em um duto fechado com acesso a outro pavimento, editar o vértice de fechamento, salvar/reabrir e navegar ao destino. A escotilha deve continuar vinculada ao outro andar.
+
+Estado da candidata: local, aguardando essa conferência para encerrar a validação interativa.
+Na conferência final, o usuário informou que os itens pendentes funcionaram. Validação manual encerrada antes da expansão de assets.

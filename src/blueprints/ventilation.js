@@ -13,11 +13,15 @@ import { isClosedVent } from './vent-cycle.js';
 export { isClosedVent, closeVentPoints } from './vent-cycle.js';
 // Only endpoints connect; crossing centerlines alone never joins networks.
 export function ventConnection(vent, index, elements) {
-  if ((vent.accesses?.[index] || 'auto') !== 'auto') return null;
+  if (isClosedVent(vent) || (vent.accesses?.[index] || 'auto') !== 'auto') return null;
   const point = index ? vent.points.at(-1) : vent.points[0];
+  return nearestVentJunction(point, elements, vent.id);
+}
+export function nearestVentJunction(point, elements, sourceId) {
   let best = null;
   for (const target of elements) {
-    if (target.kind !== 'vent' || target.id === vent.id || target.hidden) continue;
+    if (target.kind !== 'vent' || target.id === sourceId || target.hidden) continue;
+    const closed = isClosedVent(target);
     for (let i = 1; i < target.points.length; i++) {
       const a = target.points[i - 1],
         b = target.points[i];
@@ -25,8 +29,11 @@ export function ventConnection(vent, index, elements) {
       if (!projection) continue;
       const { t, x, y, distance } = projection;
       if (
-        (i === 1 && t === 0 && (target.accesses?.[0] || 'auto') !== 'auto') ||
-        (i === target.points.length - 1 && t === 1 && (target.accesses?.[1] || 'auto') !== 'auto')
+        !closed &&
+        ((i === 1 && t === 0 && (target.accesses?.[0] || 'auto') !== 'auto') ||
+          (i === target.points.length - 1 &&
+            t === 1 &&
+            (target.accesses?.[1] || 'auto') !== 'auto'))
       )
         continue;
       if (distance <= 0.15 && (!best || distance < best.distance))

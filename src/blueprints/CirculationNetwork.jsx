@@ -4,7 +4,8 @@ import {
   circulationStyle,
   roadSidewalks,
   isCirculation,
-  overlappingTraces,
+  traceBounds,
+  boundsOverlap,
   pavementJoints,
 } from './circulation.js';
 export function CirculationNetwork({ elements, floor = '#102c24', ink = 'currentColor' }) {
@@ -13,14 +14,16 @@ export function CirculationNetwork({ elements, floor = '#102c24', ink = 'current
     () =>
       elements
         .filter((e) => isCirculation(e) && !e.hidden)
-        .map((e) => ({
-          e,
-          style: circulationStyle(e),
-          joints: pavementJoints(traceGeometry(e).center, e.width),
-          points: traceGeometry(e)
-            .center.map((p) => p.x + ',' + p.y)
-            .join(' '),
-        })),
+        .map((e) => {
+          const { center } = traceGeometry(e);
+          return {
+            e,
+            bounds: traceBounds(e),
+            style: circulationStyle(e),
+            joints: pavementJoints(center, e.width),
+            points: center.map((p) => p.x + ',' + p.y).join(' '),
+          };
+        }),
     [elements],
   );
   const sidewalks = useMemo(() => roadSidewalks(elements), [elements]);
@@ -53,7 +56,7 @@ export function CirculationNetwork({ elements, floor = '#102c24', ink = 'current
           >
             <rect x="-100" y="-100" width={extent} height={extent} fill="white" />
             {paths
-              .filter((q) => q !== p && overlappingTraces(p.e, q.e))
+              .filter((q) => q !== p && boundsOverlap(p.bounds, q.bounds))
               .map((q) => stroke(q, q.e.width + 0.12, 'black'))}
           </mask>
         ))}

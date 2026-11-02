@@ -1,3 +1,4 @@
+import { remapPathAnchor } from './path-anchor.js';
 import { projectPointToSegment } from './segment-geometry.js';
 export const ventPortTypes = {
   grille: 'Grelha lateral',
@@ -72,20 +73,21 @@ export function normalizeVentPorts(value, points) {
     };
   });
 }
-export function remapVentPorts(source, points) {
-  return (source.ports || []).map((port) => {
-    const a = source.points[port.segment],
-      b = source.points[port.segment + 1];
-    const same = points.findIndex(
-      (p, i) =>
-        i < points.length - 1 &&
-        p.x === a.x &&
-        p.y === a.y &&
-        points[i + 1].x === b.x &&
-        points[i + 1].y === b.y,
-    );
-    if (same >= 0) return { ...port, segment: same };
-    const match = nearestVentPort(points, ventPortPosition(source.points, port));
-    return { ...port, segment: match.segment, t: match.t };
-  });
+export function remapVentPorts(source, points, index, action, closed) {
+  return source.ports.map((port) => ({
+    ...port,
+    ...remapPathAnchor(
+      port.segment,
+      port.t,
+      source.points.length,
+      index,
+      action,
+      closed,
+      (successor) => ({
+        point: ventPortPosition(source.points, port),
+        a: points[successor],
+        b: points[successor + 1],
+      }),
+    ),
+  }));
 }
