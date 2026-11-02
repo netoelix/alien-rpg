@@ -23,23 +23,21 @@ export function FloorControls({ project, disabled, onChange, onError }) {
   }
   return (
     <div className="blueprint-floor-controls" role="group" aria-label="Pavimentos">
-      <label>
-        Pavimento
-        <select
-          value={current.id}
-          disabled={disabled}
-          onChange={(event) => {
-            setEditing(false);
-            apply((value) => switchFloor(value, event.target.value));
-          }}
-        >
-          {floors.map((floor) => (
-            <option key={floor.id} value={floor.id}>
-              {floor.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      <select
+        aria-label="Pavimento ativo"
+        value={current.id}
+        disabled={disabled}
+        onChange={(event) => {
+          setEditing(false);
+          apply((value) => switchFloor(value, event.target.value));
+        }}
+      >
+        {floors.map((floor) => (
+          <option key={floor.id} value={floor.id}>
+            {floor.name}
+          </option>
+        ))}
+      </select>
       <EditorPopup title="Gerenciar pavimentos">
         <button
           disabled={disabled || floors.length >= 20}

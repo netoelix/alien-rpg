@@ -1,3 +1,4 @@
+import { openingNames } from './opening-types.js';
 import { projectPointToSegment } from './segment-geometry.js';
 import { uid } from './ids.js';
 export { uid } from './ids.js';
@@ -215,6 +216,11 @@ export const assetTypes = [
   ]),
 ];
 export const moduleNames = {
+  shipCanteen: 'Refeitório de bordo',
+  propulsionBay: 'Sala de propulsão',
+  pitBridge: 'Ponte com poço de comando',
+  freighterBridge: 'Ponte de cargueiro',
+  dutyQuarters: 'Alojamento de turno',
   bridge: 'Ponte de comando',
   medical: 'Enfermaria',
   quarters: 'Alojamento',
@@ -731,7 +737,7 @@ export function makeModule(type, x, y) {
     w: 10,
     h: 8,
     floorFinish: {
-      type: ['medical', 'laboratory', 'mess'].includes(type) ? 'tiles' : 'plates',
+      type: ['medical', 'laboratory', 'mess', 'shipCanteen'].includes(type) ? 'tiles' : 'plates',
       size: 2,
       opacity: 0.12,
     },
@@ -838,6 +844,8 @@ function normalizeProjectData(raw) {
     if (e.floorFinish !== undefined) {
       if (!floorKinds.includes(e.kind)) throw new Error('Este objeto não possui piso.');
       base.floorFinish = normalizeFloorFinish(e.floorFinish);
+      if (base.floorFinish.type === 'hive' && e.kind !== 'floorRegion')
+        throw new Error('Desenhe uma região de piso para aplicar resina de colmeia.');
       if (['pool', 'lake'].includes(base.floorFinish.type) && e.kind !== 'floorRegion')
         throw new Error('Desenhe água com a ferramenta de regiões.');
     }
@@ -874,7 +882,7 @@ function normalizeProjectData(raw) {
         throw new Error('Trechos da mesma borda não podem se sobrepor.');
     }
     if (e.kind === 'door') {
-      if (e.openingType !== undefined && !['door', 'window'].includes(e.openingType))
+      if (e.openingType !== undefined && !Object.hasOwn(openingNames, e.openingType))
         throw new Error('Tipo de abertura inválido.');
       return {
         ...base,

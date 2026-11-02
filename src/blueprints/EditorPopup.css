@@ -70,3 +70,13 @@ dialog.blueprint-popup {
   gap: 0.4rem;
   flex-wrap: wrap;
 }
+
+.blueprint-global-controls .blueprint-floor-controls {
+  align-items: center;
+  margin: 0;
+}
+.blueprint-global-controls > .blueprint-popup-control > button,
+.blueprint-global-controls .blueprint-floor-controls > select,
+.blueprint-global-controls .blueprint-floor-controls > .blueprint-popup-control > button {
+  min-height: 44px;
+}

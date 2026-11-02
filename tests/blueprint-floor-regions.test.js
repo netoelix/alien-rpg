@@ -53,3 +53,34 @@ test('floor regions and technical patterns render below equipment without invali
     await server.close();
   }
 });
+
+test('resin finish survives saving and module placement on a concave floor region', () => {
+  const resin = {
+    ...region,
+    points: [
+      { x: 2, y: 2 },
+      { x: 9, y: 2 },
+      { x: 9, y: 5 },
+      { x: 6, y: 5 },
+      { x: 6, y: 9 },
+      { x: 2, y: 9 },
+    ],
+    floorFinish: { type: 'hive', size: 1.5, opacity: 0.45 },
+  };
+  const p = parseProject(JSON.stringify({ ...newProject(), elements: [resin] }));
+  assert.deepEqual(p.elements[0], resin);
+  const copy = placeModule(newProject(), createModule(p, ['floor'], 'Colmeia'), 20, 20);
+  assert.deepEqual(copy.project.elements[0].floorFinish, resin.floorFinish);
+  assert.throws(
+    () =>
+      parseProject(
+        JSON.stringify({
+          ...p,
+          elements: [
+            { id: 'r', kind: 'room', x: 2, y: 2, w: 7, h: 7, floorFinish: resin.floorFinish },
+          ],
+        }),
+      ),
+    /região de piso/,
+  );
+});

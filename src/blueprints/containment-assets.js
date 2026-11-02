@@ -1,0 +1,105 @@
+import { rect, line, body, circle } from './plan-shapes.js';
+
+const lab = (name, w, h, shapes) => ({ name, w, h, category: 'laboratory', shapes });
+const security = (name, w, h, shapes) => ({ name, w, h, category: 'security', shapes });
+const display = (x, y, angle) =>
+  [
+    rect(x, y, 23, 29, 3),
+    rect(x + 3, y + 4, 17, 15, 2),
+    line('M' + (x + 4) + ' ' + (y + 24) + 'h10'),
+    circle(x + 19, y + 24, 1),
+  ].map((shape) => ({
+    ...shape,
+    transform: 'rotate(' + angle + ' ' + (x + 11.5) + ' ' + (y + 14.5) + ')',
+  }));
+
+export const containmentAssets = {
+  experimentIsland: lab('Ilha de experimentação', 2.8, 1.45, [
+    rect(2, 5, 96, 90, 4),
+    rect(5, 40, 90, 16, 2),
+    line('M8 48h84'),
+    ...[15, 43, 71].flatMap((x) => [rect(x, 42, 9, 11, 1), circle(x + 4.5, 47, 2)]),
+    rect(9, 12, 30, 22, 2),
+    rect(12, 15, 24, 16, 1),
+    ...[60, 69, 78].map((x) => circle(x, 25, 3)),
+    line('M8 84h26m-26-5h19M61 64h27v20H61Z'),
+  ]),
+  gloveIsolator: lab('Isolador de pequenas espécies', 1.8, 0.95, [
+    rect(2, 7, 96, 84, 6),
+    rect(7, 13, 70, 67, 5),
+    rect(80, 20, 14, 48, 2),
+    line('M83 28h8m-8 8h8m-8 8h8m-8 8h8'),
+    rect(16, 20, 25, 12, 2),
+    ...[21, 53].flatMap((x) => [
+      body('M' + x + ' 74l-2-16 3-9 2 4 2-11 3 1 1 10 4-5 2 2-3 13-3 11Z'),
+      rect(x - 2, 73, 15, 9, 2),
+    ]),
+  ]),
+  specimenHoldingChamber: lab('Câmara de contenção biológica', 3.5, 3.2, [
+    body('M17 3H81L96 18V76L80 92H18L4 77V18Z'),
+    body('M22 10H77L88 22V71L77 83H23L12 72V22Z'),
+    rect(23, 20, 52, 50, 10),
+    line('M29 55l8 7 16-6 12 4M30 28h10m-10 5h6'),
+    rect(32, 78, 35, 19, 2),
+    rect(36, 81, 27, 12, 1),
+    line('M39 85h21m-21 4h21'),
+    ...[23, 62].flatMap((y) => [rect(5, y, 6, 10, 1), rect(89, y, 6, 10, 1)]),
+    circle(80, 21, 3),
+  ]),
+  specimenTransferCase: lab('Caixa de transferência selada', 1.05, 0.7, [
+    rect(8, 14, 80, 72, 6),
+    rect(14, 20, 66, 60, 4),
+    rect(23, 28, 41, 27, 4),
+    rect(3, 28, 9, 44, 2),
+    rect(87, 25, 10, 50, 2),
+    line('M91 31v38M18 66h24'),
+    ...[24, 66].flatMap((x) => [rect(x, 10, 9, 13, 2), rect(x, 77, 9, 13, 2)]),
+    rect(36, 74, 24, 6, 2),
+  ]),
+  dualCustodyVault: security('Cofre de dupla custódia', 1.35, 1.15, [
+    rect(4, 4, 92, 92, 6),
+    rect(11, 10, 77, 80, 4),
+    rect(17, 16, 65, 66, 3),
+    circle(49, 47, 13),
+    circle(49, 47, 4),
+    line('M49 34v9m-11 11 8-5m6 0 8 5'),
+    ...[22, 65].flatMap((x) => [rect(x, 66, 12, 10, 2), circle(x + 6, 71, 2)]),
+    rect(81, 21, 10, 14, 2),
+    rect(81, 65, 10, 14, 2),
+  ]),
+  evidenceIntakeDesk: security('Mesa de custódia de evidências', 2.2, 1, [
+    rect(2, 6, 96, 88, 3),
+    rect(6, 11, 52, 63, 2),
+    line('M10 16h43m-43 7h4m4 0h4m4 0h4m4 0h4'),
+    body('M16 34l21-7 7 24-21 7Z'),
+    line('M18 38l19-6'),
+    rect(64, 13, 28, 33, 3),
+    rect(68, 18, 20, 9, 1),
+    line('M69 37h18'),
+    rect(64, 54, 29, 22, 2),
+    line('M69 60h19m-19 5h12M9 84h82'),
+    rect(41, 80, 18, 7, 1),
+  ]),
+  surveillanceConsole: security('Console de vigilância triplo', 2.65, 1.45, [
+    body('M3 16L27 5H73L97 16V77L79 93H21L3 77Z'),
+    ...display(10, 19, -15),
+    ...display(38, 12, 0),
+    ...display(66, 19, 15),
+    rect(30, 56, 39, 17, 2),
+    line('M34 61h31m-31 5h28'),
+    circle(81, 65, 6),
+    circle(81, 64, 2),
+    rect(10, 56, 13, 18, 1),
+    line('M12 62h9m-9 6h9M23 83h54'),
+  ]),
+  bulkheadAccessReader: security('Terminal de acesso de parede', 0.62, 0.26, [
+    rect(2, 5, 96, 13, 1),
+    body('M7 18H93V75L85 94H15L7 75Z'),
+    rect(14, 25, 35, 44, 4),
+    rect(18, 30, 27, 32, 3),
+    rect(56, 25, 28, 43, 2),
+    ...[32, 42, 52].map((y) => line('M59 ' + y + 'h4m3 0h4m3 0h6')),
+    line('M19 80h29'),
+    rect(58, 75, 25, 8, 2),
+  ]),
+};

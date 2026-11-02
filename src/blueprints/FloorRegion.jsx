@@ -1,3 +1,4 @@
+import { HiveFloor } from './HiveFloor.jsx';
 import { WaterRegion } from './WaterRegion.jsx';
 import { FloorFinish } from './FloorFinish.jsx';
 export function FloorRegion({ element, floor = '#0b2019', ink = 'currentColor' }) {
@@ -10,7 +11,11 @@ export function FloorRegion({ element, floor = '#0b2019', ink = 'currentColor' }
         fill={floor}
         stroke="none"
       />
-      <FloorFinish element={element} ink={ink} />
+      {element.floorFinish?.type === 'hive' ? (
+        <HiveFloor element={element} ink={ink} floor={floor} />
+      ) : (
+        <FloorFinish element={element} ink={ink} />
+      )}
     </g>
   );
 }

@@ -1,3 +1,4 @@
+import { openingNames } from './opening-types.js';
 import { HelpHint } from './HelpHint.jsx';
 import { useState } from 'react';
 import { assetNames } from './Assets.jsx';
@@ -33,8 +34,8 @@ export function ObjectsPanel({ project, selected, disabled, onChange, onSelect, 
       element.name ||
       (element.kind === 'asset'
         ? assetNames[element.asset]
-        : element.kind === 'door' && element.openingType === 'window'
-          ? 'Janela'
+        : element.kind === 'door'
+          ? openingNames[element.openingType || 'door']
           : names[element.kind]) +
         ' ' +
         (index + 1),

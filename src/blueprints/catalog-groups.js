@@ -24,6 +24,7 @@ export const catalogGroups = [
     name: 'Ciência e proteção',
     categories: ['laboratory', 'medical', 'security', 'detention'],
   },
+  { id: 'hive', name: 'Colmeia', categories: ['infestation'] },
   { id: 'outside', name: 'Exterior e paisagismo', categories: ['garden', 'exterior'] },
   {
     id: 'vehicles',

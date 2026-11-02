@@ -10,11 +10,19 @@ export function FloorFinish({ element, ink = 'currentColor' }) {
       <defs>
         <pattern
           id={id}
-          width={size}
-          height={finish.type === 'plates' ? size * 2 : size}
+          width={finish.type === 'dance' ? size * 2 : size}
+          height={['plates', 'dance'].includes(finish.type) ? size * 2 : size}
           patternUnits="userSpaceOnUse"
         >
           <g fill="none" stroke={ink} strokeWidth={Math.min(0.025, size * 0.04)}>
+            {finish.type === 'dance' && (
+              <g transform={`scale(${size})`} stroke="none" fill={ink}>
+                <rect x=".018" y=".018" width=".964" height=".964" opacity=".48" />
+                <rect x="1.018" y="1.018" width=".964" height=".964" opacity=".48" />
+                <rect x="1.018" y=".018" width=".964" height=".964" opacity=".12" />
+                <rect x=".018" y="1.018" width=".964" height=".964" opacity=".12" />
+              </g>
+            )}
             {finish.type === 'tread' && (
               <path
                 d={`M${size * 0.15} ${size * 0.35}l${size * 0.2} -${size * 0.2}M${size * 0.65} ${size * 0.85}l${size * 0.2} -${size * 0.2}`}

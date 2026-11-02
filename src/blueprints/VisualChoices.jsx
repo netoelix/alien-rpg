@@ -1,3 +1,5 @@
+import { OpeningSymbol } from './OpeningSymbol.jsx';
+import { isWindow } from './opening-types.js';
 import { Trace } from './Trace.jsx';
 import { FloorRegion } from './FloorRegion.jsx';
 const shortNames = {
@@ -117,9 +119,13 @@ export function ChoicePreview({ kind, value }) {
     return (
       <>
         <path d="M.15 2H.8M5.2 2H5.85" strokeWidth=".45" />
-        <g stroke={value === 'door' ? '#f1c46c' : 'currentColor'}>
-          <path d="M.8 .9V3.1M5.2 .9V3.1M.8 1.65H5.2M.8 2.35H5.2" strokeWidth=".18" />
-          {value === 'window' && <path d="M1.7 2.7L2.6 1.3M3.4 2.7L4.3 1.3" strokeWidth=".14" />}
+        <g transform="translate(3 2) scale(2.1)" strokeWidth=".12">
+          <OpeningSymbol
+            type={value}
+            width={2.1}
+            depth={0.48}
+            stroke={isWindow(value) ? 'currentColor' : '#f1c46c'}
+          />
         </g>
       </>
     );
