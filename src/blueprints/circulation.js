@@ -48,8 +48,9 @@ export function traceBounds(e) {
   };
 }
 export function overlappingTraces(a, b) {
-  const x = traceBounds(a),
-    y = traceBounds(b);
+  return boundsOverlap(traceBounds(a), traceBounds(b));
+}
+export function boundsOverlap(x, y) {
   return x.left <= y.right && x.right >= y.left && x.top <= y.bottom && x.bottom >= y.top;
 }
 // Equal-distance joints perpendicular to the local path, with bounded SVG complexity.

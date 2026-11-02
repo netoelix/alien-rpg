@@ -1,3 +1,9 @@
+import {
+  drawsByPoints,
+  canFinishDrawing,
+  appendDrawingPoint,
+  pointDrawingElement,
+} from './point-drawing.js';
 import { openingNames } from './opening-types.js';
 import { clickedGroup, boxSelection, toggleSelection } from './selection-set.js';
 import {
@@ -11,7 +17,7 @@ import { selectionCommands } from './selection-commands.js';
 import { startHistory, applyEdit, undoEdit, redoEdit } from './edit-history.js';
 import { EditorPopup } from './EditorPopup.jsx';
 import { HelpHint } from './HelpHint.jsx';
-import { closeVentPoints, ventConnection } from './ventilation.js';
+import { nearestVentJunction } from './ventilation.js';
 import { NumberField } from './NumberField.jsx';
 import { projectModes, isColony, assetInMode, toolInMode, pathInMode } from './project-mode.js';
 import { OptionButtons } from './OptionButtons.jsx';
@@ -339,6 +345,13 @@ export default function BlueprintEditor() {
     if (ok) setSelected(elements[0]?.id);
     return ok;
   }
+  const ventSnapTargets = useMemo(
+    () =>
+      tool === 'vent'
+        ? project.elements.filter((e) => e.kind === 'vent' && !e.locked && !e.hidden)
+        : [],
+    [tool, project.elements],
+  );
   function location(event, align = true) {
     const point = svgRef.current.createSVGPoint();
     point.x = event.clientX;
@@ -390,11 +403,7 @@ export default function BlueprintEditor() {
       pendingGuides.current = match.guides;
     }
     if (enabled && objectSnap && tool === 'vent' && !gesture && !spaceHeld && !portPlacement) {
-      const match = ventConnection(
-        { id: '__draft__', kind: 'vent', points: [raw, raw] },
-        0,
-        project.elements.filter((e) => !e.locked),
-      );
+      const match = nearestVentJunction(raw, ventSnapTargets);
       if (match) {
         result.x = match.x;
         result.y = match.y;
@@ -699,10 +708,8 @@ export default function BlueprintEditor() {
       finish(true);
       return;
     }
-    if (['corridor', 'vent', 'polygon', 'trace', 'floorRegion'].includes(tool)) {
-      setPoints((old) =>
-        old.length && old.at(-1).x === p.x && old.at(-1).y === p.y ? old : [...old, p],
-      );
+    if (drawsByPoints(tool)) {
+      setPoints((old) => appendDrawingPoint(old, p));
       return;
     }
     if (tool === 'door') {
@@ -822,17 +829,18 @@ export default function BlueprintEditor() {
     }
   }
   function finish(close = false) {
-    if (points.length < (['polygon', 'floorRegion'].includes(tool) ? 3 : 2)) return;
+    if (!canFinishDrawing(tool, points)) return;
     if (
       add([
-        {
+        pointDrawingElement({
           id: uid(),
-          kind: tool,
-          points: tool === 'vent' && close === true ? closeVentPoints(points) : points,
-          width: lineWidth,
-          ...(tool === 'trace' ? traceStyle : {}),
-          ...(tool === 'floorRegion' ? { floorFinish: regionFinish } : {}),
-        },
+          tool,
+          points,
+          lineWidth,
+          traceStyle,
+          regionFinish,
+          close,
+        }),
       ])
     )
       setPoints([]);
@@ -1435,10 +1443,7 @@ export default function BlueprintEditor() {
             <>
               {points.length > 0 && (
                 <div className="blueprint-path-actions">
-                  <button
-                    disabled={points.length < (['polygon', 'floorRegion'].includes(tool) ? 3 : 2)}
-                    onClick={finish}
-                  >
+                  <button disabled={!canFinishDrawing(tool, points)} onClick={finish}>
                     CONCLUIR TRAÇADO
                   </button>
                   {tool === 'vent' && (
@@ -2298,11 +2303,7 @@ export default function BlueprintEditor() {
               cursor &&
               !gesture &&
               !portPlacement &&
-              (ventConnection(
-                { id: '__draft__', kind: 'vent', points: [cursor, cursor] },
-                0,
-                project.elements.filter((e) => !e.locked),
-              ) ||
+              (nearestVentJunction(cursor, ventSnapTargets) ||
                 (points.length >= 3 &&
                   Math.hypot(cursor.x - points[0].x, cursor.y - points[0].y) < 0.001)) && (
                 <g data-editor-only="true" pointerEvents="none">

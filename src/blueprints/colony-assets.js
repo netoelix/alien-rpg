@@ -1,3 +1,11 @@
+import { outpostMachinery } from './outpost-machinery.js';
+import { outpostClinic } from './outpost-clinic.js';
+import { outpostHospitality } from './outpost-hospitality.js';
+import { outpostEngineering } from './outpost-engineering.js';
+import { outpostCrew } from './outpost-crew.js';
+import { outpostTransit } from './outpost-transit.js';
+import { outpostServices } from './outpost-services.js';
+import { outpostMarket } from './outpost-market.js';
 import { stageAssets } from './stage-assets.js';
 import { hiveAssets } from './hive-assets.js';
 import { marketDetailAssets } from './market-detail-assets.js';
@@ -12,6 +20,14 @@ import { utilityAssets } from './utility-assets.js';
 import { settlementAssets } from './settlement-assets.js';
 import { revisedAssets, expandedAssets } from './revised-assets.js';
 export const colonyAssets = {
+  ...outpostMachinery,
+  ...outpostClinic,
+  ...outpostHospitality,
+  ...outpostEngineering,
+  ...outpostCrew,
+  ...outpostTransit,
+  ...outpostServices,
+  ...outpostMarket,
   ...stageAssets,
   ...hiveAssets,
   ...marketDetailAssets,

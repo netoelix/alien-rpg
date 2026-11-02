@@ -1,3 +1,4 @@
+import { drawsByPoints, appendDrawingPoint, pointDrawingElement } from './point-drawing.js';
 import {
   rotateGestureGroup,
   moveGestureTarget,
@@ -31,16 +32,16 @@ export function gesturePreview({
   let drawn = transformGestureTarget(project, gesture) ?? project,
     preview = emptyDrawingPreview;
   if (gesture && ['room', 'ellipse'].includes(gesture.kind)) preview = [rectangle(gesture)];
-  if (points.length && !['dimension', 'wall'].includes(tool))
+  if (points.length && drawsByPoints(tool))
     preview = [
-      {
+      pointDrawingElement({
         id: 'preview',
-        kind: tool,
-        ...(tool === 'trace' ? traceStyle : {}),
-        ...(tool === 'floorRegion' ? { floorFinish: regionFinish } : {}),
-        width: lineWidth,
-        points: cursor ? [...points, cursor] : points,
-      },
+        tool,
+        points: cursor ? appendDrawingPoint(points, cursor) : points,
+        lineWidth,
+        traceStyle,
+        regionFinish,
+      }),
     ];
   if (preview.length && areaTools.includes(tool))
     preview = preview.map((e) => areaElement(e, areaPurpose, regionFinish));

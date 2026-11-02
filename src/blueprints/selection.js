@@ -1,6 +1,5 @@
 import { labelBounds } from './label-bounds.js';
 import { objectEditable } from './objects.js';
-import { layerFor } from './model.js';
 
 export function selectionBounds(element) {
   if (element.kind === 'door') return null;
@@ -43,17 +42,10 @@ export function selectInBox(project, start, end) {
   if (right - left < 0.05 || bottom - top < 0.05) return [];
   return project.elements
     .filter((element) => {
-      const layer = project.layers.find((item) => item.id === layerFor(element.kind));
+      if (!objectEditable(project, element)) return false;
       const box = selectionBounds(element);
       return (
-        objectEditable(project, element) &&
-        layer?.visible &&
-        !layer.locked &&
-        box &&
-        box.x >= left &&
-        box.y >= top &&
-        box.x + box.w <= right &&
-        box.y + box.h <= bottom
+        box && box.x >= left && box.y >= top && box.x + box.w <= right && box.y + box.h <= bottom
       );
     })
     .map((element) => element.id);

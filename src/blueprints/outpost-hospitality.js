@@ -1,0 +1,80 @@
+import { rect as r, line as l, body as b, circle as c } from './plan-shapes.js';
+const piece = (category, name, w, h, shapes) => ({ category, name, w, h, shapes });
+export const outpostHospitality = {
+  coffeeBrewer: piece('bar', 'Bateria de café percolado', 1.15, 0.56, [
+    r(3, 10, 94, 79, 3),
+    ...[24, 72].flatMap((x) => [
+      c(x, 43, 16),
+      c(x, 43, 11),
+      r(x - 3, 58, 6, 14),
+      l('M' + (x - 13) + ' 78h26'),
+    ]),
+  ]),
+  crushedIceBin: piece('bar', 'Poço de gelo com escotilha corrida', 0.9, 0.68, [
+    r(4, 9, 92, 82, 3),
+    r(10, 16, 80, 65, 3),
+    r(48, 16, 42, 65, 2),
+    r(50, 35, 5, 23, 1),
+    l('M15 37l9-8 8 11-9 8ZM26 60l9-12 7 6-6 13Z'),
+  ]),
+  arcadeRide: piece('entertainment', 'Simulador de corrida com cabine', 1.05, 1.85, [
+    b('M14 5H86L91 32L76 45V89L64 96H32L20 85V44L9 31Z'),
+    r(20, 11, 60, 19, 4),
+    c(48, 39, 10),
+    l('M39 39h18m-9 0v8'),
+    r(29, 61, 40, 21, 7),
+    r(27, 80, 44, 9, 3),
+    r(73, 51, 6, 12),
+  ]),
+  reelProjector: piece('entertainment', 'Projetor de cinema de bobinas', 1.28, 0.84, [
+    r(17, 36, 67, 45, 4),
+    c(27, 27, 18),
+    c(70, 25, 19),
+    ...[27, 70].map((x) => c(x, 26, 5)),
+    b('M80 52l15-5v27l-15-5Z'),
+    l('M28 45l13 11 15-15M22 68h43'),
+  ]),
+  cardShuffler: piece('casino', 'Distribuidor mecânico de cartas', 0.6, 0.42, [
+    b('M8 12H73L94 53V85H17L6 59Z'),
+    r(14, 19, 44, 34, 2),
+    l('M18 25h33m-33 5h33m-33 5h33'),
+    b('M34 56H82L86 71H39Z'),
+    r(44, 73, 30, 8, 2),
+  ]),
+  chipSorter: piece('casino', 'Separadora de fichas', 1.24, 0.8, [
+    r(3, 9, 94, 82, 4),
+    c(27, 40, 18),
+    c(27, 40, 7),
+    ...[49, 63, 77].flatMap((x) => [r(x, 22, 10, 53, 4), c(x + 5, 69, 4)]),
+    l('M12 74h26'),
+  ]),
+  dumplingSteamer: piece('galley', 'Estação de cocção a vapor', 1.05, 0.75, [
+    r(3, 8, 94, 84, 4),
+    ...[27, 71].flatMap((x) => [c(x, 43, 20), c(x, 43, 16), l('M' + (x - 8) + ' 43h16m-8-9v18')]),
+    r(13, 73, 52, 8, 2),
+    c(80, 76, 5),
+  ]),
+  spiralMixer: piece('galley', 'Amassadeira de cuba espiral', 0.85, 1.1, [
+    r(12, 5, 69, 88, 10),
+    c(47, 57, 29),
+    c(47, 57, 23),
+    b('M26 15H64L54 51H40Z'),
+    l('M47 49q16 1 8 15t-17-3'),
+    c(70, 19, 4),
+  ]),
+  rotisserie: piece('galley', 'Assador de espetos rotativos', 1.68, 0.84, [
+    r(3, 9, 94, 83, 3),
+    r(9, 17, 70, 64, 2),
+    ...[29, 49, 69].map((y) => l('M12 ' + y + 'h63m-58-4 6 8m11-8 6 8m11-8 6 8')),
+    c(88, 30, 4),
+    c(88, 48, 4),
+  ]),
+  canPress: piece('galley', 'Compactador de latas', 0.75, 0.8, [
+    r(8, 6, 83, 88, 4),
+    r(16, 18, 52, 58, 2),
+    r(19, 22, 46, 21),
+    l('M22 61l10-11 7 9 10-9 12 13M74 20v43'),
+    r(70, 10, 11, 15, 2),
+    r(30, 80, 27, 5),
+  ]),
+};

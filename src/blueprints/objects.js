@@ -1,4 +1,4 @@
-import { layerFor } from './model.js';
+import { layerFor } from './element-layer.js';
 import { activeFloor } from './floors.js';
 export function objectVisible(project, element) {
   if (element.hidden) return false;

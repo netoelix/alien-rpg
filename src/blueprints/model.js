@@ -1,3 +1,6 @@
+import { layerFor } from './element-layer.js';
+export { layerFor } from './element-layer.js';
+import { remapPathAnchor } from './path-anchor.js';
 import { openingNames } from './opening-types.js';
 import { projectPointToSegment } from './segment-geometry.js';
 import { uid } from './ids.js';
@@ -251,21 +254,6 @@ export function newProject() {
   };
 }
 export const snap = (n, step) => Math.round(n / step) * step;
-export const layerFor = (kind) =>
-  ({
-    floorRegion: 'structure',
-    partition: 'structure',
-    room: 'structure',
-    polygon: 'structure',
-    ellipse: 'structure',
-    corridor: 'structure',
-    door: 'doors',
-    asset: 'equipment',
-    trace: 'equipment',
-    vent: 'vents',
-    label: 'labels',
-    dimension: 'labels',
-  })[kind];
 export function wallSegments(element) {
   if (element.kind === 'partition')
     return [[element.points[0], element.points[1]].map((p) => [p.x, p.y])];
@@ -324,6 +312,7 @@ export function wallSegments(element) {
         ],
       ];
     });
+    if (!sides.length) return [];
     const ends = [];
     if (element.closedStart) ends.push([sides[1][0], sides[0][0]]);
     if (element.closedEnd) ends.push([sides.at(-2)[1], sides.at(-1)[1]]);
@@ -351,6 +340,16 @@ export function doorPosition(door, elements) {
     rotation: (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI,
   };
 }
+const openingEndClearance = 0.12;
+function fittedOpeningPosition(opening, edge) {
+  const length = Math.hypot(edge[1][0] - edge[0][0], edge[1][1] - edge[0][1]);
+  const margin = (opening.width / 2 + openingEndClearance) / length;
+  if (margin > 0.5)
+    throw new Error(
+      'A porta ou janela não cabe nesta borda. Reduza a largura ou escolha outra parede.',
+    );
+  return Math.max(margin, Math.min(1 - margin, opening.t));
+}
 export function fitOpenings(project) {
   return {
     ...project,
@@ -361,13 +360,7 @@ export function fitOpenings(project) {
       if (parent?.kind === 'ellipse') return opening;
       const edge = parent && wallSegments(parent)[opening.segment];
       if (!edge) return opening;
-      const length = Math.hypot(edge[1][0] - edge[0][0], edge[1][1] - edge[0][1]);
-      const margin = (opening.width / 2 + 0.12) / length;
-      if (margin > 0.5)
-        throw new Error(
-          'A porta ou janela não cabe nesta borda. Reduza a largura ou escolha outra parede.',
-        );
-      return { ...opening, t: Math.max(margin, Math.min(1 - margin, opening.t)) };
+      return { ...opening, t: fittedOpeningPosition(opening, edge) };
     }),
   };
 }
@@ -602,6 +595,15 @@ export function moveVertex(element, index, point) {
 }
 // Mudanças na quantidade de pontos renumeram as bordas. Remapeamos as portas
 // pela geometria, preservando as que continuam na mesma parede.
+function validatePathSpacing(points) {
+  if (
+    points.some((p, i) => i > 0 && Math.hypot(p.x - points[i - 1].x, p.y - points[i - 1].y) < 0.25)
+  ) {
+    throw new Error(
+      'Os pontos consecutivos do traçado precisam estar separados por pelo menos 0,25 m.',
+    );
+  }
+}
 export function changeVertexCount(project, id, index, action) {
   const source = project.elements.find((element) => element.id === id);
   if (!source?.points || !Number.isInteger(index) || index < 0 || index >= source.points.length)
@@ -636,44 +638,108 @@ export function changeVertexCount(project, id, index, action) {
       throw new Error('Escolha um segmento anterior ao último ponto para inserir um vértice.');
     const a = points[index],
       b = points[(index + 1) % points.length];
+    if (source.kind === 'polygon' || source.kind === 'corridor') {
+      const length = Math.hypot(b.x - a.x, b.y - a.y);
+      const inTheCut = attachedDoors.some((opening) => {
+        const run = source.kind === 'corridor' ? Math.floor(opening.segment / 2) : opening.segment;
+        return (
+          run === index &&
+          Math.abs(opening.t - 0.5) * length + 1e-8 < opening.width / 2 + openingEndClearance
+        );
+      });
+      if (inTheCut)
+        throw new Error(
+          'O novo vértice ficaria perto demais de uma porta ou janela. Afaste a abertura do meio da parede antes de dividir o trecho.',
+        );
+    }
     points.splice(index + 1, 0, { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
   }
+  if (source.kind === 'corridor' || source.kind === 'vent') validatePathSpacing(points);
   const changed = {
     ...source,
     points,
-    ...(source.kind === 'vent' && source.ports ? { ports: remapVentPorts(source, points) } : {}),
+    ...(source.kind === 'vent' && source.ports
+      ? { ports: remapVentPorts(source, points, index, action, closedVent) }
+      : {}),
   };
-  const previousSegments = wallSegments(source);
   const nextSegments = wallSegments(changed);
   const updatedDoors = new Map(
     attachedDoors.map((door) => {
-      const previous = previousSegments[door.segment];
-      const sameSegment = nextSegments.findIndex((segment) =>
-        segment.every((point, endpoint) =>
-          point.every((value, axis) => Math.abs(value - previous[endpoint][axis]) < 1e-8),
-        ),
-      );
-      if (sameSegment >= 0) return [door.id, { ...door, segment: sameSegment }];
-      const position = doorPosition(door, project.elements);
-      let nearest = null;
-      // Em corredores, a porta permanece no mesmo lado do percurso.
-      nextSegments.forEach(([a, b], segment) => {
-        if (source.kind === 'corridor' && segment % 2 !== door.segment % 2) return;
-        const dx = b[0] - a[0],
-          dy = b[1] - a[1],
-          lengthSquared = dx * dx + dy * dy;
-        if (!lengthSquared) return;
-        const t = Math.max(
-          0,
-          Math.min(1, ((position.x - a[0]) * dx + (position.y - a[1]) * dy) / lengthSquared),
+      if (source.kind === 'corridor') {
+        const oldSideCount = (source.points.length - 1) * 2;
+        if (door.segment >= oldSideCount) {
+          const cap = door.segment - oldSideCount;
+          return [door.id, { ...door, segment: (points.length - 1) * 2 + cap }];
+        }
+        const side = door.segment % 2;
+        const anchor = remapPathAnchor(
+          Math.floor(door.segment / 2),
+          door.t,
+          source.points.length,
+          index,
+          action,
+          false,
+          (successor) => {
+            const edge = nextSegments[successor * 2 + side];
+            if (!edge) throw new Error('Não foi possível manter a porta na lateral do corredor.');
+            return {
+              point: doorPosition(door, project.elements),
+              a: { x: edge[0][0], y: edge[0][1] },
+              b: { x: edge[1][0], y: edge[1][1] },
+            };
+          },
         );
-        const distance = Math.hypot(position.x - a[0] - t * dx, position.y - a[1] - t * dy);
-        if (!nearest || distance < nearest.distance) nearest = { segment, t, distance };
-      });
-      if (!nearest) throw new Error('Não foi possível manter uma porta vinculada ao traçado.');
-      return [door.id, { ...door, segment: nearest.segment, t: nearest.t }];
+        return [door.id, { ...door, segment: anchor.segment * 2 + side, t: anchor.t }];
+      }
+      // Polygon walls include the edge from the last vertex back to the first.
+      if (source.kind === 'polygon') {
+        const anchor = remapPathAnchor(
+          door.segment,
+          door.t,
+          source.points.length + 1,
+          index,
+          action,
+          true,
+          (successor) => ({
+            point: doorPosition(door, project.elements),
+            a: points[successor],
+            b: points[(successor + 1) % points.length],
+          }),
+        );
+        return [door.id, { ...door, ...anchor }];
+      }
+      const position = doorPosition(door, project.elements);
+      const hit = nearestWall([changed], position, Infinity);
+      if (!hit) throw new Error('Não foi possível manter uma porta vinculada ao traçado.');
+      return [door.id, { ...door, segment: hit.segment, t: hit.t }];
     }),
   );
+  if (action === 'remove' && attachedDoors.length > 1) {
+    // Compare only openings brought together from different walls by this edit.
+    const intervalsByEdge = new Map();
+    for (const original of attachedDoors) {
+      const moved = updatedDoors.get(original.id);
+      const edge = nextSegments[moved.segment];
+      const length = Math.hypot(edge[1][0] - edge[0][0], edge[1][1] - edge[0][1]);
+      const center = fittedOpeningPosition(moved, edge) * length;
+      const start = center - moved.width / 2,
+        end = center + moved.width / 2;
+      const intervals = intervalsByEdge.get(moved.segment) ?? [];
+      if (
+        intervals.some(
+          (other) =>
+            other.segment !== original.segment &&
+            Math.min(end, other.end) - Math.max(start, other.start) > 1e-8,
+        )
+      ) {
+        throw new Error(
+          'As aberturas ficariam sobrepostas na nova parede. Afaste uma delas antes de remover o vértice.',
+        );
+      }
+      intervals.push({ start, end, segment: original.segment });
+      intervalsByEdge.set(moved.segment, intervals);
+    }
+  }
   return parseProject(
     JSON.stringify({
       ...project,
@@ -976,17 +1042,7 @@ function normalizeProjectData(raw) {
         base.side = e.side === -1 ? -1 : 1;
       }
       if (['polygon', 'floorRegion'].includes(e.kind)) validatePolygon(points);
-      else if (
-        points
-          .slice(1)
-          .some(
-            (point, index) =>
-              Math.hypot(point.x - points[index].x, point.y - points[index].y) < 0.25,
-          )
-      )
-        throw new Error(
-          'Os pontos consecutivos do traçado precisam estar separados por pelo menos 0,25 m.',
-        );
+      else validatePathSpacing(points);
       return {
         ...base,
         ...(e.kind === 'vent' && e.accesses ? { accesses: [...e.accesses] } : {}),
