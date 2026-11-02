@@ -1,3 +1,5 @@
+import { OpeningSymbol } from './OpeningSymbol.jsx';
+import { isWindow } from './opening-types.js';
 import { CirculationNetwork } from './CirculationNetwork.jsx';
 import { isCirculation } from './circulation.js';
 import { VentDestinationLabels } from './VentDestinationLabels.jsx';
@@ -391,13 +393,12 @@ export const Drawing = memo(function Drawing({
             (e) =>
               doorPosition(e, elements) && (
                 <g key={e.id} data-object={e.id} transform={position(e)}>
-                  <path
-                    stroke={e.openingType === 'window' ? palette.ink : undefined}
-                    d={`M ${-e.width / 2} ${-getGeometry(e).frameDepth} V ${getGeometry(e).frameDepth} M ${e.width / 2} ${-getGeometry(e).frameDepth} V ${getGeometry(e).frameDepth} M ${-e.width / 2} -.12 H ${e.width / 2} V .12 H ${-e.width / 2} Z`}
+                  <OpeningSymbol
+                    type={e.openingType}
+                    width={e.width}
+                    depth={getGeometry(e).frameDepth}
+                    stroke={isWindow(e.openingType) ? palette.ink : palette.accent}
                   />
-                  {e.openingType === 'window' && (
-                    <path d={`M ${-e.width / 2} 0 H ${e.width / 2}`} stroke={palette.ink} />
-                  )}
                   <rect
                     x={-e.width / 2}
                     y={-getGeometry(e).frameDepth}

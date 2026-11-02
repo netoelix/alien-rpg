@@ -1,3 +1,4 @@
+import { openingNames } from './opening-types.js';
 import { clickedGroup, boxSelection, toggleSelection } from './selection-set.js';
 import {
   rotateGestureGroup,
@@ -1397,7 +1398,7 @@ export default function BlueprintEditor() {
                   ...regionFinish,
                   type: areaPurpose === 'floor' ? regionFinish.type : areaPurpose,
                 }}
-                allowWater={areaPurpose !== 'floor'}
+                region
                 onChange={(finish) => {
                   setRegionFinish(finish);
                   if (['pool', 'lake'].includes(finish.type)) setAreaPurpose(finish.type);
@@ -1465,10 +1466,7 @@ export default function BlueprintEditor() {
                 kind="opening"
                 value={openingType}
                 onChange={setOpeningType}
-                options={[
-                  ['door', 'Porta'],
-                  ['window', 'Janela'],
-                ]}
+                options={Object.entries(openingNames)}
               />
               <label>
                 Largura da abertura (m)
@@ -2523,9 +2521,7 @@ export default function BlueprintEditor() {
               <>
                 <p>
                   {selectedElement.kind === 'door'
-                    ? selectedElement.openingType === 'window'
-                      ? 'Janela'
-                      : 'Porta'
+                    ? openingNames[selectedElement.openingType || 'door']
                     : toolNames[selectedElement.kind]}{' '}
                   {selectedElement.asset && '· ' + assetNames[selectedElement.asset]}
                 </p>
@@ -2647,7 +2643,7 @@ export default function BlueprintEditor() {
                   </div>
                   {floorKinds.includes(selectedElement.kind) && (
                     <FloorFinishControls
-                      allowWater={selectedElement.kind === 'floorRegion'}
+                      region={selectedElement.kind === 'floorRegion'}
                       value={selectedElement.floorFinish}
                       onChange={(value) => property('floorFinish', value)}
                     />
@@ -2820,8 +2816,11 @@ export default function BlueprintEditor() {
                         value={selectedElement.openingType || 'door'}
                         onChange={(event) => property('openingType', event.target.value)}
                       >
-                        <option value="door">Porta</option>
-                        <option value="window">Janela</option>
+                        {Object.entries(openingNames).map(([key, name]) => (
+                          <option key={key} value={key}>
+                            {name}
+                          </option>
+                        ))}
                       </select>
                     </label>
                   )}

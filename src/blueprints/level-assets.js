@@ -11,5 +11,18 @@ export function stepPositions(length) {
   return Array.from({ length: count }, (_, i) => ((i + 1) * length) / (count + 1));
 }
 export function isPlatform(type) {
-  return type === 'raisedPlatform' || type === 'gratedPlatform';
+  return [
+    'raisedPlatform',
+    'gratedPlatform',
+    'stageClothCenter',
+    'stageClothEdge',
+    'stageClothCorner',
+    'stageClothReturn',
+    'stageDeckBay',
+    'stageWing',
+    'runwayBay',
+    'runwayHead',
+    'poleStage',
+    'commandPitShell',
+  ].includes(type);
 }

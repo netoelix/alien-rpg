@@ -1,3 +1,5 @@
+import { OpeningSymbol } from './OpeningSymbol.jsx';
+import { isWindow } from './opening-types.js';
 import { useMemo } from 'react';
 import { Furniture } from './Furniture.jsx';
 import { AssetSymbol } from './Assets.jsx';
@@ -38,7 +40,7 @@ export function PlacementPreview({
         pointerEvents="none"
         opacity=".65"
         transform={`rotate(${rotation} ${point.x + w / 2} ${point.y + h / 2})`}
-        color={valid ? '#f1c46c' : '#ff7373'}
+        color={valid ? (isWindow(openingType) ? 'var(--ink, #8be5b0)' : '#f1c46c') : '#ff7373'}
       >
         <svg
           x={point.x}
@@ -92,9 +94,11 @@ export function PlacementPreview({
             fill="currentColor"
             fillOpacity=".15"
           />
-          <path
-            d={`M${-width / 2} ${-geometry.frameDepth}V${geometry.frameDepth} M${width / 2} ${-geometry.frameDepth}V${geometry.frameDepth} M${-width / 2} -.12H${width / 2} M${-width / 2} .12H${width / 2}`}
-            strokeDasharray={openingType === 'window' ? '.2 .1' : undefined}
+          <OpeningSymbol
+            type={openingType}
+            width={width}
+            depth={geometry.frameDepth}
+            stroke="currentColor"
           />
         </g>
       ) : (

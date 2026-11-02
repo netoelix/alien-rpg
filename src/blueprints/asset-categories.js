@@ -2,6 +2,7 @@ import { legacyAssets } from './legacy-assets.js';
 import { vehicleAssets } from './vehicle-assets.js';
 import { colonyAssets } from './colony-assets.js';
 export const assetCategories = [
+  { id: 'infestation', name: 'Infestação alienígena', items: [] },
   { id: 'mining-production', name: 'Mineração e produção industrial', items: [] },
   { id: 'fitness', name: 'Academia e condicionamento', items: [] },
   { id: 'restaurant', name: 'Restaurantes e serviço de mesa', items: [] },

@@ -1,11 +1,27 @@
+import { stageAssets } from './stage-assets.js';
+import { hiveAssets } from './hive-assets.js';
+import { marketDetailAssets } from './market-detail-assets.js';
+import { containmentAssets } from './containment-assets.js';
+import { shipSystemsAssets } from './ship-systems-assets.js';
+import { crewDeckAssets } from './crew-deck-assets.js';
+import { serviceDeckAssets } from './service-deck-assets.js';
+import { freightAssets } from './freight-assets.js';
 import { miningAssets } from './mining-assets.js';
 import { hospitalityAssets } from './hospitality-assets.js';
 import { utilityAssets } from './utility-assets.js';
 import { settlementAssets } from './settlement-assets.js';
 import { revisedAssets, expandedAssets } from './revised-assets.js';
 export const colonyAssets = {
+  ...stageAssets,
+  ...hiveAssets,
+  ...marketDetailAssets,
   ...hospitalityAssets,
   ...miningAssets,
+  ...freightAssets,
+  ...crewDeckAssets,
+  ...shipSystemsAssets,
+  ...serviceDeckAssets,
+  ...containmentAssets,
   ...utilityAssets,
   ...settlementAssets,
   industrialRange: {
@@ -2960,7 +2976,25 @@ export const colonyAssets = {
     shapes: [
       {
         tag: 'path',
-        d: 'M5 85V50Q5 5 50 5Q95 5 95 50V85H73V52Q73 28 50 28Q27 28 27 52V85ZM13 79V50Q13 14 50 14Q87 14 87 50V79M30 13L37 31M70 13L63 31',
+        d: 'M5 85V50Q5 5 50 5Q95 5 95 50V85H73V52Q73 28 50 28Q27 28 27 52V85Z',
+        fill: 'inherit',
+      },
+      {
+        tag: 'path',
+        fill: 'none',
+        d: 'M13 79V50Q13 14 50 14Q87 14 87 50V79M8 77V50Q8 9 50 9Q92 9 92 50V77',
+        strokeWidth: 0.9,
+      },
+      {
+        tag: 'path',
+        fill: 'none',
+        d: 'M15 80V53Q15 50 18 50H22Q25 50 25 53V80Q25 82 22 82H18Q15 82 15 80ZM85 80V53Q85 50 82 50H78Q75 50 75 53V80Q75 82 78 82H82Q85 82 85 80Z',
+      },
+      {
+        tag: 'path',
+        fill: 'none',
+        d: 'M14 46Q15 30 28 23L33 32Q27 36 25 47ZM30 22Q38 17 48 16V26Q40 26 35 31ZM52 16Q62 17 70 22L65 31Q60 26 52 26ZM72 23Q85 30 86 46L75 47Q73 36 67 32Z',
+        strokeWidth: 1,
       },
     ],
   },
@@ -3140,50 +3174,19 @@ export const colonyAssets = {
     h: 0.8,
     category: 'entertainment',
     shapes: [
-      {
-        tag: 'rect',
-        x: 3,
-        y: 5,
-        width: 94,
-        height: 90,
-        rx: 0,
-      },
-      {
-        tag: 'rect',
-        x: 9,
-        y: 12,
-        width: 82,
-        height: 20,
-        rx: 0,
-      },
-      {
-        tag: 'path',
-        d: 'M10 62H90M10 83H90',
-      },
-      {
-        tag: 'path',
-        d: 'M18 62V76L14 80H22',
-      },
-      {
-        tag: 'path',
-        d: 'M31 62V76L27 80H35',
-      },
-      {
-        tag: 'path',
-        d: 'M44 62V76L40 80H48',
-      },
-      {
-        tag: 'path',
-        d: 'M57 62V76L53 80H61',
-      },
-      {
-        tag: 'path',
-        d: 'M70 62V76L66 80H74',
-      },
-      {
-        tag: 'path',
-        d: 'M83 62V76L79 80H87',
-      },
+      { tag: 'rect', x: 1, y: 3, width: 98, height: 94, rx: 2 },
+      { tag: 'path', d: 'M3 12H96M4 76H72M72 7V93M75 49H96M85 8V91' },
+      ...Array.from({ length: 7 }, (_, i) => {
+        const x = 7 + i * 9;
+        return {
+          tag: 'path',
+          fill: 'inherit',
+          d: 'M' + x + ' 25l3-7 2 5 2-5 3 7-1 40h-8ZM' + (x + 5) + ' 23v31',
+        };
+      }),
+      ...[14, 55].flatMap((y) =>
+        [76, 87].map((x) => ({ tag: 'rect', x, y, width: 7, height: 27, rx: 1 })),
+      ),
     ],
   },
   dressingVanityDouble: {

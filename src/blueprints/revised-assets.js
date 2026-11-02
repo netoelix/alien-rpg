@@ -108,14 +108,14 @@ export const revisedAssets = {
     'Atendimento e controle',
   ),
   performanceStage: add(
-    'Palco modular · tablado e degraus frontais',
+    'Palco completo · tablado e degraus frontais',
     'entertainment',
     4,
     3,
     [
       R(0.04, 0.04, 3.92, 2.5, 0.04),
       R(0.15, 0.15, 3.7, 2.28, 0, 'none'),
-      ...Array.from({ length: 5 }, (_, i) => P(`M${0.6 + i * 0.65} .15V2.43`)),
+      P('M.16 2.36H3.84M.06 .39l.06 .07-.06 .07M3.94 .39l-.06 .07 .06 .07'),
       R(1, 2.54, 2, 0.42),
       P('M1 2.68H3M1 2.82H3'),
     ],

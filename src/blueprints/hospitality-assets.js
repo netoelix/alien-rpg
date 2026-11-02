@@ -43,6 +43,23 @@ const mattress = (w, h) => [
   ).flat(),
   P('M.025 .7v.3M' + (w - 0.025) + ' .7v.3'),
 ];
+// Shoulder seams and collars identify hanging coats even at room scale.
+const coats = (x, y, count, spacing) =>
+  Array.from({ length: count }, (_, i) => {
+    const cx = x + i * spacing;
+    return [
+      P('M' + cx + ' ' + y + 'v-.09'),
+      P(
+        'M' +
+          (cx - 0.12) +
+          ' ' +
+          (y + 0.07) +
+          'l.075-.075 .045 .032 .045-.032 .075 .075-.023 .17h-.19Z',
+        'inherit',
+      ),
+      P('M' + cx + ' ' + (y + 0.034) + 'v.15'),
+    ];
+  });
 export const hospitalityAssets = {
   diningFour: add('Mesa de restaurante · quatro lugares', 'restaurant', 2.2, 2, [
     ...seat(0.25, 0.02),
@@ -231,12 +248,54 @@ export const hospitalityAssets = {
     R(1.81, 0.31, 0.43, 0.15, 0.02, 'none'),
     P('M.16 1.08H2.44'),
   ]),
-  coatCheck: add('Chapelaria · balcão e cabideiro', 'casino', 2.8, 1.4, [
-    R(0.03, 0.03, 2.74, 0.47, 0.04),
-    P('M.13 .18H2.67'),
-    ...Array.from({ length: 9 }, (_, i) => P('M' + (0.26 + i * 0.28) + ' .12v.26')),
-    R(0.03, 0.78, 2.74, 0.59, 0.06),
-    R(0.13, 0.88, 2.54, 0.34, 0.03, 'none'),
+  coatCheck: add('Chapelaria · atendimento e entrega', 'casino', 2.8, 1.4, [
+    P('M.05 .06H2.74V.49H.52V.86H.05Z', 'inherit'),
+    P('M.1 .13H2.67M.12 .78V.55'),
+    R(1.96, 0.18, 0.32, 0.2, 0.025),
+    P('M2 .23h.22'),
+    R(0.62, 0.95, 2.06, 0.32, 0.06),
+    P('M.71 1.07h1.86'),
+    ...coats(0.82, 1.05, 6, 0.3),
+  ]),
+  neutralBarLink: add('Extensão de balcão · trecho neutro', 'bar', 1.2, 0.8, [
+    R(0, 0.03, 1.2, 0.74, 0, 'inherit'),
+    P('M0 .075H1.2M0 .67H1.2M.13 .72v.045M1.07 .72v.045'),
+  ]),
+  dinerSheetTable: add('Mesa de chapa com cadeiras tubulares', 'restaurant', 1.55, 1.85, [
+    seat(0.46, 0.015, 0.62, 0.44),
+    seat(0.46, 1.395, 0.62, 0.44, 'up'),
+    ...table(0.18, 0.55, 1.18, 0.73),
+    ...[
+      [0.26, 0.63],
+      [1.28, 0.63],
+      [0.26, 1.2],
+      [1.28, 1.2],
+    ].map(([x, y]) => C(x, y, 0.018)),
+    P('M.41 .12v.24q0 .06 .07 .06M1.12 .12v.24q0 .06-.07 .06M.41 1.72v-.23M1.12 1.72v-.23'),
+  ]),
+  dinerFoldingTable: add('Mesa dobrável com cadeiras de ripas', 'restaurant', 1.7, 1.8, [
+    ...table(0.2, 0.56, 1.3, 0.72),
+    R(0.24, 0.87, 0.1, 0.1, 0.015),
+    R(1.37, 0.87, 0.1, 0.1, 0.015),
+    P('M.85 .61v.61'),
+    ...[
+      [0.34, 0.03],
+      [0.84, 1.36],
+    ].flatMap(([x, y]) => [
+      R(x, y, 0.51, 0.4, 0.035),
+      P('M' + (x + 0.04) + ' ' + (y + 0.09) + 'h.43m-.43 .09h.43m-.43 .09h.43'),
+      C(x + 0.04, y + 0.2, 0.025),
+      C(x + 0.47, y + 0.2, 0.025),
+    ]),
+  ]),
+  dinerWallLedge: add('Balcão de parede com bancos fixos', 'restaurant', 2.4, 1.25, [
+    ...table(0.02, 0.02, 2.36, 0.48),
+    P('M.12 .11h2.16M.22 .47v.11m1.96-.11v.11'),
+    ...[0.4, 1.2, 2].flatMap((x) => [
+      R(x - 0.055, 0.51, 0.11, 0.53, 0.02),
+      C(x, 0.98, 0.23),
+      C(x, 0.98, 0.17, 'none'),
+    ]),
   ]),
   velvetBarrier: add('Balizadores com cordão · fila VIP', 'casino', 1.8, 0.3, [
     C(0.15, 0.15, 0.13),
