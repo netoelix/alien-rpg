@@ -101,8 +101,8 @@ export function Ventilation({
   );
 }
 
-function CompleteNetwork({ elements, floor }) {
-  return ventNetworks(elements).map((network) => (
+function CompleteNetwork({ elements, floor, networks = ventNetworks(elements) }) {
+  return networks.map((network) => (
     <g key={network[0].id}>
       {['outline', 'fill', 'detail'].map((phase) =>
         network.map((element) => (
@@ -118,6 +118,7 @@ function CompleteNetwork({ elements, floor }) {
 export function VentilationNetwork({
   elements,
   floor,
+  displayedVents,
   contextual = false,
   width = 2000,
   height = 2000,
@@ -125,7 +126,9 @@ export function VentilationNetwork({
   const id = 'vent-context-' + useId().replaceAll(':', '');
   if (!contextual) return <CompleteNetwork elements={elements} floor={floor} />;
   const rooms = elements.filter((e) => ['room', 'ellipse', 'polygon', 'corridor'].includes(e.kind));
-  const networks = ventNetworks(elements),
+  const networks = ventNetworks(elements)
+      .map((group) => (displayedVents ? group.filter((e) => displayedVents.includes(e)) : group))
+      .filter((group) => group.length),
     vents = networks.flat();
   const bounds = { x: 0, y: 0, width, height };
   return (
@@ -193,7 +196,7 @@ export function VentilationNetwork({
         ))}
       </g>
       <g data-vent-presentation="full" display="none">
-        <CompleteNetwork elements={elements} floor={floor} />
+        <CompleteNetwork elements={elements} floor={floor} networks={networks} />
       </g>
     </g>
   );

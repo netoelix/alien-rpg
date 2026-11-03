@@ -17,8 +17,8 @@ const p = {
   elements: [
     asset('a', 'crewBed'),
     asset('b', 'crewBed'),
-    asset('p', 'raisedPlatform'),
-    asset('m', 'loadingZone'),
+    { ...asset('p', 'raisedPlatform'), visualLayer: 'objects' },
+    { ...asset('m', 'loadingZone'), visualLayer: 'objects' },
   ],
 };
 const order = (p) =>
@@ -42,5 +42,20 @@ test('locked assets and boundary commands leave order unchanged', () => {
   assert.equal(reorderAsset(locked, 'a', 'front'), locked);
   assert.throws(() =>
     parseProject(JSON.stringify({ ...p, elements: [{ ...p.elements[0], stackOrder: 'x' }] })),
+  );
+});
+test('stack controls preserve other visual layers and layer overrides survive reopening', () => {
+  const bed = asset('bed', 'crewBed');
+  const camera = asset('camera', 'surveillanceCamera');
+  const project = { ...newProject(), elements: [bed, camera] };
+  assert.equal(reorderAsset(project, 'bed', 'front'), project);
+  const moved = { ...camera, visualLayer: 'objects' };
+  const reordered = reorderAsset({ ...project, elements: [bed, moved] }, 'bed', 'front');
+  assert.deepEqual(
+    parseProject(JSON.stringify(reordered)).elements.map((e) => [e.id, e.visualLayer]),
+    [
+      ['camera', 'objects'],
+      ['bed', undefined],
+    ],
   );
 });

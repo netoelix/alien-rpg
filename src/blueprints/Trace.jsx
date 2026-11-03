@@ -10,7 +10,7 @@ const coords = (points) => points.map((p) => p.x + ',' + p.y).join(' ');
 export function Trace({ element, floor, ink }) {
   if (['pipe', 'cable', 'cableTray'].includes(element.traceType))
     return <UtilityTrace element={element} floor={floor} />;
-  if (['talus', 'cliff'].includes(element.traceType)) return <Relief element={element} />;
+  if (['talus', 'cliff', 'canyon'].includes(element.traceType)) return <Relief element={element} />;
   const g = traceGeometry(element),
     rail = element.traceType === 'rail',
     channel = ['channel', 'gratedChannel'].includes(element.traceType);

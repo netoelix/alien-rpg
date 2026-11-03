@@ -3,6 +3,9 @@ import { uid } from './ids.js';
 import { activeFloor, floorList, floorElements } from './floor-store.js';
 export { floorElements } from './floor-store.js';
 
+export function connectionSize(type) {
+  return type === 'freightLift' ? { w: 3, h: 3.2 } : { w: 2, h: 2 };
+}
 export function validEndpoint(project, endpoint) {
   return (
     floorList(project).some((floor) => floor.id === endpoint.floorId) &&
@@ -10,7 +13,7 @@ export function validEndpoint(project, endpoint) {
       (element) =>
         element.id === endpoint.elementId &&
         element.kind === 'asset' &&
-        ['stairs', 'elevator'].includes(element.asset),
+        ['stairs', 'elevator', 'freightLift'].includes(element.asset),
     )
   );
 }
@@ -32,26 +35,27 @@ export function addConnections(project, targetIds, type, x, y) {
   const ids = [...new Set(targetIds)];
   const current = activeFloor(project);
   if (
-    !['stairs', 'elevator'].includes(type) ||
+    !['stairs', 'elevator', 'freightLift'].includes(type) ||
     !ids.length ||
     (type === 'stairs' && ids.length !== 1) ||
     ids.some((id) => id === current || !floorList(project).some((floor) => floor.id === id))
   )
     throw new Error('Escolha outro pavimento; elevadores aceitam vários destinos.');
+  const { w, h } = connectionSize(type);
   if (
     ![x, y].every(Number.isFinite) ||
     x < 0 ||
     y < 0 ||
-    x + 2 > project.width ||
-    y + 2 > project.height
+    x + w > project.width ||
+    y + h > project.height
   )
-    throw new Error('Posicione a conexão de 2 × 2 m dentro dos limites da planta.');
+    throw new Error('Posicione a conexão dentro dos limites da planta.');
   const layer = project.layers.find((item) => item.id === 'equipment');
   if (!layer?.visible || layer.locked)
     throw new Error('Mostre e desbloqueie a camada Equipamentos.');
   const stops = [current, ...ids].map((floorId) => ({
     floorId,
-    element: { id: uid(), kind: 'asset', asset: type, x, y, w: 2, h: 2, rotation: 0 },
+    element: { id: uid(), kind: 'asset', asset: type, x, y, w, h, rotation: 0 },
   }));
   // Each stop shares one physical asset; pairwise links allow travel from any stop.
   const links = [];

@@ -27,7 +27,9 @@ export const assetInMode = (project, id) =>
 export const toolInMode = (project, tool) =>
   !isColony(project) || !['door', 'wall', 'vent', 'module'].includes(tool);
 export const pathInMode = (project, id) =>
-  isColony(project) ? !['corridor', 'vent'].includes(id) : !['talus', 'cliff'].includes(id);
+  isColony(project)
+    ? !['corridor', 'vent'].includes(id)
+    : !['talus', 'cliff', 'canyon'].includes(id);
 export function normalizeProjectMode(mode) {
   if (mode === undefined) return 'construction';
   if (!projectModes.some(([id]) => id === mode)) throw new Error('Modo de projeto desconhecido.');

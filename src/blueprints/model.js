@@ -14,6 +14,7 @@ import { normalizeVentPorts, remapVentPorts } from './vent-ports.js';
 import { vehicleAssets } from './vehicle-assets.js';
 import { colonyAssets } from './colony-assets.js';
 import { floorKinds, normalizeFloorFinish } from './floor-finishes.js';
+import { visualLayers } from './visual-layers.js';
 import { validEndpoint } from './connections.js';
 import { rotatePoint } from './orientation.js';
 import { selectionBounds } from './selection.js';
@@ -864,6 +865,10 @@ function normalizeProjectData(raw) {
         base[flag] = e[flag];
       }
     }
+    if (e.visualLayer !== undefined) {
+      if (!Object.hasOwn(visualLayers, e.visualLayer)) throw Error('Camada visual inválida.');
+      base.visualLayer = e.visualLayer;
+    }
     if (e.stackOrder !== undefined) {
       if (e.kind !== 'asset') throw new Error('Ordem de sobreposição inválida.');
       base.stackOrder = number(e.stackOrder, -1000000, 1000000);
@@ -1021,6 +1026,7 @@ function normalizeProjectData(raw) {
             'ledge',
             'talus',
             'cliff',
+            'canyon',
             'channel',
             'gratedChannel',
             'river',
@@ -1147,6 +1153,10 @@ function normalizeProjectData(raw) {
       const parsed = normalizeProjectData({ ...base, elements: floor.elements || [] });
       return { id, name, elements: parsed.elements };
     });
+    if (raw.groundFloor !== undefined) {
+      if (!floorIds.has(raw.groundFloor)) throw Error('Térreo não encontrado.');
+      result.groundFloor = raw.groundFloor;
+    }
     if (!floorIds.has(result.activeFloor)) throw new Error('Pavimento ativo não encontrado.');
   }
   if (raw.connections !== undefined) {

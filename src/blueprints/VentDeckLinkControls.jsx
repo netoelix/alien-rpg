@@ -1,7 +1,7 @@
 import { HelpHint } from './HelpHint.jsx';
 import { useState } from 'react';
 import { activeFloor, floorList } from './floors.js';
-import { connectVentFloor, portDestinations } from './vent-links.js';
+import { alignVentDestination, connectVentFloor, portDestinations } from './vent-links.js';
 export function VentDeckLinkControls({ project, element, port, onChange, onNavigate }) {
   const [choice, setChoice] = useState(''),
     [error, setError] = useState('');
@@ -19,6 +19,25 @@ export function VentDeckLinkControls({ project, element, port, onChange, onNavig
       {links.map((l) => (
         <div key={l.id}>
           <p>{l.label}</p>
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                onChange(
+                  alignVentDestination(
+                    project,
+                    { floorId: activeFloor(project), elementId: element.id, portId: port.id },
+                    l.endpoint,
+                  ),
+                );
+                setError('');
+              } catch (e) {
+                setError(e.message);
+              }
+            }}
+          >
+            Alinhar destino à origem
+          </button>
           <button type="button" onClick={() => onNavigate(l.endpoint)}>
             Ir ao destino
           </button>
