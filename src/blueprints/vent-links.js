@@ -105,6 +105,44 @@ export function normalizeVentLinks(project, value) {
   });
 }
 
+export function alignVentDestination(project, from, to) {
+  const source = ventLinkEndpoint(project, from),
+    target = ventLinkEndpoint(project, to);
+  if (
+    !source ||
+    !target ||
+    !(project.ventLinks || []).some(
+      (link) =>
+        (matches(link.from, from) && matches(link.to, to)) ||
+        (matches(link.to, from) && matches(link.from, to)),
+    )
+  )
+    throw Error('Vínculo inválido.');
+  const layer = project.layers.find((l) => l.id === 'vents');
+  if (!layer?.visible || layer.locked || target.vent.locked || target.vent.hidden)
+    throw Error('Mostre e desbloqueie o destino.');
+  const hit = nearestVentPort(
+    target.vent.points,
+    ventPortPosition(source.vent.points, source.port),
+  );
+  if (!hit || hit.distance > 0.001)
+    throw Error('O duto de destino precisa passar pelas coordenadas da origem.');
+  return updateFloorElements(
+    project,
+    to.floorId,
+    floorElements(project, to.floorId).map((e) =>
+      e.id !== to.elementId
+        ? e
+        : {
+            ...e,
+            ports: e.ports.map((p) =>
+              p.id !== to.portId ? p : { ...p, segment: hit.segment, t: hit.t },
+            ),
+          },
+    ),
+  );
+}
+
 // New vertical links are spatially aligned. Legacy links remain readable unchanged.
 export function connectVentFloor(project, from, targetFloor) {
   const source = ventLinkEndpoint(project, from);

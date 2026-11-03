@@ -1,25 +1,44 @@
 import { HelpHint } from './HelpHint.jsx';
 import { NumberField } from './NumberField.jsx';
 import { VisualChoices } from './VisualChoices.jsx';
-import { floorFinishes } from './floor-finishes.js';
+import { floorFinishes, terrainFinishes } from './floor-finishes.js';
 export function FloorFinishControls({ value, onChange, region = false }) {
   const current = value || { type: 'plain', size: 1, opacity: 0.2 };
+  const terrain = Object.hasOwn(terrainFinishes, current.type);
   const water = ['pool', 'lake'].includes(current.type);
   return (
     <fieldset className="blueprint-floor-options">
-      <legend>{water ? 'Detalhes da água' : 'Acabamento do piso'}</legend>
-      {!water && (
+      <legend>
+        {terrain ? 'Detalhes do terreno' : water ? 'Detalhes da água' : 'Acabamento do piso'}
+      </legend>
+      {!terrain && !water && (
         <VisualChoices
           label="Padrão"
           kind="floor"
           value={current.type}
           onChange={(type) => onChange({ ...current, type })}
           options={Object.entries(floorFinishes).filter(
-            ([key]) => !['pool', 'lake', 'service'].includes(key) && (region || key !== 'hive'),
+            ([key]) =>
+              !Object.hasOwn(terrainFinishes, key) &&
+              !['pool', 'lake', 'service'].includes(key) &&
+              (region || key !== 'hive'),
           )}
         />
       )}
-      {current.type !== 'plain' && (
+      {terrain && (
+        <label>
+          {current.type === 'plateau' ? 'Altura acima do terreno (m)' : 'Profundidade (m)'}
+          <NumberField
+            type="number"
+            min=".01"
+            max="10000"
+            step="any"
+            value={current.height ?? 3}
+            onChange={(e) => onChange({ ...current, height: Number(e.target.value) })}
+          />
+        </label>
+      )}
+      {!terrain && current.type !== 'plain' && (
         <>
           <label>
             {['pool', 'lake'].includes(current.type)

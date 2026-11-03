@@ -10,6 +10,7 @@ import {
   rotateGestureGroup,
   moveGestureTarget,
   transformGestureTarget,
+  editPathVertex,
   gestureUsesSnap,
 } from './gesture-transform.js';
 import { gesturePreview, rectangle } from './gesture-preview.js';
@@ -17,6 +18,7 @@ import { selectionCommands } from './selection-commands.js';
 import { startHistory, applyEdit, undoEdit, redoEdit } from './edit-history.js';
 import { EditorPopup } from './EditorPopup.jsx';
 import { HelpHint } from './HelpHint.jsx';
+import { isClosedVent, reopenVent } from './vent-cycle.js';
 import { nearestVentJunction } from './ventilation.js';
 import { NumberField } from './NumberField.jsx';
 import { projectModes, isColony, assetInMode, toolInMode, pathInMode } from './project-mode.js';
@@ -27,6 +29,8 @@ import { VisualChoices } from './VisualChoices.jsx';
 import { legacyAssets } from './legacy-assets.js';
 import { beginObjectDrag, objectDragStarted } from './object-drag.js';
 import { switchFloor as switchVentFloor } from './floors.js';
+import { defaultVisualLayer, visualLayers } from './visual-layers.js';
+import { terrainFinishes } from './floor-finishes.js';
 import { VentPortControls } from './VentPortControls.jsx';
 import { nearestVentPort } from './vent-ports.js';
 import { TraceControls } from './TraceControls.jsx';
@@ -52,7 +56,7 @@ import { arrangements, arrangeEquipment, objectView } from './arrange.js';
 import { activeFloor, floorList } from './floors.js';
 import { ObjectsPanel } from './ObjectsPanel.jsx';
 import { objectEditable } from './objects.js';
-import { addConnections } from './connections.js';
+import { addConnections, connectionSize } from './connections.js';
 import { DeckReference, DeckConnections } from './DeckConnections.jsx';
 import { FloorControls } from './FloorControls.jsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -73,7 +77,6 @@ import {
   moveRoomContents,
   duplicateRoomContents,
   rotateRoomContents,
-  moveVertex,
   changeVertexCount,
   nearestWall,
   newProject,
@@ -906,14 +909,12 @@ export default function BlueprintEditor() {
   }
   function vertexProperty(index, axis, value) {
     if (!editable || gesture) return;
-    const changed = moveVertex(selectedElement, index, {
-      ...selectedElement.points[index],
-      [axis]: value,
-    });
-    commit({
-      ...project,
-      elements: project.elements.map((element) => (element.id === selected ? changed : element)),
-    });
+    commit(
+      editPathVertex(project, selectedElement, index, {
+        ...selectedElement.points[index],
+        [axis]: value,
+      }),
+    );
   }
   function vertexCount(index, action) {
     if (!editable || gesture || points.length) return;
@@ -1362,6 +1363,7 @@ export default function BlueprintEditor() {
                   ['floor', 'Piso'],
                   ['pool', 'Piscina'],
                   ['lake', 'Lago'],
+                  ...(isColony(project) ? Object.entries(terrainFinishes) : []),
                 ]}
                 onChange={(purpose) => {
                   setAreaPurpose(purpose);
@@ -1408,9 +1410,10 @@ export default function BlueprintEditor() {
                 }}
                 region
                 onChange={(finish) => {
-                  setRegionFinish(finish);
-                  if (['pool', 'lake'].includes(finish.type)) setAreaPurpose(finish.type);
-                  else setAreaPurpose('floor');
+                  setRegionFinish({
+                    ...finish,
+                    type: areaPurpose === 'floor' ? finish.type : regionFinish.type,
+                  });
                 }}
               />
             </>
@@ -2397,8 +2400,8 @@ export default function BlueprintEditor() {
                 <rect
                   x={cursor.x}
                   y={cursor.y}
-                  width="2"
-                  height="2"
+                  width={connectionSize(connectionPlacement.type).w}
+                  height={connectionSize(connectionPlacement.type).h}
                   fill="#f1c46c"
                   fillOpacity=".2"
                   stroke="#f1c46c"
@@ -2533,6 +2536,25 @@ export default function BlueprintEditor() {
                   </small>
                 )}
                 <fieldset disabled={!editable}>
+                  <label>
+                    Camada visual
+                    {['room', 'polygon', 'ellipse', 'corridor'].includes(selectedElement.kind)
+                      ? ' das paredes'
+                      : ''}
+                    <select
+                      value={selectedElement.visualLayer || ''}
+                      onChange={(e) => property('visualLayer', e.target.value || undefined)}
+                    >
+                      <option value="">
+                        Padrão · {visualLayers[defaultVisualLayer(selectedElement)]}
+                      </option>
+                      {Object.entries(visualLayers).map(([id, name]) => (
+                        <option key={id} value={id}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                   {selectedElement.asset === 'stairs' && (
                     <details>
                       <summary>Legenda de destino</summary>
@@ -2725,6 +2747,26 @@ export default function BlueprintEditor() {
                         independente.
                       </HelpHint>
                     </fieldset>
+                  )}
+                  {isClosedVent(selectedElement) && (
+                    <button
+                      disabled={!editable}
+                      onClick={() => {
+                        try {
+                          const changed = reopenVent(selectedElement);
+                          commit({
+                            ...project,
+                            elements: project.elements.map((e) =>
+                              e.id === changed.id ? changed : e,
+                            ),
+                          });
+                        } catch (error) {
+                          setMessage(error.message);
+                        }
+                      }}
+                    >
+                      Reabrir ciclo na emenda
+                    </button>
                   )}
                   {selectedElement.kind === 'vent' && (
                     <VentPortControls

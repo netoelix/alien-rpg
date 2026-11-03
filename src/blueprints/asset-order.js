@@ -1,3 +1,4 @@
+import { visualLayer } from './visual-layers.js';
 import { colonyAssets } from './colony-assets.js';
 import { isPlatform } from './level-assets.js';
 import { floorMarkings } from './floor-markings.js';
@@ -12,8 +13,10 @@ export function assetOrder(element) {
 }
 
 export function reorderAsset(project, id, action) {
+  const active = project.elements.find((e) => e.id === id);
+  if (!active) return project;
   const sorted = project.elements
-    .filter((e) => e.kind === 'asset')
+    .filter((e) => e.kind === 'asset' && visualLayer(e) === visualLayer(active))
     .sort((a, b) => assetOrder(a) - assetOrder(b));
   const index = sorted.findIndex((e) => e.id === id);
   if (index < 0 || sorted[index].locked) return project;

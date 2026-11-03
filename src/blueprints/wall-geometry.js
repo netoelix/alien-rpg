@@ -70,7 +70,7 @@ export function sharedWallJunctions(structure) {
       if (Math.abs(cross) < 1e-8) continue;
       const key = point.join(':');
       const radius = Math.max(wallWidths[a.type], wallWidths[b.type], joints.get(key)?.radius || 0);
-      joints.set(key, { x: point[0], y: point[1], radius });
+      joints.set(key, { x: point[0], y: point[1], radius, owner: a.owner });
     }
   }
   return [...joints.values()];

@@ -5,6 +5,7 @@ import {
   floorList,
   switchFloor,
   addFloor,
+  reorderFloor,
   renameFloor,
   removeFloor,
 } from './floors.js';
@@ -12,6 +13,11 @@ import {
 export function FloorControls({ project, disabled, onChange, onError }) {
   const floors = floorList(project);
   const current = floors.find((floor) => floor.id === activeFloor(project));
+  const groundIndex = Math.max(
+    0,
+    floors.findIndex((f) => f.id === project.groundFloor),
+  );
+  const currentIndex = floors.indexOf(current);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState('');
   function apply(operation) {
@@ -32,13 +38,37 @@ export function FloorControls({ project, disabled, onChange, onError }) {
           apply((value) => switchFloor(value, event.target.value));
         }}
       >
-        {floors.map((floor) => (
+        {floors.map((floor, index) => (
           <option key={floor.id} value={floor.id}>
-            {floor.name}
+            {floor.name} · {index === groundIndex ? 'Térreo' : 'Nível ' + (index - groundIndex)}
           </option>
         ))}
       </select>
       <EditorPopup title="Gerenciar pavimentos">
+        <button
+          disabled={disabled || floors.length >= 20}
+          onClick={() => apply((value) => addFloor(value, false, true))}
+        >
+          Novo subsolo
+        </button>
+        <button
+          disabled={disabled || !currentIndex}
+          onClick={() => apply((value) => reorderFloor(value, -1))}
+        >
+          Descer um nível
+        </button>
+        <button
+          disabled={disabled || currentIndex === floors.length - 1}
+          onClick={() => apply((value) => reorderFloor(value, 1))}
+        >
+          Subir um nível
+        </button>
+        <button
+          disabled={disabled || currentIndex === groundIndex}
+          onClick={() => apply((value) => ({ ...value, groundFloor: current.id }))}
+        >
+          Definir como térreo
+        </button>
         <button
           disabled={disabled || floors.length >= 20}
           onClick={() => apply((value) => addFloor(value))}

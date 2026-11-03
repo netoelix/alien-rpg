@@ -28,6 +28,7 @@ export function TraceControls({ value, onChange, showType = true, colony = false
               ? [
                   ['talus', 'Talude'],
                   ['cliff', 'Penhasco'],
+                  ['canyon', 'Cânion'],
                 ]
               : []),
             ['ledge', 'Borda de desnível'],

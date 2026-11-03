@@ -53,7 +53,7 @@ export function traceGeometry(element) {
     });
   const total = normals.reduce((sum, n) => sum + n.length, 0),
     spacing = Math.max(
-      ['talus', 'cliff'].includes(element.traceType)
+      ['talus', 'cliff', 'canyon'].includes(element.traceType)
         ? Math.max(0.35, element.width * 0.28)
         : element.traceType === 'rail'
           ? (element.width * 0.64) / 0.9

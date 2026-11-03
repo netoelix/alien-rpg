@@ -11,7 +11,8 @@ import { floorMarkings } from './floor-markings.js';
 import { Shape } from './FloorShape.jsx';
 import { FloorFinish } from './FloorFinish.jsx';
 import { VentilationNetwork } from './Ventilation.jsx';
-import { memo, useMemo } from 'react';
+import { visualLayer, visualLayers } from './visual-layers.js';
+import { Fragment, memo, useMemo } from 'react';
 const emptyPreview = [];
 import { Furniture } from './Furniture.jsx';
 import { furniture } from './furniture.js';
@@ -77,6 +78,17 @@ export const Drawing = memo(function Drawing({
         transitions: structure.map(wallTransitions),
       };
     }, [elements]);
+  const byPlane = useMemo(() => {
+    const groups = new Map();
+    for (const e of elements) {
+      const key = visualLayer(e);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(e);
+    }
+    return groups;
+  }, [elements]);
+  const structureById = useMemo(() => new Map(structure.map((e) => [e.id, e])), [structure]);
+  const wallPlanes = useMemo(() => [...new Set(structure.map(visualLayer))], [structure]);
   const getGeometry = (e) => openings.get(e.id);
   const line = (wall) => ({ x1: wall.a[0], y1: wall.a[1], x2: wall.b[0], y2: wall.b[1] });
   const position = (e) => {
@@ -153,46 +165,52 @@ export const Drawing = memo(function Drawing({
             </mask>
           ) : null,
         )}
-        <mask
-          id="blueprint-walls"
-          maskUnits="userSpaceOnUse"
-          x="0"
-          y="0"
-          width={project.width}
-          height={project.height}
-        >
-          <g color="white">
-            {structure.map((e, index) => (
-              <g
-                key={e.id}
-                mask={e.walls?.length ? 'url(#blueprint-replace-' + index + ')' : undefined}
-              >
-                <Shape element={e} outer />
-              </g>
-            ))}
-          </g>
-          <g color="black">
-            {structure.map((e) => (
-              <g key={e.id}>
-                <Shape element={e} seamOverlap />
-              </g>
-            ))}
-          </g>
-          {doors.map(
-            (e) =>
-              doorPosition(e, elements) && (
-                <rect
-                  key={e.id}
-                  transform={position(e)}
-                  x={-e.width / 2}
-                  y={-getGeometry(e).frameDepth}
-                  width={e.width}
-                  height={2 * getGeometry(e).frameDepth}
-                  fill="black"
-                />
-              ),
-          )}
-        </mask>
+        {wallPlanes.map((plane) => (
+          <mask
+            key={plane}
+            id={'blueprint-walls-' + plane}
+            maskUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width={project.width}
+            height={project.height}
+          >
+            <g color="white">
+              {structure.map(
+                (e, index) =>
+                  visualLayer(e) === plane && (
+                    <g
+                      key={e.id}
+                      mask={e.walls?.length ? 'url(#blueprint-replace-' + index + ')' : undefined}
+                    >
+                      <Shape element={e} outer />
+                    </g>
+                  ),
+              )}
+            </g>
+            <g color="black">
+              {structure.map((e) => (
+                <g key={e.id}>
+                  <Shape element={e} seamOverlap />
+                </g>
+              ))}
+            </g>
+            {doors.map(
+              (e) =>
+                doorPosition(e, elements) && (
+                  <rect
+                    key={e.id}
+                    transform={position(e)}
+                    x={-e.width / 2}
+                    y={-getGeometry(e).frameDepth}
+                    width={e.width}
+                    height={2 * getGeometry(e).frameDepth}
+                    fill="black"
+                  />
+                ),
+            )}
+          </mask>
+        ))}
         <mask
           id="blueprint-section-cuts"
           maskUnits="userSpaceOnUse"
@@ -256,264 +274,302 @@ export const Drawing = memo(function Drawing({
           fill="url(#blueprint-grid)"
         />
       )}
-      {visible('structure') && (
-        <g data-layer="structure" opacity={opacity('structure')}>
-          <g color={palette.floor}>
-            {structure.map((e) => (
-              <Shape key={e.id} element={e} seamOverlap />
-            ))}
-          </g>
-          {structure.map((e) => (
-            <FloorFinish key={'finish-' + e.id} element={e} ink={palette.ink} />
-          ))}
-          {elements
-            .filter((e) => e.kind === 'floorRegion')
-            .map((e) => (
-              <FloorRegion key={e.id} element={e} floor={palette.floor} ink={palette.ink} />
-            ))}
-          <rect
-            width={project.width}
-            height={project.height}
-            fill={palette.ink}
-            mask="url(#blueprint-walls)"
-          />
-          <g mask="url(#blueprint-section-cuts)" fill="none" stroke={palette.ink}>
-            <g mask="url(#blueprint-junction-outside)" fill={palette.ink} stroke="none">
-              {junctions.map((joint, index) => (
-                <rect
-                  key={index}
-                  x={joint.x - joint.radius}
-                  y={joint.y - joint.radius}
-                  width={2 * joint.radius}
-                  height={2 * joint.radius}
-                />
-              ))}
-            </g>
-            {sharedStructure.map((element, index) => (
-              <g
-                key={element.id}
-                mask={element.walls?.length ? 'url(#blueprint-outside-' + index + ')' : undefined}
-                strokeLinejoin="round"
-                strokeLinecap="butt"
-              >
-                {transitions[index].map((joint, jointIndex) => (
-                  <rect
-                    key={`transition-${jointIndex}`}
-                    x={joint.x - joint.radius}
-                    y={joint.y - joint.radius}
-                    width={2 * joint.radius}
-                    height={2 * joint.radius}
-                    fill={palette.ink}
-                    stroke="none"
-                  />
+      {Object.keys(visualLayers).map((plane) => {
+        const items = byPlane.get(plane) || emptyPreview;
+        if (!items.length && plane !== 'floor' && plane !== 'annotations') return null;
+        return (
+          <Fragment key={plane}>
+            {visible('structure') && (
+              <g data-layer="structure" opacity={opacity('structure')}>
+                <g color={palette.floor}>
+                  {(plane === 'floor' ? structure : []).map((e) => (
+                    <Shape key={e.id} element={e} seamOverlap />
+                  ))}
+                </g>
+                {(plane === 'floor' ? structure : []).map((e) => (
+                  <FloorFinish key={'finish-' + e.id} element={e} ink={palette.ink} />
                 ))}
-                {runs[index].map((run, runIndex) => (
-                  <g key={runIndex}>
-                    <path
-                      d={run.d}
-                      strokeWidth={(element.kind === 'partition' ? 1 : 2) * wallWidths[run.type]}
+                {items
+                  .filter((e) => e.kind === 'floorRegion')
+                  .map((e) => (
+                    <FloorRegion key={e.id} element={e} floor={palette.floor} ink={palette.ink} />
+                  ))}
+              </g>
+            )}
+            {interactive && (
+              <g data-editor-only="true">
+                {visible('structure') &&
+                  structure
+                    .filter((e) =>
+                      e.kind === 'partition' ? visualLayer(e) === plane : plane === 'floor',
+                    )
+                    .map((e) => (
+                      <g key={e.id} data-object={e.id} opacity="0" color="white">
+                        {e.kind === 'partition' ? (
+                          <polyline
+                            points={e.points.map((p) => p.x + ',' + p.y).join(' ')}
+                            fill="none"
+                            stroke="white"
+                            strokeWidth=".8"
+                          />
+                        ) : (
+                          <Shape element={e} />
+                        )}
+                      </g>
+                    ))}
+                {visible('structure') &&
+                  items
+                    .filter((e) => e.kind === 'floorRegion')
+                    .map((e) => (
+                      <g key={e.id} data-object={e.id} opacity="0">
+                        <Shape element={e} />
+                      </g>
+                    ))}
+              </g>
+            )}
+            {visible('equipment') && (
+              <g data-layer="equipment" opacity={opacity('equipment')}>
+                <CirculationNetwork elements={items} floor={palette.floor} ink={palette.ink} />
+                <g stroke={palette.ink} color={palette.ink}>
+                  {items
+                    .filter((e) => e.kind === 'trace' && !isCirculation(e))
+                    .map((e) => (
+                      <g key={e.id} data-object={e.id}>
+                        <Trace element={e} floor={palette.floor} />
+                      </g>
+                    ))}
+                </g>
+                {items
+                  .filter((e) => e.kind === 'asset')
+                  .sort((a, b) => assetOrder(a) - assetOrder(b))
+                  .map((e) => (
+                    <g
+                      key={e.id}
+                      data-object={e.id}
+                      transform={`translate(${e.x + e.w / 2} ${e.y + e.h / 2}) rotate(${e.rotation}) translate(${-e.w / 2} ${-e.h / 2})`}
+                    >
+                      {furniture[e.asset] ? (
+                        <svg
+                          width={e.w}
+                          height={e.h}
+                          viewBox={`0 0 ${e.w} ${e.h}`}
+                          overflow="visible"
+                          fill={palette.floor}
+                          stroke={floorMarkings[e.asset] ? palette.accent : palette.ink}
+                          color={floorMarkings[e.asset] ? palette.accent : palette.ink}
+                        >
+                          <Furniture type={e.asset} w={e.w} h={e.h} floor={palette.floor} />
+                        </svg>
+                      ) : (
+                        <svg
+                          width={e.w}
+                          height={e.h}
+                          viewBox="0 0 100 100"
+                          preserveAspectRatio="none"
+                          fill={palette.floor}
+                          stroke={palette.ink}
+                          strokeWidth="2"
+                        >
+                          <rect width="100" height="100" fill="transparent" stroke="none" />
+                          <AssetSymbol type={e.asset} />
+                        </svg>
+                      )}
+                    </g>
+                  ))}
+              </g>
+            )}
+            {visible('structure') &&
+              (wallPlanes.includes(plane) || items.some((e) => e.kind === 'door')) && (
+                <g data-layer="structure" opacity={opacity('structure')} pointerEvents="none">
+                  {wallPlanes.includes(plane) && (
+                    <rect
+                      width={project.width}
+                      height={project.height}
+                      fill={palette.ink}
+                      mask={'url(#blueprint-walls-' + plane + ')'}
                     />
-                    {run.type === 'hull' && (
-                      <>
-                        <path
-                          d={run.d}
-                          stroke={palette.floor}
-                          strokeWidth={element.kind === 'partition' ? 0.475 : 0.95}
-                        />
-                        <path d={run.d} strokeWidth={element.kind === 'partition' ? 0.14 : 0.28} />
-                      </>
-                    )}
-                    {run.type === 'glass' && (
-                      <path
-                        d={run.d}
-                        stroke={palette.accent}
-                        strokeWidth={element.kind === 'partition' ? 0.2 : 0.4}
-                        strokeDasharray=".3 .2"
-                      />
+                  )}
+                  <g mask="url(#blueprint-section-cuts)" fill="none" stroke={palette.ink}>
+                    <g mask="url(#blueprint-junction-outside)" fill={palette.ink} stroke="none">
+                      {junctions
+                        .filter((j) => plane === visualLayer(structureById.get(j.owner)))
+                        .map((joint, index) => (
+                          <rect
+                            key={index}
+                            x={joint.x - joint.radius}
+                            y={joint.y - joint.radius}
+                            width={2 * joint.radius}
+                            height={2 * joint.radius}
+                          />
+                        ))}
+                    </g>
+                    {sharedStructure.map(
+                      (element, index) =>
+                        visualLayer(element) === plane && (
+                          <g
+                            key={element.id}
+                            mask={
+                              element.walls?.length
+                                ? 'url(#blueprint-outside-' + index + ')'
+                                : undefined
+                            }
+                            strokeLinejoin="round"
+                            strokeLinecap="butt"
+                          >
+                            {transitions[index].map((joint, jointIndex) => (
+                              <rect
+                                key={`transition-${jointIndex}`}
+                                x={joint.x - joint.radius}
+                                y={joint.y - joint.radius}
+                                width={2 * joint.radius}
+                                height={2 * joint.radius}
+                                fill={palette.ink}
+                                stroke="none"
+                              />
+                            ))}
+                            {runs[index].map((run, runIndex) => (
+                              <g key={runIndex}>
+                                <path
+                                  d={run.d}
+                                  strokeWidth={
+                                    (element.kind === 'partition' ? 1 : 2) * wallWidths[run.type]
+                                  }
+                                />
+                                {run.type === 'hull' && (
+                                  <>
+                                    <path
+                                      d={run.d}
+                                      stroke={palette.floor}
+                                      strokeWidth={element.kind === 'partition' ? 0.475 : 0.95}
+                                    />
+                                    <path
+                                      d={run.d}
+                                      strokeWidth={element.kind === 'partition' ? 0.14 : 0.28}
+                                    />
+                                  </>
+                                )}
+                                {run.type === 'glass' && (
+                                  <path
+                                    d={run.d}
+                                    stroke={palette.accent}
+                                    strokeWidth={element.kind === 'partition' ? 0.2 : 0.4}
+                                    strokeDasharray=".3 .2"
+                                  />
+                                )}
+                              </g>
+                            ))}
+                          </g>
+                        ),
                     )}
                   </g>
-                ))}
-              </g>
-            ))}
-          </g>
-          {doors.map((door) => {
-            const geometry = getGeometry(door);
-            if (!geometry) return null;
-            const reach = geometry.depth / 2 + 0.03;
-            return (
-              <rect
-                key={`threshold-${door.id}`}
-                transform={position(door)}
-                x={-door.width / 2}
-                y={geometry.floorSide > 0 ? 0 : -reach}
-                width={door.width}
-                height={reach}
-                fill={palette.floor}
-              />
-            );
-          })}
-        </g>
-      )}
-      {interactive && (
-        <g data-editor-only="true">
-          {visible('structure') &&
-            structure.map((e) => (
-              <g key={e.id} data-object={e.id} opacity="0" color="white">
-                {e.kind === 'partition' ? (
-                  <polyline
-                    points={e.points.map((p) => p.x + ',' + p.y).join(' ')}
-                    fill="none"
-                    stroke="white"
-                    strokeWidth=".8"
-                  />
-                ) : (
-                  <Shape element={e} />
-                )}
-              </g>
-            ))}
-          {visible('structure') &&
-            elements
-              .filter((e) => e.kind === 'floorRegion')
-              .map((e) => (
-                <g key={e.id} data-object={e.id} opacity="0">
-                  <Shape element={e} />
+                  {doors
+                    .filter((e) => visualLayer(e) === plane)
+                    .map((door) => {
+                      const geometry = getGeometry(door);
+                      if (!geometry) return null;
+                      const reach = geometry.depth / 2 + 0.03;
+                      return (
+                        <rect
+                          key={`threshold-${door.id}`}
+                          transform={position(door)}
+                          x={-door.width / 2}
+                          y={geometry.floorSide > 0 ? 0 : -reach}
+                          width={door.width}
+                          height={reach}
+                          fill={palette.floor}
+                        />
+                      );
+                    })}
                 </g>
-              ))}
-        </g>
-      )}
-      {visible('doors') && (
-        <g
-          data-layer="doors"
-          opacity={opacity('doors')}
-          stroke={palette.accent}
-          fill="none"
-          strokeWidth=".12"
-        >
-          {doors.map(
-            (e) =>
-              doorPosition(e, elements) && (
-                <g key={e.id} data-object={e.id} transform={position(e)}>
-                  <OpeningSymbol
-                    type={e.openingType}
-                    width={e.width}
-                    depth={getGeometry(e).frameDepth}
-                    stroke={isWindow(e.openingType) ? palette.ink : palette.accent}
-                  />
-                  <rect
-                    x={-e.width / 2}
-                    y={-getGeometry(e).frameDepth}
-                    width={e.width}
-                    height={2 * getGeometry(e).frameDepth}
-                    fill="transparent"
-                    stroke="none"
-                  />
-                </g>
-              ),
-          )}
-        </g>
-      )}
-      {visible('equipment') && (
-        <g data-layer="equipment" opacity={opacity('equipment')}>
-          <CirculationNetwork elements={elements} floor={palette.floor} ink={palette.ink} />
-          <g stroke={palette.ink} color={palette.ink}>
-            {elements
-              .filter((e) => e.kind === 'trace' && !isCirculation(e))
-              .map((e) => (
-                <g key={e.id} data-object={e.id}>
-                  <Trace element={e} floor={palette.floor} />
-                </g>
-              ))}
-          </g>
-          {elements
-            .filter((e) => e.kind === 'asset')
-            .sort((a, b) => assetOrder(a) - assetOrder(b))
-            .map((e) => (
+              )}
+            {visible('doors') && (
               <g
-                key={e.id}
-                data-object={e.id}
-                transform={`translate(${e.x + e.w / 2} ${e.y + e.h / 2}) rotate(${e.rotation}) translate(${-e.w / 2} ${-e.h / 2})`}
+                data-layer="doors"
+                opacity={opacity('doors')}
+                stroke={palette.accent}
+                fill="none"
+                strokeWidth=".12"
               >
-                {furniture[e.asset] ? (
-                  <svg
-                    width={e.w}
-                    height={e.h}
-                    viewBox={`0 0 ${e.w} ${e.h}`}
-                    overflow="visible"
-                    fill={palette.floor}
-                    stroke={floorMarkings[e.asset] ? palette.accent : palette.ink}
-                    color={floorMarkings[e.asset] ? palette.accent : palette.ink}
-                  >
-                    <Furniture type={e.asset} w={e.w} h={e.h} floor={palette.floor} />
-                  </svg>
-                ) : (
-                  <svg
-                    width={e.w}
-                    height={e.h}
-                    viewBox="0 0 100 100"
-                    preserveAspectRatio="none"
-                    fill={palette.floor}
-                    stroke={palette.ink}
-                    strokeWidth="2"
-                  >
-                    <rect width="100" height="100" fill="transparent" stroke="none" />
-                    <AssetSymbol type={e.asset} />
-                  </svg>
-                )}
+                {items
+                  .filter((e) => e.kind === 'door')
+                  .map(
+                    (e) =>
+                      doorPosition(e, elements) && (
+                        <g key={e.id} data-object={e.id} transform={position(e)}>
+                          <OpeningSymbol
+                            type={e.openingType}
+                            width={e.width}
+                            depth={getGeometry(e).frameDepth}
+                            stroke={isWindow(e.openingType) ? palette.ink : palette.accent}
+                          />
+                          <rect
+                            x={-e.width / 2}
+                            y={-getGeometry(e).frameDepth}
+                            width={e.width}
+                            height={2 * getGeometry(e).frameDepth}
+                            fill="transparent"
+                            stroke="none"
+                          />
+                        </g>
+                      ),
+                  )}
               </g>
-            ))}
-        </g>
-      )}
-      {visible('equipment') && (
-        <g data-layer="equipment" opacity={opacity('equipment')}>
-          <StairDestinationLabels
-            project={project}
-            elements={elements}
-            ink={palette.accent}
-            background={palette.background}
-          />
-        </g>
-      )}
-      {visible('vents') && (
-        <g data-layer="vents" opacity={opacity('vents')} fill="none" stroke={palette.accent}>
-          <VentilationNetwork
-            elements={elements}
-            floor={palette.floor}
-            contextual
-            width={project.width}
-            height={project.height}
-          />
-        </g>
-      )}
-      {visible('vents') && (
-        <g data-layer="vents" opacity={opacity('vents')}>
-          <VentDestinationLabels project={project} elements={elements} ink={palette.accent} />
-        </g>
-      )}
-      {visible('labels') && (
-        <g
-          data-layer="labels"
-          opacity={opacity('labels')}
-          fill={palette.ink}
-          fontFamily="monospace"
-        >
-          {elements
-            .filter((e) => e.kind === 'dimension')
-            .map((e) => (
-              <Dimension
-                key={e.id}
-                element={e}
-                editable={interactive && e.id === selected}
-                data-object={e.id}
-                color={palette.ink}
-              />
-            ))}
-          {elements
-            .filter((e) => e.kind === 'label')
-            .map((e) => (
-              <LabelText key={e.id} data-object={e.id} element={e} />
-            ))}
-        </g>
-      )}
+            )}
+            {plane === 'annotations' && visible('equipment') && (
+              <g data-layer="equipment" opacity={opacity('equipment')}>
+                <StairDestinationLabels
+                  project={project}
+                  elements={elements}
+                  ink={palette.accent}
+                  background={palette.background}
+                />
+              </g>
+            )}
+            {items.some((e) => e.kind === 'vent') && visible('vents') && (
+              <g data-layer="vents" opacity={opacity('vents')} fill="none" stroke={palette.accent}>
+                <VentilationNetwork
+                  elements={elements}
+                  displayedVents={items.filter((e) => e.kind === 'vent')}
+                  floor={palette.floor}
+                  contextual
+                  width={project.width}
+                  height={project.height}
+                />
+              </g>
+            )}
+            {plane === 'annotations' && visible('vents') && (
+              <g data-layer="vents" opacity={opacity('vents')}>
+                <VentDestinationLabels project={project} elements={elements} ink={palette.accent} />
+              </g>
+            )}
+            {visible('labels') && (
+              <g
+                data-layer="labels"
+                opacity={opacity('labels')}
+                fill={palette.ink}
+                fontFamily="monospace"
+              >
+                {items
+                  .filter((e) => e.kind === 'dimension')
+                  .map((e) => (
+                    <Dimension
+                      key={e.id}
+                      element={e}
+                      editable={interactive && e.id === selected}
+                      data-object={e.id}
+                      color={palette.ink}
+                    />
+                  ))}
+                {items
+                  .filter((e) => e.kind === 'label')
+                  .map((e) => (
+                    <LabelText key={e.id} data-object={e.id} element={e} />
+                  ))}
+              </g>
+            )}
+          </Fragment>
+        );
+      })}
       {interactive && (
         <g data-editor-only="true">
           {elements

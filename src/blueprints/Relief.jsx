@@ -4,7 +4,9 @@ export function Relief({ element }) {
   const g = reliefGeometry(element);
   return (
     <g data-relief={element.traceType} fill="none" strokeLinejoin="round" strokeLinecap="butt">
-      <polyline points={coords(g.center)} strokeWidth=".09" />
+      {g.banks.map((bank, i) => (
+        <polyline key={i} points={coords(bank)} strokeWidth=".09" />
+      ))}
       {g.fractures.map((points, i) => (
         <polyline key={i} points={coords(points)} strokeWidth=".045" strokeOpacity=".8" />
       ))}

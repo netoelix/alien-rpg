@@ -271,3 +271,12 @@ Relatório: docs/auditoria-blueprint-2026-10-29.md. Análise sem alterar funcion
 - Concluída base compartilhada de projeção, armazenamento dos pavimentos e geração de IDs.
 - Decodificação de arquivo separada da validação recursiva dos pavimentos.
 - Próximo bloco: investigar e testar validações duplicadas nas operações de edição antes de alterar transações/histórico. Não remover validação de operações isoladas sem uma fronteira comum comprovada.
+
+### Pavimentos, elevador industrial e edição de redes — 03/11/2026
+
+Projetos antigos usam o primeiro andar como térreo. O gerenciador permite redefinir o térreo, inserir subsolo e trocar andares vizinhos. A troca conserva os IDs e é recusada se qualquer um dos andares participar de escada, elevador ou vínculo de ventilação. A plataforma industrial admite múltiplas paradas. Abertura de ciclo preserva a posição dos acessos existentes e recusa cortes que os atingiriam. Ao mover um vértice de duto, pontas automáticas coincidentes acompanham o trecho editado. Alinhamento vertical é explícito e exige que o duto de destino passe pelo ponto.
+
+**Avaliação de corredores, ruas e caminhos.** A próxima implementação sugerida é a edição de extremidades compartilhadas de ruas e caminhos no mesmo nível. As calçadas derivadas já acompanham a rua. Calçadas independentes e cruzamentos visuais devem continuar independentes até um encaixe intencional. Em seguida, avaliar corredores com testes para portas ancoradas, tampas e paredes editadas antes de permitir o movimento conjunto. Conferência visual do novo bloco de pavimentos e dutos pendente.
+
+### Relevo de colônias — áreas com cota
+Áreas elevadas e depressões são desenhadas em Áreas, com cota relativa em metros e hachuras voltadas para o lado baixo. São indicações cartográficas. O desenho de regiões rochosas e vegetação foi retirado para revisão visual futura. Arquivos da versão de teste preservam os contornos dessas regiões como piso liso.

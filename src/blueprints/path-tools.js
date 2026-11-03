@@ -16,6 +16,7 @@ export const pathChoices = [
   ['river', 'Rio'],
   ['talus', 'Talude'],
   ['cliff', 'Penhasco'],
+  ['canyon', 'Cânion'],
   ['ledge', 'Borda de desnível'],
 ];
 export function pathPreset(value) {
@@ -38,6 +39,7 @@ export function pathPreset(value) {
     ledge: 1,
     talus: 4,
     cliff: 4,
+    canyon: 8,
   };
   return {
     tool: ['corridor', 'vent'].includes(value) ? value : 'trace',

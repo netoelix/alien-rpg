@@ -3,7 +3,7 @@ import { HelpHint } from './HelpHint.jsx';
 import { NumberField } from './NumberField.jsx';
 import { useState } from 'react';
 import { activeFloor, floorList, switchFloor } from './floors.js';
-import { addConnections, floorElements } from './connections.js';
+import { addConnections, connectionSize, floorElements } from './connections.js';
 import { shapeTransform } from './orientation.js';
 
 export function DeckReference({ project, floorId, opacity }) {
@@ -139,6 +139,13 @@ export function DeckConnections({
               >
                 ↕ Elevador
               </button>
+              <button
+                aria-pressed={type === 'freightLift'}
+                disabled={disabled || placing}
+                onClick={() => setType('freightLift')}
+              >
+                Elevador industrial
+              </button>
             </div>
             <fieldset disabled={disabled || placing} className="deck-destinations">
               <legend>{type === 'stairs' ? 'Conectar ao pavimento' : 'Paradas do elevador'}</legend>
@@ -199,7 +206,7 @@ export function DeckConnections({
                   <NumberField
                     type="number"
                     min="0"
-                    max={project.width - 2}
+                    max={project.width - connectionSize(type).w}
                     step="0.25"
                     required
                     value={x}
@@ -211,7 +218,7 @@ export function DeckConnections({
                   <NumberField
                     type="number"
                     min="0"
-                    max={project.height - 2}
+                    max={project.height - connectionSize(type).h}
                     step="0.25"
                     required
                     value={y}
@@ -230,7 +237,13 @@ export function DeckConnections({
               return (
                 <article className="deck-link-card" key={id}>
                   <header>
-                    <strong>{asset?.asset === 'elevator' ? 'Elevador' : 'Escada'}</strong>
+                    <strong>
+                      {asset?.asset === 'freightLift'
+                        ? 'Elevador industrial'
+                        : asset?.asset === 'elevator'
+                          ? 'Elevador'
+                          : 'Escada'}
+                    </strong>
                     <small>
                       X {asset?.x} · Y {asset?.y}
                     </small>

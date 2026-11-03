@@ -22,7 +22,7 @@ export function switchFloor(project, id) {
     ),
   };
 }
-export function addFloor(project, duplicate = false) {
+export function addFloor(project, duplicate = false, basement = false) {
   const floors = floorList(project);
   if (floors.length >= 20) throw new Error('Limite de 20 pavimentos por projeto.');
   const id = uid();
@@ -44,7 +44,18 @@ export function addFloor(project, duplicate = false) {
   let index = floors.length + 1;
   while (floors.some((floor) => floor.name === 'Pavimento ' + index)) index++;
   const name = duplicate ? source.name.slice(0, 65) + ' — cópia' : 'Pavimento ' + index;
-  return switchFloor({ ...project, floors: [...floors, { id, name, elements }] }, id);
+  const groundFloor = project.groundFloor || floors[0].id;
+  const depth = floors.findIndex((f) => f.id === groundFloor) + 1;
+  const entry = { id, name: basement ? 'Subsolo ' + depth : name, elements };
+  return switchFloor(
+    {
+      ...project,
+      activeFloor: activeFloor(project),
+      groundFloor,
+      floors: basement ? [entry, ...floors] : [...floors, entry],
+    },
+    id,
+  );
 }
 export function renameFloor(project, name) {
   if (!name.trim() || name.trim().length > 80) throw new Error('Use um nome de 1 a 80 caracteres.');
@@ -60,5 +71,35 @@ export function removeFloor(project) {
   if (floors.length === 1) throw new Error('Mantenha pelo menos um pavimento.');
   const id = activeFloor(project);
   const next = switchFloor(project, floors.find((floor) => floor.id !== id).id);
-  return { ...next, floors: next.floors.filter((floor) => floor.id !== id) };
+  const remaining = next.floors.filter((f) => f.id !== id);
+  const ground = project.groundFloor || floors[0].id;
+  return {
+    ...next,
+    floors: remaining,
+    groundFloor:
+      ground === id
+        ? remaining[
+            Math.min(
+              floors.findIndex((f) => f.id === id),
+              remaining.length - 1,
+            )
+          ].id
+        : ground,
+  };
+}
+export function reorderFloor(project, step) {
+  const floors = [...floorList(project)];
+  const index = floors.findIndex((f) => f.id === activeFloor(project));
+  const target = index + step;
+  if (Math.abs(step) !== 1 || !floors[target]) throw Error('Não há pavimento nessa direção.');
+  const affected = new Set([floors[index].id, floors[target].id]);
+  if (
+    [...(project.connections || []), ...(project.ventLinks || [])].some(
+      (link) => affected.has(link.from.floorId) || affected.has(link.to.floorId),
+    )
+  )
+    throw Error('Desvincule as conexões verticais dos dois pavimentos antes de trocar a ordem.');
+  const groundIndex = floors.findIndex((f) => f.id === (project.groundFloor || floors[0].id));
+  [floors[index], floors[target]] = [floors[target], floors[index]];
+  return { ...project, floors, groundFloor: floors[groundIndex].id };
 }

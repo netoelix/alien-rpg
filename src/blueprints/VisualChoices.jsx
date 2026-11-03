@@ -16,6 +16,7 @@ const shortNames = {
   ledge: 'Desnível',
   talus: 'Talude',
   cliff: 'Penhasco',
+  canyon: 'Cânion',
   tread: 'Antiderrapante',
   service: 'Técnico',
   plates: 'Chapas',

@@ -62,3 +62,27 @@ test('talus alternates hatch length and cliff uses articulated fractures', () =>
     }).fractures.length <= 600,
   );
 });
+test('canyon keeps two banks with inward fractures and a clear bed after reopening', () => {
+  const e = {
+    id: 'c',
+    kind: 'trace',
+    traceType: 'canyon',
+    width: 8,
+    points: [
+      { x: 5, y: 10 },
+      { x: 35, y: 10 },
+    ],
+  };
+  const saved = parseProject(JSON.stringify({ ...newProject(), mode: 'colony', elements: [e] }));
+  const { banks, fractures } = reliefGeometry(saved.elements[0]);
+  assert.deepEqual(
+    banks.map((b) => b[0].y),
+    [14, 6],
+  );
+  assert.ok(fractures.length >= 2);
+  for (const rib of fractures) {
+    assert.equal(Math.abs(rib[0].y - 10), 4);
+    assert.ok(Math.abs(rib.at(-1).y - 10) < 4 && Math.abs(rib.at(-1).y - 10) > 2);
+  }
+  assert.equal(pathInMode(newProject(), 'canyon'), false);
+});
