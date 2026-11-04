@@ -47,3 +47,13 @@ Conclusão: neste mapa real, a prioridade é eliminar o recálculo global por ab
 Drawing agora resolve paredes compartilhadas uma vez e calcula a geometria de cada abertura uma vez por conjunto de elementos. Junções, trechos e acabamentos também são reutilizados enquanto os elementos não mudam. React.memo e uma prévia vazia estável permitem evitar a reconstrução do desenho durante pan e movimento simples do cursor. Zoom pode atualizar alças/grade, mas reutiliza a geometria.
 
 Repetição do ensaio renderToString no mapa real: 87,63 / 87,73 / 85,40 ms, contra mediana anterior de 988,80 ms (redução aproximada de 91%). Saída manteve 124.325 bytes, 276 paths e 47 máscaras; isso é uma checagem estrutural, não comparação visual pixel a pixel. FPS e custo de composição SVG no navegador ainda precisam de conferência. Original em Downloads não foi alterado.
+
+## Medições locais — 4 de novembro de 2026
+
+Mapas do usuário: Boate (291 objetos) e Cassino (600 objetos). O ensaio local mede pan por alteração do viewBox e arraste de um asset; não mede hover nem toda a interface do editor.
+
+No relatório blueprint-performance (2).json, a versão otimizada apresentou medianas de 20,9 ms (pan) / 19,7 ms (arraste) na Boate e 29,3 ms / 21,2 ms no Cassino. A carga da máquina variou entre execuções; evitar atribuir toda variação às mudanças.
+
+Após esse relatório: pan passa a ignorar o cálculo de snapping; máscaras individuais de paredes ficam limitadas ao contorno com margem, preservando o recorte do mapa. Comparação raster antes/depois em 1600 × 1600: zero canais divergentes nos dois mapas. Ganho de câmera dessas últimas mudanças ainda depende de nova medição no navegador.
+
+Pendente: validar navegação com zoom e pan nos dois mapas, hover e arraste; repetir o ensaio em aba visível e conferir exportação no navegador. Nenhuma publicação efetuada nesta etapa.

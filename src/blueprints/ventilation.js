@@ -144,6 +144,7 @@ export function followVentWalls(previous, next) {
     !walls.some(
       (e) =>
         nextById.has(e.id) &&
+        nextById.get(e.id) !== e &&
         JSON.stringify(wallSegments(e)) !== JSON.stringify(wallSegments(nextById.get(e.id))),
     )
   )

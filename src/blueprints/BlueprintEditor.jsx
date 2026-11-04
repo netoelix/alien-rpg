@@ -748,11 +748,7 @@ export default function BlueprintEditor() {
   function move(event) {
     if (['move', 'destinationLabel'].includes(gesture?.kind) && !objectDragStarted(gesture, event))
       return;
-    const p = location(event);
-    setSnapGuides(pendingGuides.current);
-    setCursor(p);
-    if (!gesture) return;
-    if (gesture.kind === 'pan') {
+    if (gesture?.kind === 'pan') {
       const matrix = svgRef.current.getScreenCTM();
       setView({
         ...gesture.view,
@@ -761,6 +757,10 @@ export default function BlueprintEditor() {
       });
       return;
     }
+    const p = location(event);
+    setSnapGuides(pendingGuides.current);
+    setCursor(p);
+    if (!gesture) return;
     setGesture({
       ...gesture,
       dragging: ['move', 'destinationLabel'].includes(gesture.kind) ? true : gesture.dragging,
