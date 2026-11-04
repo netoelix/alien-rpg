@@ -1,3 +1,5 @@
+import { memo } from 'react';
+import { sameElements } from './element-selector.js';
 import { VentAccessSymbol } from './VentAccessSymbol.jsx';
 import { traceGeometry } from './trace-geometry.js';
 import { VentPorts } from './VentPorts.jsx';
@@ -115,89 +117,100 @@ function CompleteNetwork({ elements, floor, networks = ventNetworks(elements) })
   ));
 }
 
-export function VentilationNetwork({
-  elements,
-  floor,
-  displayedVents,
-  contextual = false,
-  width = 2000,
-  height = 2000,
-}) {
-  const id = 'vent-context-' + useId().replaceAll(':', '');
-  if (!contextual) return <CompleteNetwork elements={elements} floor={floor} />;
-  const rooms = elements.filter((e) => ['room', 'ellipse', 'polygon', 'corridor'].includes(e.kind));
-  const networks = ventNetworks(elements)
-      .map((group) => (displayedVents ? group.filter((e) => displayedVents.includes(e)) : group))
-      .filter((group) => group.length),
-    vents = networks.flat();
-  const bounds = { x: 0, y: 0, width, height };
-  return (
-    <g>
-      <defs>
-        <mask id={id + '-outside'} maskUnits="userSpaceOnUse" {...bounds}>
-          <rect {...bounds} fill="white" />
-          <g color="black">
-            {rooms.map((e) => (
-              <Shape key={e.id} element={e} />
-            ))}
-          </g>
-        </mask>
-        <mask id={id + '-inside'} maskUnits="userSpaceOnUse" {...bounds}>
-          <rect {...bounds} fill="black" />
-          <g color="white">
-            {rooms.map((e) => (
-              <Shape key={e.id} element={e} />
-            ))}
-          </g>
-        </mask>
-        <mask id={id + '-hollow'} maskUnits="userSpaceOnUse" {...bounds}>
-          <rect {...bounds} fill="white" />
-          {vents.map((e) => (
-            <g key={e.id} stroke="black">
-              <Ventilation element={e} elements={elements} floor="black" phase="fill" />
+export const VentilationNetwork = memo(
+  function VentilationNetwork({
+    elements,
+    floor,
+    displayedVents,
+    contextual = false,
+    width = 2000,
+    height = 2000,
+  }) {
+    const id = 'vent-context-' + useId().replaceAll(':', '');
+    if (!contextual) return <CompleteNetwork elements={elements} floor={floor} />;
+    const rooms = elements.filter((e) =>
+      ['room', 'ellipse', 'polygon', 'corridor'].includes(e.kind),
+    );
+    const networks = ventNetworks(elements)
+        .map((group) => (displayedVents ? group.filter((e) => displayedVents.includes(e)) : group))
+        .filter((group) => group.length),
+      vents = networks.flat();
+    const bounds = { x: 0, y: 0, width, height };
+    return (
+      <g>
+        <defs>
+          <mask id={id + '-outside'} maskUnits="userSpaceOnUse" {...bounds}>
+            <rect {...bounds} fill="white" />
+            <g color="black">
+              {rooms.map((e) => (
+                <Shape key={e.id} element={e} />
+              ))}
             </g>
-          ))}
-        </mask>
-      </defs>
-      <g data-vent-presentation="contextual">
-        <g mask={`url(#${id}-outside)`}>
-          {networks.map((network) => (
-            <g key={network[0].id}>
-              {['outline', 'fill', 'seams'].map((phase) =>
-                network.map((e) => (
-                  <g key={phase + e.id} data-object={e.id}>
-                    <Ventilation element={e} elements={elements} floor={floor} phase={phase} />
-                  </g>
-                )),
-              )}
+          </mask>
+          <mask id={id + '-inside'} maskUnits="userSpaceOnUse" {...bounds}>
+            <rect {...bounds} fill="black" />
+            <g color="white">
+              {rooms.map((e) => (
+                <Shape key={e.id} element={e} />
+              ))}
             </g>
-          ))}
-        </g>
-        <g mask={`url(#${id}-inside)`}>
-          <g mask={`url(#${id}-hollow)`} opacity=".5" strokeDasharray=".25 .2">
+          </mask>
+          <mask id={id + '-hollow'} maskUnits="userSpaceOnUse" {...bounds}>
+            <rect {...bounds} fill="white" />
             {vents.map((e) => (
-              <g key={e.id} data-object={e.id}>
-                <Ventilation element={e} elements={elements} floor={floor} phase="reference" />
+              <g key={e.id} stroke="black">
+                <Ventilation element={e} elements={elements} floor="black" phase="fill" />
+              </g>
+            ))}
+          </mask>
+        </defs>
+        <g data-vent-presentation="contextual">
+          <g mask={`url(#${id}-outside)`}>
+            {networks.map((network) => (
+              <g key={network[0].id}>
+                {['outline', 'fill', 'seams'].map((phase) =>
+                  network.map((e) => (
+                    <g key={phase + e.id} data-object={e.id}>
+                      <Ventilation element={e} elements={elements} floor={floor} phase={phase} />
+                    </g>
+                  )),
+                )}
               </g>
             ))}
           </g>
-        </g>
-        {vents.map((e) => (
-          <g key={e.id} data-object={e.id}>
-            <Ventilation
-              element={e}
-              elements={elements}
-              floor={floor}
-              phase="access"
-              subtle
-              contextMask={id}
-            />
+          <g mask={`url(#${id}-inside)`}>
+            <g mask={`url(#${id}-hollow)`} opacity=".5" strokeDasharray=".25 .2">
+              {vents.map((e) => (
+                <g key={e.id} data-object={e.id}>
+                  <Ventilation element={e} elements={elements} floor={floor} phase="reference" />
+                </g>
+              ))}
+            </g>
           </g>
-        ))}
+          {vents.map((e) => (
+            <g key={e.id} data-object={e.id}>
+              <Ventilation
+                element={e}
+                elements={elements}
+                floor={floor}
+                phase="access"
+                subtle
+                contextMask={id}
+              />
+            </g>
+          ))}
+        </g>
+        <g data-vent-presentation="full" display="none">
+          <CompleteNetwork elements={elements} floor={floor} networks={networks} />
+        </g>
       </g>
-      <g data-vent-presentation="full" display="none">
-        <CompleteNetwork elements={elements} floor={floor} networks={networks} />
-      </g>
-    </g>
-  );
-}
+    );
+  },
+  (a, b) =>
+    a.elements === b.elements &&
+    a.floor === b.floor &&
+    a.contextual === b.contextual &&
+    a.width === b.width &&
+    a.height === b.height &&
+    sameElements(a.displayedVents || a.elements, b.displayedVents || b.elements),
+);

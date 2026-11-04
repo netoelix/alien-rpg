@@ -1,3 +1,4 @@
+import { wallMaskBounds } from './wall-mask-bounds.js';
 import { OpeningSymbol } from './OpeningSymbol.jsx';
 import { isWindow } from './opening-types.js';
 import { CirculationNetwork } from './CirculationNetwork.jsx';
@@ -7,15 +8,14 @@ import { FloorRegion } from './FloorRegion.jsx';
 import { Trace } from './Trace.jsx';
 import { StairDestinationLabels } from './StairDestinationLabels.jsx';
 import { assetOrder } from './asset-order.js';
-import { floorMarkings } from './floor-markings.js';
 import { Shape } from './FloorShape.jsx';
 import { FloorFinish } from './FloorFinish.jsx';
 import { VentilationNetwork } from './Ventilation.jsx';
 import { visualLayer, visualLayers } from './visual-layers.js';
-import { Fragment, memo, useMemo } from 'react';
+import { AssetDefinitions, DrawingAsset } from './DrawingAsset.jsx';
+import { createElementSelector } from './element-selector.js';
+import { Fragment, memo, useMemo, useId } from 'react';
 const emptyPreview = [];
-import { Furniture } from './Furniture.jsx';
-import { furniture } from './furniture.js';
 import { labelBounds } from './label-bounds.js';
 import { Dimension } from './Dimension.jsx';
 import { LabelText } from './LabelText.jsx';
@@ -31,7 +31,6 @@ import {
   partitionEndCaps,
   wallWidths,
 } from './wall-geometry.js';
-import { AssetSymbol } from './Assets.jsx';
 import { sharedWallStructures, persistentWallStructure } from './shared-walls.js';
 import { doorPosition, layerFor, wallSections } from './model.js';
 export const palettes = {
@@ -51,6 +50,7 @@ export const Drawing = memo(function Drawing({
   editVertices = false,
   handleRadius = 0.4,
 }) {
+  const assetPrefix = 'asset-' + useId().replaceAll(':', '');
   const palette = palettes[project.theme];
   const elements = useMemo(
     () => [...project.elements, ...preview].filter((element) => objectVisible(project, element)),
@@ -58,13 +58,29 @@ export const Drawing = memo(function Drawing({
   );
   const visible = (id) => project.layers.find((l) => l.id === id)?.visible;
   const opacity = (id) => project.layers.find((l) => l.id === id)?.opacity ?? 1;
+  const selectWallElements = useMemo(
+    () =>
+      createElementSelector(
+        (e) => e.kind === 'door' || (layerFor(e.kind) === 'structure' && e.kind !== 'floorRegion'),
+      ),
+    [],
+  );
+  const selectVentElements = useMemo(
+    () =>
+      createElementSelector((e) =>
+        ['room', 'polygon', 'ellipse', 'partition', 'corridor', 'door', 'vent'].includes(e.kind),
+      ),
+    [],
+  );
+  const wallElements = selectWallElements(elements);
+  const ventElements = selectVentElements(elements);
   const { structure, sharedStructure, sections, doors, openings, junctions, runs, transitions } =
     useMemo(() => {
-      const structure = elements
+      const structure = wallElements
         .filter((e) => layerFor(e.kind) === 'structure' && e.kind !== 'floorRegion')
         .map(persistentWallStructure);
       const sharedStructure = sharedWallStructures(structure);
-      const doors = elements.filter((e) => e.kind === 'door');
+      const doors = wallElements.filter((e) => e.kind === 'door');
       return {
         structure,
         sharedStructure,
@@ -72,12 +88,14 @@ export const Drawing = memo(function Drawing({
         sections: structure.flatMap((element) =>
           wallSections(element).map((wall) => ({ ...wall, id: element.id })),
         ),
-        openings: new Map(doors.map((e) => [e.id, openingGeometry(e, elements, sharedStructure)])),
+        openings: new Map(
+          doors.map((e) => [e.id, openingGeometry(e, wallElements, sharedStructure)]),
+        ),
         junctions: sharedWallJunctions(structure),
         runs: sharedStructure.map((e) => [...partitionEndCaps(e, structure), ...wallRuns(e)]),
         transitions: structure.map(wallTransitions),
       };
-    }, [elements]);
+    }, [wallElements]);
   const byPlane = useMemo(() => {
     const groups = new Map();
     for (const e of elements) {
@@ -103,6 +121,7 @@ export const Drawing = memo(function Drawing({
         height={project.height}
         fill={palette.background}
       />
+      <AssetDefinitions elements={elements} prefix={assetPrefix} floor={palette.floor} />
       <defs>
         <pattern
           id="blueprint-grid"
@@ -139,10 +158,7 @@ export const Drawing = memo(function Drawing({
               key={element.id}
               id={'blueprint-replace-' + index}
               maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width={project.width}
-              height={project.height}
+              {...wallMaskBounds(element, project.width, project.height)}
             >
               <rect width={project.width} height={project.height} fill="white" />
               {wallSections(element).map((wall) => (
@@ -251,10 +267,7 @@ export const Drawing = memo(function Drawing({
               key={element.id}
               id={'blueprint-outside-' + index}
               maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width={project.width}
-              height={project.height}
+              {...wallMaskBounds(element, project.width, project.height)}
             >
               <rect width={project.width} height={project.height} fill="white" />
               <g color="black">
@@ -343,38 +356,7 @@ export const Drawing = memo(function Drawing({
                   .filter((e) => e.kind === 'asset')
                   .sort((a, b) => assetOrder(a) - assetOrder(b))
                   .map((e) => (
-                    <g
-                      key={e.id}
-                      data-object={e.id}
-                      transform={`translate(${e.x + e.w / 2} ${e.y + e.h / 2}) rotate(${e.rotation}) translate(${-e.w / 2} ${-e.h / 2})`}
-                    >
-                      {furniture[e.asset] ? (
-                        <svg
-                          width={e.w}
-                          height={e.h}
-                          viewBox={`0 0 ${e.w} ${e.h}`}
-                          overflow="visible"
-                          fill={palette.floor}
-                          stroke={floorMarkings[e.asset] ? palette.accent : palette.ink}
-                          color={floorMarkings[e.asset] ? palette.accent : palette.ink}
-                        >
-                          <Furniture type={e.asset} w={e.w} h={e.h} floor={palette.floor} />
-                        </svg>
-                      ) : (
-                        <svg
-                          width={e.w}
-                          height={e.h}
-                          viewBox="0 0 100 100"
-                          preserveAspectRatio="none"
-                          fill={palette.floor}
-                          stroke={palette.ink}
-                          strokeWidth="2"
-                        >
-                          <rect width="100" height="100" fill="transparent" stroke="none" />
-                          <AssetSymbol type={e.asset} />
-                        </svg>
-                      )}
-                    </g>
+                    <DrawingAsset key={e.id} element={e} prefix={assetPrefix} palette={palette} />
                   ))}
               </g>
             )}
@@ -528,7 +510,7 @@ export const Drawing = memo(function Drawing({
             {items.some((e) => e.kind === 'vent') && visible('vents') && (
               <g data-layer="vents" opacity={opacity('vents')} fill="none" stroke={palette.accent}>
                 <VentilationNetwork
-                  elements={elements}
+                  elements={ventElements}
                   displayedVents={items.filter((e) => e.kind === 'vent')}
                   floor={palette.floor}
                   contextual
