@@ -1,0 +1,8 @@
+{
+  "id": "alien-blueprint-importer",
+  "title": "Blueprint — Importador experimental",
+  "description": "Importação de mapas Blueprint, paredes e conexões para a Suíte MÃE.",
+  "version": "0.2.3",
+  "compatibility": { "minimum": "14", "maximum": "14" },
+  "esmodules": ["main.js"]
+}

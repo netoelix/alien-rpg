@@ -280,3 +280,7 @@ Projetos antigos usam o primeiro andar como térreo. O gerenciador permite redef
 
 ### Relevo de colônias — áreas com cota
 Áreas elevadas e depressões são desenhadas em Áreas, com cota relativa em metros e hachuras voltadas para o lado baixo. São indicações cartográficas. O desenho de regiões rochosas e vegetação foi retirado para revisão visual futura. Arquivos da versão de teste preservam os contornos dessas regiões como piso liso.
+
+### Foundry — contrato de exportação iniciado (05/11/2026)
+
+Preparado pacote portátil de pavimentos, escala e vínculos de escadas/elevadores/ventilação, com resolução dos UUIDs para a Suíte MÃE. Três testes passaram. Ainda não é um formato importável: próximos blocos são barreiras físicas, imagens, importador transacional e interface. Detalhes e pendências em integracao-foundry.md. Sem publicação e sem alterações no mundo Foundry.
