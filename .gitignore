@@ -13,6 +13,8 @@ data/*.pending
 coverage
 dist
 dist-ssr
+.test-tmp/
+outputs/alien-blueprint-importer/
 *.local
 .env
 .env.*

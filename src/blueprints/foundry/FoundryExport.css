@@ -1,0 +1,16 @@
+.blueprint-foundry-export {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+}
+.blueprint-foundry-export > p {
+  margin: 0;
+}
+.blueprint-foundry-export > button {
+  align-self: flex-start;
+}
+.blueprint-foundry-export > [role='status']:empty {
+  display: none;
+}

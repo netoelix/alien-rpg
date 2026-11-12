@@ -85,6 +85,7 @@ import {
   uid,
 } from './model.js';
 import { downloadBlob, exportDrawing, projectFilename } from './export.js';
+import { FoundryExport } from './foundry/FoundryExport.jsx';
 import './blueprints.css';
 const storageKey = 'alien-blueprint-recovery-v1';
 const normalizeSearch = (text) =>
@@ -1179,7 +1180,7 @@ export default function BlueprintEditor() {
             APAGAR CÓPIA LOCAL
           </button>
         </EditorPopup>
-        <EditorPopup title="Exportar imagem">
+        <EditorPopup title="Exportar">
           <HelpHint>
             A exportação usa somente o pavimento ativo e mantém o mesmo alinhamento entre camadas. A
             grade não é exportada.
@@ -1256,6 +1257,12 @@ export default function BlueprintEditor() {
           >
             {exporting ? 'GERANDO…' : 'BAIXAR IMAGEM'}
           </button>
+          <FoundryExport
+            project={project}
+            disabled={!!gesture || !!points.length}
+            exporting={exporting}
+            setExporting={setExporting}
+          />
         </EditorPopup>
         <EditorPopup title="Atalhos e navegação">
           <p>
